@@ -1,0 +1,11 @@
+{
+  "input_files": {
+    "yPlans": ["y/qoa_web/y1Plans.csv"],
+    "yActions": ["y/qoa_web/y2Actions.csv"],
+    "yDesigns": ["y/qoa_web/y3Designs.csv"]
+  },
+  "name": "qoa_web",
+  "description": "BRAHL web app — local localhost:8765 smoke",
+  "version": "1.0.0",
+  "url": "http://127.0.0.1:8765/"
+}

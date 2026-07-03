@@ -1,0 +1,160 @@
+{
+  "/": {
+    "url": "https://atomic77.base44.app/",
+    "title": "Atomic 77",
+    "h1": [
+      "",
+      "Hey, there 👋"
+    ],
+    "h2": [
+      "Your AI Business Advisor",
+      "Growth Pillars",
+      "Your Growth Journey"
+    ],
+    "buttons": [
+      "What should I focus on to grow my business this month?",
+      "Help me write an SEO strategy for my business",
+      "What social media posts should I create this week?",
+      "How can I automate repetitive tasks in my workflow?"
+    ],
+    "body": "Hey, there 👋\nWelcome to your workspace\nYour AI Business Advisor\nTell me about your business — I'll show you the path to growth\nTry asking:\nWhat should I focus on to grow my business this month?\nHelp me write an SEO strategy for my business\nWhat social media posts should I create this week?\nHow can I automate repetitive tasks in my workflow?\nGrowth Pillars\nYour roadmap to business growth\nComplete P"
+  },
+  "/docs": {
+    "url": "https://atomic77.base44.app/docs",
+    "title": "Docs | Atomic 77",
+    "h1": [
+      "",
+      "My Docs"
+    ],
+    "h2": [],
+    "buttons": [
+      "New Doc"
+    ],
+    "body": "My Docs\nMarkdown files for you, your team, and your AI\nNew Doc\n📌 PINNED\n📝\nBusiness Strategy 2026\nOther\nJun 2, 2026\n21 words\n⚙️\nClient Onboarding Process\nProcesses\nJun 2, 2026\n12 words\nALL DOCS\n⚙️\ncontent-calendar.md\nProcesses\nJul 2, 2026\n206 words\n⚙️\nconnectors.md\nProcesses\nJul 2, 2026\n119 words\n⚙️\nprocesses.md\nProcesses\nJun 16, 2026\n179 words\n⚙️\nsocial-media.md\nProcesses\nJun 8, 2026\n247 words\n👤\ns"
+  },
+  "/login": {
+    "url": "https://atomic77.base44.app/login",
+    "title": "Login | Atomic 77",
+    "h1": [
+      "Welcome back"
+    ],
+    "h2": [],
+    "buttons": [
+      "Continue with Google",
+      "Log in"
+    ],
+    "body": "Welcome back\nLog in to your account\nContinue with Google\nOR\nEmail\nPassword\nForgot password?\nLog in\nDon't have an account? Create one"
+  },
+  "/register": {
+    "url": "https://atomic77.base44.app/register",
+    "title": "Register | Atomic 77",
+    "h1": [
+      "Create your account"
+    ],
+    "h2": [],
+    "buttons": [
+      "Continue with Google",
+      "Create account"
+    ],
+    "body": "Create your account\nSign up to get started\nContinue with Google\nOR\nEmail\nPassword\nConfirm Password\nCreate account\nAlready have an account? Log in"
+  },
+  "/dashboard": {
+    "url": "https://atomic77.base44.app/dashboard",
+    "title": "Atomic 77",
+    "h1": [
+      "404"
+    ],
+    "h2": [
+      "Page Not Found"
+    ],
+    "buttons": [
+      "Go Home"
+    ],
+    "body": "404\nPage Not Found\nThe page \"dashboard\" could not be found in this application.\nGo Home"
+  },
+  "/onboarding": {
+    "url": "https://atomic77.base44.app/login",
+    "title": "Onboarding | Atomic 77",
+    "h1": [
+      "Welcome back"
+    ],
+    "h2": [],
+    "buttons": [
+      "Continue with Google",
+      "Log in"
+    ],
+    "body": "Welcome back\nLog in to your account\nContinue with Google\nOR\nEmail\nPassword\nForgot password?\nLog in\nDon't have an account? Create one"
+  },
+  "/profile": {
+    "url": "https://atomic77.base44.app/login",
+    "title": "Profile | Atomic 77",
+    "h1": [
+      "Welcome back"
+    ],
+    "h2": [],
+    "buttons": [
+      "Continue with Google",
+      "Log in"
+    ],
+    "body": "Welcome back\nLog in to your account\nContinue with Google\nOR\nEmail\nPassword\nForgot password?\nLog in\nDon't have an account? Create one"
+  },
+  "/automations": {
+    "url": "https://atomic77.base44.app/login",
+    "title": "Automations | Atomic 77",
+    "h1": [
+      "Welcome back"
+    ],
+    "h2": [],
+    "buttons": [
+      "Continue with Google",
+      "Log in"
+    ],
+    "body": "Welcome back\nLog in to your account\nContinue with Google\nOR\nEmail\nPassword\nForgot password?\nLog in\nDon't have an account? Create one"
+  },
+  "/build-app": {
+    "url": "https://atomic77.base44.app/build-app",
+    "title": "Build App | Atomic 77",
+    "h1": [
+      "",
+      "Build Your Landing Page"
+    ],
+    "h2": [
+      "Tell me about your landing page"
+    ],
+    "buttons": [
+      "Speak your idea",
+      "Next",
+      "A portfolio website for my photography business",
+      "Landing page for a new coffee shop with online ordering",
+      "Product launch page for my new fitness app",
+      "Service page for my consulting business"
+    ],
+    "body": "Build Your Landing Page\nDescribe your idea, pick a template, and let AI build it for you\nDescribe\nTemplate\nCustomize\nPreview\nTell me about your landing page\nSpeak your idea\nNext\nA portfolio website for my photography business\nLanding page for a new coffee shop with online ordering\nProduct launch page for my new fitness app\nService page for my consulting business\nHome\nDocs\nAutomate\nApps\nProfile"
+  },
+  "/connected-apps": {
+    "url": "https://atomic77.base44.app/connected-apps",
+    "title": "Connected Apps | Atomic 77",
+    "h1": [
+      "404"
+    ],
+    "h2": [
+      "Page Not Found"
+    ],
+    "buttons": [
+      "Go Home"
+    ],
+    "body": "404\nPage Not Found\nThe page \"connected-apps\" could not be found in this application.\nGo Home"
+  },
+  "/forgot-password": {
+    "url": "https://atomic77.base44.app/forgot-password",
+    "title": "Forgot Password | Atomic 77",
+    "h1": [
+      "Reset password"
+    ],
+    "h2": [],
+    "buttons": [
+      "Send reset link"
+    ],
+    "body": "Reset password\nWe'll send you a link to reset it\nEmail address\nSend reset link\nBack to log in"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "configs": ["y/qoa2/qoa2.json"],
+  "thread_count": 1,
+  "timeout": 6,
+  "headless": true,
+  "tags": ["__brahl_tag_smoke__"]
+}

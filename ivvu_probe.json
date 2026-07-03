@@ -1,0 +1,130 @@
+﻿python : There was an error managing MicrosoftEdge (error sending request for url 
+(https://msedgedriver.azureedge.net/LATEST_RELEASE_149_WINDOWS): error trying to connect: dns error: No such host is 
+known. (os error 11001)); using driver found in the cache
+At C:\Users\foxzi\AppData\Local\Temp\ps-script-a53e2722-3610-4063-9f2e-f23e991313bf.ps1:78 char:30
++ Set-Location c:\006\FXYZ\KK; python -c "
++                              ~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (There was an er...nd in the cache:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+{
+  "/": {
+    "url": "https://ivvu.base44.app/",
+    "title": "IVVU",
+    "h1": [
+      "IVVU",
+      "Be there for your parents in India ΓÇö even oceans away."
+    ],
+    "h2": [
+      "Gift presence home.",
+      "Choose your plan"
+    ],
+    "body_snip": "IVVU GIFT PRESENCE HOME Pricing FAQ Sign In 2-MINUTE EXPLAINER Be there for your parents in India ΓÇö even oceans away. Send curated gifts for birthdays and festivals. Book vetted helpers for errands an"
+  },
+  "/docs": {
+    "url": "https://ivvu.base44.app/docs",
+    "title": "docs | IVVU",
+    "h1": [
+      "404"
+    ],
+    "h2": [
+      "Page Not Found"
+    ],
+    "body_snip": "404 Page Not Found The page \"docs\" could not be found in this application. Go Home"
+  },
+  "/login": {
+    "url": "https://ivvu.base44.app/login",
+    "title": "Login | IVVU",
+    "h1": [
+      "Welcome back"
+    ],
+    "h2": [],
+    "body_snip": "Welcome back Log in to your account Continue with Google OR Email Password Forgot password? Log in Don't have an account? Create one"
+  },
+  "/register": {
+    "url": "https://ivvu.base44.app/register",
+    "title": "Register | IVVU",
+    "h1": [
+      "Create your account"
+    ],
+    "h2": [],
+    "body_snip": "Create your account Sign up to get started Continue with Google OR Email Password Confirm Password Create account Already have an account? Log in"
+  },
+  "/dashboard": {
+    "url": "https://ivvu.base44.app/dashboard",
+    "title": "Dashboard | IVVU",
+    "h1": [
+      "Welcome back"
+    ],
+    "h2": [
+      "Recent Orders",
+      "Rewards",
+      "How IVVU Works"
+    ],
+    "body_snip": "Welcome back Here's what's happening with your family's care. Book Care Send Gift Add Family My Orders Recent Orders View all No orders yet. Book care or send a gift to get started. Book Care Shop Gif"
+  },
+  "/profile": {
+    "url": "https://ivvu.base44.app/profile",
+    "title": "profile | IVVU",
+    "h1": [
+      "404"
+    ],
+    "h2": [
+      "Page Not Found"
+    ],
+    "body_snip": "404 Page Not Found The page \"profile\" could not be found in this application. Go Home"
+  },
+  "/automations": {
+    "url": "https://ivvu.base44.app/automations",
+    "title": "automations | IVVU",
+    "h1": [
+      "404"
+    ],
+    "h2": [
+      "Page Not Found"
+    ],
+    "body_snip": "404 Page Not Found The page \"automations\" could not be found in this application. Go Home"
+  },
+  "/build-app": {
+    "url": "https://ivvu.base44.app/build-app",
+    "title": "build-app | IVVU",
+    "h1": [
+      "404"
+    ],
+    "h2": [
+      "Page Not Found"
+    ],
+    "body_snip": "404 Page Not Found The page \"build-app\" could not be found in this application. Go Home"
+  },
+  "/connected-apps": {
+    "url": "https://ivvu.base44.app/connected-apps",
+    "title": "connected-apps | IVVU",
+    "h1": [
+      "404"
+    ],
+    "h2": [
+      "Page Not Found"
+    ],
+    "body_snip": "404 Page Not Found The page \"connected-apps\" could not be found in this application. Go Home"
+  },
+  "/forgot-password": {
+    "url": "https://ivvu.base44.app/forgot-password",
+    "title": "Forgot Password | IVVU",
+    "h1": [
+      "Reset password"
+    ],
+    "h2": [],
+    "body_snip": "Reset password We'll send you a link to reset it Email address Send reset link Back to log in"
+  },
+  "/onboarding": {
+    "url": "https://ivvu.base44.app/onboarding",
+    "title": "onboarding | IVVU",
+    "h1": [
+      "404"
+    ],
+    "h2": [
+      "Page Not Found"
+    ],
+    "body_snip": "404 Page Not Found The page \"onboarding\" could not be found in this application. Go Home"
+  }
+}

@@ -1,0 +1,75 @@
+PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PReuse_atomic77_OpenSite,1,Open browser,xUI,xOpenBrowser,edge,,,y
+PReuse_atomic77_OpenSite,2,Navigate to Atomic 77,xUI,xNavigate,base_url,,,y
+PReuse_atomic77_OpenSite,3,Verify page body,xUI,xGetText,body_locator,,,y
+PWeb_OpenLanding,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_OpenLanding,2,Reset to home page,xUI,xNavigate,base_url,,,y
+PWeb_OpenLanding,3,Verify body loaded,xUI,xGetText,body_locator,,,y
+PWeb_VerifyTitle,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_VerifyTitle,2,Reset to home page,xUI,xNavigate,base_url,,,y
+PWeb_VerifyTitle,3,Get page title,xUI,xGetTitle,,page_title,,n
+PWeb_Home_Advisor,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Home_Advisor,2,Reset to home page,xUI,xNavigate,base_url,,,y
+PWeb_Home_Advisor,3,Verify AI advisor section,xUI,xGetText,advisor_locator,,,y
+PWeb_Docs_Load,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Docs_Load,2,Navigate to docs,xUI,xNavigate,docs_url,,,y
+PWeb_Docs_Load,3,Verify My Docs heading,xUI,xGetText,docs_heading_locator,,,y
+PWeb_Docs_NewDoc,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Docs_NewDoc,2,Navigate to docs,xUI,xNavigate,docs_url,,,y
+PWeb_Docs_NewDoc,3,Verify New Doc button,xUI,xGetText,new_doc_btn_locator,,,y
+PWeb_BuildApp_Load,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_BuildApp_Load,2,Navigate to build app,xUI,xNavigate,build_app_url,,,y
+PWeb_BuildApp_Load,3,Verify build app heading,xUI,xGetText,build_app_heading_locator,,,y
+PWeb_Login_Page,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Login_Page,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Login_Page,3,Verify welcome heading,xUI,xGetText,login_welcome_locator,,,y
+PWeb_Register_Page,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Register_Page,2,Navigate to register,xUI,xNavigate,register_url,,,y
+PWeb_Register_Page,3,Verify register heading,xUI,xGetText,register_heading_locator,,,y
+PWeb_Forgot_Password,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Forgot_Password,2,Navigate to forgot password,xUI,xNavigate,forgot_password_url,,,y
+PWeb_Forgot_Password,3,Verify reset heading,xUI,xGetText,forgot_heading_locator,,,y
+PWeb_Nav_Docs,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Nav_Docs,2,Reset to home page,xUI,xNavigate,base_url,,,y
+PWeb_Nav_Docs,3,Click docs nav link,xUI,xClick,nav_docs_locator,,,y
+PWeb_Nav_Docs,4,Verify docs page loaded,xUI,xGetText,docs_heading_locator,,,y
+PWeb_Issue_Dashboard_404,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Issue_Dashboard_404,2,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_Issue_Dashboard_404,3,Verify 404 heading,xUI,xGetText,not_found_heading_locator,,,y
+PWeb_Issue_ConnectedApps_404,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Issue_ConnectedApps_404,2,Navigate to connected apps,xUI,xNavigate,connected_apps_url,,,y
+PWeb_Issue_ConnectedApps_404,3,Verify 404 heading,xUI,xGetText,not_found_heading_locator,,,y
+PWeb_AuthGate_Automations,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_AuthGate_Automations,2,Navigate to automations,xUI,xNavigate,automations_url,,,y
+PWeb_AuthGate_Automations,3,Verify login gate,xUI,xGetText,login_welcome_locator,,,y
+PAPI_Manifest,1,GET manifest.json,xAPI,xGet,api_base_url;api_manifest_endpoint,,200,y
+PAPI_Manifest,2,Validate manifest name field,xJSON,xValidateJson,name,,True,y
+PAPI_AuthSession_Unauth,1,GET session without auth,xAPI,xGet,api_base_url;api_session_endpoint,,401,y
+PAPI_AuthSession_Unauth,2,Validate error_type in body,xJSON,xValidateJson,error_type,,True,y
+PAPI_AppLog_Home,1,POST home app-log beacon,xAPI,xPost,api_base_url;api_applog_home_endpoint;payload_empty_path,,200,y
+PAPI_AppLog_Home,2,Validate success flag,xJSON,xValidateJson,success,,True,y
+PAPI_AppLog_Docs,1,POST docs app-log beacon,xAPI,xPost,api_base_url;api_applog_docs_endpoint;payload_empty_path,,200,y
+PAPI_AppLog_Docs,2,Validate success flag,xJSON,xValidateJson,success,,True,y
+PAPI_Apps_Unauth,1,GET apps API without auth,xAPI,xGet,api_base_url;api_apps_endpoint,,401,y
+PAPI_InvalidLogin,1,POST invalid login credentials,xAPI,xPost,api_base_url;api_login_endpoint;payload_invalid_login_path,,400,y
+PAPI_InvalidLogin,2,Validate error_type in body,xJSON,xValidateJson,error_type,,True,y
+PAPI_Robots,1,GET robots.txt,xAPI,xGet,api_base_url;api_robots_endpoint,,200,y
+PWeb_Sec_EvilQuery,1,Navigate evil query URL,xUI,xNavigate,evil_query_url,,,y
+PWeb_Sec_EvilQuery,2,Verify page loads safely,xUI,xGetText,body_locator,,,y
+PWeb_Sec_Profile_Gate,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Sec_Profile_Gate,2,Navigate to profile,xUI,xNavigate,profile_url,,,y
+PWeb_Sec_Profile_Gate,3,Verify login gate,xUI,xGetText,login_welcome_locator,,,y
+PWeb_Perf_Home_Load,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Perf_Home_Load,2,Start load timer,xUI,xStartTimer,,,,y
+PWeb_Perf_Home_Load,3,Navigate to home,xUI,xNavigate,base_url,,,y
+PWeb_Perf_Home_Load,4,Stop load timer,xUI,xStopTimer,elapsed_ms,,,n
+PWeb_Perf_Home_Load,5,Assert home load under threshold,xUI,xAssertLessThan,{{step:4}};perf_max_home_ms,,,y
+PWeb_Perf_Docs_Load,1,Open browser session,xReuse,PReuse_atomic77_OpenSite,,,,y
+PWeb_Perf_Docs_Load,2,Start load timer,xUI,xStartTimer,,,,y
+PWeb_Perf_Docs_Load,3,Navigate to docs,xUI,xNavigate,docs_url,,,y
+PWeb_Perf_Docs_Load,4,Stop load timer,xUI,xStopTimer,elapsed_ms,,,n
+PWeb_Perf_Docs_Load,5,Assert docs load under threshold,xUI,xAssertLessThan,{{step:4}};perf_max_docs_ms,,,y
+PAPI_Perf_Session,1,Start API timer,xUI,xStartTimer,,,,y
+PAPI_Perf_Session,2,GET session endpoint,xAPI,xGet,api_base_url;api_session_endpoint,,401,y
+PAPI_Perf_Session,3,Stop API timer,xUI,xStopTimer,elapsed_ms,,,n
+PAPI_Perf_Session,4,Assert session API under threshold,xUI,xAssertLessThan,{{step:3}};perf_max_api_ms,,,y

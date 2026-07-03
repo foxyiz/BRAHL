@@ -1,0 +1,492 @@
+PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PReuse_qoa2_OpenSite,1,Open browser,xUI,xOpenBrowser,edge,,,y
+PReuse_qoa2_OpenSite,2,Navigate to qoa2,xUI,xNavigate,base_url,,,y
+PReuse_qoa2_OpenSite,3,Verify page body,xUI,xGetText,body_locator,,,y
+PReuse_qoa2_Login,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PReuse_qoa2_Login,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PReuse_qoa2_Login,3,Enter email,xUI,xType,login_email;login_email_input_locator,,,y
+PReuse_qoa2_Login,4,Enter password,xUI,xType,login_password;login_password_input_locator,,,y
+PReuse_qoa2_Login,5,Click Continue,xUI,xClick,login_submit_btn_locator,,,y
+PReuse_qoa2_Login,6,Verify logged-in XP tracker,xUI,xGetText,xp_tracker_header_locator,,,y
+PReuse_qoa2_Login,7,Dismiss onboarding trainer,xReuse,PReuse_qoa2_Dismiss_Onboarding,,,,n
+PReuse_qoa2_Dashboard,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PReuse_qoa2_Dashboard,2,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PReuse_qoa2_Dashboard,3,Verify command center present,xUI,xGetText,social_assistant_locator,,,y
+PReuse_qoa2_Dashboard,4,Verify command center loaded,xUI,xGetText,social_assistant_locator,,,y
+PReuse_qoa2_Admin,1,Login session (reuse),xReuse,PReuse_qoa2_Login,,,,y
+PReuse_qoa2_Admin,2,Navigate to admin panel,xUI,xNavigate,admin_url,,,y
+PReuse_qoa2_Admin,3,Verify admin panel loaded,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PReuse_qoa2_Dismiss_Onboarding,1,Advance onboarding slide 1,xUI,xClick,onboarding_next_locator,,,n
+PReuse_qoa2_Dismiss_Onboarding,2,Advance onboarding slide 2,xUI,xClick,onboarding_next_locator,,,n
+PReuse_qoa2_Dismiss_Onboarding,3,Advance onboarding slide 3,xUI,xClick,onboarding_next_locator,,,n
+PReuse_qoa2_Dismiss_Onboarding,4,Finish onboarding carousel,xUI,xClick,onboarding_next_locator,,,n
+PWeb_OpenLanding,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_OpenLanding,2,Verify body loaded,xUI,xGetText,body_locator,,,y
+PWeb_VerifyTitle,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_VerifyTitle,2,Get page title,xUI,xGetTitle,,page_title,qoa2,n
+PWeb_VerifyNav,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_VerifyNav,2,Verify nav bar,xUI,xGetText,nav_locator,,,y
+PWeb_BRAHL_Section,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_BRAHL_Section,2,Verify BRAHL section,xUI,xGetText,brahl_section_locator,,,y
+PWeb_Roles_Section,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Roles_Section,2,Verify roles section,xUI,xGetText,roles_section_locator,,,y
+PWeb_FAQ_Accordion,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_FAQ_Accordion,2,Click FAQ question,xUI,xClick,faq_qoa_locator,,,y
+PWeb_FAQ_Accordion,3,Verify page still loaded,xUI,xGetText,body_locator,,,y
+PWeb_Landing_CTA_GetStarted,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Landing_CTA_GetStarted,2,Click Get Started,xUI,xClick,get_started_btn_locator,,,y
+PWeb_Landing_CTA_GetStarted,3,Verify auth page,xUI,xGetText,body_locator,,,y
+PWeb_Landing_CTA_Login,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Landing_CTA_Login,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Landing_CTA_Login,3,Verify welcome heading,xUI,xGetText,login_welcome_locator,,Welcome,y
+PWeb_Landing_AI_Assistant,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Landing_AI_Assistant,2,Verify job assistant text on page,xUI,xGetText,body_locator,,,y
+PWeb_Login_Page_Verify,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Login_Page_Verify,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Login_Page_Verify,3,Verify login form,xUI,xGetText,login_form_locator,,,y
+PWeb_Login_Page_Verify,4,Verify email input,xUI,xGetText,login_email_input_locator,,,y
+PWeb_Login_Page_Verify,5,Verify password input,xUI,xGetText,login_password_input_locator,,,y
+PWeb_Register_Redirects_Login,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Register_Redirects_Login,2,Navigate to register URL,xUI,xNavigate,register_url,,,y
+PWeb_Register_Redirects_Login,3,Verify login UI shown,xUI,xGetText,login_welcome_locator,,Welcome,y
+PWeb_Register_Redirects_Login,4,Get current URL,xUI,xGetCurrentUrl,,current_url,,n
+PWeb_Login_Google_Button,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Login_Google_Button,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Login_Google_Button,3,Verify Google button,xUI,xGetText,google_signin_btn_locator,,,y
+PWeb_Forgot_Password,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Forgot_Password,2,Navigate to forgot password,xUI,xNavigate,forgot_password_url,,,y
+PWeb_Forgot_Password,3,Verify reset password heading,xUI,xGetText,reset_password_locator,,Reset password,y
+PWeb_Forgot_Password,4,Click back to login,xUI,xClick,back_to_login_locator,,,y
+PWeb_Auth_Empty_Fields,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Auth_Empty_Fields,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Auth_Empty_Fields,3,Submit empty form,xUI,xClick,login_submit_btn_locator,,,y
+PWeb_Auth_Empty_Fields,4,Verify still on login,xUI,xGetText,login_welcome_locator,,Welcome,y
+PWeb_Auth_Invalid_Credentials,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Auth_Invalid_Credentials,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Auth_Invalid_Credentials,3,Enter invalid email,xUI,xType,invalid_email;login_email_input_locator,,,y
+PWeb_Auth_Invalid_Credentials,4,Enter invalid password,xUI,xType,invalid_password;login_password_input_locator,,,y
+PWeb_Auth_Invalid_Credentials,5,Submit login,xUI,xClick,login_submit_btn_locator,,,y
+PWeb_Auth_Invalid_Credentials,6,Verify page still loaded,xUI,xGetText,body_locator,,,y
+PWeb_Sec_XSS_Email,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_XSS_Email,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Sec_XSS_Email,3,Enter XSS in email,xUI,xType,xss_payload;login_email_input_locator,,,y
+PWeb_Sec_XSS_Email,4,Enter password,xUI,xType,login_password;login_password_input_locator,,,y
+PWeb_Sec_XSS_Email,5,Submit login,xUI,xClick,login_submit_btn_locator,,,y
+PWeb_Sec_XSS_Email,6,Verify page body safe,xUI,xGetText,body_locator,,,y
+PWeb_Sec_XSS_Password,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_XSS_Password,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Sec_XSS_Password,3,Enter email,xUI,xType,login_email;login_email_input_locator,,,y
+PWeb_Sec_XSS_Password,4,Enter XSS in password,xUI,xType,xss_payload;login_password_input_locator,,,y
+PWeb_Sec_XSS_Password,5,Submit login,xUI,xClick,login_submit_btn_locator,,,y
+PWeb_Sec_XSS_Password,6,Verify page body safe,xUI,xGetText,body_locator,,,y
+PWeb_Sec_SpecialChars_Email,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_SpecialChars_Email,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Sec_SpecialChars_Email,3,Enter special chars email,xUI,xType,special_chars_email;login_email_input_locator,,,y
+PWeb_Sec_SpecialChars_Email,4,Enter password,xUI,xType,login_password;login_password_input_locator,,,y
+PWeb_Sec_SpecialChars_Email,5,Submit login,xUI,xClick,login_submit_btn_locator,,,y
+PWeb_Sec_SpecialChars_Email,6,Verify page still loaded,xUI,xGetText,body_locator,,,y
+PWeb_Sec_SQLInjection_Login,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_SQLInjection_Login,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Sec_SQLInjection_Login,3,Enter SQLi in email,xUI,xType,sql_injection_payload;login_email_input_locator,,,y
+PWeb_Sec_SQLInjection_Login,4,Enter password,xUI,xType,login_password;login_password_input_locator,,,y
+PWeb_Sec_SQLInjection_Login,5,Submit login,xUI,xClick,login_submit_btn_locator,,,y
+PWeb_Sec_SQLInjection_Login,6,Verify not logged in as admin,xUI,xGetText,body_locator,,,y
+PWeb_Sec_LoginEvilQuery,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_LoginEvilQuery,2,Navigate login with evil query,xUI,xNavigate,login_evil_query_url,,,y
+PWeb_Sec_LoginEvilQuery,3,Verify login page loads,xUI,xGetText,login_welcome_locator,,Welcome,y
+PWeb_Sec_PasswordFieldMasked,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_PasswordFieldMasked,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Sec_PasswordFieldMasked,3,Click password field,xUI,xClick,login_password_input_locator,,,y
+PWeb_Sec_PasswordFieldMasked,4,Type password,xUI,xType,login_password;login_password_input_locator,,,y
+PWeb_Sec_PasswordFieldMasked,5,Verify password field present,xUI,xGetText,login_password_input_locator,,,y
+PWeb_Login_Full,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Login_Full,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Login_Full,3,Enter email,xUI,xType,login_email;login_email_input_locator,,,y
+PWeb_Login_Full,4,Enter password,xUI,xType,login_password;login_password_input_locator,,,y
+PWeb_Login_Full,5,Submit login,xUI,xClick,login_submit_btn_locator,,,y
+PWeb_Login_Full,6,Wait for post-login,xUI,xGetText,xp_tracker_widget_locator,,,y
+PWeb_Login_Full,7,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_Login_Full,8,Verify command center,xUI,xGetText,social_assistant_locator,,,y
+PWeb_Login_Full,9,Get page title,xUI,xGetTitle,,post_login_title,,n
+PWeb_Dashboard_After_Login,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Dashboard_After_Login,2,Verify command center,xUI,xGetText,social_assistant_locator,,AI Social Assistant,y
+PWeb_Dashboard_After_Login,3,Verify command center text,xUI,xGetText,command_center_locator,,,y
+PWeb_Dashboard_After_Login,4,Verify social assistant section,xUI,xGetText,social_assistant_locator,,,y
+PWeb_Dashboard_Social_Assistant,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Dashboard_Social_Assistant,2,Verify AI Social Assistant heading,xUI,xGetText,social_assistant_locator,,,y
+PWeb_Dashboard_Social_Assistant,3,Verify Generate Post button,xUI,xGetText,generate_post_btn_locator,,,y
+PWeb_Dashboard_Avatar_Tabs,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Dashboard_Avatar_Tabs,2,Click Client tab,xUI,xClick,avatar_client_locator,,,y
+PWeb_Dashboard_Avatar_Tabs,3,Click Consultant tab,xUI,xClick,avatar_consultant_locator,,,y
+PWeb_Dashboard_Avatar_Tabs,4,Click Promoter tab,xUI,xClick,avatar_promoter_locator,,,y
+PWeb_Dashboard_Avatar_Tabs,5,Verify header avatars,xUI,xGetText,header_locator,,,y
+PWeb_Dashboard_Referral,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Dashboard_Referral,2,Verify referral content on page,xUI,xGetText,body_locator,,,y
+PWeb_Dashboard_Copy_Link,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Dashboard_Copy_Link,2,Click Copy Link,xUI,xClick,copy_link_btn_locator,,,y
+PWeb_Dashboard_Copy_Link,3,Verify page stable,xUI,xGetText,social_assistant_locator,,,y
+PWeb_Dashboard_Onboarding_Next,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Dashboard_Onboarding_Next,2,Verify onboarding section visible,xUI,xGetText,onboarding_section_locator,,,y
+PWeb_Dashboard_Onboarding_Next,3,Click Next in onboarding,xUI,xClick,onboarding_next_locator,,,y
+PWeb_Dashboard_Onboarding_Back,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Dashboard_Onboarding_Back,2,Verify onboarding section visible,xUI,xGetText,onboarding_section_locator,,,y
+PWeb_Dashboard_Onboarding_Back,3,Click Next in onboarding,xUI,xClick,onboarding_next_locator,,,y
+PWeb_Dashboard_Onboarding_Back,4,Click Back in onboarding,xUI,xClick,onboarding_back_locator,,,y
+PWeb_Nav_Build,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Nav_Build,2,Navigate to Build,xUI,xNavigate,build_url,,,y
+PWeb_Nav_Build,3,Verify Build heading,xUI,xGetText,build_page_title_locator,,Build,y
+PWeb_Nav_Heal,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Nav_Heal,2,Navigate to Heal,xUI,xNavigate,heal_url,,,y
+PWeb_Nav_Heal,3,Verify Heal heading,xUI,xGetText,heal_page_title_locator,,Heal,y
+PWeb_Nav_Loop,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Nav_Loop,2,Navigate to Loop,xUI,xNavigate,loop_url,,,y
+PWeb_Nav_Loop,3,Verify Loop heading,xUI,xGetText,loop_page_title_locator,,Loop,y
+PWeb_Nav_Jobs,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Nav_Jobs,2,Navigate to Jobs,xUI,xNavigate,jobs_url,,,y
+PWeb_Nav_Jobs,3,Verify AI Job Assistant,xUI,xGetText,jobs_page_title_locator,,AI Job Assistant,y
+PWeb_Jobs_Career_Section,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Jobs_Career_Section,2,Navigate to Jobs,xUI,xNavigate,jobs_url,,,y
+PWeb_Jobs_Career_Section,3,Verify Career Assistant tab,xUI,xGetText,jobs_career_tab_locator,,,y
+PWeb_Jobs_Career_Section,4,Verify resume upload prompt,xUI,xGetText,jobs_resume_locator,,,y
+PWeb_Nav_Wallet,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Nav_Wallet,2,Navigate to wallet,xUI,xNavigate,wallet_url,,,y
+PWeb_Nav_Wallet,3,Verify wallet page loaded,xUI,xGetText,body_locator,,,y
+PWeb_Nav_Docs,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Nav_Docs,2,Navigate to Docs,xUI,xNavigate,docs_url,,,y
+PWeb_Nav_Docs,3,Verify Documentation heading,xUI,xGetText,docs_title_locator,,Documentation,y
+PWeb_BRAHL_Build_Content,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_BRAHL_Build_Content,2,Navigate to Build,xUI,xNavigate,build_url,,,y
+PWeb_BRAHL_Build_Content,3,Verify blueprint content,xUI,xGetText,build_blueprint_locator,,,y
+PWeb_BRAHL_Heal_Content,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_BRAHL_Heal_Content,2,Navigate to Heal,xUI,xNavigate,heal_url,,,y
+PWeb_BRAHL_Heal_Content,3,Verify Heal heading,xUI,xGetText,heal_page_title_locator,,Heal,y
+PWeb_BRAHL_Heal_Content,4,Verify heal subtitle,xUI,xGetText,heal_subtitle_locator,,,y
+PWeb_BRAHL_Loop_Report,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_BRAHL_Loop_Report,2,Navigate to Loop,xUI,xNavigate,loop_url,,,y
+PWeb_BRAHL_Loop_Report,3,Verify BRAHL report section,xUI,xGetText,loop_report_locator,,,y
+PWeb_BRAHL_Loop_Report,4,Verify loop how-it-works text,xUI,xGetText,loop_how_it_works_locator,,,y
+PWeb_Issue_Run_404,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Issue_Run_404,2,Navigate to Run route,xUI,xNavigate,run_url,,,y
+PWeb_Issue_Run_404,3,Verify 404 heading,xUI,xGetText,not_found_h1_locator,,404,y
+PWeb_Issue_Run_404,4,Verify page not found message,xUI,xGetText,not_found_h2_locator,,Page Not Found,y
+PWeb_Issue_Analyze_404,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Issue_Analyze_404,2,Navigate to Analyze route,xUI,xNavigate,analyze_url,,,y
+PWeb_Issue_Analyze_404,3,Verify 404 heading,xUI,xGetText,not_found_h1_locator,,404,y
+PWeb_Issue_Analyze_404,4,Verify page not found message,xUI,xGetText,not_found_h2_locator,,Page Not Found,y
+PWeb_Loop_Issues_Links,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Loop_Issues_Links,2,Navigate to Loop,xUI,xNavigate,loop_url,,,y
+PWeb_Loop_Issues_Links,3,Verify BRAHL report section,xUI,xGetText,loop_report_locator,,,y
+PWeb_Loop_Issues_Links,4,Verify Run Now control,xUI,xGetText,loop_run_now_locator,,,y
+PWeb_Header_Logo_Dashboard,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Header_Logo_Dashboard,2,Navigate to Jobs,xUI,xNavigate,jobs_url,,,y
+PWeb_Header_Logo_Dashboard,3,Click QAonAir logo,xUI,xClick,header_logo_locator,,,y
+PWeb_Header_Logo_Dashboard,4,Verify command center,xUI,xGetText,social_assistant_locator,,,y
+PWeb_Auth_RoundTrip,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Auth_RoundTrip,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Auth_RoundTrip,3,Navigate to register URL,xUI,xNavigate,register_url,,,y
+PWeb_Auth_RoundTrip,4,Navigate to landing,xUI,xNavigate,base_url,,,y
+PWeb_Auth_RoundTrip,5,Verify landing nav,xUI,xGetText,nav_locator,,,y
+PWeb_Sec_EvilQuery,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_EvilQuery,2,Navigate with evil query,xUI,xNavigate,evil_query_url,,,y
+PWeb_Sec_EvilQuery,3,Verify page body loads,xUI,xGetText,body_locator,,,y
+PWeb_Sec_PathTraversal,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_PathTraversal,2,Navigate path traversal URL,xUI,xNavigate,path_traversal_url,,,y
+PWeb_Sec_PathTraversal,3,Verify safe response,xUI,xGetText,body_locator,,,y
+PWeb_Sec_OpenRedirect_Probe,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_OpenRedirect_Probe,2,Navigate open redirect probe,xUI,xNavigate,open_redirect_url,,,y
+PWeb_Sec_OpenRedirect_Probe,3,Get current URL,xUI,xGetCurrentUrl,,current_url,,n
+PWeb_Sec_OpenRedirect_Probe,4,Verify still on qoa2 domain,xUI,xGetText,body_locator,,,y
+PWeb_Sec_AdminRouteProbe,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_AdminRouteProbe,2,Navigate admin probe URL,xUI,xNavigate,admin_probe_url,,,y
+PWeb_Sec_AdminRouteProbe,3,Verify safe response,xUI,xGetText,body_locator,,,y
+PWeb_Sec_SensitivePathProbe,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_SensitivePathProbe,2,Navigate sensitive path probe,xUI,xNavigate,env_probe_url,,,y
+PWeb_Sec_SensitivePathProbe,3,Verify no secrets exposed,xUI,xGetText,body_locator,,,y
+PWeb_Sec_HTTPS_Landing,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Sec_HTTPS_Landing,2,Navigate to landing,xUI,xNavigate,base_url,,,y
+PWeb_Sec_HTTPS_Landing,3,Get current URL,xUI,xGetCurrentUrl,,current_url,https://qoa2.base44.app/,y
+PWeb_Perf_LoginPageLoad,1,Navigate to landing,xUI,xNavigate,base_url,,,y
+PWeb_Perf_LoginPageLoad,2,Start timer,xUI,xStartTimer,,,,y
+PWeb_Perf_LoginPageLoad,3,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Perf_LoginPageLoad,4,Verify login page,xUI,xGetText,body_locator,,,n
+PWeb_Perf_LoginPageLoad,5,Stop timer,xUI,xStopTimer,page_load_time,,,y
+PWeb_Perf_LoginPageLoad,6,Assert under threshold,xUI,xAssertLessThan,{{step:5}};perf_max_login_ms,,,y
+PWeb_Perf_DashboardLoad,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Perf_DashboardLoad,2,Start timer,xUI,xStartTimer,,,,y
+PWeb_Perf_DashboardLoad,3,Reload dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_Perf_DashboardLoad,4,Verify dashboard,xUI,xGetText,body_locator,,,n
+PWeb_Perf_DashboardLoad,5,Stop timer,xUI,xStopTimer,page_load_time,,,y
+PWeb_Perf_DashboardLoad,6,Assert under threshold,xUI,xAssertLessThan,{{step:5}};perf_max_dashboard_ms,,,y
+PWeb_Perf_BuildPageLoad,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Perf_BuildPageLoad,2,Start timer,xUI,xStartTimer,,,,y
+PWeb_Perf_BuildPageLoad,3,Navigate to Build,xUI,xNavigate,build_url,,,y
+PWeb_Perf_BuildPageLoad,4,Verify Build heading,xUI,xGetText,build_page_title_locator,,,y
+PWeb_Perf_BuildPageLoad,5,Stop timer,xUI,xStopTimer,page_load_time,,,y
+PWeb_Perf_BuildPageLoad,6,Assert under threshold,xUI,xAssertLessThan,{{step:5}};perf_max_build_ms,,,y
+PWeb_Perf_JobsPageLoad,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Perf_JobsPageLoad,2,Start timer,xUI,xStartTimer,,,,y
+PWeb_Perf_JobsPageLoad,3,Navigate to Jobs,xUI,xNavigate,jobs_url,,,y
+PWeb_Perf_JobsPageLoad,4,Verify Jobs page body,xUI,xGetText,body_locator,,,n
+PWeb_Perf_JobsPageLoad,5,Stop timer,xUI,xStopTimer,page_load_time,,,y
+PWeb_Perf_JobsPageLoad,6,Assert under threshold,xUI,xAssertLessThan,{{step:5}};perf_max_jobs_ms,,,y
+PWeb_Perf_BRAHL_Navigation,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Perf_BRAHL_Navigation,2,Start timer,xUI,xStartTimer,,,,y
+PWeb_Perf_BRAHL_Navigation,3,Navigate Build,xUI,xNavigate,build_url,,,y
+PWeb_Perf_BRAHL_Navigation,4,Navigate Heal,xUI,xNavigate,heal_url,,,y
+PWeb_Perf_BRAHL_Navigation,5,Navigate Loop,xUI,xNavigate,loop_url,,,y
+PWeb_Perf_BRAHL_Navigation,6,Verify Loop page,xUI,xGetText,body_locator,,,n
+PWeb_Perf_BRAHL_Navigation,7,Stop timer,xUI,xStopTimer,brahl_nav_time,,,y
+PWeb_Perf_BRAHL_Navigation,8,Assert cycle under threshold,xUI,xAssertLessThan,{{step:7}};perf_max_brahl_nav_ms,,,y
+PWeb_Sec_NoCredentialInUrl,1,Open dashboard (reuse),xReuse,PReuse_qoa2_Dashboard,,,,y
+PWeb_Sec_NoCredentialInUrl,2,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_Sec_NoCredentialInUrl,3,Get URL after login,xUI,xGetCurrentUrl,,post_login_url,,n
+PWeb_Sec_NoCredentialInUrl,4,Verify dashboard loaded,xUI,xGetText,body_locator,,,y
+PWeb_Sec_DashboardRequiresAuth,1,Close browser,xUI,xCloseBrowser,,,,y
+PWeb_Sec_DashboardRequiresAuth,2,Open fresh browser session,xUI,xOpenBrowser,edge,,,y
+PWeb_Sec_DashboardRequiresAuth,3,Navigate to dashboard unauthenticated,xUI,xNavigate,dashboard_url,,,y
+PWeb_Sec_DashboardRequiresAuth,4,Verify login required,xUI,xGetText,login_welcome_locator,,Welcome,y
+PWeb_Sec_BuildRequiresAuth,1,Close browser,xUI,xCloseBrowser,,,,y
+PWeb_Sec_BuildRequiresAuth,2,Open fresh browser session,xUI,xOpenBrowser,edge,,,y
+PWeb_Sec_BuildRequiresAuth,3,Navigate to build unauthenticated,xUI,xNavigate,build_url,,,y
+PWeb_Sec_BuildRequiresAuth,4,Verify login required,xUI,xGetText,login_welcome_locator,,Welcome,y
+PWeb_Perf_PageLoad,1,Close browser if open,xUI,xCloseBrowser,,,,y
+PWeb_Perf_PageLoad,2,Open browser,xUI,xOpenBrowser,edge,,,y
+PWeb_Perf_PageLoad,3,Start timer,xUI,xStartTimer,,,,y
+PWeb_Perf_PageLoad,4,Navigate to site,xUI,xNavigate,base_url,,,y
+PWeb_Perf_PageLoad,5,Verify h1 present,xUI,xGetText,h1_locator,,,y
+PWeb_Perf_PageLoad,6,Stop timer,xUI,xStopTimer,page_load_time,,,y
+PWeb_Perf_PageLoad,7,Assert under threshold,xUI,xAssertLessThan,{{step:6}};perf_max_page_load_ms,,,y
+PWeb_XP_Tracker_Widget,1,Login session (reuse),xReuse,PReuse_qoa2_Login,,,,y
+PWeb_XP_Tracker_Widget,2,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_XP_Tracker_Widget,3,Expand XP tracker widget,xUI,xClick,xp_tracker_widget_locator,,,y
+PWeb_XP_Tracker_Widget,4,Verify XP tracker header,xUI,xGetText,xp_tracker_header_locator,,,y
+PWeb_XP_Read_Stats,1,Login session (reuse),xReuse,PReuse_qoa2_Login,,,,y
+PWeb_XP_Read_Stats,2,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_XP_Read_Stats,3,Expand XP tracker widget,xUI,xClick,xp_tracker_widget_locator,,,y
+PWeb_XP_Read_Stats,4,Read total XP,xUI,xGetText,xp_total_locator,xp_total,,n
+PWeb_XP_Read_Stats,5,Read earned XP,xUI,xGetText,xp_earned_locator,xp_earned,,n
+PWeb_XP_Read_Stats,6,Read streak,xUI,xGetText,xp_streak_locator,xp_streak,,n
+PWeb_XP_Earned_LTE_Total,1,Login session (reuse),xReuse,PReuse_qoa2_Login,,,,y
+PWeb_XP_Earned_LTE_Total,2,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_XP_Earned_LTE_Total,3,Expand XP tracker widget,xUI,xClick,xp_tracker_widget_locator,,,y
+PWeb_XP_Earned_LTE_Total,4,Read total XP,xUI,xGetText,xp_total_locator,xp_total,,n
+PWeb_XP_Earned_LTE_Total,5,Read earned XP,xUI,xGetText,xp_earned_locator,xp_earned,,n
+PWeb_XP_Earned_LTE_Total,6,Compute total minus earned,xMath,xMinus,{{step:4}};{{step:5}},xp_diff,,y
+PWeb_XP_Earned_LTE_Total,7,Assert earned does not exceed total,xUI,xAssertLessThan,-1;{{step:6}},,,y
+PWeb_XP_Total_Positive,1,Login session (reuse),xReuse,PReuse_qoa2_Login,,,,y
+PWeb_XP_Total_Positive,2,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_XP_Total_Positive,3,Expand XP tracker widget,xUI,xClick,xp_tracker_widget_locator,,,y
+PWeb_XP_Total_Positive,4,Read total XP,xUI,xGetText,xp_total_locator,xp_total,,n
+PWeb_XP_Total_Positive,5,Assert total XP is positive,xUI,xAssertLessThan,0;{{step:4}},,,y
+PWeb_XP_Daily_Login_Activity,1,Login session (reuse),xReuse,PReuse_qoa2_Login,,,,y
+PWeb_XP_Daily_Login_Activity,2,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_XP_Daily_Login_Activity,3,Expand XP tracker widget,xUI,xClick,xp_tracker_widget_locator,,,y
+PWeb_XP_Daily_Login_Activity,4,Verify daily login label,xUI,xGetText,xp_daily_login_label_locator,,,y
+PWeb_XP_Daily_Login_Activity,5,Verify daily login bonus amount,xUI,xGetText,xp_recent_bonus_locator,,+5,y
+PWeb_XP_Daily_Login_Activity,6,Open daily tasks panel,xUI,xClick,xp_view_tasks_locator,,,y
+PWeb_XP_Daily_Login_Activity,7,Verify daily login still listed,xUI,xGetText,xp_daily_login_label_locator,,,y
+PWeb_XP_Cross_Page_Total,1,Login session (reuse),xReuse,PReuse_qoa2_Login,,,,y
+PWeb_XP_Cross_Page_Total,2,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_XP_Cross_Page_Total,3,Expand XP tracker widget,xUI,xClick,xp_tracker_widget_locator,,,y
+PWeb_XP_Cross_Page_Total,4,Read dashboard total XP,xUI,xGetText,xp_total_locator,dashboard_xp,,n
+PWeb_XP_Cross_Page_Total,5,Navigate to jobs page,xUI,xNavigate,jobs_url,,,y
+PWeb_XP_Cross_Page_Total,6,Expand XP tracker widget,xUI,xClick,xp_tracker_widget_locator,,,y
+PWeb_XP_Cross_Page_Total,7,Read jobs page total XP,xUI,xGetText,xp_total_locator,jobs_xp,,n
+PWeb_XP_Cross_Page_Total,8,Compare totals across pages,xMath,xCompare,{{step:4}};{{step:7}},,True,y
+PWeb_XP_Avatar_Total_Stable,1,Login session (reuse),xReuse,PReuse_qoa2_Login,,,,y
+PWeb_XP_Avatar_Total_Stable,2,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_XP_Avatar_Total_Stable,3,Expand XP tracker widget,xUI,xClick,xp_tracker_widget_locator,,,y
+PWeb_XP_Avatar_Total_Stable,4,Read baseline total XP,xUI,xGetText,xp_total_locator,baseline_xp,,n
+PWeb_XP_Avatar_Total_Stable,5,Switch to consultant tab,xUI,xClick,avatar_consultant_locator,,,y
+PWeb_XP_Avatar_Total_Stable,6,Reset arena for XP tracker,xUI,xNavigate,arena_url,,,y
+PWeb_XP_Avatar_Total_Stable,7,Expand XP tracker widget,xUI,xClick,xp_tracker_widget_locator,,,y
+PWeb_XP_Avatar_Total_Stable,8,Read total after consultant tab,xUI,xGetText,xp_total_locator,consultant_xp,,n
+PWeb_XP_Avatar_Total_Stable,9,Compare baseline and consultant totals,xMath,xCompare,{{step:4}};{{step:8}},,True,y
+PWeb_XP_Level_Progress,1,Login session (reuse),xReuse,PReuse_qoa2_Login,,,,y
+PWeb_XP_Level_Progress,2,Navigate to dashboard,xUI,xNavigate,dashboard_url,,,y
+PWeb_XP_Level_Progress,3,Expand XP tracker widget,xUI,xClick,xp_tracker_widget_locator,,,y
+PWeb_XP_Level_Progress,4,Verify level progress text,xUI,xGetText,xp_level_progress_locator,,,y
+PWeb_XP_Arena_Tracker,1,Login session (reuse),xReuse,PReuse_qoa2_Login,,,,y
+PWeb_XP_Arena_Tracker,2,Navigate to arena,xUI,xNavigate,arena_url,,,y
+PWeb_XP_Arena_Tracker,3,Wait for XP tracker widget,xUI,xGetText,xp_tracker_widget_locator,,,y
+PWeb_XP_Arena_Tracker,4,Expand XP tracker widget,xUI,xClick,xp_tracker_widget_locator,,,y
+PWeb_XP_Arena_Tracker,5,Verify XP tracker header on arena,xUI,xGetText,xp_tracker_header_locator,,,y
+PWeb_XP_Arena_Tracker,6,Read arena total XP,xUI,xGetText,xp_total_locator,arena_xp,,n
+PWeb_Admin_Login_Full,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PWeb_Admin_Login_Full,2,Navigate to login,xUI,xNavigate,login_url,,,y
+PWeb_Admin_Login_Full,3,Enter email,xUI,xType,login_email;login_email_input_locator,,,y
+PWeb_Admin_Login_Full,4,Enter password,xUI,xType,login_password;login_password_input_locator,,,y
+PWeb_Admin_Login_Full,5,Submit login,xUI,xClick,login_submit_btn_locator,,,y
+PWeb_Admin_Login_Full,6,Wait for post-login,xUI,xGetText,xp_tracker_widget_locator,,,y
+PWeb_Admin_Login_Full,7,Dismiss onboarding trainer,xReuse,PReuse_qoa2_Dismiss_Onboarding,,,,n
+PWeb_Admin_Login_Full,8,Navigate to admin,xUI,xNavigate,admin_url,,,y
+PWeb_Admin_Login_Full,9,Wait for admin panel,xUI,xGetText,admin_panel_title_locator,,,y
+PWeb_Admin_Login_Full,10,Dismiss overlay on admin,xReuse,PReuse_qoa2_Dismiss_Onboarding,,,,n
+PWeb_Admin_Login_Full,11,Verify admin panel,xUI,xGetText,admin_panel_title_locator,,,y
+PWeb_Admin_Panel_Load,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_Panel_Load,2,Wait for admin panel,xUI,xGetText,admin_panel_title_locator,,,y
+PWeb_Admin_Panel_Load,3,Dismiss onboarding trainer,xReuse,PReuse_qoa2_Dismiss_Onboarding,,,,n
+PWeb_Admin_Panel_Load,5,Verify total users stat,xUI,xGetText,admin_total_users_stat_locator,,,y
+PWeb_Admin_Panel_Load,6,Verify regular users stat,xUI,xGetText,admin_regular_users_stat_locator,,,y
+PWeb_Admin_Panel_Load,7,Verify Add User button,xUI,xGetText,admin_add_user_locator,,,y
+PWeb_Admin_Panel_Load,8,Verify Broadcast button,xUI,xGetText,admin_broadcast_btn_locator,,,y
+PWeb_Admin_Panel_Load,9,Verify Make Admin action,xUI,xGetText,admin_make_admin_locator,,,y
+PWeb_Admin_Nav_Link,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PWeb_Admin_Nav_Link,2,Dismiss onboarding trainer,xReuse,PReuse_qoa2_Dismiss_Onboarding,,,,n
+PWeb_Admin_Nav_Link,3,Wait for admin nav link,xUI,xGetText,admin_nav_link_locator,,,y
+PWeb_Admin_Back_Dashboard,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_Back_Dashboard,2,Wait for admin panel,xUI,xGetText,admin_panel_title_locator,,,y
+PWeb_Admin_Back_Dashboard,3,Dismiss onboarding trainer,xReuse,PReuse_qoa2_Dismiss_Onboarding,,,,n
+PWeb_Admin_Back_Dashboard,5,Click back to dashboard,xUI,xClick,admin_back_dashboard_locator,,,y
+PWeb_Admin_Back_Dashboard,6,Verify arena loaded,xUI,xGetText,arena_title_locator,,Arena,y
+PWeb_Admin_Tabs,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_Tabs,2,Wait for admin panel,xUI,xGetText,admin_panel_title_locator,,,y
+PWeb_Admin_Tabs,3,Dismiss onboarding trainer,xReuse,PReuse_qoa2_Dismiss_Onboarding,,,,n
+PWeb_Admin_Tabs,5,Open Clients tab,xUI,xClick,admin_clients_tab_locator,,,y
+PWeb_Admin_Tabs,6,Open Projects tab,xUI,xClick,admin_projects_tab_locator,,,y
+PWeb_Admin_Tabs,7,Open Consultants tab,xUI,xClick,admin_consultants_tab_locator,,,y
+PWeb_Admin_Tabs,8,Open XP and Payments tab,xUI,xClick,admin_xp_payments_tab_locator,,,y
+PWeb_Admin_Tabs,9,Open Live Activity tab,xUI,xClick,admin_live_activity_tab_locator,,,y
+PWeb_Admin_Tabs,10,Open GTM tab,xUI,xClick,admin_gtm_tab_locator,,,y
+PWeb_Admin_Tabs,11,Verify admin panel still loaded,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PWeb_Admin_Users_Tab,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_Users_Tab,2,Verify admin panel,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PWeb_Admin_Users_Tab,3,Verify Add User button,xUI,xGetText,admin_add_user_locator,,,y
+PWeb_Admin_Users_Tab,4,Verify Make Admin action,xUI,xGetText,admin_make_admin_locator,,,y
+PWeb_Admin_Clients_Tab,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_Clients_Tab,2,Verify admin panel,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PWeb_Admin_Clients_Tab,3,Open Clients tab,xUI,xClick,admin_clients_tab_locator,,,y
+PWeb_Admin_Projects_Tab,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_Projects_Tab,2,Verify admin panel,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PWeb_Admin_Projects_Tab,3,Open Projects tab,xUI,xClick,admin_projects_tab_locator,,,y
+PWeb_Admin_Consultants_Tab,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_Consultants_Tab,2,Verify admin panel,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PWeb_Admin_Consultants_Tab,3,Open Consultants tab,xUI,xClick,admin_consultants_tab_locator,,,y
+PWeb_Admin_XP_Payments_Tab,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_XP_Payments_Tab,2,Verify admin panel,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PWeb_Admin_XP_Payments_Tab,3,Open XP and Payments tab,xUI,xClick,admin_xp_payments_tab_locator,,,y
+PWeb_Admin_Live_Activity_Tab,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_Live_Activity_Tab,2,Verify admin panel,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PWeb_Admin_Live_Activity_Tab,3,Open Live Activity tab,xUI,xClick,admin_live_activity_tab_locator,,,y
+PWeb_Admin_GTM_Tab,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_GTM_Tab,2,Verify admin panel,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PWeb_Admin_GTM_Tab,3,Open GTM tab,xUI,xClick,admin_gtm_tab_locator,,,y
+PWeb_Admin_Broadcast_Button,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_Broadcast_Button,2,Verify admin panel,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PWeb_Admin_Broadcast_Button,3,Verify broadcast button,xUI,xGetText,admin_broadcast_btn_locator,,,y
+PWeb_Admin_User_Actions,1,Navigate to admin (session),xUI,xNavigate,admin_url,,,y
+PWeb_Admin_User_Actions,2,Verify admin panel,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PWeb_Admin_User_Actions,3,Verify Adjust XP action,xUI,xGetText,admin_adjust_xp_locator,,,y
+PWeb_Admin_User_Actions,4,Verify Revoke Admin action,xUI,xGetText,admin_revoke_admin_locator,,,y
+PWeb_Sec_Admin_Access_Denied,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PWeb_Sec_Admin_Access_Denied,2,Verify arena loaded,xUI,xGetText,arena_title_locator,,Arena,y
+PWeb_Sec_Admin_Access_Denied,3,Navigate to admin,xUI,xNavigate,admin_url,,,y
+PWeb_Sec_Admin_Access_Denied,4,Verify access denied heading,xUI,xGetText,admin_access_denied_heading_locator,,,y
+PWeb_Sec_Admin_Access_Denied,5,Verify denial message,xUI,xGetText,admin_access_denied_msg_locator,,,y
+PWeb_Sec_Admin_Nav_Hidden,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PWeb_Sec_Admin_Nav_Hidden,2,Verify arena loaded,xUI,xGetText,arena_title_locator,,Arena,y
+PWeb_Sec_Admin_Nav_Hidden,3,Probe admin URL as regular user,xUI,xNavigate,admin_url,,,y
+PWeb_Sec_Admin_Nav_Hidden,4,Verify access denied,xUI,xGetText,admin_access_denied_heading_locator,,Admin Access Required,y
+PJourney_Landing_To_Arena,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PJourney_Landing_To_Arena,2,Verify arena loaded,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Landing_To_Arena,3,Verify XP widget on arena,xUI,xGetText,xp_tracker_widget_locator,,,y
+PJourney_Client_Avatar,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PJourney_Client_Avatar,2,Verify session on arena,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Client_Avatar,3,Select Client avatar,xUI,xClick,avatar_client_locator,,,y
+PJourney_Client_Avatar,4,Verify Client tab active,xUI,xGetText,header_locator,,,y
+PJourney_Consultant_Avatar,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PJourney_Consultant_Avatar,2,Verify session on arena,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Consultant_Avatar,3,Select Consultant avatar,xUI,xClick,avatar_consultant_locator,,,y
+PJourney_Consultant_Avatar,4,Verify Consultant tab active,xUI,xGetText,header_locator,,,y
+PJourney_Promoter_Avatar,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PJourney_Promoter_Avatar,2,Verify session on arena,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Promoter_Avatar,3,Select Promoter avatar,xUI,xClick,avatar_promoter_locator,,,y
+PJourney_Promoter_Avatar,4,Verify referral section,xUI,xGetText,referral_section_locator,,,y
+PJourney_Promoter_Avatar,5,Click Copy Link,xUI,xClick,copy_link_btn_locator,,,y
+PJourney_Nalanda_Avatar,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PJourney_Nalanda_Avatar,2,Verify session on arena,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Nalanda_Avatar,3,Select Nalanda avatar,xUI,xClick,avatar_nalanda_locator,,,y
+PJourney_Nalanda_Avatar,4,Verify Nalanda content,xUI,xGetText,nalanda_content_locator,,,y
+PJourney_BRAHL_Build_To_Loop,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PJourney_BRAHL_Build_To_Loop,2,Verify session on arena,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_BRAHL_Build_To_Loop,3,Navigate to Build,xUI,xNavigate,build_url,,,y
+PJourney_BRAHL_Build_To_Loop,4,Verify Build page,xUI,xGetText,build_page_title_locator,,Build,y
+PJourney_BRAHL_Build_To_Loop,5,Navigate to Heal,xUI,xNavigate,heal_url,,,y
+PJourney_BRAHL_Build_To_Loop,6,Verify Heal page,xUI,xGetText,heal_page_title_locator,,Heal,y
+PJourney_BRAHL_Build_To_Loop,7,Navigate to Loop,xUI,xNavigate,loop_url,,,y
+PJourney_BRAHL_Build_To_Loop,8,Verify Loop page,xUI,xGetText,loop_page_title_locator,,Loop,y
+PJourney_Wallet_Docs,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PJourney_Wallet_Docs,2,Verify session on arena,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Wallet_Docs,3,Navigate to wallet,xUI,xNavigate,wallet_url,,,y
+PJourney_Wallet_Docs,4,Verify wallet page,xUI,xGetText,wallet_title_locator,,,y
+PJourney_Wallet_Docs,5,Navigate to docs,xUI,xNavigate,docs_url,,,y
+PJourney_Wallet_Docs,6,Verify docs page,xUI,xGetText,docs_title_locator,,Documentation,y
+PJourney_Wallet_Docs,7,Return to arena,xUI,xNavigate,arena_url,,,y
+PJourney_Wallet_Docs,8,Verify arena loaded,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Jobs_Career,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PJourney_Jobs_Career,2,Verify session on arena,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Jobs_Career,3,Navigate to jobs,xUI,xNavigate,jobs_url,,,y
+PJourney_Jobs_Career,4,Verify jobs page,xUI,xGetText,jobs_page_title_locator,,AI Job Assistant,y
+PJourney_Jobs_Career,5,Open Career tab,xUI,xClick,jobs_career_tab_locator,,,y
+PJourney_Jobs_Career,6,Verify resume section,xUI,xGetText,jobs_resume_locator,,,y
+PJourney_XP_Gamification,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PJourney_XP_Gamification,2,Verify session on arena,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_XP_Gamification,3,Expand XP tracker,xUI,xClick,xp_tracker_widget_locator,,,y
+PJourney_XP_Gamification,4,Read total XP,xUI,xGetText,xp_total_locator,arena_xp,,n
+PJourney_XP_Gamification,5,Navigate to jobs,xUI,xNavigate,jobs_url,,,y
+PJourney_XP_Gamification,6,Expand XP on jobs,xUI,xClick,xp_tracker_widget_locator,,,y
+PJourney_XP_Gamification,7,Read jobs total XP,xUI,xGetText,xp_total_locator,jobs_xp,,n
+PJourney_XP_Gamification,8,Compare XP totals,xMath,xCompare,{{step:4}};{{step:7}},,True,n
+PJourney_Auth_Negative_To_Positive,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PJourney_Auth_Negative_To_Positive,2,Navigate to register for login UI,xUI,xNavigate,register_url,,,y
+PJourney_Auth_Negative_To_Positive,3,Verify login form visible,xUI,xGetText,login_welcome_locator,,Welcome,y
+PJourney_Auth_Negative_To_Positive,4,Enter valid email for wrong-password test,xUI,xType,login_email;login_email_input_locator,,,y
+PJourney_Auth_Negative_To_Positive,5,Enter wrong password,xUI,xType,invalid_password;login_password_input_locator,,,y
+PJourney_Auth_Negative_To_Positive,6,Submit invalid login,xUI,xClick,login_submit_btn_locator,,,y
+PJourney_Auth_Negative_To_Positive,7,Verify still on login,xUI,xGetText,login_welcome_locator,,Welcome,y
+PJourney_Auth_Negative_To_Positive,8,Reset login form,xUI,xNavigate,login_url,,,y
+PJourney_Auth_Negative_To_Positive,9,Enter valid email,xUI,xType,login_email;login_email_input_locator,,,y
+PJourney_Auth_Negative_To_Positive,10,Enter valid password,xUI,xType,login_password;login_password_input_locator,,,y
+PJourney_Auth_Negative_To_Positive,11,Submit valid login,xUI,xClick,login_submit_btn_locator,,,y
+PJourney_Auth_Negative_To_Positive,12,Verify XP tracker,xUI,xGetText,xp_tracker_header_locator,,,y
+PJourney_Auth_Negative_To_Positive,13,Dismiss onboarding,xReuse,PReuse_qoa2_Dismiss_Onboarding,,,,n
+PJourney_Auth_Negative_To_Positive,14,Navigate to arena,xUI,xNavigate,arena_url,,,y
+PJourney_Auth_Negative_To_Positive,15,Verify arena loaded,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Admin_Full,1,Navigate to login,xUI,xNavigate,login_url,,,y
+PJourney_Admin_Full,2,Enter admin email,xUI,xType,login_email;login_email_input_locator,,,y
+PJourney_Admin_Full,3,Enter admin password,xUI,xType,login_password;login_password_input_locator,,,y
+PJourney_Admin_Full,4,Submit admin login,xUI,xClick,login_submit_btn_locator,,,y
+PJourney_Admin_Full,5,Verify XP tracker,xUI,xGetText,xp_tracker_header_locator,,,y
+PJourney_Admin_Full,6,Dismiss onboarding,xReuse,PReuse_qoa2_Dismiss_Onboarding,,,,n
+PJourney_Admin_Full,7,Navigate to admin,xUI,xNavigate,admin_url,,,y
+PJourney_Admin_Full,8,Verify admin panel,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PJourney_Admin_Full,9,Open Clients tab,xUI,xClick,admin_clients_tab_locator,,,y
+PJourney_Admin_Full,10,Open Projects tab,xUI,xClick,admin_projects_tab_locator,,,y
+PJourney_Admin_Full,11,Open Consultants tab,xUI,xClick,admin_consultants_tab_locator,,,y
+PJourney_Admin_Full,12,Open XP Payments tab,xUI,xClick,admin_xp_payments_tab_locator,,,y
+PJourney_Admin_Full,13,Open Live Activity tab,xUI,xClick,admin_live_activity_tab_locator,,,y
+PJourney_Admin_Full,14,Open GTM tab,xUI,xClick,admin_gtm_tab_locator,,,y
+PJourney_Admin_Full,15,Verify admin panel still loaded,xUI,xGetText,admin_panel_title_locator,,Admin Panel,y
+PJourney_Admin_Full,16,Back to dashboard,xUI,xClick,admin_back_dashboard_locator,,,y
+PJourney_Admin_Full,17,Verify arena loaded,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Security_Regular,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PJourney_Security_Regular,2,Verify session on arena,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Security_Regular,3,Probe admin URL as regular user,xUI,xNavigate,admin_url,,,y
+PJourney_Security_Regular,4,Verify access denied,xUI,xGetText,admin_access_denied_heading_locator,,Admin Access Required,y
+PJourney_Landing_Explore,1,Open site (reuse),xReuse,PReuse_qoa2_OpenSite,,,,y
+PJourney_Landing_Explore,2,Verify BRAHL section,xUI,xGetText,body_locator,,,y
+PJourney_Landing_Explore,3,Verify roles section,xUI,xGetText,body_locator,,,y
+PJourney_Landing_Explore,4,Verify FAQ section on page,xUI,xGetText,body_locator,,,y
+PJourney_Landing_Explore,5,Navigate to login via CTA path,xUI,xNavigate,login_url,,,y
+PJourney_Landing_Explore,6,Verify auth page loaded,xUI,xGetText,body_locator,,,y
+PJourney_Arena_Social_Hub,1,Navigate to arena (session),xUI,xNavigate,arena_url,,,y
+PJourney_Arena_Social_Hub,2,Verify session on arena,xUI,xGetText,arena_title_locator,,Arena,y
+PJourney_Arena_Social_Hub,3,Verify arena hub content,xUI,xGetText,body_locator,,,y
+PJourney_Arena_Social_Hub,4,Select Client avatar,xUI,xClick,avatar_client_locator,,,y
+PJourney_Arena_Social_Hub,5,Reset arena state,xUI,xNavigate,arena_url,,,y
+PJourney_Arena_Social_Hub,6,Select Consultant avatar,xUI,xClick,avatar_consultant_locator,,,y
+PJourney_Arena_Social_Hub,7,Reset arena state,xUI,xNavigate,arena_url,,,y
+PJourney_Arena_Social_Hub,8,Select Promoter avatar,xUI,xClick,avatar_promoter_locator,,,y
+PJourney_Arena_Social_Hub,9,Reset arena state,xUI,xNavigate,arena_url,,,y
+PJourney_Arena_Social_Hub,10,Select Nalanda avatar,xUI,xClick,avatar_nalanda_locator,,,y
+PJourney_Arena_Social_Hub,11,Verify arena still loaded,xUI,xGetText,arena_title_locator,,Arena,y

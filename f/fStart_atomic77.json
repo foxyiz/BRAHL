@@ -1,0 +1,8 @@
+{
+  "configs": ["y/atomic77/atomic77.json"],
+  "thread_count": 1,
+  "timeout": 6,
+  "headless": false,
+  "debug": false,
+  "tags": []
+}

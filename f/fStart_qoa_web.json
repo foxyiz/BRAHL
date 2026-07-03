@@ -1,0 +1,8 @@
+{
+  "configs": ["y/qoa_web/qoa_web.json"],
+  "thread_count": 1,
+  "timeout": 6,
+  "headless": false,
+  "debug": false,
+  "tags": []
+}

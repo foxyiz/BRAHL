@@ -1,0 +1,15 @@
+{
+  "input_files": {
+    "yPlans": ["y/qoa2/y1Plans.csv"],
+    "yActions": ["y/qoa2/y2Actions.csv"],
+    "yDesigns": [
+      "y/qoa2/Common/yD_Common.csv",
+      "y/qoa2/Common/yD_Secure.csv",
+      "y/qoa2/y3Designs.csv"
+    ]
+  },
+  "name": "qoa2",
+  "description": "QAonAir2 platform (qoa2.base44.app) - functional, security, vulnerability, and performance tests",
+  "version": "1.0.0",
+  "url": "https://qoa2.base44.app/"
+}

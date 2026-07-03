@@ -1,0 +1,336 @@
+{
+  "initialPrompt": "BRAHL API context capture test for qoa_web v0.3 full feature suite",
+  "baseline": {
+    "capturedAt": "2026-07-03 14:49:21",
+    "suiteConfig": "y/qoa_web/qoa_web.json",
+    "yPlansPaths": [
+      "y/qoa_web/y1Plans.csv"
+    ],
+    "totalRows": 44,
+    "runY": 42,
+    "runN": 2,
+    "reuseCount": 2,
+    "runnablePlanIds": [
+      "PWeb_OpenHome",
+      "PWeb_VerifyTitle",
+      "PWeb_Tagline",
+      "PWeb_Avatar_ClientGate",
+      "PWeb_Nav_SixPhases",
+      "PWeb_Topbar_Project",
+      "PWeb_AiToggle_Label",
+      "PWeb_Panel_Build",
+      "PWeb_Build_ProjectSelect",
+      "PWeb_Build_ChatInput",
+      "PWeb_Build_Budget",
+      "PWeb_Build_NewProject",
+      "PWeb_Panel_Run",
+      "PWeb_Run_Controls",
+      "PWeb_Run_ProjectScope",
+      "PWeb_Panel_Analyze",
+      "PWeb_Analyze_Controls",
+      "PWeb_Analyze_ProjectScope",
+      "PWeb_Panel_Heal",
+      "PWeb_Heal_ProjectScope",
+      "PWeb_Panel_Loop",
+      "PWeb_Loop_Step0",
+      "PWeb_Panel_Brahl",
+      "PWeb_Brahl_ReportList",
+      "PWeb_Brahl_ChatInput",
+      "PWeb_Brahl_LinkReport",
+      "PWeb_Hitl_Avatar",
+      "PWeb_Footer_Health",
+      "PAPI_Health",
+      "PAPI_Configs",
+      "PAPI_Suites",
+      "PAPI_ProjectsList",
+      "PAPI_ProjectGet",
+      "PAPI_BrahlReports",
+      "PAPI_BrahlChat",
+      "PAPI_RunsList",
+      "PAPI_RunNotFound",
+      "PAPI_JobCreate",
+      "PAPI_Context",
+      "PAPI_StaticCss",
+      "PAPI_StaticJs",
+      "PAPI_HomePage"
+    ],
+    "disabledPlanIds": [
+      "PReuse_qoa_web_OpenSite",
+      "PReuse_qoa_web_ClientReady"
+    ],
+    "plans": [
+      {
+        "planId": "PReuse_qoa_web_OpenSite",
+        "planName": "Open browser and navigate to BRAHL Web",
+        "run": "N",
+        "tags": "Reuse"
+      },
+      {
+        "planId": "PReuse_qoa_web_ClientReady",
+        "planName": "Choose Client avatar and load project",
+        "run": "N",
+        "tags": "Reuse"
+      },
+      {
+        "planId": "PWeb_OpenHome",
+        "planName": "Open BRAHL Web home page",
+        "run": "Y",
+        "tags": "qoa_web;Smoke;Landing"
+      },
+      {
+        "planId": "PWeb_VerifyTitle",
+        "planName": "Verify app title element",
+        "run": "Y",
+        "tags": "qoa_web;Smoke;Landing"
+      },
+      {
+        "planId": "PWeb_Tagline",
+        "planName": "Verify BRAHL tagline",
+        "run": "Y",
+        "tags": "qoa_web;UI;Shell"
+      },
+      {
+        "planId": "PWeb_Avatar_ClientGate",
+        "planName": "Client avatar gate dismisses and selects role",
+        "run": "Y",
+        "tags": "qoa_web;Build;Avatar"
+      },
+      {
+        "planId": "PWeb_Nav_SixPhases",
+        "planName": "Verify all six phase nav buttons",
+        "run": "Y",
+        "tags": "qoa_web;Smoke;Navigation"
+      },
+      {
+        "planId": "PWeb_Topbar_Project",
+        "planName": "Topbar shows active project name",
+        "run": "Y",
+        "tags": "qoa_web;Build;Project"
+      },
+      {
+        "planId": "PWeb_AiToggle_Label",
+        "planName": "AI toggle label visible when project selected",
+        "run": "Y",
+        "tags": "qoa_web;Build;AI"
+      },
+      {
+        "planId": "PWeb_Panel_Build",
+        "planName": "Build panel with AI assistant heading",
+        "run": "Y",
+        "tags": "qoa_web;Smoke;Build"
+      },
+      {
+        "planId": "PWeb_Build_ProjectSelect",
+        "planName": "Client project dropdown populated",
+        "run": "Y",
+        "tags": "qoa_web;Build"
+      },
+      {
+        "planId": "PWeb_Build_ChatInput",
+        "planName": "Build chat input and send button",
+        "run": "Y",
+        "tags": "qoa_web;Build"
+      },
+      {
+        "planId": "PWeb_Build_Budget",
+        "planName": "Budget block and save button",
+        "run": "Y",
+        "tags": "qoa_web;Build"
+      },
+      {
+        "planId": "PWeb_Build_NewProject",
+        "planName": "New project button present",
+        "run": "Y",
+        "tags": "qoa_web;Build"
+      },
+      {
+        "planId": "PWeb_Panel_Run",
+        "planName": "Run panel scoped to active project",
+        "run": "Y",
+        "tags": "qoa_web;Smoke;Run"
+      },
+      {
+        "planId": "PWeb_Run_Controls",
+        "planName": "Run tab config select and run button",
+        "run": "Y",
+        "tags": "qoa_web;Run"
+      },
+      {
+        "planId": "PWeb_Run_ProjectScope",
+        "planName": "Run panel shows project scope line",
+        "run": "Y",
+        "tags": "qoa_web;Run"
+      },
+      {
+        "planId": "PWeb_Panel_Analyze",
+        "planName": "Analyze panel scoped to project",
+        "run": "Y",
+        "tags": "qoa_web;Smoke;Analyze"
+      },
+      {
+        "planId": "PWeb_Analyze_Controls",
+        "planName": "Analyze refresh and runs list",
+        "run": "Y",
+        "tags": "qoa_web;Analyze"
+      },
+      {
+        "planId": "PWeb_Analyze_ProjectScope",
+        "planName": "Analyze panel shows project scope line",
+        "run": "Y",
+        "tags": "qoa_web;Analyze"
+      },
+      {
+        "planId": "PWeb_Panel_Heal",
+        "planName": "Heal panel with yPAD checklist",
+        "run": "Y",
+        "tags": "qoa_web;Smoke;Heal"
+      },
+      {
+        "planId": "PWeb_Heal_ProjectScope",
+        "planName": "Heal panel shows project scope line",
+        "run": "Y",
+        "tags": "qoa_web;Heal"
+      },
+      {
+        "planId": "PWeb_Panel_Loop",
+        "planName": "Loop panel with BRAHL cycle controls",
+        "run": "Y",
+        "tags": "qoa_web;Smoke;Loop"
+      },
+      {
+        "planId": "PWeb_Loop_Step0",
+        "planName": "Loop Step0 prompt and cycle buttons",
+        "run": "Y",
+        "tags": "qoa_web;Loop"
+      },
+      {
+        "planId": "PWeb_Panel_Brahl",
+        "planName": "BRAHL reports and model panel",
+        "run": "Y",
+        "tags": "qoa_web;Smoke;BRAHL"
+      },
+      {
+        "planId": "PWeb_Brahl_ReportList",
+        "planName": "BRAHL report list sidebar",
+        "run": "Y",
+        "tags": "qoa_web;BRAHL"
+      },
+      {
+        "planId": "PWeb_Brahl_ChatInput",
+        "planName": "BRAHL model chat input",
+        "run": "Y",
+        "tags": "qoa_web;BRAHL"
+      },
+      {
+        "planId": "PWeb_Brahl_LinkReport",
+        "planName": "Link verify run button present",
+        "run": "Y",
+        "tags": "qoa_web;BRAHL"
+      },
+      {
+        "planId": "PWeb_Hitl_Avatar",
+        "planName": "Switch to HITL avatar shows consultant build",
+        "run": "Y",
+        "tags": "qoa_web;HITL"
+      },
+      {
+        "planId": "PWeb_Footer_Health",
+        "planName": "Footer health pill and API link",
+        "run": "Y",
+        "tags": "qoa_web;Smoke;Shell"
+      },
+      {
+        "planId": "PAPI_Health",
+        "planName": "GET api health returns 200",
+        "run": "Y",
+        "tags": "qoa_web;Smoke;API"
+      },
+      {
+        "planId": "PAPI_Configs",
+        "planName": "GET api configs returns 200",
+        "run": "Y",
+        "tags": "qoa_web;API"
+      },
+      {
+        "planId": "PAPI_Suites",
+        "planName": "GET api suites returns 200",
+        "run": "Y",
+        "tags": "qoa_web;API"
+      },
+      {
+        "planId": "PAPI_ProjectsList",
+        "planName": "GET api projects for client role",
+        "run": "Y",
+        "tags": "qoa_web;API;Build"
+      },
+      {
+        "planId": "PAPI_ProjectGet",
+        "planName": "GET single project by id",
+        "run": "Y",
+        "tags": "qoa_web;API;Project"
+      },
+      {
+        "planId": "PAPI_BrahlReports",
+        "planName": "GET project BRAHL reports list",
+        "run": "Y",
+        "tags": "qoa_web;API;BRAHL"
+      },
+      {
+        "planId": "PAPI_BrahlChat",
+        "planName": "POST BRAHL model chat message",
+        "run": "Y",
+        "tags": "qoa_web;API;BRAHL"
+      },
+      {
+        "planId": "PAPI_RunsList",
+        "planName": "GET api runs for qoa_web suite",
+        "run": "Y",
+        "tags": "qoa_web;API"
+      },
+      {
+        "planId": "PAPI_RunNotFound",
+        "planName": "GET failures for missing run returns 404",
+        "run": "Y",
+        "tags": "qoa_web;API;Issue"
+      },
+      {
+        "planId": "PAPI_JobCreate",
+        "planName": "POST api jobs starts engine job",
+        "run": "Y",
+        "tags": "qoa_web;API"
+      },
+      {
+        "planId": "PAPI_Context",
+        "planName": "POST api context captures Step 0",
+        "run": "Y",
+        "tags": "qoa_web;API;Loop"
+      },
+      {
+        "planId": "PAPI_StaticCss",
+        "planName": "GET styles.css asset",
+        "run": "Y",
+        "tags": "qoa_web;API;Assets"
+      },
+      {
+        "planId": "PAPI_StaticJs",
+        "planName": "GET app.js asset",
+        "run": "Y",
+        "tags": "qoa_web;API;Assets"
+      },
+      {
+        "planId": "PAPI_HomePage",
+        "planName": "GET root index returns 200",
+        "run": "Y",
+        "tags": "qoa_web;API;Landing"
+      }
+    ]
+  },
+  "fStartConfig": "f/fStart_qoa_web_verify.json",
+  "cycleStartedAt": "2026-07-03 14:49:21",
+  "documents": [
+    {
+      "name": "PRD.md",
+      "path": "qoa_web/PRD.md"
+    }
+  ]
+}

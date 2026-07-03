@@ -1,0 +1,104 @@
+PlanId,PlanName,DesignId,Run,Tags,Output
+PReuse_qoa2_OpenSite,Open browser and navigate to QAonAir2 qoa2,D1,N,Reuse,site_loaded
+PReuse_qoa2_Login,Login to qoa2 with test credentials,D1,N,Reuse,login_success
+PReuse_qoa2_Dashboard,Open dashboard with active session,D1,N,Reuse,dashboard_ready
+PReuse_qoa2_Admin,Open admin panel with active admin session,D2,N,Reuse;Admin,admin_ready
+PReuse_qoa2_Dismiss_Onboarding,Dismiss Welcome to QAonAir trainer overlay,D1,N,Reuse;Onboarding,onboarding_dismissed
+PWeb_OpenLanding,Open qoa2 landing page smoke,D1,Y,qoa2;Smoke;Landing,landing_loaded
+PWeb_VerifyTitle,Verify landing page title,D1,Y,qoa2;Smoke,title_verified
+PWeb_VerifyNav,Verify public navigation bar,D1,Y,qoa2;Smoke;UI,nav_verified
+PWeb_BRAHL_Section,Verify BRAHL lifecycle section on landing,D1,Y,qoa2;BRAHL;Landing,brahl_section_ok
+PWeb_Roles_Section,Verify four roles ecosystem section,D1,Y,qoa2;Landing;UI,roles_section_ok
+PWeb_FAQ_Accordion,Expand FAQ accordion item,D1,Y,qoa2;Landing;Interaction,faq_expanded
+PWeb_Landing_CTA_GetStarted,Click Get Started CTA,D1,Y,qoa2;Landing;Auth,get_started_clicked
+PWeb_Landing_CTA_Login,Navigate to login from landing,D1,Y,qoa2;Landing;Auth,login_nav_ok
+PWeb_Landing_AI_Assistant,Verify AI job assistant on landing,D1,Y,qoa2;Landing;Jobs,job_assistant_ok
+PWeb_Login_Page_Verify,Verify login page form elements,D1,Y,qoa2;Auth;Regression,login_page_ok
+PWeb_Register_Redirects_Login,Register URL shows login UI (known issue),D1,Y,qoa2;Auth;Regression;Issue,register_login_ok
+PWeb_Login_Google_Button,Google OAuth button is present,D1,Y,qoa2;Auth;Google,google_btn_ok
+PWeb_Forgot_Password,Forgot password flow navigation,D1,Y,qoa2;Auth;Password,forgot_password_ok
+PWeb_Auth_Empty_Fields,Submit login with empty fields,D1,Y,qoa2;Auth;Validation,empty_validation_ok
+PWeb_Auth_Invalid_Credentials,Login with invalid credentials,D1,Y,qoa2;Auth;Negative,invalid_login_ok
+PWeb_Sec_XSS_Email,XSS payload in login email field handled safely,D1,Y,qoa2;Security;Vulnerability;Auth,xss_email_safe
+PWeb_Sec_XSS_Password,XSS payload in login password field handled safely,D1,Y,qoa2;Security;Vulnerability;Auth,xss_password_safe
+PWeb_Sec_SpecialChars_Email,Special characters in email field handled safely,D1,Y,qoa2;Security;Auth,special_chars_safe
+PWeb_Sec_SQLInjection_Login,SQL injection attempt in login rejected safely,D1,Y,qoa2;Security;Vulnerability;Auth,sqli_safe
+PWeb_Sec_LoginEvilQuery,Login page with malicious query still loads safely,D1,Y,qoa2;Security;NFR;Auth,login_evil_query_safe
+PWeb_Sec_PasswordFieldMasked,Password input is masked type=password,D1,Y,qoa2;Security;Auth;UI,password_masked
+PWeb_Admin_Login_Full,Full admin login reaches admin panel,D2,Y,qoa2;Admin;Auth;Login,admin_login_ok
+PWeb_Admin_Panel_Load,Verify admin panel smoke stats and controls,D2,Y,qoa2;Admin;Smoke,admin_panel_ok
+PWeb_Admin_Nav_Link,Admin user sees admin link in header nav,D2,Y,qoa2;Admin;Navigation,admin_nav_ok
+PWeb_Admin_Tabs,All admin tabs are selectable,D2,Y,qoa2;Admin;Tabs,admin_tabs_ok
+PWeb_Admin_Back_Dashboard,Back to dashboard from admin panel,D2,Y,qoa2;Admin;Navigation,admin_back_ok
+PWeb_Login_Full,Full login flow to dashboard,D1,Y,qoa2;Auth;Login,login_completed
+PWeb_Dashboard_After_Login,Verify dashboard greeting after login,D1,Y,qoa2;Dashboard;Smoke,dashboard_ok
+PWeb_Dashboard_Social_Assistant,Verify AI Social Assistant section on dashboard,D1,Y,qoa2;Dashboard;Social,social_assistant_ok
+PWeb_Dashboard_Avatar_Tabs,Switch avatar tabs on dashboard,D1,Y,qoa2;Dashboard;Avatar,avatar_tabs_ok
+PWeb_Dashboard_Referral,Verify referral link section,D1,Y,qoa2;Dashboard;Promoter,referral_ok
+PWeb_Dashboard_Copy_Link,Click Copy Link button,D1,Y,qoa2;Dashboard;Interaction,copy_link_ok
+PWeb_Dashboard_Onboarding_Next,Advance onboarding carousel,D1,N,qoa2;Dashboard;Onboarding,onboarding_next_ok
+PWeb_Dashboard_Onboarding_Back,Go back in onboarding carousel,D1,N,qoa2;Dashboard;Onboarding,onboarding_back_ok
+PWeb_Nav_Build,Navigate to BRAHL Build page,D1,Y,qoa2;BRAHL;Navigation,build_page_ok
+PWeb_Nav_Heal,Navigate to BRAHL Heal page,D1,Y,qoa2;BRAHL;Navigation,heal_page_ok
+PWeb_Nav_Loop,Navigate to BRAHL Loop page,D1,Y,qoa2;BRAHL;Navigation,loop_page_ok
+PWeb_Nav_Jobs,Navigate to AI Job Assistant page,D1,Y,qoa2;Jobs;Navigation,jobs_page_ok
+PWeb_Jobs_Career_Section,Verify Jobs career assistant and resume upload,D1,Y,qoa2;Jobs;Career,jobs_career_ok
+PWeb_Nav_Wallet,Navigate to wallet page from dashboard,D1,Y,qoa2;Wallet;Navigation,wallet_page_ok
+PWeb_Nav_Docs,Navigate to documentation page,D1,Y,qoa2;Navigation;Docs,docs_page_ok
+PWeb_BRAHL_Build_Content,Verify Build page blueprint content,D1,Y,qoa2;BRAHL;Build,build_content_ok
+PWeb_BRAHL_Heal_Content,Verify Heal page failures section,D1,Y,qoa2;BRAHL;Heal,heal_content_ok
+PWeb_BRAHL_Loop_Report,Verify Loop BRAHL report section,D1,Y,qoa2;BRAHL;Loop,loop_report_ok
+PWeb_Issue_Run_404,Run route returns 404 (team reported),D1,Y,qoa2;BRAHL;Issue;Regression,run_404_ok
+PWeb_Issue_Analyze_404,Analyze route returns 404 (team reported),D1,Y,qoa2;BRAHL;Issue;Regression,analyze_404_ok
+PWeb_Loop_Issues_Links,Loop page shows BRAHL report and loop controls,D1,Y,qoa2;BRAHL;Loop;Report,loop_report_ok
+PWeb_Header_Logo_Dashboard,QAonAir logo returns to dashboard,D1,Y,qoa2;Navigation;Dashboard,logo_dashboard_ok
+PWeb_Auth_RoundTrip,Landing login register navigation roundtrip,D1,Y,qoa2;Auth;Navigation,auth_roundtrip_ok
+PWeb_Sec_EvilQuery,Landing with malicious query still loads,D1,Y,qoa2;Security;NFR,evil_query_safe
+PWeb_Sec_PathTraversal,Path traversal URL does not expose server files,D1,Y,qoa2;Security;Vulnerability,path_traversal_safe
+PWeb_Sec_OpenRedirect_Probe,Open redirect query param does not redirect off-site,D1,Y,qoa2;Security;Vulnerability;Auth,open_redirect_safe
+PWeb_Sec_AdminRouteProbe,Admin route does not expose admin panel,D1,Y,qoa2;Security;Vulnerability,admin_probe_safe
+PWeb_Sec_SensitivePathProbe,Sensitive paths return safe response,D1,Y,qoa2;Security;Vulnerability,sensitive_path_safe
+PWeb_Sec_HTTPS_Landing,Landing page served over HTTPS,D1,Y,qoa2;Security;NFR,https_enforced
+PWeb_Perf_LoginPageLoad,Measure login page load time,D1,Y,qoa2;Performance;NFR;Auth,login_perf_ok
+PWeb_Perf_DashboardLoad,Measure dashboard page load time,D1,Y,qoa2;Performance;NFR;Dashboard,dashboard_perf_ok
+PWeb_Perf_BuildPageLoad,Measure BRAHL Build page load time,D1,Y,qoa2;Performance;NFR;BRAHL,build_perf_ok
+PWeb_Perf_JobsPageLoad,Measure Jobs page load time,D1,Y,qoa2;Performance;NFR;Jobs,jobs_perf_ok
+PWeb_Perf_BRAHL_Navigation,Measure BRAHL page navigation cycle time,D1,Y,qoa2;Performance;NFR;BRAHL,brahl_nav_perf_ok
+PWeb_Sec_NoCredentialInUrl,Post-login URL does not expose credentials,D1,Y,qoa2;Security;Auth,no_cred_in_url
+PWeb_Sec_DashboardRequiresAuth,Dashboard requires authentication,D1,Y,qoa2;Security;Auth,dashboard_auth_required
+PWeb_Sec_BuildRequiresAuth,Build page requires authentication,D1,Y,qoa2;Security;Auth;BRAHL,build_auth_required
+PWeb_Perf_PageLoad,Measure landing page load time (fresh browser),D1,Y,qoa2;Performance;NFR,page_load_ok
+PWeb_XP_Tracker_Widget,XP tracker widget expands and shows header,D1,Y,qoa2;XP;Gamification,xp_tracker_ok
+PWeb_XP_Read_Stats,Read total earned and streak from XP tracker,D1,Y,qoa2;XP;Gamification,xp_stats_ok
+PWeb_XP_Earned_LTE_Total,Verify earned XP does not exceed total XP,D1,Y,qoa2;XP;Gamification;Math,xp_earned_lte_total
+PWeb_XP_Total_Positive,Verify user total XP is greater than zero,D1,Y,qoa2;XP;Gamification;Math,xp_total_positive
+PWeb_XP_Daily_Login_Activity,Verify daily login +5 XP in recent activity,D1,Y,qoa2;XP;Gamification;Tasks,xp_daily_login_ok
+PWeb_XP_Cross_Page_Total,XP total matches between dashboard and jobs,D1,Y,qoa2;XP;Gamification;Math,xp_cross_page_ok
+PWeb_XP_Avatar_Total_Stable,Total XP unchanged when switching avatar tabs,D1,Y,qoa2;XP;Gamification;Avatar,xp_avatar_stable
+PWeb_XP_Level_Progress,Verify XP level progress text in tracker,D1,Y,qoa2;XP;Gamification,xp_level_ok
+PWeb_XP_Arena_Tracker,XP tracker visible on arena after login,D1,Y,qoa2;XP;Gamification;Arena,xp_arena_ok
+PWeb_Sec_Admin_Access_Denied,Regular user blocked from admin panel,D1,Y,qoa2;Security;Auth,admin_denied_ok
+PWeb_Sec_Admin_Nav_Hidden,Regular user cannot access admin panel via URL,D1,Y,qoa2;Security;Auth,admin_nav_hidden_ok
+PWeb_Admin_Users_Tab,Users tab shows user management controls,D2,Y,qoa2;Admin;Users,admin_users_ok
+PWeb_Admin_Clients_Tab,Clients tab is selectable on admin panel,D2,Y,qoa2;Admin;Clients,admin_clients_ok
+PWeb_Admin_Projects_Tab,Projects tab is selectable on admin panel,D2,Y,qoa2;Admin;Projects,admin_projects_ok
+PWeb_Admin_Consultants_Tab,Consultants tab is selectable on admin panel,D2,Y,qoa2;Admin;Consultants,admin_consultants_ok
+PWeb_Admin_XP_Payments_Tab,XP and Payments tab is selectable,D2,Y,qoa2;Admin;XP,admin_xp_ok
+PWeb_Admin_Live_Activity_Tab,Live Activity tab is selectable,D2,Y,qoa2;Admin;Activity,admin_activity_ok
+PWeb_Admin_GTM_Tab,GTM tab is selectable on admin panel,D2,Y,qoa2;Admin;GTM,admin_gtm_ok
+PWeb_Admin_Broadcast_Button,Broadcast button is visible on admin panel,D2,Y,qoa2;Admin;Broadcast,admin_broadcast_ok
+PWeb_Admin_User_Actions,User rows show Adjust XP and Revoke Admin actions,D2,Y,qoa2;Admin;Users,admin_user_actions_ok
+PJourney_Landing_Explore,Public landing FAQ roles BRAHL CTA,D1,Y,qoa2;Journey;Landing,journey_landing_ok
+PJourney_Auth_Negative_To_Positive,Invalid login then valid login to arena,D1,Y,qoa2;Journey;Auth,journey_auth_ok
+PJourney_Landing_To_Arena,Verify arena session after login,D1,Y,qoa2;Journey;Smoke;Auth,journey_arena_ok
+PJourney_Client_Avatar,Login select Client avatar verify content,D1,Y,qoa2;Journey;Avatar;Client,journey_client_ok
+PJourney_Consultant_Avatar,Login select Consultant avatar verify content,D1,Y,qoa2;Journey;Avatar;Consultant,journey_consultant_ok
+PJourney_Promoter_Avatar,Login select Promoter avatar referral flow,D1,Y,qoa2;Journey;Avatar;Promoter,journey_promoter_ok
+PJourney_Nalanda_Avatar,Login select Nalanda avatar verify content,D1,Y,qoa2;Journey;Avatar;Nalanda,journey_nalanda_ok
+PJourney_BRAHL_Build_To_Loop,Login navigate Build Heal Loop pages,D1,Y,qoa2;Journey;BRAHL,journey_brahl_ok
+PJourney_Wallet_Docs,Login wallet docs return to arena,D1,Y,qoa2;Journey;Navigation,journey_wallet_docs_ok
+PJourney_Jobs_Career,Login jobs career tab resume section,D1,Y,qoa2;Journey;Jobs,journey_jobs_ok
+PJourney_XP_Gamification,Login expand XP read stats cross-check jobs,D1,Y,qoa2;Journey;XP,journey_xp_ok
+PJourney_Arena_Social_Hub,Login arena social assistant avatar round-robin,D1,Y,qoa2;Journey;Dashboard,journey_arena_hub_ok
+PJourney_Security_Regular,D1 admin URL probe and nav hidden,D1,Y,qoa2;Journey;Security,journey_security_ok
+PJourney_Admin_Full,D2 admin panel all tabs back to arena,D2,Y,qoa2;Journey;Admin,journey_admin_ok

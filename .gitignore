@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# FoXYiZ run output (local runs — regenerate via verify)
+z/2026*/
+z/2025*/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.pem
+**/yD_Secure.csv
+
+# Cursor
+.cursor/

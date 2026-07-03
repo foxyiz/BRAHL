@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BRAHL Web — f(x,y)=z</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1 id="app-title">BRAHL Web — f(x,y)=z</h1>
+      <p class="tagline" id="app-tagline">Build · Run · Analyze · Heal · Loop · BRAHL · Human in the Loop</p>
+    </div>
+    <div class="topbar-center">
+      <nav class="avatar-bar" aria-label="Choose avatar">
+        <button type="button" class="avatar-btn" data-avatar="client" title="Client — Post a Project">
+          <span class="avatar-icon">C</span>
+          <span class="avatar-label">Client</span>
+        </button>
+        <button type="button" class="avatar-btn" data-avatar="consultant" title="Human in the Loop">
+          <span class="avatar-icon">H</span>
+          <span class="avatar-label">HITL</span>
+        </button>
+      </nav>
+      <div id="topbar-project" class="topbar-project" hidden>
+        <span class="topbar-project-label">Project</span>
+        <select id="topbar-project-select" aria-label="Switch project" hidden></select>
+        <button type="button" id="topbar-add-project" class="primary topbar-add-btn" hidden>Add project</button>
+      </div>
+      <div id="ai-toggle-wrap" class="ai-toggle-wrap" hidden>
+        <label class="ai-toggle" title="AI on: assistants guide Build and BRAHL. AI off: Human in the Loop runs FoXYiZ locally and uploads Automation + AI reports.">
+          <input type="checkbox" id="ai-toggle" checked />
+          <span class="ai-toggle-track" aria-hidden="true"><span class="ai-toggle-thumb"></span></span>
+          <span id="ai-toggle-label">AI on</span>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <div id="context-strip" class="context-strip">
+    <span id="status-bar" class="status-bar">Choose an avatar to start</span>
+    <span id="project-banner-meta" class="project-banner-meta" hidden></span>
+    <div id="project-banner-hitl" class="project-banner-hitl" hidden></div>
+  </div>
+
+  <div id="avatar-gate" class="avatar-gate" hidden>
+    <div class="avatar-gate-card">
+      <h2>Choose your role</h2>
+      <p>BRAHL automation handles bulk testing. <strong>Human in the Loop</strong> consultants enrich reports offline.</p>
+      <div class="avatar-gate-actions">
+        <button type="button" class="avatar-choice primary" data-avatar="client">
+          <strong>Client</strong>
+          <span>Describe purpose via AI chat · set budget · run BRAHL</span>
+        </button>
+        <button type="button" class="avatar-choice" data-avatar="consultant">
+          <strong>Human in the Loop</strong>
+          <span>Join a client project · upload yPADs · submit enriched reports</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="add-project-modal" class="modal" hidden role="dialog" aria-labelledby="add-project-title" aria-modal="true">
+    <div class="modal-card">
+      <h2 id="add-project-title">Add project</h2>
+      <p class="blurb">Name your project and optionally describe what BRAHL should test.</p>
+      <form id="add-project-form">
+        <div class="form-row">
+          <label for="new-project-name">Project name</label>
+          <input type="text" id="new-project-name" required autocomplete="off" placeholder="My app QA cycle" />
+        </div>
+        <div class="form-row">
+          <label for="new-project-purpose">Purpose (optional)</label>
+          <textarea id="new-project-purpose" rows="2" placeholder="What should Build → Run → BRAHL cover?"></textarea>
+        </div>
+        <div class="form-row actions">
+          <button type="submit" class="primary">Create project</button>
+          <button type="button" id="add-project-cancel" class="secondary">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="role-switch-modal" class="modal" hidden role="dialog" aria-labelledby="role-switch-title" aria-modal="true">
+    <div class="modal-card modal-card-sm">
+      <h2 id="role-switch-title">Switch role?</h2>
+      <p class="blurb">Your active project stays in context. Change project on Build after switching.</p>
+      <div class="form-row actions">
+        <button type="button" id="role-switch-confirm" class="primary">Switch</button>
+        <button type="button" id="role-switch-cancel" class="secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="phase-nav" aria-label="BRAHL phases">
+    <button type="button" class="phase-btn active" data-phase="build">Build</button>
+    <button type="button" class="phase-btn" data-phase="run">Run</button>
+    <button type="button" class="phase-btn" data-phase="analyze">Analyze</button>
+    <button type="button" class="phase-btn" data-phase="heal">Heal</button>
+    <button type="button" class="phase-btn" data-phase="loop">Loop</button>
+    <button type="button" class="phase-btn phase-brahl" data-phase="brahl">BRAHL</button>
+  </nav>
+  <div id="phase-progress" class="phase-progress" aria-label="BRAHL cycle progress" hidden>
+    <div class="phase-progress-track">
+      <span class="phase-progress-step" data-phase="build" title="Build">Build</span>
+      <span class="phase-progress-step" data-phase="run" title="Run">Run</span>
+      <span class="phase-progress-step" data-phase="analyze" title="Analyze">Analyze</span>
+      <span class="phase-progress-step" data-phase="heal" title="Heal">Heal</span>
+      <span class="phase-progress-step" data-phase="loop" title="Loop">Loop</span>
+      <span class="phase-progress-step" data-phase="brahl" title="BRAHL">BRAHL</span>
+    </div>
+  </div>
+
+  <main class="content">
+    <section id="panel-build" class="panel active" data-panel="build">
+      <div id="build-no-avatar" class="build-placeholder">
+        <h2>Build — choose an avatar</h2>
+        <p class="blurb">Client posts via AI chat. Human in the Loop consultants join projects to enrich BRAHL offline.</p>
+      </div>
+
+      <div id="build-client" class="build-mode" hidden>
+        <div class="build-layout">
+          <aside class="project-sidebar">
+            <h3 class="section-sub">My projects</h3>
+            <div id="client-project-picker">
+              <select id="client-project-select" aria-label="Switch project"></select>
+              <button type="button" id="btn-new-project" class="secondary">+ New project</button>
+              <div id="client-add-project-block" class="add-project-block" hidden>
+                <p class="empty-hint">Add your first project to get started.</p>
+                <button type="button" id="btn-add-first-project" class="primary">Add project</button>
+              </div>
+            </div>
+          </aside>
+          <div class="build-main">
+            <h2>Build — AI assistant</h2>
+            <p class="blurb">Tell us the purpose. Add connectors or context with <strong>+</strong>. Set budget to split automation vs Human in the Loop.</p>
+            <div id="client-no-project" class="empty-hint" hidden>Select or create a project to start.</div>
+            <div id="client-workspace" hidden>
+              <ol id="build-checklist" class="build-checklist" aria-label="Getting started">
+                <li id="checklist-step-project" class="checklist-item" data-step="project">
+                  <span class="checklist-marker" aria-hidden="true"></span>
+                  <span class="checklist-text">Add project</span>
+                </li>
+                <li id="checklist-step-purpose" class="checklist-item" data-step="purpose">
+                  <span class="checklist-marker" aria-hidden="true"></span>
+                  <span class="checklist-text">Describe purpose in chat</span>
+                </li>
+                <li id="checklist-step-verify" class="checklist-item" data-step="verify">
+                  <span class="checklist-marker" aria-hidden="true"></span>
+                  <span class="checklist-text">Run Loop → Verify and view BRAHL report</span>
+                </li>
+              </ol>
+              <div id="client-ai-build">
+                <div id="chat-thread" class="chat-thread" aria-live="polite"></div>
+                <form id="chat-form" class="chat-form">
+                  <button type="button" id="btn-add-context" class="icon-btn" title="Add context">+</button>
+                  <input type="text" id="chat-input" placeholder="Describe what you want BRAHL to test…" autocomplete="off" />
+                  <button type="submit" class="primary">Send</button>
+                </form>
+              </div>
+              <div id="client-manual-build" class="manual-build" hidden>
+                <p class="hint">AI off — Human in the Loop runs FoXYiZ on their machine, generates BRAHL reports (Automation + AI), and uploads here.</p>
+                <label for="manual-purpose">Project purpose</label>
+                <textarea id="manual-purpose" rows="3" placeholder="What should be tested…"></textarea>
+                <button type="button" id="btn-save-manual-purpose" class="primary">Save purpose</button>
+                <button type="button" id="btn-add-context-manual" class="secondary">+ Add context</button>
+              </div>
+              <div id="context-chips" class="context-chips"></div>
+              <div id="add-context-panel" class="add-context-panel" hidden>
+                <select id="ctx-kind">
+                  <option value="connector">Connector / source of truth</option>
+                  <option value="url">App URL</option>
+                  <option value="note">Note</option>
+                  <option value="document">Document path</option>
+                </select>
+                <input type="text" id="ctx-label" placeholder="Label (e.g. JIRA, GitHub)" />
+                <input type="text" id="ctx-value" placeholder="URL, path, or description" />
+                <button type="button" id="btn-save-context" class="primary">Add</button>
+                <button type="button" id="btn-cancel-context">Cancel</button>
+              </div>
+              <div class="budget-block">
+                <h3 class="section-sub">Budget</h3>
+                <div class="form-row">
+                  <label for="budget-usd">Total ($)</label>
+                  <input type="number" id="budget-usd" min="0" step="50" placeholder="500" />
+                  <button type="button" id="btn-save-budget" class="primary">Save budget</button>
+                </div>
+                <div class="split-row">
+                  <label>BRAHL automation <span id="auto-pct">50</span>%</label>
+                  <input type="range" id="budget-split" min="10" max="90" value="50" />
+                  <label>Human in the Loop <span id="human-pct">50</span>%</label>
+                </div>
+                <div id="hitl-roster" class="hitl-roster"></div>
+                <div id="payout-preview" class="payout-preview"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="build-consultant" class="build-mode" hidden>
+        <div class="build-layout">
+          <aside class="project-sidebar">
+            <h3 class="section-sub">Available projects</h3>
+            <select id="consultant-project-select" aria-label="Switch project"></select>
+            <p id="consultant-no-projects" class="empty-hint" hidden>No client projects yet.</p>
+          </aside>
+          <div class="build-main">
+            <h2>Build — Human in the Loop</h2>
+            <p class="blurb">Join a client project. Upload yPADs offline, enrich BRAHL reports, deliver critical issues and UX findings.</p>
+            <div id="consultant-project-toolbar" class="consultant-toolbar" hidden>
+              <input type="search" id="consultant-project-filter" placeholder="Filter projects…" aria-label="Filter projects" />
+              <select id="consultant-project-sort" aria-label="Sort projects">
+                <option value="name">Name A–Z</option>
+                <option value="budget-desc">Budget high–low</option>
+                <option value="hitl-desc">Most HITL</option>
+              </select>
+              <label class="compact-toggle">
+                <input type="checkbox" id="consultant-compact-mode" />
+                Compact (dropdown only)
+              </label>
+            </div>
+            <div id="consultant-projects" class="project-grid"></div>
+            <div id="consultant-workspace" class="consultant-workspace" hidden>
+          <h3 id="consultant-project-title" class="section-sub"></h3>
+          <div id="consultant-client-chat" class="chat-thread readonly"></div>
+          <div id="consultant-context" class="context-chips readonly"></div>
+          <div class="form-row actions">
+            <button type="button" id="btn-join-hitl" class="primary">Join as Human in the Loop</button>
+          </div>
+          <div id="consultant-deliver" hidden>
+            <p id="consultant-hitl-hint" class="hint" hidden>
+              AI off — run FoXYiZ on your machine, generate the BRAHL report (Automation + AI), then upload below.
+            </p>
+            <h3 class="section-sub">Your deliverables</h3>
+            <div class="form-row">
+              <label for="hitl-critical">Critical issues</label>
+              <input type="number" id="hitl-critical" min="0" value="0" />
+            </div>
+            <div class="form-row">
+              <label for="hitl-hours">Time (hours)</label>
+              <input type="number" id="hitl-hours" min="0" step="0.5" value="0" />
+            </div>
+            <div class="form-row">
+              <label for="hitl-features">Features / UX found</label>
+              <input type="number" id="hitl-features" min="0" value="0" />
+            </div>
+            <div class="form-row">
+              <label for="hitl-ypad">Upload yPAD / doc</label>
+              <input type="file" id="hitl-ypad" accept=".csv,.json,.md,.txt,.pdf" />
+            </div>
+            <div class="form-row actions">
+              <button type="button" id="btn-hitl-submit" class="primary">Submit Human in the Loop report</button>
+            </div>
+          </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="panel-run" class="panel" data-panel="run">
+      <div id="run-locked" class="phase-locked" hidden>
+        <p class="phase-locked-msg">Select a project on Build first. All BRAHL phases stay scoped to that project.</p>
+        <div class="phase-locked-actions">
+          <button type="button" class="primary phase-locked-add" hidden>Add project</button>
+          <button type="button" class="secondary phase-locked-build" hidden>Go to Build</button>
+        </div>
+      </div>
+      <div id="run-content">
+        <h2>Run — fEngine2</h2>
+        <p id="run-project-scope" class="phase-scope"></p>
+        <p class="blurb">Execute automation for the active project.</p>
+        <div class="form-row">
+          <label for="suite-select">Test suite</label>
+          <select id="suite-select" aria-label="Test suite"></select>
+        </div>
+        <div class="form-row">
+          <label for="config-select">fStart config</label>
+          <select id="config-select"></select>
+        </div>
+        <div class="form-row actions">
+          <button type="button" id="btn-run" class="primary">Run engine</button>
+        </div>
+        <div class="progress-wrap"><div id="progress-bar" class="progress-bar"></div></div>
+        <pre id="run-log" class="log"></pre>
+      </div>
+    </section>
+
+    <section id="panel-analyze" class="panel" data-panel="analyze">
+      <div id="analyze-locked" class="phase-locked" hidden>
+        <p class="phase-locked-msg">Select a project on Build first.</p>
+        <div class="phase-locked-actions">
+          <button type="button" class="primary phase-locked-add" hidden>Add project</button>
+          <button type="button" class="secondary phase-locked-build" hidden>Go to Build</button>
+        </div>
+      </div>
+      <div id="analyze-content">
+        <h2>Analyze — z/</h2>
+        <p id="analyze-project-scope" class="phase-scope"></p>
+        <p class="blurb">Failures for the active project run.</p>
+        <div class="form-row actions">
+          <button type="button" id="btn-refresh-runs">Refresh runs</button>
+        </div>
+        <div class="split">
+          <ul id="runs-list" class="runs-list"></ul>
+          <table class="fail-table">
+            <thead><tr><th>Plan</th><th>Step</th><th>Output</th></tr></thead>
+            <tbody id="failures-body"></tbody>
+          </table>
+        </div>
+        <div id="dash-link" class="dash-link"></div>
+      </div>
+    </section>
+
+    <section id="panel-heal" class="panel" data-panel="heal">
+      <div id="heal-locked" class="phase-locked" hidden>
+        <p class="phase-locked-msg">Select a project on Build first.</p>
+        <div class="phase-locked-actions">
+          <button type="button" class="primary phase-locked-add" hidden>Add project</button>
+          <button type="button" class="secondary phase-locked-build" hidden>Go to Build</button>
+        </div>
+      </div>
+      <div id="heal-content">
+        <h2>Heal — fix T1/T2/T3</h2>
+        <p id="heal-project-scope" class="phase-scope"></p>
+        <p class="blurb">Edit yPAD for the active project scope.</p>
+        <ul class="heal-list">
+          <li><strong>1.</strong> yD_Common.csv — locators &amp; URLs</li>
+          <li><strong>2.</strong> y2Actions.csv — step order, Expected</li>
+          <li><strong>3.</strong> y1Plans.csv — Run, Tags</li>
+        </ul>
+        <p id="heal-run-hint" class="hint"></p>
+        <div class="form-row actions">
+          <button type="button" id="btn-shrink-plans" class="secondary">Shrink to failures (Loop 2 prep)</button>
+          <button type="button" id="btn-restore-plans" class="secondary">Restore all Run=Y (Verify prep)</button>
+        </div>
+        <pre id="heal-log" class="log"></pre>
+      </div>
+    </section>
+
+    <section id="panel-loop" class="panel" data-panel="loop">
+      <div id="loop-locked" class="phase-locked" hidden>
+        <p class="phase-locked-msg">Select a project on Build first.</p>
+        <div class="phase-locked-actions">
+          <button type="button" class="primary phase-locked-add" hidden>Add project</button>
+          <button type="button" class="secondary phase-locked-build" hidden>Go to Build</button>
+        </div>
+      </div>
+      <div id="loop-content">
+        <h2>Loop — BRAHL cycle</h2>
+        <p class="blurb">Step 0 uses project purpose + context from Build chat.</p>
+        <label for="cycle-prompt">Purpose (from project)</label>
+        <textarea id="cycle-prompt" rows="3" readonly></textarea>
+        <label for="cycle-docs">Context items (paths)</label>
+        <textarea id="cycle-docs" rows="2" readonly></textarea>
+        <div class="form-row actions loop-actions">
+          <button type="button" id="btn-context">Capture Step 0</button>
+          <button type="button" id="btn-loop1" class="primary">Loop 1 — full</button>
+          <button type="button" id="btn-loop2">Loop 2 — failures</button>
+          <button type="button" id="btn-loop3">Loop 3 — failures</button>
+          <button type="button" id="btn-verify">Verify — full</button>
+          <button type="button" id="btn-gen-report" class="secondary">Generate report</button>
+        </div>
+        <h3 class="section-sub">Cycle history</h3>
+        <ul id="cycle-history" class="cycle-history"></ul>
+        <pre id="loop-log" class="log"></pre>
+      </div>
+    </section>
+
+    <section id="panel-brahl" class="panel" data-panel="brahl">
+      <div id="brahl-locked" class="phase-locked" hidden>
+        <p class="phase-locked-msg">Select a project on Build first. BRAHL reports and chat are scoped to that project only.</p>
+        <div class="phase-locked-actions">
+          <button type="button" class="primary phase-locked-add" hidden>Add project</button>
+          <button type="button" class="secondary phase-locked-build" hidden>Go to Build</button>
+        </div>
+      </div>
+      <div id="brahl-content">
+        <h2>BRAHL — reports &amp; model</h2>
+        <p class="blurb">Latest and historical BRAHL reports for the active project. The BRAHL model only discusses this project.</p>
+        <div class="brahl-layout">
+          <aside class="brahl-sidebar">
+            <h3 class="section-sub">Reports</h3>
+            <ul id="brahl-report-list" class="brahl-report-list"></ul>
+            <button type="button" id="btn-link-run-report" class="secondary">+ Link Verify run</button>
+          </aside>
+          <div class="brahl-main">
+            <div class="brahl-report-header">
+              <span id="brahl-report-source" class="source-badge"></span>
+              <strong id="brahl-report-title"></strong>
+              <a id="brahl-report-open" href="#" target="_blank" class="report-link" hidden>Open raw</a>
+            </div>
+            <article id="brahl-report-body" class="brahl-report-body empty-hint">No report selected.</article>
+            <div id="brahl-ai-off-hint" class="manual-build" hidden>
+              <p class="hint">AI off — view uploaded <strong>Automation + AI</strong> reports. Human in the Loop consultants run FoXYiZ locally and upload BRAHL reports to the server.</p>
+            </div>
+            <div id="brahl-ai-chat">
+              <h3 class="section-sub">BRAHL model</h3>
+              <p class="hint">Ask about summary, failures, Human in the Loop, or automation — scoped to this project only.</p>
+              <div id="brahl-chat-thread" class="chat-thread brahl-chat" aria-live="polite"></div>
+              <form id="brahl-chat-form" class="chat-form">
+                <input type="text" id="brahl-chat-input" placeholder="Ask about this project's BRAHL report…" autocomplete="off" />
+                <button type="submit" class="primary">Ask BRAHL</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span id="footer-version">qoa_web v1.0 · Human in the Loop · <a href="/api/health" target="_blank">/api/health</a></span>
+    <span id="health-pill" class="health-pill">checking…</span>
+  </footer>
+
+  <script src="/assets/app.js"></script>
+</body>
+</html>

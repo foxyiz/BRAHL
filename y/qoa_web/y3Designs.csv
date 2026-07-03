@@ -1,0 +1,94 @@
+Type,DataName,D1,D2,D3,D4,D5,D6
+UI,base_url,http://127.0.0.1:8765/,http://127.0.0.1:8765/,http://127.0.0.1:8765/,http://127.0.0.1:8765/,http://127.0.0.1:8765/,http://127.0.0.1:8765/
+UI,fresh_url,http://127.0.0.1:8765/?reset=1,http://127.0.0.1:8765/?reset=1,http://127.0.0.1:8765/?reset=1,http://127.0.0.1:8765/?reset=1,http://127.0.0.1:8765/?reset=1,http://127.0.0.1:8765/?reset=1
+UI,body_locator,css=body,css=body,css=body,css=body,css=body,css=body
+UI,app_title_locator,css=#app-title,css=#app-title,css=#app-title,css=#app-title,css=#app-title,css=#app-title
+UI,status_bar_locator,css=#status-bar,css=#status-bar,css=#status-bar,css=#status-bar,css=#status-bar,css=#status-bar
+UI,tagline_locator,css=.tagline,css=.tagline,css=.tagline,css=.tagline,css=.tagline,css=.tagline
+UI,nav_build_locator,css=button[data-phase='build'],css=button[data-phase='build'],css=button[data-phase='build'],css=button[data-phase='build'],css=button[data-phase='build'],css=button[data-phase='build']
+UI,nav_run_locator,css=button[data-phase='run'],css=button[data-phase='run'],css=button[data-phase='run'],css=button[data-phase='run'],css=button[data-phase='run'],css=button[data-phase='run']
+UI,nav_analyze_locator,css=button[data-phase='analyze'],css=button[data-phase='analyze'],css=button[data-phase='analyze'],css=button[data-phase='analyze'],css=button[data-phase='analyze'],css=button[data-phase='analyze']
+UI,nav_heal_locator,css=button[data-phase='heal'],css=button[data-phase='heal'],css=button[data-phase='heal'],css=button[data-phase='heal'],css=button[data-phase='heal'],css=button[data-phase='heal']
+UI,nav_loop_locator,css=button[data-phase='loop'],css=button[data-phase='loop'],css=button[data-phase='loop'],css=button[data-phase='loop'],css=button[data-phase='loop'],css=button[data-phase='loop']
+UI,nav_brahl_locator,css=button[data-phase='brahl'],css=button[data-phase='brahl'],css=button[data-phase='brahl'],css=button[data-phase='brahl'],css=button[data-phase='brahl'],css=button[data-phase='brahl']
+UI,nav_build_btn,css=button[data-phase='build'],css=button[data-phase='build'],css=button[data-phase='build'],css=button[data-phase='build'],css=button[data-phase='build'],css=button[data-phase='build']
+UI,nav_run_btn,css=button[data-phase='run'],css=button[data-phase='run'],css=button[data-phase='run'],css=button[data-phase='run'],css=button[data-phase='run'],css=button[data-phase='run']
+UI,nav_analyze_btn,css=button[data-phase='analyze'],css=button[data-phase='analyze'],css=button[data-phase='analyze'],css=button[data-phase='analyze'],css=button[data-phase='analyze'],css=button[data-phase='analyze']
+UI,nav_heal_btn,css=button[data-phase='heal'],css=button[data-phase='heal'],css=button[data-phase='heal'],css=button[data-phase='heal'],css=button[data-phase='heal'],css=button[data-phase='heal']
+UI,nav_loop_btn,css=button[data-phase='loop'],css=button[data-phase='loop'],css=button[data-phase='loop'],css=button[data-phase='loop'],css=button[data-phase='loop'],css=button[data-phase='loop']
+UI,nav_brahl_btn,css=button[data-phase='brahl'],css=button[data-phase='brahl'],css=button[data-phase='brahl'],css=button[data-phase='brahl'],css=button[data-phase='brahl'],css=button[data-phase='brahl']
+UI,avatar_client_choice_btn,css=.avatar-choice[data-avatar="client"],css=.avatar-choice[data-avatar="client"],css=.avatar-choice[data-avatar="client"],css=.avatar-choice[data-avatar="client"],css=.avatar-choice[data-avatar="client"],css=.avatar-choice[data-avatar="client"]
+UI,avatar_client_pick_btn,"css=.avatar-choice[data-avatar=""client""], .avatar-btn[data-avatar=""client""]","css=.avatar-choice[data-avatar=""client""], .avatar-btn[data-avatar=""client""]","css=.avatar-choice[data-avatar=""client""], .avatar-btn[data-avatar=""client""]","css=.avatar-choice[data-avatar=""client""], .avatar-btn[data-avatar=""client""]","css=.avatar-choice[data-avatar=""client""], .avatar-btn[data-avatar=""client""]","css=.avatar-choice[data-avatar=""client""], .avatar-btn[data-avatar=""client""]"
+UI,avatar_client_bar_btn,css=.avatar-btn[data-avatar='client'],css=.avatar-btn[data-avatar='client'],css=.avatar-btn[data-avatar='client'],css=.avatar-btn[data-avatar='client'],css=.avatar-btn[data-avatar='client'],css=.avatar-btn[data-avatar='client']
+UI,avatar_hitl_bar_btn,css=.avatar-btn[data-avatar='consultant'],css=.avatar-btn[data-avatar='consultant'],css=.avatar-btn[data-avatar='consultant'],css=.avatar-btn[data-avatar='consultant'],css=.avatar-btn[data-avatar='consultant'],css=.avatar-btn[data-avatar='consultant']
+UI,topbar_project_name_locator,css=#topbar-project-select,css=#topbar-project-select,css=#topbar-project-select,css=#topbar-project-select,css=#topbar-project-select,css=#topbar-project-select
+UI,topbar_project_select_locator,css=#topbar-project-select,css=#topbar-project-select,css=#topbar-project-select,css=#topbar-project-select,css=#topbar-project-select,css=#topbar-project-select
+UI,topbar_add_project_locator,css=#topbar-add-project,css=#topbar-add-project,css=#topbar-add-project,css=#topbar-add-project,css=#topbar-add-project,css=#topbar-add-project
+UI,consultant_project_select_locator,css=#consultant-project-select,css=#consultant-project-select,css=#consultant-project-select,css=#consultant-project-select,css=#consultant-project-select,css=#consultant-project-select
+UI,ai_toggle_label_locator,css=#ai-toggle-label,css=#ai-toggle-label,css=#ai-toggle-label,css=#ai-toggle-label,css=#ai-toggle-label,css=#ai-toggle-label
+UI,project_banner_meta_locator,css=#project-banner-meta,css=#project-banner-meta,css=#project-banner-meta,css=#project-banner-meta,css=#project-banner-meta,css=#project-banner-meta
+UI,build_client_heading_locator,css=#build-client h2,css=#build-client h2,css=#build-client h2,css=#build-client h2,css=#build-client h2,css=#build-client h2
+UI,run_heading_locator,css=#panel-run h2,css=#panel-run h2,css=#panel-run h2,css=#panel-run h2,css=#panel-run h2,css=#panel-run h2
+UI,analyze_heading_locator,css=#panel-analyze h2,css=#panel-analyze h2,css=#panel-analyze h2,css=#panel-analyze h2,css=#panel-analyze h2,css=#panel-analyze h2
+UI,heal_heading_locator,css=#panel-heal h2,css=#panel-heal h2,css=#panel-heal h2,css=#panel-heal h2,css=#panel-heal h2,css=#panel-heal h2
+UI,loop_heading_locator,css=#panel-loop h2,css=#panel-loop h2,css=#panel-loop h2,css=#panel-loop h2,css=#panel-loop h2,css=#panel-loop h2
+UI,brahl_heading_locator,css=#panel-brahl h2,css=#panel-brahl h2,css=#panel-brahl h2,css=#panel-brahl h2,css=#panel-brahl h2,css=#panel-brahl h2
+UI,client_project_select_locator,css=#client-project-select,css=#client-project-select,css=#client-project-select,css=#client-project-select,css=#client-project-select,css=#client-project-select
+UI,chat_input_locator,css=#chat-input,css=#chat-input,css=#chat-input,css=#chat-input,css=#chat-input,css=#chat-input
+UI,budget_block_locator,css=.budget-block,css=.budget-block,css=.budget-block,css=.budget-block,css=.budget-block,css=.budget-block
+UI,btn_new_project_locator,css=#btn-new-project,css=#btn-new-project,css=#btn-new-project,css=#btn-new-project,css=#btn-new-project,css=#btn-new-project
+UI,config_label_locator,css=label[for='config-select'],css=label[for='config-select'],css=label[for='config-select'],css=label[for='config-select'],css=label[for='config-select'],css=label[for='config-select']
+UI,btn_run_locator,css=#btn-run,css=#btn-run,css=#btn-run,css=#btn-run,css=#btn-run,css=#btn-run
+UI,run_scope_locator,css=#run-project-scope,css=#run-project-scope,css=#run-project-scope,css=#run-project-scope,css=#run-project-scope,css=#run-project-scope
+UI,btn_refresh_locator,css=#btn-refresh-runs,css=#btn-refresh-runs,css=#btn-refresh-runs,css=#btn-refresh-runs,css=#btn-refresh-runs,css=#btn-refresh-runs
+UI,runs_list_locator,css=#runs-list,css=#runs-list,css=#runs-list,css=#runs-list,css=#runs-list,css=#runs-list
+UI,analyze_scope_locator,css=#analyze-project-scope,css=#analyze-project-scope,css=#analyze-project-scope,css=#analyze-project-scope,css=#analyze-project-scope,css=#analyze-project-scope
+UI,heal_list_locator,css=#panel-heal .heal-list,css=#panel-heal .heal-list,css=#panel-heal .heal-list,css=#panel-heal .heal-list,css=#panel-heal .heal-list,css=#panel-heal .heal-list
+UI,heal_scope_locator,css=#heal-project-scope,css=#heal-project-scope,css=#heal-project-scope,css=#heal-project-scope,css=#heal-project-scope,css=#heal-project-scope
+UI,cycle_prompt_locator,css=#cycle-prompt,css=#cycle-prompt,css=#cycle-prompt,css=#cycle-prompt,css=#cycle-prompt,css=#cycle-prompt
+UI,btn_context_locator,css=#btn-context,css=#btn-context,css=#btn-context,css=#btn-context,css=#btn-context,css=#btn-context
+UI,btn_loop1_locator,css=#btn-loop1,css=#btn-loop1,css=#btn-loop1,css=#btn-loop1,css=#btn-loop1,css=#btn-loop1
+UI,btn_verify_locator,css=#btn-verify,css=#btn-verify,css=#btn-verify,css=#btn-verify,css=#btn-verify,css=#btn-verify
+UI,brahl_report_list_locator,css=#brahl-report-list,css=#brahl-report-list,css=#brahl-report-list,css=#brahl-report-list,css=#brahl-report-list,css=#brahl-report-list
+UI,brahl_chat_input_locator,css=#brahl-chat-input,css=#brahl-chat-input,css=#brahl-chat-input,css=#brahl-chat-input,css=#brahl-chat-input,css=#brahl-chat-input
+UI,btn_link_report_locator,css=#btn-link-run-report,css=#btn-link-run-report,css=#btn-link-run-report,css=#btn-link-run-report,css=#btn-link-run-report,css=#btn-link-run-report
+UI,role_switch_confirm_btn,css=#role-switch-confirm,css=#role-switch-confirm,css=#role-switch-confirm,css=#role-switch-confirm,css=#role-switch-confirm,css=#role-switch-confirm
+UI,build_hitl_heading_locator,css=#build-consultant h2,css=#build-consultant h2,css=#build-consultant h2,css=#build-consultant h2,css=#build-consultant h2,css=#build-consultant h2
+UI,build_checklist_locator,css=#build-checklist,css=#build-checklist,css=#build-checklist,css=#build-checklist,css=#build-checklist,css=#build-checklist
+UI,add_project_modal_title_locator,css=#add-project-title,css=#add-project-title,css=#add-project-title,css=#add-project-title,css=#add-project-title,css=#add-project-title
+UI,consultant_open_project_btn,css=#consultant-projects .project-card button,css=#consultant-projects .project-card button,css=#consultant-projects .project-card button,css=#consultant-projects .project-card button,css=#consultant-projects .project-card button,css=#consultant-projects .project-card button
+UI,health_pill_locator,css=#health-pill,css=#health-pill,css=#health-pill,css=#health-pill,css=#health-pill,css=#health-pill
+UI,api_base_url,http://127.0.0.1:8765,http://127.0.0.1:8765,http://127.0.0.1:8765,http://127.0.0.1:8765,http://127.0.0.1:8765,http://127.0.0.1:8765
+UI,api_health_endpoint,/api/health,/api/health,/api/health,/api/health,/api/health,/api/health
+UI,api_configs_endpoint,/api/configs,/api/configs,/api/configs,/api/configs,/api/configs,/api/configs
+UI,api_suites_endpoint,/api/suites,/api/suites,/api/suites,/api/suites,/api/suites,/api/suites
+UI,api_runs_endpoint,/api/runs?suite=qoa_web,/api/runs?suite=qoa_web,/api/runs?suite=qoa_web,/api/runs?suite=qoa_web,/api/runs?suite=qoa_web,/api/runs?suite=qoa_web
+UI,api_notfound_endpoint,/api/runs/fake_run_xyz/failures,/api/runs/fake_run_xyz/failures,/api/runs/fake_run_xyz/failures,/api/runs/fake_run_xyz/failures,/api/runs/fake_run_xyz/failures,/api/runs/fake_run_xyz/failures
+UI,api_jobs_endpoint,/api/jobs,/api/jobs,/api/jobs,/api/jobs,/api/jobs,/api/jobs
+UI,api_context_endpoint,/api/context,/api/context,/api/context,/api/context,/api/context,/api/context
+UI,api_projects_endpoint,/api/projects?role=client,/api/projects?role=client,/api/projects?role=client,/api/projects?role=client,/api/projects?role=client,/api/projects?role=client
+UI,api_project_get_endpoint,/api/projects/d21afcefc002,/api/projects/d21afcefc002,/api/projects/d21afcefc002,/api/projects/d21afcefc002,/api/projects/d21afcefc002,/api/projects/d21afcefc002
+UI,api_brahl_reports_endpoint,/api/projects/d21afcefc002/brahl/reports,/api/projects/d21afcefc002/brahl/reports,/api/projects/d21afcefc002/brahl/reports,/api/projects/d21afcefc002/brahl/reports,/api/projects/d21afcefc002/brahl/reports,/api/projects/d21afcefc002/brahl/reports
+UI,api_brahl_chat_endpoint,/api/projects/d21afcefc002/brahl/chat,/api/projects/d21afcefc002/brahl/chat,/api/projects/d21afcefc002/brahl/chat,/api/projects/d21afcefc002/brahl/chat,/api/projects/d21afcefc002/brahl/chat,/api/projects/d21afcefc002/brahl/chat
+UI,api_css_endpoint,/assets/styles.css,/assets/styles.css,/assets/styles.css,/assets/styles.css,/assets/styles.css,/assets/styles.css
+UI,api_js_endpoint,/assets/app.js,/assets/app.js,/assets/app.js,/assets/app.js,/assets/app.js,/assets/app.js
+UI,api_index_endpoint,/,/,/,/,/,/
+UI,payload_job_path,y/qoa_web/payload_job.json,y/qoa_web/payload_job.json,y/qoa_web/payload_job.json,y/qoa_web/payload_job.json,y/qoa_web/payload_job.json,y/qoa_web/payload_job.json
+UI,payload_context_path,y/qoa_web/payload_context.json,y/qoa_web/payload_context.json,y/qoa_web/payload_context.json,y/qoa_web/payload_context.json,y/qoa_web/payload_context.json,y/qoa_web/payload_context.json
+UI,payload_chat_path,y/qoa_web/payload_chat.json,y/qoa_web/payload_chat.json,y/qoa_web/payload_chat.json,y/qoa_web/payload_chat.json,y/qoa_web/payload_chat.json,y/qoa_web/payload_chat.json
+UI,phase_progress_locator,css=#phase-progress,css=#phase-progress,css=#phase-progress,css=#phase-progress,css=#phase-progress,css=#phase-progress
+UI,btn_shrink_locator,css=#btn-shrink-plans,css=#btn-shrink-plans,css=#btn-shrink-plans,css=#btn-shrink-plans,css=#btn-shrink-plans,css=#btn-shrink-plans
+UI,btn_restore_locator,css=#btn-restore-plans,css=#btn-restore-plans,css=#btn-restore-plans,css=#btn-restore-plans,css=#btn-restore-plans,css=#btn-restore-plans
+UI,btn_loop2_locator,css=#btn-loop2,css=#btn-loop2,css=#btn-loop2,css=#btn-loop2,css=#btn-loop2,css=#btn-loop2
+UI,btn_gen_report_locator,css=#btn-gen-report,css=#btn-gen-report,css=#btn-gen-report,css=#btn-gen-report,css=#btn-gen-report,css=#btn-gen-report
+UI,cycle_history_locator,css=#cycle-history,css=#cycle-history,css=#cycle-history,css=#cycle-history,css=#cycle-history,css=#cycle-history
+UI,suite_select_locator,css=#suite-select,css=#suite-select,css=#suite-select,css=#suite-select,css=#suite-select,css=#suite-select
+UI,footer_version_locator,css=#footer-version,css=#footer-version,css=#footer-version,css=#footer-version,css=#footer-version,css=#footer-version
+UI,api_version_endpoint,/api/version,/api/version,/api/version,/api/version,/api/version,/api/version
+UI,api_ypad_restore_endpoint,/api/ypad/restore,/api/ypad/restore,/api/ypad/restore,/api/ypad/restore,/api/ypad/restore,/api/ypad/restore
+UI,avatar_hitl_choice_btn,css=.avatar-choice[data-avatar="consultant"],css=.avatar-choice[data-avatar="consultant"],css=.avatar-choice[data-avatar="consultant"],css=.avatar-choice[data-avatar="consultant"],css=.avatar-choice[data-avatar="consultant"],css=.avatar-choice[data-avatar="consultant"]
+UI,consultant_projects_locator,css=#consultant-projects,css=#consultant-projects,css=#consultant-projects,css=#consultant-projects,css=#consultant-projects,css=#consultant-projects
+UI,consultant_filter_locator,css=#consultant-project-filter,css=#consultant-project-filter,css=#consultant-project-filter,css=#consultant-project-filter,css=#consultant-project-filter,css=#consultant-project-filter
+UI,btn_join_hitl_locator,css=#btn-join-hitl,css=#btn-join-hitl,css=#btn-join-hitl,css=#btn-join-hitl,css=#btn-join-hitl,css=#btn-join-hitl
+UI,brahl_report_list_locator,css=#brahl-report-list,css=#brahl-report-list,css=#brahl-report-list,css=#brahl-report-list,css=#brahl-report-list,css=#brahl-report-list
+UI,api_projects_consultant_endpoint,/api/projects?role=consultant,/api/projects?role=consultant,/api/projects?role=consultant,/api/projects?role=consultant,/api/projects?role=consultant,/api/projects?role=consultant

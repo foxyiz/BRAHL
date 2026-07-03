@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoXYiZ Test Report - {YPAD_NAME}</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+            line-height: 1.5;
+        }
+        .container { max-width: 1440px; margin: 0 auto; padding: 1.5rem; }
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25);
+        }
+        .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .header-meta { opacity: 0.92; font-size: 0.95rem; }
+        .header-meta a { color: #e0e7ff; }
+        .exec-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .summary-panel {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .summary-panel h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #64748b;
+            margin-bottom: 0.75rem;
+        }
+        .stat-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .stat {
+            flex: 1;
+            min-width: 70px;
+            padding: 0.75rem;
+            border-radius: 8px;
+            background: #f8fafc;
+            text-align: center;
+        }
+        .stat .label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; }
+        .stat .value { font-size: 1.5rem; font-weight: 700; margin-top: 0.15rem; }
+        .stat.pass .value { color: #16a34a; }
+        .stat.fail .value { color: #dc2626; }
+        .stat.rate .value { color: #4f46e5; }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            background: #fff;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .toolbar input[type="search"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.6rem 0.9rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        .tabs { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+        .tab, .btn {
+            padding: 0.45rem 0.85rem;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            border-radius: 8px;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            color: #475569;
+        }
+        .tab.active, .btn.primary {
+            background: #4f46e5;
+            border-color: #4f46e5;
+            color: #fff;
+        }
+        .btn:hover { filter: brightness(0.97); }
+        .panel {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        .panel-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-body { padding: 0; }
+        .view { display: none; }
+        .view.active { display: block; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+        th, td { padding: 0.65rem 1rem; text-align: left; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        th { background: #f8fafc; font-weight: 600; color: #334155; position: sticky; top: 0; z-index: 1; }
+        tr:hover { background: #f8fafc; }
+        tr.selected { background: #eef2ff; }
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge.pass { background: #dcfce7; color: #166534; }
+        .badge.fail { background: #fecaca; color: #991b1b; }
+        .badge.pending { background: #fef3c7; color: #92400e; }
+        .tag-chip {
+            display: inline-block;
+            padding: 0.1rem 0.45rem;
+            margin: 0.1rem;
+            border-radius: 4px;
+            background: #e2e8f0;
+            font-size: 0.7rem;
+            color: #475569;
+        }
+        .plan-row { cursor: pointer; }
+        .plan-steps { display: none; background: #fafafa; }
+        .plan-steps.open { display: table-row-group; }
+        .plan-steps td { padding-left: 2rem; font-size: 0.78rem; }
+        .tag-bar-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; }
+        .tag-bar-label { width: 120px; font-size: 0.8125rem; flex-shrink: 0; }
+        .tag-bar-track { flex: 1; height: 22px; background: #e2e8f0; border-radius: 4px; overflow: hidden; display: flex; }
+        .tag-bar-pass { background: #22c55e; }
+        .tag-bar-fail { background: #ef4444; }
+        .tag-bar-pct { width: 50px; text-align: right; font-size: 0.8125rem; font-weight: 600; }
+        .details-drawer {
+            position: sticky;
+            bottom: 0;
+            background: #fff;
+            border-top: 2px solid #4f46e5;
+            padding: 1rem 1.25rem;
+            max-height: 280px;
+            overflow-y: auto;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+        }
+        .details-drawer.empty { color: #64748b; font-style: italic; text-align: center; padding: 2rem; }
+        .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+        .detail-item label { display: block; font-size: 0.7rem; color: #64748b; text-transform: uppercase; margin-bottom: 0.2rem; }
+        .detail-item .val { font-size: 0.8125rem; word-break: break-word; }
+        .detail-item .val.error { color: #991b1b; background: #fef2f2; padding: 0.5rem; border-radius: 6px; }
+        .artifact-links a {
+            display: inline-block;
+            margin: 0.15rem 0.35rem 0.15rem 0;
+            padding: 0.2rem 0.5rem;
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.75rem;
+        }
+        .artifact-links a:hover { background: #bfdbfe; }
+        .table-wrap { max-height: 520px; overflow: auto; }
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.open { display: flex; }
+        .modal-box {
+            background: #fff;
+            border-radius: 12px;
+            max-width: 92vw;
+            max-height: 92vh;
+            overflow: hidden;
+        }
+        .modal-box img { max-width: 100%; max-height: 80vh; display: block; }
+        .modal-head { padding: 0.75rem 1rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; }
+        @media print {
+            .toolbar, .tabs, .btn, .details-drawer { display: none !important; }
+            .view { display: block !important; }
+            body { background: #fff; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <h1>FoXYiZ Test Report</h1>
+        <div class="header-meta">
+            Suite: <strong>{YPAD_NAME}</strong> |
+            Generated: <strong>{GENERATION_TIME}</strong> |
+            <span id="run-meta-links"></span>
+        </div>
+    </header>
+
+    <section class="exec-summary" id="exec-summary"></section>
+
+    <div class="toolbar">
+        <input type="search" id="search" placeholder="Search plans, steps, tags, actions...">
+        <div class="tabs" id="view-tabs">
+            <button class="tab active" data-view="plans">Plans</button>
+            <button class="tab" data-view="steps">Steps</button>
+            <button class="tab" data-view="tags">By Tag</button>
+            <button class="tab" data-view="failures">Failures</button>
+            <button class="tab" data-view="journeys">Journeys &amp; Avatars</button>
+        </div>
+        <button class="btn" id="filter-fail">Failures only</button>
+        <button class="btn" id="export-csv">Export CSV</button>
+        <button class="btn" id="copy-failures">Copy failures</button>
+        <button class="btn primary" id="print-report">Print Report</button>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <strong id="view-title">Test Plans</strong>
+            <span id="view-count"></span>
+        </div>
+        <div class="panel-body">
+            <div id="view-plans" class="view active"></div>
+            <div id="view-steps" class="view"></div>
+            <div id="view-tags" class="view"></div>
+            <div id="view-failures" class="view"></div>
+            <div id="view-journeys" class="view"></div>
+        </div>
+    </div>
+
+    <div class="details-drawer empty" id="details">Select a plan or step to view details</div>
+</div>
+
+<div class="modal" id="screenshot-modal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <strong id="modal-title">Screenshot</strong>
+            <button class="btn" id="modal-close">Close</button>
+        </div>
+        <img id="modal-image" src="" alt="Screenshot">
+    </div>
+</div>
+
+<script>
+const testResults = {RESULTS_DATA_JSON};
+const plansData = {PLANS_DATA_JSON};
+const runMeta = {RUN_META_JSON};
+const tagSummary = {TAG_SUMMARY_JSON};
+
+let activeView = 'plans';
+let failuresOnly = false;
+let searchTerm = '';
+let selectedItem = null;
+
+function esc(text) {
+    if (text == null) return '';
+    const d = document.createElement('div');
+    d.textContent = String(text);
+    return d.innerHTML;
+}
+
+function badge(result) {
+    const cls = (result || 'pending').toLowerCase();
+    return `<span class="badge ${cls}">${esc(result || 'Pending')}</span>`;
+}
+
+function renderExecSummary() {
+    const sp = runMeta.summaryPlans || {};
+    const ss = runMeta.summarySteps || {};
+    const planRate = sp.total ? ((sp.pass / sp.total) * 100).toFixed(1) : '0.0';
+    const stepRate = ss.total ? ((ss.pass / ss.total) * 100).toFixed(1) : '0.0';
+    const tagsLabel = (runMeta.tagsFilter && runMeta.tagsFilter.length)
+        ? runMeta.tagsFilter.join(', ') : 'All runnable plans';
+
+    document.getElementById('exec-summary').innerHTML = `
+        <div class="summary-panel">
+            <h2>Plan Summary</h2>
+            <div class="stat-row">
+                <div class="stat"><div class="label">Total</div><div class="value">${sp.total || 0}</div></div>
+                <div class="stat pass"><div class="label">Passed</div><div class="value">${sp.pass || 0}</div></div>
+                <div class="stat fail"><div class="label">Failed</div><div class="value">${sp.fail || 0}</div></div>
+                <div class="stat rate"><div class="label">Pass Rate</div><div class="value">${planRate}%</div></div>
+            </div>
+        </div>
+        <div class="summary-panel">
+            <h2>Step Summary</h2>
+            <div class="stat-row">
+                <div class="stat"><div class="label">Total</div><div class="value">${ss.total || 0}</div></div>
+                <div class="stat pass"><div class="label">Passed</div><div class="value">${ss.pass || 0}</div></div>
+                <div class="stat fail"><div class="label">Failed</div><div class="value">${ss.fail || 0}</div></div>
+                <div class="stat rate"><div class="label">Pass Rate</div><div class="value">${stepRate}%</div></div>
+            </div>
+        </div>
+        <div class="summary-panel">
+            <h2>Run Info</h2>
+            <div class="stat-row">
+                <div class="stat"><div class="label">Duration</div><div class="value">${runMeta.wallClockSeconds || sp.duration || 0}s</div></div>
+                <div class="stat"><div class="label">Threads</div><div class="value">${runMeta.threadCount || 1}</div></div>
+                <div class="stat"><div class="label">Timeout</div><div class="value">${runMeta.timeout || 10}s</div></div>
+            </div>
+            <p style="margin-top:0.75rem;font-size:0.8125rem;color:#64748b;">Tags filter: ${esc(tagsLabel)}</p>
+        </div>`;
+
+    const links = [];
+    if (runMeta.resultsCsv) links.push(`<a href="${esc(runMeta.resultsCsv)}">Results CSV</a>`);
+    if (runMeta.errorsCsv) links.push(`<a href="${esc(runMeta.errorsCsv)}">Errors CSV</a>`);
+    if (runMeta.brahlReport) links.push(`<a href="${esc(runMeta.brahlReport)}">BRAHL Report</a>`);
+    if (runMeta.suiteUrl) links.push(`<a href="${esc(runMeta.suiteUrl)}" target="_blank" rel="noopener">App URL</a>`);
+    document.getElementById('run-meta-links').innerHTML = links.join(' | ');
+}
+
+function matchesSearch(text) {
+    if (!searchTerm) return true;
+    return String(text || '').toLowerCase().includes(searchTerm);
+}
+
+function filterPlans(list) {
+    return list.filter(p => {
+        if (failuresOnly && p.result !== 'Fail') return false;
+        const hay = [p.planId, p.planName, p.designId, (p.tags || []).join(' '), p.output].join(' ').toLowerCase();
+        return matchesSearch(hay);
+    });
+}
+
+function filterSteps(list) {
+    return list.filter(s => {
+        if (failuresOnly && s.result !== 'Fail') return false;
+        const hay = [s.planId, s.stepId, s.stepInfo, s.actionName, s.actionType, s.input, s.output].join(' ').toLowerCase();
+        return matchesSearch(hay);
+    });
+}
+
+function renderArtifactLinks(links) {
+    if (!links || !links.length) return '';
+    return '<div class="artifact-links">' + links.map(l =>
+        `<a href="${esc(l.path)}" target="_blank" rel="noopener">${esc(l.label)}</a>`
+    ).join('') + '</div>';
+}
+
+function showDetails(item, type) {
+    const el = document.getElementById('details');
+    el.classList.remove('empty');
+    if (type === 'plan') {
+        el.innerHTML = `
+            <div class="detail-grid">
+                <div class="detail-item"><label>Plan</label><div class="val">${esc(item.planId)} — ${esc(item.planName)}</div></div>
+                <div class="detail-item"><label>Design</label><div class="val">${esc(item.designId)}</div></div>
+                <div class="detail-item"><label>Result</label><div class="val">${badge(item.result)}</div></div>
+                <div class="detail-item"><label>Duration</label><div class="val">${item.duration}s (${item.passedSteps}/${item.stepCount} steps passed)</div></div>
+                <div class="detail-item"><label>Tags</label><div class="val">${(item.tags || []).map(t => `<span class="tag-chip">${esc(t)}</span>`).join('')}</div></div>
+                ${item.failedStep ? `<div class="detail-item"><label>First Failure</label><div class="val error">Step ${esc(item.failedStep.stepId)}: ${esc(item.failedStep.stepInfo)} (${esc(item.failedStep.actionName)})</div></div>` : ''}
+            </div>`;
+    } else {
+        el.innerHTML = `
+            <div class="detail-grid">
+                <div class="detail-item"><label>Plan / Step</label><div class="val">${esc(item.planId)} / ${esc(item.stepId)}</div></div>
+                <div class="detail-item"><label>Action</label><div class="val">${esc(item.actionType)} → ${esc(item.actionName)}</div></div>
+                <div class="detail-item"><label>Result</label><div class="val">${badge(item.result)}</div></div>
+                <div class="detail-item"><label>Input</label><div class="val">${esc(item.input || 'N/A')}</div></div>
+                <div class="detail-item"><label>Expected</label><div class="val">${esc(item.expected || 'N/A')}</div></div>
+                <div class="detail-item"><label>Output</label><div class="val ${item.result === 'Fail' ? 'error' : ''}">${esc(item.output || 'N/A')}</div></div>
+                <div class="detail-item"><label>Duration</label><div class="val">${item.timeTaken}s at ${esc(item.time)}</div></div>
+                ${renderArtifactLinks(item.artifactLinks)}
+                ${item.screenshot ? `<div class="detail-item"><label>Screenshot</label><div class="val"><a href="#" onclick="showScreenshot('${esc(item.screenshot)}','${esc(item.planId)}');return false;">View screenshot</a></div></div>` : ''}
+            </div>`;
+    }
+    selectedItem = item;
+}
+
+function stepsForPlan(planId) {
+    return testResults.filter(s => s.planId === planId);
+}
+
+function renderPlansView() {
+    const plans = filterPlans(plansData);
+    let html = `<div class="table-wrap"><table><thead><tr>
+        <th></th><th>Plan ID</th><th>Name</th><th>Design</th><th>Tags</th><th>Steps</th><th>Duration</th><th>Result</th>
+    </tr></thead><tbody>`;
+    plans.forEach(p => {
+        const pid = esc(p.planId);
+        html += `<tr class="plan-row" data-plan="${pid}">
+            <td><button class="btn toggle-steps" data-plan="${pid}">+</button></td>
+            <td><strong>${pid}</strong></td>
+            <td>${esc(p.planName)}</td>
+            <td>${esc(p.designId)}</td>
+            <td>${(p.tags || []).slice(0, 4).map(t => `<span class="tag-chip">${esc(t)}</span>`).join('')}</td>
+            <td>${p.passedSteps}/${p.stepCount}</td>
+            <td>${p.duration}s</td>
+            <td>${badge(p.result)}</td>
+        </tr>`;
+        html += `<tbody class="plan-steps" id="steps-${pid}">`;
+        stepsForPlan(p.planId).forEach(s => {
+            html += `<tr class="step-sub" data-step-plan="${pid}">
+                <td></td><td colspan="2">${esc(s.stepId)} — ${esc(s.stepInfo)}</td>
+                <td colspan="2">${esc(s.actionName)}</td><td>${s.timeTaken}s</td><td colspan="2">${badge(s.result)}</td>
+            </tr>`;
+        });
+        html += '</tbody>';
+    });
+    html += '</tbody></table></div>';
+    document.getElementById('view-plans').innerHTML = html;
+    document.getElementById('view-count').textContent = `${plans.length} plans`;
+}
+
+function renderStepsView() {
+    const steps = filterSteps(testResults);
+    let html = `<div class="table-wrap"><table><thead><tr>
+        <th>Plan</th><th>Step</th><th>Info</th><th>Action</th><th>Result</th><th>Duration</th><th>Artifacts</th>
+    </tr></thead><tbody>`;
+    steps.forEach((s, i) => {
+        html += `<tr class="step-row" data-idx="${i}">
+            <td><strong>${esc(s.planId)}</strong></td>
+            <td>${esc(s.stepId)}</td>
+            <td>${esc(s.stepInfo)}</td>
+            <td>${esc(s.actionType)} → ${esc(s.actionName)}</td>
+            <td>${badge(s.result)}</td>
+            <td>${s.timeTaken}s</td>
+            <td>${renderArtifactLinks(s.artifactLinks)}</td>
+        </tr>`;
+    });
+    html += '</tbody></table></div>';
+    document.getElementById('view-steps').innerHTML = html;
+    if (activeView === 'steps') document.getElementById('view-count').textContent = `${steps.length} steps`;
+}
+
+function renderTagsView() {
+    let html = '<div style="padding:1.25rem">';
+    tagSummary.forEach(t => {
+        const rate = t.total ? Math.round((t.pass / t.total) * 100) : 0;
+        const passW = t.total ? (t.pass / t.total) * 100 : 0;
+        const failW = t.total ? (t.fail / t.total) * 100 : 0;
+        html += `<div class="tag-bar-row">
+            <div class="tag-bar-label">${esc(t.tag)}</div>
+            <div class="tag-bar-track">
+                <div class="tag-bar-pass" style="width:${passW}%"></div>
+                <div class="tag-bar-fail" style="width:${failW}%"></div>
+            </div>
+            <div class="tag-bar-pct">${rate}%</div>
+            <div style="font-size:0.75rem;color:#64748b;">${t.pass}/${t.total} pass</div>
+        </div>`;
+    });
+    html += '</div>';
+    html += `<div class="table-wrap"><table><thead><tr><th>Tag</th><th>Plans</th><th>Pass</th><th>Fail</th><th>Rate</th></tr></thead><tbody>`;
+    tagSummary.forEach(t => {
+        const rate = t.total ? ((t.pass / t.total) * 100).toFixed(1) : '0.0';
+        html += `<tr><td>${esc(t.tag)}</td><td>${t.total}</td><td>${t.pass}</td><td>${t.fail}</td><td>${rate}%</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+    document.getElementById('view-tags').innerHTML = html;
+    if (activeView === 'tags') document.getElementById('view-count').textContent = `${tagSummary.length} tags`;
+}
+
+function renderFailuresView() {
+    const fails = filterSteps(testResults.filter(s => s.result === 'Fail'));
+    let html = `<div class="table-wrap"><table><thead><tr>
+        <th>Plan</th><th>Step</th><th>Action</th><th>Output</th><th>Artifacts</th>
+    </tr></thead><tbody>`;
+    fails.forEach(s => {
+        html += `<tr class="fail-row">
+            <td><strong>${esc(s.planId)}</strong></td>
+            <td>${esc(s.stepId)} — ${esc(s.stepInfo)}</td>
+            <td>${esc(s.actionName)}</td>
+            <td class="val error">${esc((s.output || '').slice(0, 200))}</td>
+            <td>${renderArtifactLinks(s.artifactLinks)}${s.screenshot ? `<a href="#" onclick="showScreenshot('${esc(s.screenshot)}','${esc(s.planId)}');return false;">Screenshot</a>` : ''}</td>
+        </tr>`;
+    });
+    html += '</tbody></table></div>';
+    document.getElementById('view-failures').innerHTML = html || '<p style="padding:2rem;text-align:center;color:#16a34a;">No failures — all tests passed!</p>';
+    if (activeView === 'failures') document.getElementById('view-count').textContent = `${fails.length} failures`;
+}
+
+function renderJourneysView() {
+    const journeyPlans = filterPlans(plansData.filter(p =>
+        (p.tags || []).some(t => ['Journey', 'Avatar', 'Client', 'Consultant', 'Promoter', 'Nalanda'].includes(t))
+    ));
+    let html = `<div class="table-wrap"><table><thead><tr>
+        <th>Plan</th><th>Scenario</th><th>Tags</th><th>Steps</th><th>Result</th>
+    </tr></thead><tbody>`;
+    journeyPlans.forEach(p => {
+        html += `<tr class="plan-row" data-plan="${esc(p.planId)}">
+            <td><strong>${esc(p.planId)}</strong></td>
+            <td>${esc(p.planName)}</td>
+            <td>${(p.tags || []).map(t => `<span class="tag-chip">${esc(t)}</span>`).join('')}</td>
+            <td>${p.passedSteps}/${p.stepCount}</td>
+            <td>${badge(p.result)}</td>
+        </tr>`;
+    });
+    html += '</tbody></table></div>';
+    document.getElementById('view-journeys').innerHTML = html;
+    if (activeView === 'journeys') document.getElementById('view-count').textContent = `${journeyPlans.length} journey/avatar plans`;
+}
+
+function renderAll() {
+    renderPlansView();
+    renderStepsView();
+    renderTagsView();
+    renderFailuresView();
+    renderJourneysView();
+    bindEvents();
+}
+
+function switchView(view) {
+    activeView = view;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+    const titles = { plans: 'Test Plans', steps: 'Step Results', tags: 'Results by Tag', failures: 'Failures', journeys: 'Journeys & Avatars' };
+    document.getElementById('view-title').textContent = titles[view] || 'Results';
+    if (view === 'plans') document.getElementById('view-count').textContent = `${filterPlans(plansData).length} plans`;
+    else if (view === 'steps') document.getElementById('view-count').textContent = `${filterSteps(testResults).length} steps`;
+    else if (view === 'tags') document.getElementById('view-count').textContent = `${tagSummary.length} tags`;
+    else if (view === 'failures') document.getElementById('view-count').textContent = `${filterSteps(testResults.filter(s => s.result === 'Fail')).length} failures`;
+    else if (view === 'journeys') {
+        const jp = filterPlans(plansData.filter(p => (p.tags || []).some(t => ['Journey','Avatar','Client','Consultant','Promoter','Nalanda'].includes(t))));
+        document.getElementById('view-count').textContent = `${jp.length} journey/avatar plans`;
+    }
+}
+
+function bindEvents() {
+    document.querySelectorAll('.plan-row').forEach(row => {
+        row.onclick = (e) => {
+            if (e.target.classList.contains('toggle-steps')) return;
+            const plan = plansData.find(p => p.planId === row.dataset.plan);
+            if (plan) showDetails(plan, 'plan');
+        };
+    });
+    document.querySelectorAll('.toggle-steps').forEach(btn => {
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            const tbody = document.getElementById('steps-' + btn.dataset.plan);
+            if (tbody) {
+                tbody.classList.toggle('open');
+                btn.textContent = tbody.classList.contains('open') ? '-' : '+';
+            }
+        };
+    });
+    document.querySelectorAll('.step-row, .fail-row').forEach(row => {
+        row.onclick = () => {
+            const idx = row.dataset.idx;
+            const steps = activeView === 'failures'
+                ? filterSteps(testResults.filter(s => s.result === 'Fail'))
+                : filterSteps(testResults);
+            const step = idx != null ? steps[parseInt(idx, 10)] : null;
+            if (step) showDetails(step, 'step');
+        };
+    });
+}
+
+function exportCsv() {
+    const rows = [['PlanId','StepId','StepInfo','ActionType','ActionName','Result','TimeTaken','Output']];
+    filterSteps(testResults).forEach(s => {
+        rows.push([s.planId, s.stepId, s.stepInfo, s.actionType, s.actionName, s.result, s.timeTaken, (s.output || '').replace(/"/g, '""')]);
+    });
+    const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (runMeta.suite || 'results') + '_export.csv';
+    a.click();
+}
+
+function copyFailures() {
+    const lines = filterSteps(testResults.filter(s => s.result === 'Fail')).map(s =>
+        `${s.planId} step ${s.stepId}: ${s.stepInfo} — ${(s.output || '').slice(0, 120)}`
+    );
+    navigator.clipboard.writeText(lines.join('\n') || 'No failures');
+}
+
+function showScreenshot(src, title) {
+    document.getElementById('modal-title').textContent = 'Screenshot — ' + title;
+    document.getElementById('modal-image').src = src;
+    document.getElementById('screenshot-modal').classList.add('open');
+}
+
+document.getElementById('search').addEventListener('input', e => {
+    searchTerm = e.target.value.toLowerCase();
+    renderAll();
+    switchView(activeView);
+});
+document.getElementById('filter-fail').addEventListener('click', () => {
+    failuresOnly = !failuresOnly;
+    document.getElementById('filter-fail').classList.toggle('primary', failuresOnly);
+    renderAll();
+    switchView(activeView);
+});
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => switchView(tab.dataset.view));
+});
+document.getElementById('export-csv').addEventListener('click', exportCsv);
+document.getElementById('copy-failures').addEventListener('click', copyFailures);
+document.getElementById('print-report').addEventListener('click', () => window.print());
+document.getElementById('modal-close').addEventListener('click', () => {
+    document.getElementById('screenshot-modal').classList.remove('open');
+});
+document.getElementById('screenshot-modal').addEventListener('click', e => {
+    if (e.target.id === 'screenshot-modal') document.getElementById('screenshot-modal').classList.remove('open');
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.getElementById('screenshot-modal').classList.remove('open');
+});
+
+renderExecSummary();
+renderAll();
+switchView('plans');
+</script>
+</body>
+</html>

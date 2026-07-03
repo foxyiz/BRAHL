@@ -1,0 +1,11 @@
+{
+  "input_files": {
+    "yPlans": ["y/ivvu/y1Plans.csv"],
+    "yActions": ["y/ivvu/y2Actions.csv"],
+    "yDesigns": ["y/ivvu/y3Designs.csv"]
+  },
+  "name": "ivvu",
+  "description": "IVVU (ivvu.base44.app) - Gift presence and care for parents in India",
+  "version": "1.0.0",
+  "url": "https://ivvu.base44.app/"
+}

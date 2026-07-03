@@ -1,0 +1,337 @@
+{
+  "initialPrompt": "Expand ivvu with Issue/Link/Security/Element defect-reporting plans",
+  "baseline": {
+    "capturedAt": "2026-07-03 11:19:24",
+    "suiteConfig": "y/ivvu/ivvu.json",
+    "yPlansPaths": [
+      "y/ivvu/y1Plans.csv"
+    ],
+    "totalRows": 45,
+    "runY": 44,
+    "runN": 1,
+    "reuseCount": 1,
+    "runnablePlanIds": [
+      "PWeb_OpenLanding",
+      "PWeb_VerifyTitle",
+      "PWeb_Home_Hero",
+      "PWeb_Pricing_Load",
+      "PWeb_FAQ_Load",
+      "PWeb_Care_Load",
+      "PWeb_Orders_Load",
+      "PWeb_Dashboard_Load",
+      "PWeb_Login_Page",
+      "PWeb_Register_Page",
+      "PWeb_Forgot_Password",
+      "PWeb_Nav_Pricing",
+      "PWeb_Issue_Docs_404",
+      "PWeb_Issue_Profile_404",
+      "PWeb_Issue_Shop_404",
+      "PAPI_Manifest",
+      "PAPI_AuthSession_Unauth",
+      "PAPI_AppLog_Home",
+      "PAPI_Apps_Unauth",
+      "PAPI_InvalidLogin",
+      "PAPI_Robots",
+      "PWeb_Sec_EvilQuery",
+      "PWeb_Perf_Home_Load",
+      "PWeb_Perf_Pricing_Load",
+      "PAPI_Perf_Session",
+      "PWeb_Issue_Gift_404",
+      "PWeb_Issue_BookCare_404",
+      "PWeb_Issue_SendGiftRoute_404",
+      "PWeb_Issue_AddFamilyRoute_404",
+      "PWeb_Issue_About_404",
+      "PWeb_Issue_Automations_404",
+      "PWeb_Issue_Onboarding_404",
+      "PWeb_Issue_BuildApp_404",
+      "PWeb_Issue_ConnectedApps_404",
+      "PWeb_Link_Dashboard_Gifts",
+      "PWeb_Link_Dashboard_ContactsNew",
+      "PWeb_Link_Dashboard_Rewards",
+      "PWeb_Link_Home_FAQ",
+      "PWeb_Link_Home_SignIn",
+      "PWeb_Sec_Dashboard_Public",
+      "PWeb_Sec_Settings_Public",
+      "PWeb_Sec_XSS_Login",
+      "PWeb_Elem_Gifts_Trending",
+      "PWeb_Elem_Dashboard_EmptyOrders"
+    ],
+    "disabledPlanIds": [
+      "PReuse_ivvu_OpenSite"
+    ],
+    "plans": [
+      {
+        "planId": "PReuse_ivvu_OpenSite",
+        "planName": "Open browser and navigate to IVVU",
+        "run": "N",
+        "tags": "Reuse"
+      },
+      {
+        "planId": "PWeb_OpenLanding",
+        "planName": "Open IVVU home page",
+        "run": "Y",
+        "tags": "ivvu;Smoke;Landing"
+      },
+      {
+        "planId": "PWeb_VerifyTitle",
+        "planName": "Verify home page title",
+        "run": "Y",
+        "tags": "ivvu;Smoke"
+      },
+      {
+        "planId": "PWeb_Home_Hero",
+        "planName": "Verify hero messaging on landing",
+        "run": "Y",
+        "tags": "ivvu;Smoke;Landing"
+      },
+      {
+        "planId": "PWeb_Pricing_Load",
+        "planName": "Pricing page loads with plan section",
+        "run": "Y",
+        "tags": "ivvu;Smoke;Pricing"
+      },
+      {
+        "planId": "PWeb_FAQ_Load",
+        "planName": "FAQ help center page loads",
+        "run": "Y",
+        "tags": "ivvu;Smoke;FAQ"
+      },
+      {
+        "planId": "PWeb_Care_Load",
+        "planName": "Care services page loads",
+        "run": "Y",
+        "tags": "ivvu;Smoke;Care"
+      },
+      {
+        "planId": "PWeb_Orders_Load",
+        "planName": "Orders page loads",
+        "run": "Y",
+        "tags": "ivvu;Smoke;Orders"
+      },
+      {
+        "planId": "PWeb_Dashboard_Load",
+        "planName": "Dashboard page loads publicly",
+        "run": "Y",
+        "tags": "ivvu;Smoke;Dashboard"
+      },
+      {
+        "planId": "PWeb_Login_Page",
+        "planName": "Login page form elements",
+        "run": "Y",
+        "tags": "ivvu;Smoke;Auth"
+      },
+      {
+        "planId": "PWeb_Register_Page",
+        "planName": "Register page form elements",
+        "run": "Y",
+        "tags": "ivvu;Smoke;Auth"
+      },
+      {
+        "planId": "PWeb_Forgot_Password",
+        "planName": "Forgot password page loads",
+        "run": "Y",
+        "tags": "ivvu;Smoke;Auth"
+      },
+      {
+        "planId": "PWeb_Nav_Pricing",
+        "planName": "Navigate to pricing via nav link",
+        "run": "Y",
+        "tags": "ivvu;Pricing"
+      },
+      {
+        "planId": "PWeb_Issue_Docs_404",
+        "planName": "Docs route returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression"
+      },
+      {
+        "planId": "PWeb_Issue_Profile_404",
+        "planName": "Profile route returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression"
+      },
+      {
+        "planId": "PWeb_Issue_Shop_404",
+        "planName": "Shop route returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression"
+      },
+      {
+        "planId": "PAPI_Manifest",
+        "planName": "GET manifest.json returns PWA metadata",
+        "run": "Y",
+        "tags": "ivvu;API;Smoke"
+      },
+      {
+        "planId": "PAPI_AuthSession_Unauth",
+        "planName": "Unauthenticated session API returns 401",
+        "run": "Y",
+        "tags": "ivvu;API;Security;Smoke"
+      },
+      {
+        "planId": "PAPI_AppLog_Home",
+        "planName": "POST home app-log beacon succeeds",
+        "run": "Y",
+        "tags": "ivvu;API;NFR"
+      },
+      {
+        "planId": "PAPI_Apps_Unauth",
+        "planName": "Protected apps API returns 401 without auth",
+        "run": "Y",
+        "tags": "ivvu;API;Security"
+      },
+      {
+        "planId": "PAPI_InvalidLogin",
+        "planName": "Invalid login credentials rejected",
+        "run": "Y",
+        "tags": "ivvu;API;Security"
+      },
+      {
+        "planId": "PAPI_Robots",
+        "planName": "robots.txt is reachable",
+        "run": "Y",
+        "tags": "ivvu;API;NFR"
+      },
+      {
+        "planId": "PWeb_Sec_EvilQuery",
+        "planName": "Evil XSS query on landing loads safely",
+        "run": "Y",
+        "tags": "ivvu;Security;Smoke;NFR"
+      },
+      {
+        "planId": "PWeb_Perf_Home_Load",
+        "planName": "Home page load under perf threshold",
+        "run": "Y",
+        "tags": "ivvu;Performance;NFR"
+      },
+      {
+        "planId": "PWeb_Perf_Pricing_Load",
+        "planName": "Pricing page load under perf threshold",
+        "run": "Y",
+        "tags": "ivvu;Performance;NFR"
+      },
+      {
+        "planId": "PAPI_Perf_Session",
+        "planName": "Auth session API response under perf threshold",
+        "run": "Y",
+        "tags": "ivvu;Performance;API"
+      },
+      {
+        "planId": "PWeb_Issue_Gift_404",
+        "planName": "Gift route /gift returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression;BrokenLink"
+      },
+      {
+        "planId": "PWeb_Issue_BookCare_404",
+        "planName": "Book care route /book-care returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression;BrokenLink"
+      },
+      {
+        "planId": "PWeb_Issue_SendGiftRoute_404",
+        "planName": "Send gift route /send-gift returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression;BrokenLink"
+      },
+      {
+        "planId": "PWeb_Issue_AddFamilyRoute_404",
+        "planName": "Add family route /add-family returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression;BrokenLink"
+      },
+      {
+        "planId": "PWeb_Issue_About_404",
+        "planName": "About route returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression"
+      },
+      {
+        "planId": "PWeb_Issue_Automations_404",
+        "planName": "Automations route returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression"
+      },
+      {
+        "planId": "PWeb_Issue_Onboarding_404",
+        "planName": "Onboarding route returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression"
+      },
+      {
+        "planId": "PWeb_Issue_BuildApp_404",
+        "planName": "Build app route returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression"
+      },
+      {
+        "planId": "PWeb_Issue_ConnectedApps_404",
+        "planName": "Connected apps route returns 404",
+        "run": "Y",
+        "tags": "ivvu;Issue;Regression"
+      },
+      {
+        "planId": "PWeb_Link_Dashboard_Gifts",
+        "planName": "Dashboard gifts CTA reaches gift shop",
+        "run": "Y",
+        "tags": "ivvu;Link;Dashboard"
+      },
+      {
+        "planId": "PWeb_Link_Dashboard_ContactsNew",
+        "planName": "Dashboard add family CTA reaches form",
+        "run": "Y",
+        "tags": "ivvu;Link;Dashboard"
+      },
+      {
+        "planId": "PWeb_Link_Dashboard_Rewards",
+        "planName": "Dashboard rewards link loads rewards page",
+        "run": "Y",
+        "tags": "ivvu;Link;Dashboard"
+      },
+      {
+        "planId": "PWeb_Link_Home_FAQ",
+        "planName": "Home FAQ nav link reaches help center",
+        "run": "Y",
+        "tags": "ivvu;Link;Landing"
+      },
+      {
+        "planId": "PWeb_Link_Home_SignIn",
+        "planName": "Home sign in nav reaches login page",
+        "run": "Y",
+        "tags": "ivvu;Link;Landing;Auth"
+      },
+      {
+        "planId": "PWeb_Sec_Dashboard_Public",
+        "planName": "Dashboard accessible without authentication",
+        "run": "Y",
+        "tags": "ivvu;Security;Issue"
+      },
+      {
+        "planId": "PWeb_Sec_Settings_Public",
+        "planName": "Settings page accessible without authentication",
+        "run": "Y",
+        "tags": "ivvu;Security;Issue"
+      },
+      {
+        "planId": "PWeb_Sec_XSS_Login",
+        "planName": "XSS in login email field handled safely",
+        "run": "Y",
+        "tags": "ivvu;Security;Auth"
+      },
+      {
+        "planId": "PWeb_Elem_Gifts_Trending",
+        "planName": "Gift shop shows trending section",
+        "run": "Y",
+        "tags": "ivvu;Element;Gifts"
+      },
+      {
+        "planId": "PWeb_Elem_Dashboard_EmptyOrders",
+        "planName": "Dashboard shows empty orders state",
+        "run": "Y",
+        "tags": "ivvu;Element;Dashboard"
+      }
+    ]
+  },
+  "fStartConfig": "f/fStart_ivvu.json",
+  "cycleStartedAt": "2026-07-03 11:19:24"
+}

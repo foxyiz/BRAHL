@@ -1,0 +1,9 @@
+Type,DataName,D1,D2,D3,D4,D5,D6
+UI,_placeholder,,,,,,
+UI,invalid_email,bad@invalid.example,bad@invalid.example,bad@invalid.example,bad@invalid.example,bad@invalid.example,bad@invalid.example
+UI,invalid_password,wrongpass,wrongpass,wrongpass,wrongpass,wrongpass,wrongpass
+UI,xss_payload,<script>alert('xss')</script>,<script>alert('xss')</script>,<script>alert('xss')</script>,<script>alert('xss')</script>,<script>alert('xss')</script>,<script>alert('xss')</script>
+UI,sql_injection_payload,' OR '1'='1,' OR '1'='1,' OR '1'='1,' OR '1'='1,' OR '1'='1,' OR '1'='1
+UI,special_chars_email,test+special!@example.com,test+special!@example.com,test+special!@example.com,test+special!@example.com,test+special!@example.com,test+special!@example.com
+UI,persona,regular,admin,regular,regular,regular,regular
+UI,user_role,user,admin,user,user,user,user
