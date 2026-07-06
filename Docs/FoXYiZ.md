@@ -39,19 +39,18 @@ You are an expert on **FoXYiZ** — a low-code/no-code automation framework.
 
 ---
 
-## Project layout (July2 / qoa2)
+## Project layout (KK / qoa_web)
 
 ```
-July2/
-├── BRAHL.py                # Desktop GUI — Build/Run/Analyze/Heal/Loop
-├── f/
-│   ├── Foxyiz2.exe         # Frozen runner (rebuilt from fEngine2.py)
-│   ├── fEngine2.py         # Dev engine
-│   ├── fStart.json         # Run config (tags, thread_count)
-│   └── fGUI.py             # Run-only GUI
-├── x/xActions.py, xCapa.csv, xCustom.py
-├── y/qoa2/                 # qoa2 yPAD suite
-└── z/<timestamp>_qoa2/     # *_zResults.csv, *_zDash.html, _errors.csv
+KK/
+├── f/fEngine2.py           # Dev engine (primary)
+├── f/fStart_qoa_web*.json  # qoa_web run configs
+├── x/xActions.py           # Action handlers
+├── u/                      # Utilities + HTML reports
+├── y/qoa_web/              # Active yPAD suite
+├── z/<timestamp>_qoa_web/  # Run output (ephemeral)
+├── qoa_web/                # BRAHL Web app (:8765)
+└── Docs/                   # Handoff docs — start at Docs/README.md
 ```
 
 ---
@@ -226,22 +225,15 @@ Inlines the target plan's steps at this step.
 
 ### Commands
 
-From `Demo-main/`:
+From **`KK/`**:
 
 ```powershell
-# Sequential — debug / first heal pass
-python f\fEngine.py --config f\fStart.json
+# Sequential — debug / heal
+python f\fEngine2.py --config f\fStart_qoa_web_verify.json
 
 # Single suite
-python f\fEngine.py --config y\JusDone\JusDone.json
-
-# Executables (from f/ folder)
-cd f
-.\Foxyiz.exe --config fStart.json    # sequential
-.\f2.exe --config fStart.json        # parallel
+python f\fEngine2.py --config y\qoa_web\qoa_web.json
 ```
-
-**Encoding note:** `Foxyiz.exe` / `f2.exe` may crash with `UnicodeEncodeError` in some terminals. Use `python f\fEngine.py` or run from a normal PowerShell window.
 
 ### Tag filters
 
@@ -394,13 +386,12 @@ Run: `python f\fEngine.py --config y\Math\Math.json`
 
 | Doc | Contents |
 |-----|----------|
-| [BRAHL.md](./BRAHL.md) | Build → Run → Analyze → Heal → Loop; session learnings |
-| [ypad-concepts.md](./ypad-concepts.md) | f(x,y)=z mental model, merge order, DesignId |
-| [prompts.md](./prompts.md) | LLM prompt templates for build/analyze/heal |
-| [evals.md](./evals.md) | Reading z/ results, quality bars |
-| [FoXYiZ_vs_Playwright.md](./FoXYiZ_vs_Playwright.md) | LCNC vs Playwright; when to use which; hybrid strategy |
-| [FoXYiZ_Market_Position.md](./FoXYiZ_Market_Position.md) | vs Karate, Selenium, Tosca; strategic outlook |
-| [TOPICS.md](./TOPICS.md) | Full documentation map |
+| [BRAHL.md](./BRAHL.md) | Build → Run → Analyze → Heal → Loop (KK quick ref at top) |
+| [README.md](./README.md) | Docs hub — handoff index |
+| [HANDOFF.md](./HANDOFF.md) | Export bundle for new machine |
+| [MAINTENANCE.md](./MAINTENANCE.md) | Session cleaner + doc sync |
+| [rules.md](./rules.md) | Agent explore vs automate rules |
+| [../Summary.md](../Summary.md) | Root team index |
 
 ---
 
@@ -410,8 +401,9 @@ Run: `python f\fEngine.py --config y\Math\Math.json`
 Files:     y1Plans (what) + y2Actions (how) + yD_Common (data/locators)
 Reuse:     PReuse_<Suite>_OpenSite — unique per suite, Run=N
 Reset:     xNavigate,base_url before home-page clicks
-Run all:   python f\fEngine.py --config f\fStart.json
+Run all:   python f\fEngine2.py --config f\fStart_qoa_web_verify.json
 Failures:  z/<timestamp>_<Suite>/_errors.csv
+Utilities: python u\zDefects.py  → u/zDefectsDashboard.html
 Heal:      yPAD only — locators in yD_Common, steps in y2Actions
 Parallel:  f2.exe + thread_count = # configs; perf plans Run=N
 Tags:      Smoke | Navigation | Auth | Interaction | Content | Regression

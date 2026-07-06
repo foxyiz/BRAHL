@@ -1,0 +1,80 @@
+{
+  "id": "nalanda_launch_001",
+  "name": "Nalanda SkillFlow AI — Launch Readiness",
+  "app_url": "https://nalanda.base44.app/",
+  "purpose": "Creator launch prompt: Nalanda SkillFlow AI is ready for launch. Run FoXYiZ smoke on core routes (Explore, Learning Path, Quiz, AI Tutor), QA Hunter manual pass on UX gaps, Nalanda community shares the learn path — then BRAHL Go/No-Go.",
+  "prompt": "Here is my web app https://nalanda.base44.app/ — Nalanda SkillFlow AI. We're ready for launch. Give me a health report and Go/No-Go: can we ship?",
+  "owner_avatar": "client",
+  "status": "in_progress",
+  "ai_enabled": true,
+  "budget_usd": 500,
+  "budget_split": { "automation_pct": 55, "human_pct": 45 },
+  "suite_name": "nalanda_app",
+  "suite_config": "y/nalanda_app/nalanda_app.json",
+  "runtime_mode": "local",
+  "context_items": [
+    {
+      "id": "ctx-nalanda-url",
+      "kind": "url",
+      "label": "Production app",
+      "value": "https://nalanda.base44.app/",
+      "added_at": "2026-07-05T20:00:00+00:00"
+    },
+    {
+      "id": "ctx-nalanda-community",
+      "kind": "url",
+      "label": "QA on Air Nalanda panel",
+      "value": "http://127.0.0.1:8765/app?demo=1",
+      "added_at": "2026-07-05T20:00:00+00:00"
+    }
+  ],
+  "chat_messages": [
+    {
+      "id": "welcome",
+      "role": "assistant",
+      "text": "Hi — I'm your BRAHL Build assistant. What are you trying to test or improve?",
+      "at": "2026-07-05T20:00:00+00:00"
+    },
+    {
+      "id": "creator-prompt",
+      "role": "user",
+      "text": "Here is my web app https://nalanda.base44.app/ — Nalanda SkillFlow AI. We're ready for launch. Give me a health report and Go/No-Go status.",
+      "at": "2026-07-05T20:01:00+00:00"
+    },
+    {
+      "id": "assistant-scope",
+      "role": "assistant",
+      "text": "Got it. I'll scope launch readiness: FoXYiZ smoke on landing + Explore + Learning Path + Quiz + AI Tutor, invite a QA Hunter for UX/accessibility on mobile, and link the Nalanda community learn path. Set budget below — suggest 55% automation / 45% human for a launch gate.",
+      "at": "2026-07-05T20:01:05+00:00"
+    }
+  ],
+  "hitl_stories": [
+    {
+      "title": "Mobile learning path UX",
+      "description": "Safari iOS — Learning Path cards readable, no horizontal scroll breakage"
+    },
+    {
+      "title": "Quiz flow happy path",
+      "description": "Guest user can start a quiz without auth errors"
+    },
+    {
+      "title": "AI Tutor first message",
+      "description": "AI Tutor page loads and chat/input is usable"
+    }
+  ],
+  "hitl_invites": [],
+  "hitl_consultants": [],
+  "brahl_chat_messages": [
+    {
+      "id": "brahl-welcome",
+      "role": "assistant",
+      "text": "I'm the BRAHL model for Nalanda SkillFlow AI launch. After Run → Loop, ask for Go/No-Go based on smoke + QA Hunter evidence.",
+      "at": "2026-07-05T20:00:00+00:00"
+    }
+  ],
+  "documents": [],
+  "change_requests": [],
+  "cycle_history": [],
+  "created_at": "2026-07-05T20:00:00+00:00",
+  "updated_at": "2026-07-05T20:00:00+00:00"
+}

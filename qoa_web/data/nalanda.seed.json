@@ -1,0 +1,44 @@
+{
+  "lessons": [
+    {
+      "id": "lesson_seed_1",
+      "author_profile_id": "p6",
+      "author_name": "Morgan Admin",
+      "title": "Nalanda SkillFlow AI — learning paths",
+      "url": "https://nalanda.base44.app/",
+      "blurb": "AI tutor, personalized paths, quizzes, and live trainings — free knowledge for the community.",
+      "tags": ["learn", "skillflow", "featured"],
+      "created_at": "2026-07-05T00:00:00+00:00"
+    },
+    {
+      "id": "lesson_seed_2",
+      "author_profile_id": "p6",
+      "author_name": "Morgan Admin",
+      "title": "ITelearn — QA to AI courses",
+      "url": "https://itelearn.com/",
+      "blurb": "Courses, bootcamps, and hands-on projects — thousands trained on QA and AI skills.",
+      "tags": ["learn", "itelearn", "featured"],
+      "created_at": "2026-07-05T00:00:00+00:00"
+    }
+  ],
+  "threads": [
+    {
+      "id": "thread_welcome",
+      "author_profile_id": "p6",
+      "author_name": "Morgan Admin",
+      "title": "Welcome to Nalanda — free knowledge community",
+      "body": "Learn, teach, and discuss here. Knowledge is free — invite friends with your personal link below. Share lessons from Nalanda SkillFlow AI or ITelearn, or post your own.",
+      "created_at": "2026-07-05T00:00:00+00:00",
+      "replies": [
+        {
+          "id": "reply_welcome_1",
+          "author_profile_id": "p1",
+          "author_name": "Alex Chen",
+          "body": "Excited to share what I learn from the QA→AI path with the community.",
+          "created_at": "2026-07-05T01:00:00+00:00"
+        }
+      ]
+    }
+  ],
+  "profile_invites": []
+}

@@ -1,5 +1,48 @@
 # qoa_web Changelog
 
+## 1.3.0 — 2026-07-05
+
+**Invite GTM + leaner UX**
+
+### Features
+- **Invite landing** (`/welcome`) — 7-day trial, batch codes, admin GTM panel
+- **Routing:** `/` → welcome · `/app` → arena · invite gate on signin/app
+- **Persona badge** — compact dismissible strip (Tips / ×) replaces full task list
+- **Sign-in** — waitlist form removed; persona grid first; compact cards with More…
+- **Pricing tab** — `GET /api/pricing` + wallet rules panel on `$`
+- **Parallel batch dashboard** — `u/zBatchDash.py` → `z/zDash_batch_<name>.html`
+- Verify: **49/49** (2 sign-in pitch plans disabled; waitlist UI plan replaced)
+
+### Removed / deprecated
+- Waitlist form on `/signin` (API retained for legacy; not in verify gate)
+- `LAUNCH.md`, `AVATARS_AND_BUILD.md` — merged into qoa_userDoc
+- Duplicate `fStart_qoa_web_regression_api.json`, stale demo bundles in `archive/`
+
+## 1.2.0 — 2026-07-05
+
+**Hybrid MVP — demo + waitlist + launch hardening**
+
+### Features
+- Waitlist API (`POST /api/waitlist`) + sign-in / about UI
+- Admin waitlist count on `/admin` + CSV export (`QOA_ADMIN_TOKEN`)
+- Demo banner on app + sign-in (personas vs early access)
+- yPAD verify: version launch, hunt evidence, P9 modal, admin, waitlist (+7 plans → **52** total)
+- Deploy: `u/export_demo_bundle.py`, `u/patch_ypad_urls.py`, `Dockerfile`, nginx sample
+- `f/fStart_qoa_web_smoke_prod.json` post-deploy gate
+- [`DEMO_SCRIPT.md`](./DEMO_SCRIPT.md) 10-minute team walkthrough
+
+## 1.1.0 — 2026-07-03
+
+**UX polish — dedupe, modals, single version source**
+
+### Changes
+- Phase progress bar: dot track only (labels live in phase nav — no duplicate text)
+- Click progress dots to jump phases
+- Link verify run + HITL submit: modal with run picker (no `prompt()`)
+- Footer version from `/api/version` (single `APP_VERSION` in API)
+- Post-run quick actions: Open Analyze · View zDash
+- Docs: canonical status in `MEMORY.md`; Summary trimmed
+
 ## 1.0.0 — 2026-07-03
 
 **Local BRAHL web — production-ready desktop release**
@@ -16,20 +59,14 @@
 - Loop: Step 0, Loop 1/2/3, Verify with auto shrink/restore, cycle history, report generate
 - BRAHL tab: report list, viewer, model chat, link verify run
 - REST API including `/api/version`, `/api/ypad/shrink`, `/api/ypad/restore`, cycle history
-- FoXYiZ verify suite: 50 plans (UI + API)
+- FoXYiZ verify suite: 60 plans (Client + HITL)
 
 ### v1.0.1 — dual avatar verify
 
 - HITL reuse plan `PReuse_qoa_web_HitlReady`
 - 10 HITL-specific UI/API plans (Run, Analyze, Heal, Loop, BRAHL scoped)
 - Consultant auto-select first project on gate entry
-- **60/60** FoXYiZ verify · [LAUNCH.md](./LAUNCH.md)
-
-- [x] Web UI runs qoa_web verify and shows zDash
-- [x] Step 0 saves context JSON with project link
-- [x] Loop 1 → Verify → Report flow in browser
-- [x] BRAHL.py shrink/restore parity in Heal + Loop
-- [x] MCP helper script for Cursor agents
+- **60/60** FoXYiZ verify · see qoa_userDoc launch section
 
 ## 0.5 — 2026-07-03
 - Context strip, consultant toolbar, mobile topbar polish

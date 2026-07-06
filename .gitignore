@@ -10,6 +10,15 @@ build/
 # FoXYiZ run output (local runs — regenerate via verify)
 z/2026*/
 z/2025*/
+z/brahl_*
+z/*_zResults*
+z/*_zDash*
+
+# Cleaner archives (safe to delete entire folder)
+archive/cleanup/
+
+# Engine binary (rebuild locally; ship via release artifact for cloud)
+f/Foxyiz2.exe
 
 # IDE
 .idea/

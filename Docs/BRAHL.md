@@ -1,3 +1,32 @@
+# BRAHL — KK / qoa_web quick reference
+
+> **Full skill reference** continues below (FoXYiZ lifecycle, qoa2 lessons, heal tables).
+> **Slim in-app version:** [BRAHL_PROMPT.md](./BRAHL_PROMPT.md) · **Session hygiene:** [MAINTENANCE.md](./MAINTENANCE.md)
+
+**Active workspace:** KK/ · **App:** qoa_web @ http://127.0.0.1:8765 · **Suite:** y/qoa_web/
+
+| Item | Value |
+|------|-------|
+| Verify config | /fStart_qoa_web_verify.json |
+| Plans (Run=Y) | **45** (4 reuse plans stay Run=N) |
+| Tag filter | ll → all Run=Y plans |
+| Personas | P1–P9 in Docs/test-user-data/ → python u/sync_personas.py |
+| Utilities | u/cleaner.py, u/yVisualizer.py, u/zDefects.py — HTML reports in u/ |
+| Avatars | Creator · QA Hunter · Networker (all profiles can switch) |
+
+## Loop protocol (required)
+
+`
+Loop 1   full Run=Y → analyze → heal
+Loop 2   Run=N on passes → failures only → heal
+Loop 3   remaining failures → heal
+Verify   restore all Run=Y → full run → BRAHL report
+`
+
+**Go/No-Go** and **version compare** live on the BRAHL tab (Creator). Do not weaken assertions for A1 app defects.
+
+---
+
 ---
 name: brahl
 description: >-

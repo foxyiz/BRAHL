@@ -1,0 +1,49 @@
+{
+  "id": "p1",
+  "code": "P1",
+  "name": "Alex Chen",
+  "title": "MVP Creator",
+  "role": "client-only",
+  "fictional": true,
+  "email": "alex.chen@example-mvp.test",
+  "company": "HelioShip MVP",
+  "default_avatar": "client",
+  "allowed_avatars": ["client"],
+  "ai": { "default": true, "locked": false },
+  "admin": false,
+  "dual_role": false,
+  "consultant_tier": null,
+  "tech_level": "business",
+  "landing": "app",
+  "accent": "client",
+  "blurb": "Ships software and owns budget. Uses AI chat for requirements, invites QA Hunter, runs BRAHL — no yPAD editing.",
+  "journey": ["Build · AI chat", "Budget & QA Hunter invite", "Run → Analyze → BRAHL"],
+  "ypad_design_column": "D1",
+  "verify_tags": ["Persona", "P1", "Client"],
+  "client_tasks": [
+    { "phase": "build", "title": "Describe MVP scope in AI chat", "detail": "Post purpose, app URL, and acceptance criteria." },
+    { "phase": "build", "title": "Set budget split", "detail": "Automation vs QA Hunter — default 50/50." },
+    { "phase": "build", "title": "Invite QA Hunter consultant", "detail": "Send invite with tag (e.g. checkout UX)." },
+    { "phase": "run", "title": "Run FoXYiZ verify", "detail": "Trigger Run on qoa_web suite — no manual yPAD edits." },
+    { "phase": "brahl", "title": "Review BRAHL report", "detail": "Read automation report; ask BRAHL model questions." }
+  ],
+  "hitl_tasks": [],
+  "networker_tasks": [
+    { "phase": "nalanda", "title": "Browse Learn — featured paths", "detail": "Open Nalanda SkillFlow AI or ITelearn links." },
+    { "phase": "nalanda", "title": "Teach — share a lesson", "detail": "Post a title, link, and blurb for the community." },
+    { "phase": "nalanda", "title": "Discuss — reply in a thread", "detail": "Join the welcome thread or start your own." },
+    { "phase": "nalanda", "title": "Invite — copy your community link", "detail": "Share your personal invite with friends." }
+  ],
+  "sample_data": {
+    "purpose": "Launch MVP checkout — need smoke + invite QA Hunter for mobile UX gaps.",
+    "budget_usd": 500,
+    "budget_split": { "automation_pct": 60, "human_pct": 40 },
+    "hitl_stories": [
+      { "title": "Guest checkout on mobile", "description": "Safari iOS — payment sheet UX" }
+    ],
+    "context_items": [
+      { "kind": "url", "label": "Staging app", "value": "https://staging.helioship.example.test" },
+      { "kind": "figma", "label": "Checkout Figma", "value": "https://figma.com/file/example-checkout" }
+    ]
+  }
+}

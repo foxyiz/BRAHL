@@ -2,7 +2,7 @@
 
 Standing conventions for humans and AI agents working in this workspace. Read this before **Build**, **explore**, or **Heal** tasks.
 
-Related: [BRAHL.md](./BRAHL.md) · [FoXYiZ.md](./FoXYiZ.md) · [README.md](./README.md)
+Related: [BRAHL.md](./BRAHL.md) · [FoXYiZ.md](./FoXYiZ.md) · [README.md](./README.md) · [HANDOFF.md](./HANDOFF.md)
 
 ---
 
@@ -20,7 +20,7 @@ Exploration scripts (Selenium crawlers, one-off `explore_*.py` helpers, HTTP scr
 | yPAD authoring after exploration | Edit **`y/<suite>/`** CSVs + suite JSON |
 | Test execution | **`python f/fEngine2.py`**, **`BRAHL.py`**, or **`Foxyiz2.exe`** |
 | Lifecycle guidance | **[BRAHL.md](./BRAHL.md)**, **[FoXYiZ.md](./FoXYiZ.md)** skills |
-| Plan graph / workflow view | **`python y/yVisualizer.py`** |
+| Plan graph / workflow view | **`python u/yVisualizer.py`** |
 
 ### Existing exploration artifacts (read-only reference)
 
@@ -41,7 +41,8 @@ For **fresh** UI state, use Playwright MCP and update yPAD locators — do not r
 Unless the user explicitly requests engine or tooling changes:
 
 - **Edit:** `y/**/*.csv`, `y/**/*.json`, `f/fStart*.json`
-- **Do not edit:** `fEngine2.py`, `xActions.py`, `BRAHL.py`, `yVisualizer.py`, exploration scripts, unless asked
+- **Do not edit:** `fEngine2.py`, `xActions.py`, `BRAHL.py`, unless asked
+- **Utilities:** `u/` folder (`cleaner.py`, `sync_personas.py`, etc.) — safe to extend
 
 Run and analyze with the existing engine; heal failures in yPAD first (BRAHL **Heal** phase).
 
@@ -88,7 +89,7 @@ Template reference: `y/qoa2/`.
 
 ## 6. What agents should do
 
-- Read **`Docs/BRAHL.md`** and **`Docs/FoXYiZ.md`** at the start of suite work
+- Read **`Docs/README.md`**, **`Docs/BRAHL.md`**, and **`Docs/FoXYiZ.md`** at the start of suite work
 - Explore with **Playwright MCP**; capture routes, headings, buttons, stable locators
 - Reuse **`gosunshine_explore_report.json`** (or similar) as a **starting point**, then verify live
 - Run **`python f/fEngine2.py --config f/fStart_<tag>.json`**, analyze `z/`, heal yPAD, loop

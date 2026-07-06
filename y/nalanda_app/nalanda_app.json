@@ -1,0 +1,11 @@
+{
+  "input_files": {
+    "yPlans": ["y/nalanda_app/y1Plans.csv"],
+    "yActions": ["y/nalanda_app/y2Actions.csv"],
+    "yDesigns": ["y/nalanda_app/y3Designs.csv"]
+  },
+  "name": "nalanda_app",
+  "description": "Nalanda SkillFlow AI (nalanda.base44.app) — launch readiness smoke for Creator Go/No-Go",
+  "version": "1.0.0",
+  "url": "https://nalanda.base44.app/"
+}

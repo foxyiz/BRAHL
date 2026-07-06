@@ -1,0 +1,35 @@
+{
+  "id": "p5",
+  "code": "P5",
+  "name": "Chris Martinez",
+  "title": "Non-technical user",
+  "role": "client-manual",
+  "fictional": true,
+  "email": "chris.martinez@example-manual.test",
+  "company": "Martinez Family Apps",
+  "default_avatar": "client",
+  "allowed_avatars": ["client"],
+  "ai": { "default": false, "locked": true },
+  "admin": false,
+  "dual_role": false,
+  "consultant_tier": null,
+  "tech_level": "none",
+  "landing": "app",
+  "accent": "manual",
+  "blurb": "No automation or AI comfort. Manual Build only — invite humans to run FoXYiZ.",
+  "journey": ["AI locked off", "Manual purpose", "Invite QA Hunter"],
+  "ypad_design_column": "D5",
+  "verify_tags": ["Persona", "P5", "Manual", "Client"],
+  "client_tasks": [
+    { "phase": "build", "title": "Write purpose manually", "detail": "AI off — textarea purpose, no chat assistant." },
+    { "phase": "build", "title": "Set simple budget", "detail": "Dollar amount only; no yPAD or fStart." },
+    { "phase": "build", "title": "Invite QA Hunter to run tests", "detail": "Consultant runs FoXYiZ and uploads reports for Chris." },
+    { "phase": "brahl", "title": "Read QA Hunter report only", "detail": "Wait for human-delivered BRAHL — no AI Q&A." }
+  ],
+  "hitl_tasks": [],
+  "sample_data": {
+    "purpose": "My app needs someone technical to test login and payments — I cannot use AI.",
+    "budget_usd": 300,
+    "budget_split": { "automation_pct": 20, "human_pct": 80 }
+  }
+}
