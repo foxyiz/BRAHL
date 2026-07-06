@@ -1,0 +1,8 @@
+PlanId,PlanName,DesignId,Run,Tags,Output
+PReuse_NalandaApp_OpenSite,Open browser and navigate to Nalanda SkillFlow AI,D1,N,Reuse,site_loaded
+PNalanda_Smoke_Landing,Verify landing title and hero heading,D1,Y,NalandaApp;Smoke;Landing,landing_ok
+PNalanda_Smoke_Explore,Explore page loads,D1,Y,NalandaApp;Smoke;Nav,explore_ok
+PNalanda_Smoke_LearningPath,Learning Path page loads,D1,Y,NalandaApp;Smoke;Nav,learning_path_ok
+PNalanda_Smoke_Quiz,Quiz page loads,D1,Y,NalandaApp;Smoke;Nav,quiz_ok
+PNalanda_Smoke_AITutor,AI Tutor page loads,D1,Y,NalandaApp;Smoke;Nav,ai_tutor_ok
+PNalanda_Launch_Health,Launch readiness — core routes reachable,D1,Y,NalandaApp;Launch;GoNoGo,launch_health_ok

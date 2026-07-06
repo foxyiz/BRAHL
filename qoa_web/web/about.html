@@ -1,0 +1,471 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About us — QA on Air · BRAHL</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <link rel="stylesheet" href="/assets/about.css" />
+  <link rel="stylesheet" href="/assets/themes.css" />
+</head>
+<body class="about-page">
+  <header class="about-header">
+    <div class="about-header-inner">
+      <div>
+        <p class="about-kicker">QA on Air</p>
+        <h1>About us</h1>
+        <p class="about-lead">
+          BRAHL connects <strong>Creators</strong> shipping software, <strong>QA Hunters</strong> who love quality,
+          and <strong>admins</strong> who keep the ecosystem modestly happy — and very satisfied.
+        </p>
+      </div>
+      <div class="about-header-actions">
+        <div class="theme-switch" role="group" aria-label="Visual theme">
+          <button type="button" class="theme-switch-btn active" data-theme-btn="pro" aria-pressed="true">Pro</button>
+          <button type="button" class="theme-switch-btn" data-theme-btn="arena" aria-pressed="false">Arena</button>
+        </div>
+        <a href="/app" class="secondary about-back">← Back to arena</a>
+      </div>
+    <nav class="about-nav" aria-label="On this page">
+      <a href="#about-qoa">QA on Air</a>
+      <a href="#about-foxyiz">FoXYiZ</a>
+      <a href="#about-creators-title">Creators</a>
+      <a href="#about-qa-hunter-title">QA Hunters</a>
+      <a href="#about-admin-title">Admin</a>
+      <a href="#about-faq">FAQ</a>
+      <a href="#about-arena">The arena</a>
+      <a href="#about-vision">Vision</a>
+      <a href="#about-gtm">Get started</a>
+    </nav>
+  </header>
+
+  <section id="about-gtm" class="about-waitlist-cta" aria-labelledby="about-gtm-title">
+    <div class="about-waitlist-inner">
+      <h2 id="about-gtm-title">Get started — invite trial</h2>
+      <p class="blurb">Enter with an invite code for a 7-day trial, then pick a demo profile and walk the arena.</p>
+      <a href="/welcome" class="primary">Invite landing · 7-day trial</a>
+      <a href="/signin" class="secondary">Try demo profiles</a>
+    </div>
+  </section>
+
+  <main class="about-main">
+    <!-- QA on Air & FoXYiZ -->
+    <section class="about-platform" aria-labelledby="about-platform-title">
+      <h2 id="about-platform-title" class="visually-hidden">Our platform</h2>
+      <div class="about-platform-grid">
+        <article id="about-qoa" class="about-platform-card">
+          <span class="about-role-badge about-role-admin">QA on Air</span>
+          <h3>What is QA on Air?</h3>
+          <p>
+            <strong>QA on Air</strong> is the ecosystem behind BRAHL Web — where Creators, QA Hunters,
+            and platform admins meet around a shared testing lifecycle. Creators describe what they ship; automation
+            and AI run bulk coverage; <strong>QA Hunters</strong> fill gaps with real journeys,
+            screenshots, and recordings; admins watch satisfaction on both sides.
+          </p>
+          <ul class="about-bullet-list">
+            <li>Creator workspaces per project (<code>y/&lt;suite&gt;/</code>)</li>
+            <li>Budget split: BRAHL automation vs QA Hunter pool</li>
+            <li>Change requests when your build moves forward</li>
+            <li>Bug-bounty-friendly invites for external teams</li>
+          </ul>
+        </article>
+        <article id="about-foxyiz" class="about-platform-card">
+          <span class="about-role-badge about-role-client">FoXYiZ</span>
+          <h3>What is FoXYiZ?</h3>
+          <p>
+            <strong>FoXYiZ</strong> is the low-code automation engine that powers BRAHL Run and Loop.
+            It follows <strong>f(x, y) = z</strong>: the engine (<em>f</em>) runs your yPAD files (<em>y</em>)
+            and writes results to <em>z/</em> — CSV, dashboards, and error logs.
+          </p>
+          <ul class="about-bullet-list">
+            <li><strong>y1Plans</strong> — what to test (Run=Y/N, tags)</li>
+            <li><strong>y2Actions</strong> — steps (xUI, xAPI, xReuse, …)</li>
+            <li><strong>y3Designs</strong> — data, locators, env variables</li>
+            <li><strong>f/fStart.json</strong> — suite config for verify &amp; smoke runs</li>
+          </ul>
+          <p class="about-formula">Build yPAD → Run FoXYiZ → Analyze z/ → Heal → Loop until verify is green.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Creators -->
+    <section class="about-section" aria-labelledby="about-creators-title">
+      <div class="about-section-head">
+        <span class="about-role-badge about-role-client">Creator · Champion</span>
+        <h2 id="about-creators-title">Why Creators choose BRAHL</h2>
+        <p class="blurb">
+          <strong>You Build, We QA — let's BRAHL!</strong> You enter the arena as the <strong>Champion</strong>:
+          ship the app, set the budget, and get a Go/No-Go health report before launch.
+          Sometimes you're the builder — BRAHL it.
+        </p>
+        <div class="about-experience-tags" aria-label="Creator experiences">
+          <span class="exp-tag exp-tag-creator">#Champion</span>
+          <span class="exp-tag exp-tag-creator">#YouBuildWeQA</span>
+          <span class="exp-tag exp-tag-creator">#BRAHLit</span>
+          <span class="exp-tag exp-tag-creator">#GoNoGo</span>
+          <span class="exp-tag exp-tag-creator">#VersionLaunch</span>
+        </div>
+      </div>
+      <div class="story-marquee" aria-hidden="true">
+        <div class="story-marquee-track" id="client-marquee"></div>
+      </div>
+      <ul class="about-story-list">
+        <li><strong>MVP launch</strong> — “I built an app for my market — I need structured testing before we go live.”</li>
+        <li><strong>Rebuild</strong> — “Our last build changed. Can BRAHL repeat the full cycle on this release?”</li>
+        <li><strong>Automation + human edge cases</strong> — “Run BRAHL through FoXYiZ and AI — but find me a human for critical paths automation skips.”</li>
+        <li><strong>UX evidence</strong> — “I want screenshots and screen recordings in analysis so we can heal with confidence.”</li>
+        <li><strong>Change request</strong> — “API docs landed and login changed — I need assistance again.”</li>
+      </ul>
+      <p class="about-cta-line">
+        <a href="/?reset=1" class="primary">Start as Creator →</a>
+        <span class="meta">Build → Run → Analyze → Heal → Loop → BRAHL</span>
+      </p>
+    </section>
+
+    <!-- Consultants -->
+    <section class="about-section" aria-labelledby="about-qa-hunter-title">
+      <div class="about-section-head">
+        <span class="about-role-badge about-role-hitl">QA Hunter · Contender</span>
+        <h2 id="about-qa-hunter-title">Why QA Hunters join the arena</h2>
+        <p class="blurb">
+          <strong>There are ships sinking. Find and kill the bugs.</strong> You enter as the <strong>Contender</strong> —
+          Human (QA) + Automation + AI, hunting defects before premature launch.
+          Sometimes you're the tester — earn from the human pool.
+        </p>
+        <div class="about-experience-tags" aria-label="QA Hunter experiences">
+          <span class="exp-tag exp-tag-hunter">#Contender</span>
+          <span class="exp-tag exp-tag-hunter">#HuntDefects</span>
+          <span class="exp-tag exp-tag-hunter">#HuntEvidence</span>
+          <span class="exp-tag exp-tag-hunter">#ShipsSinking</span>
+          <span class="exp-tag exp-tag-hunter">#BRAHLit</span>
+        </div>
+      </div>
+      <div class="story-marquee story-marquee-alt" aria-hidden="true">
+        <div class="story-marquee-track" id="consultant-marquee"></div>
+      </div>
+      <ul class="about-story-list">
+        <li><strong>Passion + tooling</strong> — “Deep automation experience, a full AI stack, and genuine love for testing — I want on your project.”</li>
+        <li><strong>Long-term partnership</strong> — “I'll prove value at a modest rate first, then stay through launch, branding, and beyond.”</li>
+        <li><strong>Edge cases</strong> — “Real user journeys, accessibility, and bug-bounty mindset — with screenshots and recordings for Heal.”</li>
+        <li><strong>Enriched BRAHL</strong> — “I join your yPAD workspace, cover QA Hunter stories, and submit reports automation can't write alone.”</li>
+      </ul>
+      <p class="about-cta-line">
+        <a href="/?reset=1" class="secondary">Join as QA Hunter →</a>
+        <span class="meta">Accept invites · enrich reports · get paid fairly</span>
+      </p>
+    </section>
+
+    <!-- Admins -->
+    <section class="about-section about-section-admin" aria-labelledby="about-admin-title">
+      <div class="about-section-head">
+        <span class="about-role-badge about-role-admin">QA on Air · Admin</span>
+        <h2 id="about-admin-title">What we watch — and why</h2>
+        <p class="blurb" id="admin-mission">
+          Our job is ecosystem health: Creators building and rebuilding with confidence, QA Hunters excited to contribute and compensated fairly,
+          and everyone leaving a cycle feeling heard — not oversold.
+        </p>
+      </div>
+
+      <div class="satisfaction-row">
+        <div class="satisfaction-card">
+          <span class="satisfaction-label">Creator satisfaction</span>
+          <span class="satisfaction-score" id="stat-client-score">—</span>
+          <span class="satisfaction-sub">Build · rebuild · verify momentum</span>
+        </div>
+        <div class="satisfaction-card">
+          <span class="satisfaction-label">QA Hunter satisfaction</span>
+          <span class="satisfaction-score" id="stat-consultant-score">—</span>
+          <span class="satisfaction-sub">Joins · invites · enriched reports</span>
+        </div>
+        <div class="satisfaction-card satisfaction-card-mission">
+          <span class="satisfaction-label">Admin mission</span>
+          <p class="satisfaction-quote" id="stat-satisfaction-headline">Modestly happy — very satisfied.</p>
+        </div>
+      </div>
+
+      <div class="admin-stats-grid" id="admin-stats">
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-clients">—</span><span class="admin-stat-label">Creator challenges</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-active">—</span><span class="admin-stat-label">Actively building</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-chat">—</span><span class="admin-stat-label">Build chat messages</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-rebuilds">—</span><span class="admin-stat-label">Change / rebuild requests</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-verify">—</span><span class="admin-stat-label">Projects with verify runs</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-cycles">—</span><span class="admin-stat-label">BRAHL cycle events</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-hitl-joined">—</span><span class="admin-stat-label">QA Hunters joined</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-hitl-invites">—</span><span class="admin-stat-label">QA Hunter invites sent</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-stories">—</span><span class="admin-stat-label">Manual user stories</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-budget">—</span><span class="admin-stat-label">Budget in ecosystem ($)</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-a77-msgs">—</span><span class="admin-stat-label">Atomic 77 messages</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-a77-tokens">—</span><span class="admin-stat-label">Atomic 77 tokens (est.)</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-gtm-batches">—</span><span class="admin-stat-label">GTM invite batches</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-gtm-redeemed">—</span><span class="admin-stat-label">Invites redeemed</span></div>
+        <div class="admin-stat"><span class="admin-stat-value" id="stat-gtm-trials">—</span><span class="admin-stat-label">Active 7-day trials</span></div>
+      </div>
+
+      <div class="admin-gtm-panel" id="admin-gtm-panel" aria-labelledby="admin-gtm-title">
+        <h3 id="admin-gtm-title">GTM — batch invite launches</h3>
+        <p class="blurb">
+          Ship cohorts of <strong>50 Creators</strong> and <strong>50 QA Hunters</strong>. Each code unlocks a
+          <strong>7-day trial</strong> on the landing page before profile pick. Export CSV for email tools.
+        </p>
+        <div class="admin-gtm-actions">
+          <button type="button" class="primary" id="btn-gtm-creators">Generate 50 Creator invites</button>
+          <button type="button" class="primary" id="btn-gtm-hunters">Generate 50 QA Hunter invites</button>
+          <button type="button" class="secondary" id="btn-gtm-refresh">Refresh GTM stats</button>
+        </div>
+        <p id="admin-gtm-status" class="hint" aria-live="polite"></p>
+        <div class="admin-gtm-table-wrap">
+          <table class="admin-gtm-table" id="admin-gtm-batches">
+            <thead>
+              <tr>
+                <th>Batch</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Trial</th>
+                <th>Created</th>
+                <th>Export</th>
+              </tr>
+            </thead>
+            <tbody id="admin-gtm-batches-body">
+              <tr><td colspan="6" class="meta">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4 class="admin-gtm-sub">Recent redemptions</h4>
+        <ul class="admin-gtm-redemptions" id="admin-gtm-redemptions">
+          <li class="meta">Loading…</li>
+        </ul>
+      </div>
+
+      <blockquote class="admin-quote">
+        “When Creators talk to Build, request rebuilds, and reach green verify — and QA Hunters join, contribute evidence, and feel paid fairly —
+        that's the QA on Air sweet spot: <em>modestly happy, very satisfied</em>.”
+      </blockquote>
+    </section>
+
+    <!-- FAQ -->
+    <section id="about-faq" class="about-section about-section-faq" aria-labelledby="about-faq-title">
+      <div class="about-section-head">
+        <h2 id="about-faq-title">Frequently asked questions</h2>
+        <p class="blurb">Quick answers for Creators, QA Hunters, and admins new to QA on Air, FoXYiZ, and BRAHL.</p>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item" open>
+          <summary>What is BRAHL?</summary>
+          <p>
+            <strong>BRAHL</strong> is the quality lifecycle: <strong>Build · Run · Analyze · Heal · Loop</strong> — plus a final
+            <strong>BRAHL report</strong> that summarizes verify health, failures, and next steps. In BRAHL Web, each tab maps to a phase;
+            AI optionally assists on Build, Analyze, and Heal, while Run and Loop execute FoXYiZ directly.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>How is FoXYiZ different from BRAHL?</summary>
+          <p>
+            <strong>FoXYiZ</strong> is the automation engine (<code>f(x,y)=z</code>) — it runs yPAD CSVs and produces <code>z/</code> results.
+            <strong>BRAHL</strong> is the full product workflow around that engine: authoring plans, running cycles, reading reports,
+            healing test defects, looping until green, and inviting humans for what automation misses.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>What is a QA Hunter?</summary>
+          <p>
+            <strong>QA Hunters</strong> join a Creator's challenge to cover <strong>manual user stories</strong>, exploratory paths, UX findings,
+            and evidence (screenshots, screen recordings) that FoXYiZ cannot capture alone. They enrich BRAHL reports and can
+            work alongside automation + AI on the same yPAD workspace.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>I'm a Creator — how do I start?</summary>
+          <p>
+            Choose the <strong>Creator</strong> avatar, pick or create a <strong>challenge</strong> in the top bar, describe your purpose
+            on Build (AI chat or manual), review yPAD tabs (Plans, Actions, Designs), invite QA Hunters if needed, then
+            <strong>Run → Loop → Verify</strong> and read your BRAHL report.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>My app changed — can BRAHL run again?</summary>
+          <p>
+            Yes. Use <strong>“This project has changed — I need assistance again”</strong> on Build to file a change request
+            (e.g. new login, API docs). That opens Refine with AI, logs the change in chat, and signals that yPADs and QA Hunter
+            stories should be extended for the new release.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>Do I need AI turned on?</summary>
+          <p>
+            No. AI assists Build, Analyze, and Heal when enabled and when <code>OPENAI_API_KEY</code> is set in <code>f/.env</code>.
+            With AI off, Creators describe purpose manually and QA Hunter runs FoXYiZ locally — Run and Loop are always
+            FoXYiZ-only regardless of the toggle.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>What are yPADs and white pads?</summary>
+          <p>
+            <strong>yPAD</strong> = your automation package under <code>y/&lt;suite&gt;/</code>: <code>y1Plans.csv</code>,
+            <code>y2Actions.csv</code>, <code>y3Designs.csv</code>. “White pads” is the informal name for Run=Y plans shown
+            on Build — now organized in tabs so you can explore, filter, and edit CSVs in place.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>How do QA Hunters get invited and paid?</summary>
+          <p>
+            Creators click <strong>Invite QA Hunter</strong>, optionally add team name, email, a note, or a bug-bounty flag.
+            QA Hunters switch to the <strong>QA Hunter</strong> avatar and join open challenges. Budget on Build splits between
+            BRAHL automation and QA Hunter pool — payout preview shows the split; admins track joins and ecosystem satisfaction on this page.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>Where do test results live?</summary>
+          <p>
+            FoXYiZ writes timestamped folders under <code>z/</code> (e.g. <code>z/20260704_114752_qoa_web/</code>) with
+            <code>*_zResults.csv</code>, HTML dashboards, and BRAHL reports. Analyze and BRAHL tabs in the app read from these runs
+            scoped to your active project.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>What does QA on Air admin care about?</summary>
+          <p>
+            Ecosystem health: Creators actively building and reaching verify, QA Hunters joining and contributing evidence,
+            fair budget use, and satisfaction on both sides — <em>modestly happy, very satisfied</em>. Live stats on this page
+            come from <a href="/api/about/ecosystem" target="_blank">/api/about/ecosystem</a>.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <section id="about-arena" class="about-section about-arena" aria-labelledby="about-arena-title">
+      <div class="about-section-head">
+        <span class="about-role-badge about-role-admin">The arena</span>
+        <h2 id="about-arena-title">Champion vs Contender — BRAHL it</h2>
+        <p class="blurb about-arena-lead">
+          QA on Air is a <strong id="about-p2p-kicker">direct P2P marketplace</strong> — Creators vs QA Hunters in the ring, with very little middleman.
+          FoXYiZ automation is the referee; the BRAHL report is the scorecard. Switch avatars anytime:
+          sometimes you build, sometimes you hunt.
+        </p>
+      </div>
+      <div class="arena-ring" role="img" aria-label="Boxing ring — Creator Champion versus QA Hunter Contender">
+        <div class="arena-ring-rope arena-rope-top"></div>
+        <div class="arena-ring-floor">
+          <div class="arena-corner arena-corner-champion">
+            <span class="arena-corner-label">Champion</span>
+            <strong>Creator</strong>
+            <span class="arena-corner-tag">You Build</span>
+          </div>
+          <div class="arena-ring-center">
+            <span class="arena-vs">VS</span>
+            <p class="arena-tagline-main"><strong>BRAHL it</strong></p>
+            <p class="arena-tagline-sub">You Build, We QA — let's BRAHL!</p>
+          </div>
+          <div class="arena-corner arena-corner-contender">
+            <span class="arena-corner-label">Contender</span>
+            <strong>QA Hunter</strong>
+            <span class="arena-corner-tag">We QA</span>
+          </div>
+        </div>
+        <div class="arena-ring-rope arena-rope-bottom"></div>
+      </div>
+      <ul class="about-bullet-list about-arena-points">
+        <li><strong>P2P by design</strong> — budget flows Creator → challenge → Hunter deliverables; platform takes a modest slice only.</li>
+        <li><strong>Mutual experience</strong> — satisfaction on both sides when someone is building your testing, or you're building theirs.</li>
+        <li><strong>Perfect-quality launch</strong> — version compare (old vs new), Go/No-Go, and human evidence before ship.</li>
+        <li><strong>Nalanda</strong> — third corner: free knowledge community — learn, teach, discuss, invite (no BRAHL build phases).</li>
+      </ul>
+    </section>
+
+    <section id="about-vision" class="about-section about-vision">
+      <div class="about-section-head">
+        <span class="about-role-badge about-role-admin">Our vision</span>
+        <h2 id="about-vision-title">QA on Air — from KK</h2>
+        <p class="blurb about-founder-lead">
+          I built <strong>FoXYiZ</strong>, <strong>QA on Air</strong>, and the <strong>BRAHL</strong> lifecycle because quality should feel
+          human again — a fighting arena where Creators and QA Hunters meet peer-to-peer, launch <strong>absolutely perfect-quality apps</strong>,
+          and everyone gets a fair return on time and passion.
+        </p>
+      </div>
+      <div class="about-vision-body">
+        <div class="mission-grid">
+          <article class="mission-card mission-done">
+            <span class="mission-badge">Mission 0 — complete</span>
+            <h3>Foundation in place</h3>
+            <p>
+              We tested the products end-to-end, assembled the core team, and grew to about <strong>500 people</strong> using the arena today —
+              Creators posting challenges, QA Hunters breaking apps, and automation carrying bulk coverage through FoXYiZ.
+            </p>
+          </article>
+          <article class="mission-card">
+            <span class="mission-badge">Mission 1</span>
+            <h3>5,000 motivated builders</h3>
+            <p>
+              Scale the platform from ~500 to <strong>5,000</strong> users who feel interested, welcomed, and genuinely rewarded —
+              not passive spectators, but people who want to come back because the arena respects their effort.
+            </p>
+          </article>
+          <article class="mission-card">
+            <span class="mission-badge">Mission 2</span>
+            <h3>Return on time &amp; passion</h3>
+            <p>
+              Every hour in the arena should feel worth it: Creators see verify green and fair spend;
+              QA Hunters see earnings and craft; <strong>Nalanda</strong> contributors see XP for lessons, discussions, and invites.
+              Mutual human experience plus automation and AI — that mix is our edge.
+            </p>
+          </article>
+          <article class="mission-card">
+            <span class="mission-badge">Mission 3</span>
+            <h3>Care for every avatar</h3>
+            <p>
+              <strong>Creators</strong> fund challenges honestly. <strong>QA Hunters</strong> hunt with evidence.
+              <strong>Nalanda</strong> shares knowledge — learn paths, teach lessons, discuss, invite friends (single community page — XP for contribution).
+              Budget flows to humans who helped, covers AI costs, and keeps only a modest slice for QA on Air itself.
+            </p>
+          </article>
+          <article class="mission-card">
+            <span class="mission-badge">Mission 4 — roadmap</span>
+            <h3>Depth for Creators — SEO, brand, human signal</h3>
+            <p>
+              Take Creators deeper than pass/fail: <strong>SEO reports</strong>, branding checks, accessibility and UX narratives,
+              and rich human feedback (recordings, hunt evidence, version diffs) woven into every BRAHL report —
+              so analysis is not just green verify, but launch-ready product quality.
+            </p>
+          </article>
+          <article class="mission-card mission-atomic77">
+            <span class="mission-badge">Mission 5 — Atomic 77</span>
+            <h3>Idea to launch — inside the arena</h3>
+            <p>
+              <strong>Atomic 77</strong> is our builder plugin: Creators with an app idea get FAQ, voice-assistant style help,
+              and a path through Build → BRAHL → Go/No-Go. Every avatar’s effort — chat, hunts, shares, tokens — flows to the
+              <strong>$</strong> tab and admin analytics so we reward time, passion, and contribution like a true community platform.
+            </p>
+          </article>
+        </div>
+        <ul class="about-bullet-list">
+          <li><strong>Champion · Contender · Nalanda</strong> — experience tags, not gatekeeping; switch roles in one arena.</li>
+          <li><strong>BRAHL it</strong> — the verb: Build, Run, Analyze, Heal, Loop, then read the scorecard.</li>
+          <li><strong>Atomic 77 (A77)</strong> — idea-to-launch assistant on every avatar; AI on/off; wallet + XP tracking.</li>
+          <li><strong>Three avatars, one arena</strong> — switch Creator · QA Hunter · Nalanda anytime.</li>
+          <li><strong>XP (experience points)</strong> — weighted by avatar, time, deliverables, and shares; see the calculator on the <strong>$</strong> tab.</li>
+          <li><strong>FoXYiZ local-first</strong> — Run and Loop stay free on desktop; AI stays modest unless you choose cloud mode.</li>
+          <li><strong>Transparency</strong> — cost meter + XP show where money and points go, so trust stays high.</li>
+        </ul>
+        <blockquote class="admin-quote about-vision-quote">
+          “Modestly happy, very satisfied — Creators who trust their verify green and Go/No-Go,
+          QA Hunters who feel their hunt converted into fair pay and XP,
+          and an ecosystem that grows to five thousand without losing its soul. <strong>BRAHL it.</strong>”
+        </blockquote>
+        <p class="about-cta-line">
+          <a href="/welcome" class="primary">Landing · invite trial</a>
+          <a href="/app" class="secondary">Open arena →</a>
+          <span class="meta">Champion · Contender · Nalanda · BRAHL it</span>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer about-footer">
+    <span>QA on Air · BRAHL Web · <a href="/welcome">Landing</a> · <a href="/app">Arena</a> · <a href="/admin#about-admin-title">Admin</a> · <a href="/api/about/ecosystem" target="_blank">Ecosystem API</a></span>
+    <span id="about-updated" class="meta"></span>
+  </footer>
+
+  <script src="/assets/theme.js"></script>
+  <script src="/assets/about.js"></script>
+  <script>window.QoaTheme?.initTheme?.();</script>
+</body>
+</html>

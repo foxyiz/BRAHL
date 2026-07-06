@@ -1,0 +1,425 @@
+/* ── Theme: Pro (default via :root) · Arena (visual fight-ring) ── */
+
+html[data-theme="pro"],
+html:not([data-theme]) {
+  --theme-name: pro;
+}
+
+html[data-theme="arena"] {
+  --theme-name: arena;
+  --bg: #0a0c10;
+  --surface: #141820;
+  --surface2: #1e2430;
+  --accent: #ef4444;
+  --accent-dim: #b91c1c;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --fail: #f87171;
+  --arena-rope: repeating-linear-gradient(90deg, #dc2626 0 10px, #27272a 10px 20px);
+  --arena-glow: 0 0 48px rgba(220, 38, 38, 0.15);
+}
+
+/* Theme switcher */
+.theme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 2px;
+  border-radius: 999px;
+  border: 1px solid var(--surface2);
+  background: var(--bg);
+}
+
+.theme-switch-btn {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.65rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.theme-switch-btn:hover {
+  color: var(--text);
+}
+
+.theme-switch-btn.active {
+  color: #fff;
+  background: var(--accent-dim);
+}
+
+html[data-theme="arena"] .theme-switch-btn.active {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  box-shadow: 0 0 12px rgba(220, 38, 38, 0.45);
+}
+
+html[data-theme="arena"] .theme-switch-btn[data-theme-btn="pro"].active {
+  background: var(--accent-dim);
+  box-shadow: none;
+}
+
+/* ── Visual reward rail (arena only) ── */
+.visual-reward-rail {
+  border-bottom: 2px solid rgba(220, 38, 38, 0.35);
+  background: radial-gradient(ellipse 80% 120% at 50% 0%, rgba(220, 38, 38, 0.14) 0%, transparent 55%),
+    var(--surface);
+  padding: 0.65rem 1rem 0.75rem;
+}
+
+.visual-reward-rail[hidden] {
+  display: none !important;
+}
+
+.reward-loop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.reward-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  min-width: 4.5rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 10px;
+  border: 1px solid var(--surface2);
+  background: rgba(0, 0, 0, 0.25);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.reward-step strong {
+  font-size: 1.05rem;
+  color: var(--ok);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.reward-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.reward-arrow {
+  font-size: 1rem;
+  color: rgba(220, 38, 38, 0.7);
+  font-weight: 800;
+  padding: 0 0.15rem;
+}
+
+.reward-step.reward-step-pay strong {
+  color: var(--warn);
+}
+
+.reward-step.reward-step-launch strong {
+  color: var(--accent);
+}
+
+html[data-theme="arena"] .reward-step.reward-step-current {
+  border-color: rgba(220, 38, 38, 0.55);
+  box-shadow: 0 0 16px rgba(220, 38, 38, 0.2);
+  animation: arena-pulse 2s ease-in-out infinite;
+}
+
+@keyframes arena-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+.mini-arena-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.55rem;
+  font-size: 0.75rem;
+}
+
+.mini-arena-corner {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.mini-arena-corner.champion {
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  color: var(--ok);
+}
+
+.mini-arena-corner.contender {
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: #fca5a5;
+}
+
+.mini-arena-vs {
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: #ef4444;
+  letter-spacing: 0.12em;
+}
+
+/* Visual substitute cards — hidden in pro */
+.visual-card {
+  display: none;
+}
+
+html[data-theme="arena"] .visual-card {
+  display: block;
+}
+
+html[data-theme="arena"] .visual-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.65rem;
+  margin: 0.75rem 0;
+}
+
+html[data-theme="arena"] .visual-card-item {
+  text-align: center;
+  padding: 0.85rem 0.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--surface2);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="arena"] .visual-card-item .v-icon {
+  font-size: 1.75rem;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+html[data-theme="arena"] .visual-card-item strong {
+  display: block;
+  font-size: 0.82rem;
+  margin-bottom: 0.15rem;
+}
+
+html[data-theme="arena"] .visual-card-item span {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+/* Less text in arena — keep labels, buttons, status */
+html[data-theme="arena"] .blurb,
+html[data-theme="arena"] .hint,
+html[data-theme="arena"] #xp-intro,
+html[data-theme="arena"] .welcome-pitch,
+html[data-theme="arena"] #build-panel-blurb,
+html[data-theme="arena"] .hunter-hero-tagline,
+html[data-theme="arena"] .atomic77-hint,
+html[data-theme="arena"] .promote-social-tips,
+html[data-theme="arena"] .avatar-gate-card > p:not(.visual-card),
+html[data-theme="arena"] .build-placeholder .blurb,
+html[data-theme="arena"] .phase-locked-msg {
+  display: none !important;
+}
+
+html[data-theme="arena"] .tagline,
+html[data-theme="arena"] #app-tagline {
+  display: none;
+}
+
+html[data-theme="arena"] #app-title {
+  font-size: 1.15rem;
+  background: linear-gradient(90deg, #fca5a5, #ef4444);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html[data-theme="arena"] .topbar {
+  border-bottom: 3px solid transparent;
+  border-image: var(--arena-rope) 1;
+  box-shadow: var(--arena-glow);
+}
+
+html[data-theme="arena"] .avatar-btn .avatar-icon {
+  font-size: 1.1rem;
+  width: 2rem;
+  height: 2rem;
+  line-height: 2rem;
+  border-radius: 50%;
+}
+
+html[data-theme="arena"] .avatar-btn[data-avatar="client"] .avatar-icon::after {
+  content: "🥊";
+  font-size: 1rem;
+}
+
+html[data-theme="arena"] .avatar-btn[data-avatar="client"] .avatar-icon {
+  font-size: 0;
+}
+
+html[data-theme="arena"] .avatar-btn[data-avatar="consultant"] .avatar-icon {
+  font-size: 0;
+}
+
+html[data-theme="arena"] .avatar-btn[data-avatar="consultant"] .avatar-icon::after {
+  content: "🎯";
+  font-size: 1rem;
+}
+
+html[data-theme="arena"] .avatar-btn[data-avatar="networker"] .avatar-icon {
+  font-size: 0;
+}
+
+html[data-theme="arena"] .avatar-btn[data-avatar="networker"] .avatar-icon::after {
+  content: "📣";
+  font-size: 1rem;
+}
+
+html[data-theme="arena"] .avatar-btn.active {
+  border-color: #ef4444;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.35);
+}
+
+/* Phase nav — icons */
+html[data-theme="arena"] .phase-btn {
+  font-size: 0;
+  min-width: 2.6rem;
+  padding: 0.5rem 0.55rem;
+  position: relative;
+}
+
+html[data-theme="arena"] .phase-btn::before {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+html[data-theme="arena"] .phase-btn[data-phase="build"]::before { content: "🔨"; }
+html[data-theme="arena"] .phase-btn[data-phase="run"]::before { content: "▶️"; }
+html[data-theme="arena"] .phase-btn[data-phase="analyze"]::before { content: "🔍"; }
+html[data-theme="arena"] .phase-btn[data-phase="heal"]::before { content: "🩹"; }
+html[data-theme="arena"] .phase-btn[data-phase="loop"]::before { content: "🔄"; }
+html[data-theme="arena"] .phase-btn[data-phase="brahl"]::before { content: "🥊"; }
+html[data-theme="arena"] .phase-btn[data-phase="atomic77"]::before { content: "✨"; }
+html[data-theme="arena"] .phase-btn[data-phase="cost"]::before { content: "💰"; font-size: 1.1rem; }
+html[data-theme="arena"] .phase-btn[data-phase="nalanda"]::before { content: "📚"; }
+
+html[data-theme="arena"] .phase-btn.active {
+  transform: scale(1.08);
+}
+
+html[data-theme="arena"] .phase-btn.phase-brahl.active {
+  background: linear-gradient(135deg, #dc2626, #7c3aed);
+}
+
+html[data-theme="arena"] .cost-card-value.xp-value,
+html[data-theme="arena"] .xp-value {
+  font-size: 1.75rem;
+  color: var(--warn);
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.35);
+}
+
+html[data-theme="arena"] .cost-meter-fill {
+  background: linear-gradient(90deg, #dc2626, #fbbf24, #4ade80);
+}
+
+html[data-theme="arena"] .status-bar {
+  font-weight: 700;
+}
+
+html[data-theme="arena"] .demo-banner {
+  background: rgba(220, 38, 38, 0.12);
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+html[data-theme="arena"] .section-sub {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+/* About page — arena visual mode */
+html[data-theme="arena"] .about-page .about-lead,
+html[data-theme="arena"] .about-page .blurb,
+html[data-theme="arena"] .about-page .about-bullet-list,
+html[data-theme="arena"] .about-page .admin-quote,
+html[data-theme="arena"] .about-page .about-section-head .blurb {
+  display: none;
+}
+
+html[data-theme="arena"] .about-page .mission-card p {
+  display: none;
+}
+
+html[data-theme="arena"] .about-page .mission-card h3 {
+  font-size: 1rem;
+}
+
+html[data-theme="arena"] .about-page .mission-card {
+  text-align: center;
+  padding: 1.25rem 0.75rem;
+}
+
+html[data-theme="arena"] .about-page .mission-card::before {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+html[data-theme="arena"] .about-page .mission-card:nth-child(1)::before { content: "🏗️"; }
+html[data-theme="arena"] .about-page .mission-card:nth-child(2)::before { content: "👥"; }
+html[data-theme="arena"] .about-page .mission-card:nth-child(3)::before { content: "⏱️"; }
+html[data-theme="arena"] .about-page .mission-card:nth-child(4)::before { content: "🎭"; }
+html[data-theme="arena"] .about-page .mission-card:nth-child(5)::before { content: "📊"; }
+html[data-theme="arena"] .about-page .mission-card:nth-child(6)::before { content: "✨"; }
+
+html[data-theme="arena"] .about-page .arena-ring {
+  margin: 0.5rem 0;
+}
+
+html[data-theme="arena"] .about-page .about-arena-points {
+  display: none;
+}
+
+html[data-theme="arena"] .about-header-inner {
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+html[data-theme="arena"] .about-page .about-header .theme-switch {
+  margin-left: auto;
+}
+
+.topbar-links {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .reward-loop {
+    gap: 0.25rem;
+  }
+  .reward-step {
+    min-width: 3.5rem;
+    padding: 0.3rem 0.4rem;
+  }
+  .reward-arrow {
+    display: none;
+  }
+  html[data-theme="arena"] .phase-btn {
+    min-width: 2.2rem;
+    padding: 0.4rem;
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "configs": ["y/nalanda_app/nalanda_app.json"],
+  "thread_count": 1,
+  "timeout": 15,
+  "headless": false,
+  "debug": false,
+  "tags": ["NalandaApp"]
+}

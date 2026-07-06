@@ -1,0 +1,224 @@
+/* Nalanda community panel — learn · teach · discuss · invite */
+
+.nalanda-panel {
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.nalanda-header h2 {
+  margin: 0 0 0.35rem;
+  color: #c4b5fd;
+}
+
+.nalanda-xp-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  padding: 0.65rem 1rem;
+  margin: 0.75rem 0 1rem;
+  border-radius: 10px;
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  font-size: 0.85rem;
+}
+
+.nalanda-xp-strip strong {
+  color: #e9d5ff;
+}
+
+.nalanda-section {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--surface2);
+}
+
+.nalanda-section:last-child {
+  border-bottom: none;
+}
+
+.nalanda-section h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.nalanda-featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.nalanda-featured-card {
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: rgba(168, 85, 247, 0.06);
+}
+
+.nalanda-featured-card h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+}
+
+.nalanda-featured-card a {
+  font-size: 0.8rem;
+  word-break: break-all;
+}
+
+.nalanda-faq-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.nalanda-faq-chip {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.nalanda-faq-chip:hover {
+  background: rgba(168, 85, 247, 0.15);
+}
+
+.nalanda-lesson-list,
+.nalanda-thread-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nalanda-lesson-item,
+.nalanda-thread-item {
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.nalanda-thread-item:hover,
+.nalanda-lesson-item:hover {
+  border-color: rgba(168, 85, 247, 0.35);
+}
+
+.nalanda-item-meta {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+
+.nalanda-teach-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 520px;
+}
+
+.nalanda-teach-form input,
+.nalanda-teach-form textarea {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
+  font: inherit;
+}
+
+.nalanda-share-box {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px dashed rgba(168, 85, 247, 0.35);
+}
+
+.nalanda-share-box textarea {
+  width: 100%;
+  min-height: 5rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.nalanda-thread-detail {
+  margin-top: 0.75rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nalanda-replies {
+  margin: 0.75rem 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.nalanda-replies li {
+  padding: 0.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.88rem;
+}
+
+.nalanda-invite-code {
+  font-family: ui-monospace, monospace;
+  font-size: 1.1rem;
+  color: #c4b5fd;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  display: inline-block;
+  margin: 0.5rem 0;
+}
+
+.nalanda-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.nalanda-status {
+  font-size: 0.85rem;
+  color: var(--ok);
+  margin-top: 0.35rem;
+}
+
+.phase-btn.phase-nalanda {
+  border-color: rgba(168, 85, 247, 0.45);
+}
+
+.phase-btn.phase-nalanda.active {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: #a855f7;
+}
+
+.mode-networker .phase-btn[data-phase="atomic77"],
+.mode-networker .phase-btn[data-phase="cost"] {
+  display: none !important;
+}
+
+.mode-networker .phase-nav .phase-btn[data-phase="build"],
+.mode-networker .phase-nav .phase-btn[data-phase="run"],
+.mode-networker .phase-nav .phase-btn[data-phase="analyze"],
+.mode-networker .phase-nav .phase-btn[data-phase="heal"],
+.mode-networker .phase-nav .phase-btn[data-phase="loop"],
+.mode-networker .phase-nav .phase-btn[data-phase="brahl"] {
+  display: none !important;
+}

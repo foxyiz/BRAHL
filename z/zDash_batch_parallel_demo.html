@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoXYiZ Batch Report — parallel_demo</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+            line-height: 1.5;
+        }
+        .container { max-width: 1440px; margin: 0 auto; padding: 1.5rem; }
+        .header {
+            background: linear-gradient(135deg, #0ea5e9 0%, #4f46e5 100%);
+            color: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.25);
+        }
+        .header h1 { font-size: 2rem; margin-bottom: 0.35rem; }
+        .header p { opacity: 0.92; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .card h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+        .card .value { font-size: 1.75rem; font-weight: 700; }
+        .card.pass .value { color: #16a34a; }
+        .card.fail .value { color: #dc2626; }
+        .card.time .value { color: #4f46e5; font-size: 1.35rem; }
+        section {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        section h2 {
+            padding: 1rem 1.25rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 1.05rem;
+        }
+        .table-wrap { overflow: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        th {
+            background: #f1f5f9;
+            padding: 0.65rem 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            position: sticky;
+            top: 0;
+        }
+        td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        tr:hover { background: #f8fafc; }
+        .num { text-align: right; white-space: nowrap; }
+        .pass { color: #16a34a; font-weight: 600; }
+        .fail { color: #dc2626; font-weight: 600; }
+        .sub { font-size: 0.75rem; color: #64748b; margin-top: 0.15rem; }
+        .bar { height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; min-width: 80px; }
+        .bar span { display: block; height: 100%; background: linear-gradient(90deg, #38bdf8, #4f46e5); }
+        .compare {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            padding: 1.25rem;
+        }
+        .compare .metric {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .compare .metric .label { color: #64748b; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .compare .metric .value { font-size: 1.5rem; font-weight: 700; margin-top: 0.25rem; }
+        .compare .metric .hint { color: #64748b; font-size: 0.85rem; margin-top: 0.35rem; }
+        .output-cell { max-width: 320px; word-break: break-word; }
+        a { color: #2563eb; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Parallel Batch Report — parallel_demo</h1>
+            <p>6 parallel jobs · 228/403 plans passed (56.6%) · generated 2026-07-05 11:50:51</p>
+        </div>
+
+        <div class="summary-grid">
+            <div class="card"><h2>Jobs</h2><div class="value">6</div></div>
+            <div class="card"><h2>Total plans</h2><div class="value">403</div></div>
+            <div class="card pass"><h2>Passed</h2><div class="value">228</div></div>
+            <div class="card fail"><h2>Failed</h2><div class="value">175</div></div>
+            <div class="card time"><h2>Parallel wall time</h2><div class="value">29m 37s</div></div>
+            <div class="card time"><h2>Sequential (sum)</h2><div class="value">1h 24m 30s</div></div>
+        </div>
+
+        <section>
+            <h2>Time comparison — parallel vs sequential</h2>
+            <div class="compare">
+                <div class="metric">
+                    <div class="label">If run one after another</div>
+                    <div class="value">1h 24m 30s</div>
+                    <div class="hint">Sum of each job&apos;s wall-clock time</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Parallel batch wall time</div>
+                    <div class="value">29m 37s</div>
+                    <div class="hint">Longest job (bottleneck) sets total wait</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Time saved</div>
+                    <div class="value">54m 53s</div>
+                    <div class="hint">2.85x faster than sequential</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Engine step time (all jobs)</div>
+                    <div class="value">1h 29m 58s</div>
+                    <div class="hint">Sum of step durations across batches</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Jobs in this batch</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Batch / tag</th>
+                            <th>fStart</th>
+                            <th>Run folder</th>
+                            <th>Plans</th>
+                            <th>Pass</th>
+                            <th>Fail</th>
+                            <th>Rate</th>
+                            <th>Wall</th>
+                            <th>Steps</th>
+                            <th>Duration bar</th>
+                            <th>Links</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr>
+            <td><strong>api</strong><div class="sub">API</div></td>
+            <td>—</td>
+            <td>20260705_111807_qoa_web</td>
+            <td class="num">68</td>
+            <td class="num pass">56</td>
+            <td class="num fail">12</td>
+            <td class="num">82.4%</td>
+            <td class="num">22.9s</td>
+            <td class="num">1.1s</td>
+            <td><div class="bar"><span style="width:1%"></span></div></td>
+            <td><a href="../z/20260705_111807_qoa_web/qoa_web_zDash.html" target="_blank">Open zDash</a> · <a href="../z/parallel_demo_api.log" target="_blank">Log</a></td>
+        </tr>
+        <tr>
+            <td><strong>brahl</strong><div class="sub">BRAHL</div></td>
+            <td>—</td>
+            <td>20260705_111809_qoa_web</td>
+            <td class="num">86</td>
+            <td class="num pass">24</td>
+            <td class="num fail">62</td>
+            <td class="num">27.9%</td>
+            <td class="num">29m 37s</td>
+            <td class="num">24m 37s</td>
+            <td><div class="bar"><span style="width:100%"></span></div></td>
+            <td><a href="../z/20260705_111809_qoa_web/qoa_web_zDash.html" target="_blank">Open zDash</a> · <a href="../z/parallel_demo_brahl.log" target="_blank">Log</a></td>
+        </tr>
+        <tr>
+            <td><strong>cost</strong><div class="sub">Cost</div></td>
+            <td>—</td>
+            <td>20260705_111811_qoa_web</td>
+            <td class="num">98</td>
+            <td class="num pass">40</td>
+            <td class="num fail">58</td>
+            <td class="num">40.8%</td>
+            <td class="num">28m 33s</td>
+            <td class="num">23m 56s</td>
+            <td><div class="bar"><span style="width:96%"></span></div></td>
+            <td><a href="../z/20260705_111811_qoa_web/qoa_web_zDash.html" target="_blank">Open zDash</a> · <a href="../z/parallel_demo_cost.log" target="_blank">Log</a></td>
+        </tr>
+        <tr>
+            <td><strong>external</strong><div class="sub">External</div></td>
+            <td>—</td>
+            <td>20260705_111811_qoa_web</td>
+            <td class="num">45</td>
+            <td class="num pass">45</td>
+            <td class="num fail">0</td>
+            <td class="num">100.0%</td>
+            <td class="num">4m 55s</td>
+            <td class="num">23m 56s</td>
+            <td><div class="bar"><span style="width:17%"></span></div></td>
+            <td><a href="../z/20260705_111811_qoa_web/qoa_web_zDash.html" target="_blank">Open zDash</a> · <a href="../z/parallel_demo_external.log" target="_blank">Log</a></td>
+        </tr>
+        <tr>
+            <td><strong>foxyiz</strong><div class="sub">FoXYiZ</div></td>
+            <td>—</td>
+            <td>20260705_111813_qoa_web</td>
+            <td class="num">78</td>
+            <td class="num pass">45</td>
+            <td class="num fail">33</td>
+            <td class="num">57.7%</td>
+            <td class="num">13m 43s</td>
+            <td class="num">12m 29s</td>
+            <td><div class="bar"><span style="width:46%"></span></div></td>
+            <td><a href="../z/20260705_111813_qoa_web/qoa_web_zDash.html" target="_blank">Open zDash</a> · <a href="../z/parallel_demo_foxyiz.log" target="_blank">Log</a></td>
+        </tr>
+        <tr>
+            <td><strong>qahunter</strong><div class="sub">QA_Hunter</div></td>
+            <td>—</td>
+            <td>20260705_111815_qoa_web</td>
+            <td class="num">28</td>
+            <td class="num pass">18</td>
+            <td class="num fail">10</td>
+            <td class="num">64.3%</td>
+            <td class="num">7m 20s</td>
+            <td class="num">4m 59s</td>
+            <td><div class="bar"><span style="width:25%"></span></div></td>
+            <td><a href="../z/20260705_111815_qoa_web/qoa_web_zDash.html" target="_blank">Open zDash</a> · <a href="../z/parallel_demo_qahunter.log" target="_blank">Log</a></td>
+        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2>Failures across batch (200 shown)</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Batch</th>
+                            <th>Tag</th>
+                            <th>Plan</th>
+                            <th>Step</th>
+                            <th>Step info</th>
+                            <th>Output</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P1_API_ThemesCss</td>
+            <td>2</td>
+            <td>GET ThemesCss</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P1_API_ThemeJs</td>
+            <td>2</td>
+            <td>GET ThemeJs</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P1_API_AboutEcosystem</td>
+            <td>2</td>
+            <td>GET AboutEcosystem</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P2_API_ThemesCss</td>
+            <td>2</td>
+            <td>GET ThemesCss</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P2_API_ThemeJs</td>
+            <td>2</td>
+            <td>GET ThemeJs</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P2_API_AboutEcosystem</td>
+            <td>2</td>
+            <td>GET AboutEcosystem</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P3_API_ThemesCss</td>
+            <td>2</td>
+            <td>GET ThemesCss</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P3_API_ThemeJs</td>
+            <td>2</td>
+            <td>GET ThemeJs</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P3_API_AboutEcosystem</td>
+            <td>2</td>
+            <td>GET AboutEcosystem</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P4_API_ThemesCss</td>
+            <td>2</td>
+            <td>GET ThemesCss</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P4_API_ThemeJs</td>
+            <td>2</td>
+            <td>GET ThemeJs</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint</td>
+        </tr>
+        <tr>
+            <td>api</td>
+            <td>API</td>
+            <td>PJ_P4_API_AboutEcosystem</td>
+            <td>2</td>
+            <td>GET AboutEcosystem</td>
+            <td class="output-cell" title="Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint">Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P1_Head_brahl_cli</td>
+            <td>4</td>
+            <td>Verify BRAHL heading</td>
+            <td class="output-cell" title="[Link to PJ_P1_Head_brahl_cli_D1_4.png]">[Link to PJ_P1_Head_brahl_cli_D1_4.png]</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P2_Head_brahl_cli</td>
+            <td>4</td>
+            <td>Verify BRAHL heading</td>
+            <td class="output-cell" title="[Link to PJ_P2_Head_brahl_cli_D2_4.png]">[Link to PJ_P2_Head_brahl_cli_D2_4.png]</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P2_Head_brahl_con</td>
+            <td>4</td>
+            <td>Verify BRAHL heading</td>
+            <td class="output-cell" title="[Link to PJ_P2_Head_brahl_con_D2_4.png]">[Link to PJ_P2_Head_brahl_con_D2_4.png]</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P1_Cycle_build_to_run</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112457.png | page: None_No [Link to PJ_P1_Cycle_build_to_run_D1_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P1_Cycle_run_to_analyze</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112522.png | page: None_No [Link to PJ_P1_Cycle_run_to_analyze_D1_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P1_Cycle_analyze_to_heal</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112547.png | page: None_No [Link to PJ_P1_Cycle_analyze_to_heal_D1_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P1_Cycle_heal_to_loop</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112612.png | page: None_No [Link to PJ_P1_Cycle_heal_to_loop_D1_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P1_Cycle_loop_to_brahl</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112637.png | page: None_No [Link to PJ_P1_Cycle_loop_to_brahl_D1_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P1_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112702.png | page: None_No [Link to PJ_P1_Cycle_brahl_to_cost_D1_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P2_Cycle_build_to_run</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112728.png | page: None_No [Link to PJ_P2_Cycle_build_to_run_D2_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P2_Cycle_run_to_analyze</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112753.png | page: None_No [Link to PJ_P2_Cycle_run_to_analyze_D2_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P2_Cycle_analyze_to_heal</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112818.png | page: None_No [Link to PJ_P2_Cycle_analyze_to_heal_D2_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P2_Cycle_heal_to_loop</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112843.png | page: None_No [Link to PJ_P2_Cycle_heal_to_loop_D2_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P2_Cycle_loop_to_brahl</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112908.png | page: None_No [Link to PJ_P2_Cycle_loop_to_brahl_D2_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P2_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112934.png | page: None_No [Link to PJ_P2_Cycle_brahl_to_cost_D2_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P5_Cycle_build_to_run</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113000.png | page: None_No [Link to PJ_P5_Cycle_build_to_run_D5_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P5_Cycle_run_to_analyze</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113026.png | page: None_No [Link to PJ_P5_Cycle_run_to_analyze_D5_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P5_Cycle_analyze_to_heal</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113051.png | page: None_No [Link to PJ_P5_Cycle_analyze_to_heal_D5_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P5_Cycle_heal_to_loop</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113116.png | page: None_No [Link to PJ_P5_Cycle_heal_to_loop_D5_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P5_Cycle_loop_to_brahl</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113141.png | page: None_No [Link to PJ_P5_Cycle_loop_to_brahl_D5_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P5_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113206.png | page: None_No [Link to PJ_P5_Cycle_brahl_to_cost_D5_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P6_Cycle_build_to_run</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113232.png | page: None_No [Link to PJ_P6_Cycle_build_to_run_D6_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P6_Cycle_run_to_analyze</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113257.png | page: None_No [Link to PJ_P6_Cycle_run_to_analyze_D6_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P6_Cycle_analyze_to_heal</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113322.png | page: None_No [Link to PJ_P6_Cycle_analyze_to_heal_D6_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P6_Cycle_heal_to_loop</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113347.png | page: None_No [Link to PJ_P6_Cycle_heal_to_loop_D6_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P6_Cycle_loop_to_brahl</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113412.png | page: None_No [Link to PJ_P6_Cycle_loop_to_brahl_D6_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P6_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113437.png | page: None_No [Link to PJ_P6_Cycle_brahl_to_cost_D6_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P7_Cycle_build_to_run</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113502.png | page: None_No [Link to PJ_P7_Cycle_build_to_run_D7_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P7_Cycle_run_to_analyze</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113527.png | page: None_No [Link to PJ_P7_Cycle_run_to_analyze_D7_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P7_Cycle_analyze_to_heal</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113552.png | page: None_No [Link to PJ_P7_Cycle_analyze_to_heal_D7_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P7_Cycle_heal_to_loop</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113617.png | page: None_No [Link to PJ_P7_Cycle_heal_to_loop_D7_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P7_Cycle_loop_to_brahl</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113642.png | page: None_No [Link to PJ_P7_Cycle_loop_to_brahl_D7_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P7_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113707.png | page: None_No [Link to PJ_P7_Cycle_brahl_to_cost_D7_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P9_Cycle_build_to_run</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113732.png | page: None_No [Link to PJ_P9_Cycle_build_to_run_D9_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P9_Cycle_run_to_analyze</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113757.png | page: None_No [Link to PJ_P9_Cycle_run_to_analyze_D9_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P9_Cycle_analyze_to_heal</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113822.png | page: None_No [Link to PJ_P9_Cycle_analyze_to_heal_D9_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P9_Cycle_heal_to_loop</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113847.png | page: None_No [Link to PJ_P9_Cycle_heal_to_loop_D9_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P9_Cycle_loop_to_brahl</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113912.png | page: None_No [Link to PJ_P9_Cycle_loop_to_brahl_D9_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P9_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113937.png | page: None_No [Link to PJ_P9_Cycle_brahl_to_cost_D9_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P1_A77_Faq_brahl_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113955.png | page: None_None_113 [Link to PJ_P1_A77_Faq_brahl_cli_D1_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P1_A77_Faq_brahl_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114020.png | page: None_None_114 [Link to PJ_P1_A77_Faq_brahl_net_D1_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P2_A77_Faq_brahl_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114038.png | page: None_None_114 [Link to PJ_P2_A77_Faq_brahl_cli_D2_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P2_A77_Faq_brahl_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114057.png | page: None_None_114 [Link to PJ_P2_A77_Faq_brahl_con_D2_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P2_A77_Faq_brahl_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114122.png | page: None_None_114 [Link to PJ_P2_A77_Faq_brahl_net_D2_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P3_A77_Faq_brahl_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114140.png | page: None_None_114 [Link to PJ_P3_A77_Faq_brahl_cli_D3_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P3_A77_Faq_brahl_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114158.png | page: None_None_114 [Link to PJ_P3_A77_Faq_brahl_con_D3_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P3_A77_Faq_brahl_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114223.png | page: None_None_114 [Link to PJ_P3_A77_Faq_brahl_net_D3_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P4_A77_Faq_brahl_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114242.png | page: None_None_114 [Link to PJ_P4_A77_Faq_brahl_cli_D4_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P4_A77_Faq_brahl_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114300.png | page: None_None_114 [Link to PJ_P4_A77_Faq_brahl_con_D4_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P4_A77_Faq_brahl_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114325.png | page: None_None_114 [Link to PJ_P4_A77_Faq_brahl_net_D4_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P5_A77_Faq_brahl_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114343.png | page: None_None_114 [Link to PJ_P5_A77_Faq_brahl_cli_D5_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P5_A77_Faq_brahl_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114409.png | page: None_None_114 [Link to PJ_P5_A77_Faq_brahl_net_D5_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P6_A77_Faq_brahl_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114427.png | page: None_None_114 [Link to PJ_P6_A77_Faq_brahl_cli_D6_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P6_A77_Faq_brahl_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114445.png | page: None_None_114 [Link to PJ_P6_A77_Faq_brahl_con_D6_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P6_A77_Faq_brahl_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114510.png | page: None_None_114 [Link to PJ_P6_A77_Faq_brahl_net_D6_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P7_A77_Faq_brahl_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114528.png | page: None_None_114 [Link to PJ_P7_A77_Faq_brahl_cli_D7_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P7_A77_Faq_brahl_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114554.png | page: None_None_114 [Link to PJ_P7_A77_Faq_brahl_net_D7_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P8_A77_Faq_brahl_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114612.png | page: None_None_114 [Link to PJ_P8_A77_Faq_brahl_cli_D8_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P8_A77_Faq_brahl_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114630.png | page: None_None_114 [Link to PJ_P8_A77_Faq_brahl_con_D8_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P8_A77_Faq_brahl_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114656.png | page: None_None_114 [Link to PJ_P8_A77_Faq_brahl_net_D8_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P9_A77_Faq_brahl_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114714.png | page: None_None_114 [Link to PJ_P9_A77_Faq_brahl_cli_D9_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>brahl</td>
+            <td>BRAHL</td>
+            <td>PJ_P9_A77_Faq_brahl_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_114740.png | page: None_None_114 [Link to PJ_P9_A77_Faq_brahl_net_D9_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P2_Head_cost_con</td>
+            <td>4</td>
+            <td>Verify wallet view</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_112522.png | page:  [Link to PJ_P2_Head_cost_con_D2_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P3_Head_cost_con</td>
+            <td>4</td>
+            <td>Verify wallet view</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_112600.png | page:  [Link to PJ_P3_Head_cost_con_D3_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P4_Head_cost_con</td>
+            <td>4</td>
+            <td>Verify wallet view</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_112638.png | page:  [Link to PJ_P4_Head_cost_con_D4_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P6_Head_cost_con</td>
+            <td>4</td>
+            <td>Verify wallet view</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_112717.png | page:  [Link to PJ_P6_Head_cost_con_D6_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P8_Head_cost_con</td>
+            <td>4</td>
+            <td>Verify wallet view</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_112804.png | page:  [Link to PJ_P8_Head_cost_con_D8_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P1_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112842.png | page: None_No [Link to PJ_P1_Cycle_brahl_to_cost_D1_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P2_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112907.png | page: None_No [Link to PJ_P2_Cycle_brahl_to_cost_D2_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P5_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112933.png | page: None_No [Link to PJ_P5_Cycle_brahl_to_cost_D5_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P6_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112958.png | page: None_No [Link to PJ_P6_Cycle_brahl_to_cost_D6_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P7_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113024.png | page: None_No [Link to PJ_P7_Cycle_brahl_to_cost_D7_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P9_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113049.png | page: None_No [Link to PJ_P9_Cycle_brahl_to_cost_D9_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P1_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113108.png | page: None_None_113 [Link to PJ_P1_A77_Faq_cost_cli_D1_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P1_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113126.png | page: None_None_113 [Link to PJ_P1_A77_Faq_cost_net_D1_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P2_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113144.png | page: None_None_113 [Link to PJ_P2_A77_Faq_cost_cli_D2_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P2_A77_Faq_cost_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113202.png | page: None_None_113 [Link to PJ_P2_A77_Faq_cost_con_D2_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P2_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113221.png | page: None_None_113 [Link to PJ_P2_A77_Faq_cost_net_D2_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P3_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113239.png | page: None_None_113 [Link to PJ_P3_A77_Faq_cost_cli_D3_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P3_A77_Faq_cost_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113258.png | page: None_None_113 [Link to PJ_P3_A77_Faq_cost_con_D3_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P3_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113316.png | page: None_None_113 [Link to PJ_P3_A77_Faq_cost_net_D3_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P4_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113334.png | page: None_None_113 [Link to PJ_P4_A77_Faq_cost_cli_D4_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P4_A77_Faq_cost_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113352.png | page: None_None_113 [Link to PJ_P4_A77_Faq_cost_con_D4_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P4_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113411.png | page: None_None_113 [Link to PJ_P4_A77_Faq_cost_net_D4_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P5_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113429.png | page: None_None_113 [Link to PJ_P5_A77_Faq_cost_cli_D5_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P5_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113447.png | page: None_None_113 [Link to PJ_P5_A77_Faq_cost_net_D5_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P6_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113505.png | page: None_None_113 [Link to PJ_P6_A77_Faq_cost_cli_D6_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P6_A77_Faq_cost_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113524.png | page: None_None_113 [Link to PJ_P6_A77_Faq_cost_con_D6_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P6_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113542.png | page: None_None_113 [Link to PJ_P6_A77_Faq_cost_net_D6_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P7_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113600.png | page: None_None_113 [Link to PJ_P7_A77_Faq_cost_cli_D7_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P7_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113618.png | page: None_None_113 [Link to PJ_P7_A77_Faq_cost_net_D7_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P8_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113636.png | page: None_None_113 [Link to PJ_P8_A77_Faq_cost_cli_D8_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P8_A77_Faq_cost_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113654.png | page: None_None_113 [Link to PJ_P8_A77_Faq_cost_con_D8_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P8_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113713.png | page: None_None_113 [Link to PJ_P8_A77_Faq_cost_net_D8_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P9_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113731.png | page: None_None_113 [Link to PJ_P9_A77_Faq_cost_cli_D9_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P9_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113749.png | page: None_None_113 [Link to PJ_P9_A77_Faq_cost_net_D9_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P1_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_113811.png | page: N [Link to PJ_P1_Cost_XpCards_D1_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P1_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_113833.png | page: No [Link to PJ_P1_Cost_CostMeter_D1_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P1_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_113855.png | page: [Link to PJ_P1_Cost_RuntimeLocal_D1_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P1_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_113917.png | page:  [Link to PJ_P1_Cost_ProjectName_D1_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P2_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_113939.png | page: N [Link to PJ_P2_Cost_XpCards_D2_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P2_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_114001.png | page: No [Link to PJ_P2_Cost_CostMeter_D2_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P2_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_114023.png | page: [Link to PJ_P2_Cost_RuntimeLocal_D2_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P2_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_114045.png | page:  [Link to PJ_P2_Cost_ProjectName_D2_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P5_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_114107.png | page: N [Link to PJ_P5_Cost_XpCards_D5_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P5_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_114129.png | page: No [Link to PJ_P5_Cost_CostMeter_D5_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P5_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_114151.png | page: [Link to PJ_P5_Cost_RuntimeLocal_D5_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P5_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_114213.png | page:  [Link to PJ_P5_Cost_ProjectName_D5_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P6_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_114235.png | page: N [Link to PJ_P6_Cost_XpCards_D6_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P6_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_114257.png | page: No [Link to PJ_P6_Cost_CostMeter_D6_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P6_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_114319.png | page: [Link to PJ_P6_Cost_RuntimeLocal_D6_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P6_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_114341.png | page:  [Link to PJ_P6_Cost_ProjectName_D6_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P7_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_114403.png | page: N [Link to PJ_P7_Cost_XpCards_D7_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P7_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_114425.png | page: No [Link to PJ_P7_Cost_CostMeter_D7_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P7_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_114447.png | page: [Link to PJ_P7_Cost_RuntimeLocal_D7_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P7_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_114509.png | page:  [Link to PJ_P7_Cost_ProjectName_D7_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P9_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_114531.png | page: N [Link to PJ_P9_Cost_XpCards_D9_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P9_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_114554.png | page: No [Link to PJ_P9_Cost_CostMeter_D9_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P9_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_114616.png | page: [Link to PJ_P9_Cost_RuntimeLocal_D9_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>cost</td>
+            <td>Cost</td>
+            <td>PJ_P9_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_114638.png | page:  [Link to PJ_P9_Cost_ProjectName_D9_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P2_Head_cost_con</td>
+            <td>4</td>
+            <td>Verify wallet view</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_112522.png | page:  [Link to PJ_P2_Head_cost_con_D2_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P3_Head_cost_con</td>
+            <td>4</td>
+            <td>Verify wallet view</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_112600.png | page:  [Link to PJ_P3_Head_cost_con_D3_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P4_Head_cost_con</td>
+            <td>4</td>
+            <td>Verify wallet view</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_112638.png | page:  [Link to PJ_P4_Head_cost_con_D4_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P6_Head_cost_con</td>
+            <td>4</td>
+            <td>Verify wallet view</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_112717.png | page:  [Link to PJ_P6_Head_cost_con_D6_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P8_Head_cost_con</td>
+            <td>4</td>
+            <td>Verify wallet view</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_112804.png | page:  [Link to PJ_P8_Head_cost_con_D8_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P1_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112842.png | page: None_No [Link to PJ_P1_Cycle_brahl_to_cost_D1_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P2_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112907.png | page: None_No [Link to PJ_P2_Cycle_brahl_to_cost_D2_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P5_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112933.png | page: None_No [Link to PJ_P5_Cycle_brahl_to_cost_D5_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P6_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_112958.png | page: None_No [Link to PJ_P6_Cycle_brahl_to_cost_D6_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P7_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113024.png | page: None_No [Link to PJ_P7_Cycle_brahl_to_cost_D7_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P9_Cycle_brahl_to_cost</td>
+            <td>6</td>
+            <td>Verify status bar</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screenshot: None_None_113049.png | page: None_No [Link to PJ_P9_Cycle_brahl_to_cost_D9_6.txt]">Error in xGetText: xGetText failed for locator 'status_bar_locator': Message: [Artifacts =&gt; screensh…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P1_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113108.png | page: None_None_113 [Link to PJ_P1_A77_Faq_cost_cli_D1_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P1_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113126.png | page: None_None_113 [Link to PJ_P1_A77_Faq_cost_net_D1_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P2_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113144.png | page: None_None_113 [Link to PJ_P2_A77_Faq_cost_cli_D2_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P2_A77_Faq_cost_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113202.png | page: None_None_113 [Link to PJ_P2_A77_Faq_cost_con_D2_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P2_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113221.png | page: None_None_113 [Link to PJ_P2_A77_Faq_cost_net_D2_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P3_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113239.png | page: None_None_113 [Link to PJ_P3_A77_Faq_cost_cli_D3_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P3_A77_Faq_cost_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113258.png | page: None_None_113 [Link to PJ_P3_A77_Faq_cost_con_D3_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P3_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113316.png | page: None_None_113 [Link to PJ_P3_A77_Faq_cost_net_D3_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P4_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113334.png | page: None_None_113 [Link to PJ_P4_A77_Faq_cost_cli_D4_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P4_A77_Faq_cost_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113352.png | page: None_None_113 [Link to PJ_P4_A77_Faq_cost_con_D4_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P4_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113411.png | page: None_None_113 [Link to PJ_P4_A77_Faq_cost_net_D4_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P5_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113429.png | page: None_None_113 [Link to PJ_P5_A77_Faq_cost_cli_D5_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P5_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113447.png | page: None_None_113 [Link to PJ_P5_A77_Faq_cost_net_D5_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P6_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113505.png | page: None_None_113 [Link to PJ_P6_A77_Faq_cost_cli_D6_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P6_A77_Faq_cost_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113524.png | page: None_None_113 [Link to PJ_P6_A77_Faq_cost_con_D6_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P6_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113542.png | page: None_None_113 [Link to PJ_P6_A77_Faq_cost_net_D6_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P7_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113600.png | page: None_None_113 [Link to PJ_P7_A77_Faq_cost_cli_D7_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P7_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113618.png | page: None_None_113 [Link to PJ_P7_A77_Faq_cost_net_D7_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P8_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113636.png | page: None_None_113 [Link to PJ_P8_A77_Faq_cost_cli_D8_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P8_A77_Faq_cost_con</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113654.png | page: None_None_113 [Link to PJ_P8_A77_Faq_cost_con_D8_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P8_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113713.png | page: None_None_113 [Link to PJ_P8_A77_Faq_cost_net_D8_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P9_A77_Faq_cost_cli</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113731.png | page: None_None_113 [Link to PJ_P9_A77_Faq_cost_cli_D9_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P9_A77_Faq_cost_net</td>
+            <td>2</td>
+            <td>Open A77</td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: None_None_113749.png | page: None_None_113 [Link to PJ_P9_A77_Faq_cost_net_D9_2.txt]">Error in xClick: xClick failed for locator 'nav_atomic77_btn': Message: [Artifacts =&gt; screenshot: No…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P1_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_113811.png | page: N [Link to PJ_P1_Cost_XpCards_D1_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P1_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_113833.png | page: No [Link to PJ_P1_Cost_CostMeter_D1_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P1_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_113855.png | page: [Link to PJ_P1_Cost_RuntimeLocal_D1_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P1_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_113917.png | page:  [Link to PJ_P1_Cost_ProjectName_D1_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P2_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_113939.png | page: N [Link to PJ_P2_Cost_XpCards_D2_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P2_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_114001.png | page: No [Link to PJ_P2_Cost_CostMeter_D2_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P2_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_114023.png | page: [Link to PJ_P2_Cost_RuntimeLocal_D2_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P2_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_114045.png | page:  [Link to PJ_P2_Cost_ProjectName_D2_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P5_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_114107.png | page: N [Link to PJ_P5_Cost_XpCards_D5_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P5_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_114129.png | page: No [Link to PJ_P5_Cost_CostMeter_D5_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P5_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_114151.png | page: [Link to PJ_P5_Cost_RuntimeLocal_D5_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P5_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_114213.png | page:  [Link to PJ_P5_Cost_ProjectName_D5_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P6_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_114235.png | page: N [Link to PJ_P6_Cost_XpCards_D6_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P6_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_114257.png | page: No [Link to PJ_P6_Cost_CostMeter_D6_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P6_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_114319.png | page: [Link to PJ_P6_Cost_RuntimeLocal_D6_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P6_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_114341.png | page:  [Link to PJ_P6_Cost_ProjectName_D6_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P7_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_114403.png | page: N [Link to PJ_P7_Cost_XpCards_D7_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P7_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_114425.png | page: No [Link to PJ_P7_Cost_CostMeter_D7_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P7_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_114447.png | page: [Link to PJ_P7_Cost_RuntimeLocal_D7_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P7_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_114509.png | page:  [Link to PJ_P7_Cost_ProjectName_D7_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P9_Cost_XpCards</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; screenshot: None_None_114531.png | page: N [Link to PJ_P9_Cost_XpCards_D9_4.txt]">Error in xGetText: xGetText failed for locator 'xp_summary_cards_locator': Message: [Artifacts =&gt; sc…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P9_Cost_CostMeter</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; screenshot: None_None_114554.png | page: No [Link to PJ_P9_Cost_CostMeter_D9_4.txt]">Error in xGetText: xGetText failed for locator 'cost_meter_fill_locator': Message: [Artifacts =&gt; scr…</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P9_Cost_RuntimeLocal</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; screenshot: None_None_114616.png | page: [Link to PJ_P9_Cost_RuntimeLocal_D9_4.txt]">Error in xGetText: xGetText failed for locator 'cost_runtime_local_locator': Message: [Artifacts =&gt; …</td>
+        </tr>
+        <tr>
+            <td>external</td>
+            <td>External</td>
+            <td>PJ_P9_Cost_ProjectName</td>
+            <td>4</td>
+            <td>Verify cost UI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; screenshot: None_None_114638.png | page:  [Link to PJ_P9_Cost_ProjectName_D9_4.txt]">Error in xGetText: xGetText failed for locator 'cost_project_name_locator': Message: [Artifacts =&gt; s…</td>
+        </tr>
+        <tr>
+            <td>foxyiz</td>
+            <td>FoXYiZ</td>
+            <td>PJ_P1_Engine_Run</td>
+            <td>4</td>
+            <td>Verify Run scope</td>
+            <td class="output-cell" title="Scoped to: qoa_web [Link to PJ_P1_Engine_Run_D1_4.png]">Scoped to: qoa_web [Link to PJ_P1_Engine_Run_D1_4.png]</td>
+        </tr>
+        <tr>
+            <td>foxyiz</td>
+            <td>FoXYiZ</td>
+            <td>PJ_P1_Engine_AnalyzeScope</td>
+            <td>4</td>
+            <td>Verify Analyze scope</td>
+            <td class="output-cell" title="Scoped to: qoa_web [Link to PJ_P1_Engine_AnalyzeScope_D1_4.png]">Scoped to: qoa_web [Link to PJ_P1_Engine_AnalyzeScope_D1_4.png]</td>
+        </tr>
+        <tr>
+            <td>foxyiz</td>
+            <td>FoXYiZ</td>
+            <td>PJ_P1_Engine_AnalyzeAi</td>
+            <td>4</td>
+            <td>Verify Analyze AI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'btn_analyze_ai_locator': Message: [Artifacts =&gt; screenshot: None_None_112012.png | page: Non [Link to PJ_P1_Engine_AnalyzeAi_D1_4.txt]">Error in xGetText: xGetText failed for locator 'btn_analyze_ai_locator': Message: [Artifacts =&gt; scre…</td>
+        </tr>
+        <tr>
+            <td>foxyiz</td>
+            <td>FoXYiZ</td>
+            <td>PJ_P1_Engine_HealRestore</td>
+            <td>4</td>
+            <td>Verify Restore</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'btn_restore_locator': Message: [Artifacts =&gt; screenshot: None_None_112119.png | page: None_N [Link to PJ_P1_Engine_HealRestore_D1_4.txt]">Error in xGetText: xGetText failed for locator 'btn_restore_locator': Message: [Artifacts =&gt; screens…</td>
+        </tr>
+        <tr>
+            <td>foxyiz</td>
+            <td>FoXYiZ</td>
+            <td>PJ_P1_Engine_HealAi</td>
+            <td>4</td>
+            <td>Verify Heal AI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'btn_heal_ai_locator': Message: [Artifacts =&gt; screenshot: None_None_112158.png | page: None_N [Link to PJ_P1_Engine_HealAi_D1_4.txt]">Error in xGetText: xGetText failed for locator 'btn_heal_ai_locator': Message: [Artifacts =&gt; screens…</td>
+        </tr>
+        <tr>
+            <td>foxyiz</td>
+            <td>FoXYiZ</td>
+            <td>PJ_P2_Engine_Run</td>
+            <td>4</td>
+            <td>Verify Run scope</td>
+            <td class="output-cell" title="Scoped to: qoa_web [Link to PJ_P2_Engine_Run_D2_4.png]">Scoped to: qoa_web [Link to PJ_P2_Engine_Run_D2_4.png]</td>
+        </tr>
+        <tr>
+            <td>foxyiz</td>
+            <td>FoXYiZ</td>
+            <td>PJ_P2_Engine_AnalyzeScope</td>
+            <td>4</td>
+            <td>Verify Analyze scope</td>
+            <td class="output-cell" title="Scoped to: qoa_web [Link to PJ_P2_Engine_AnalyzeScope_D2_4.png]">Scoped to: qoa_web [Link to PJ_P2_Engine_AnalyzeScope_D2_4.png]</td>
+        </tr>
+        <tr>
+            <td>foxyiz</td>
+            <td>FoXYiZ</td>
+            <td>PJ_P2_Engine_AnalyzeAi</td>
+            <td>4</td>
+            <td>Verify Analyze AI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'btn_analyze_ai_locator': Message: [Artifacts =&gt; screenshot: None_None_112310.png | page: Non [Link to PJ_P2_Engine_AnalyzeAi_D2_4.txt]">Error in xGetText: xGetText failed for locator 'btn_analyze_ai_locator': Message: [Artifacts =&gt; scre…</td>
+        </tr>
+        <tr>
+            <td>foxyiz</td>
+            <td>FoXYiZ</td>
+            <td>PJ_P2_Engine_HealRestore</td>
+            <td>4</td>
+            <td>Verify Restore</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'btn_restore_locator': Message: [Artifacts =&gt; screenshot: None_None_112338.png | page: None_N [Link to PJ_P2_Engine_HealRestore_D2_4.txt]">Error in xGetText: xGetText failed for locator 'btn_restore_locator': Message: [Artifacts =&gt; screens…</td>
+        </tr>
+        <tr>
+            <td>foxyiz</td>
+            <td>FoXYiZ</td>
+            <td>PJ_P2_Engine_HealAi</td>
+            <td>4</td>
+            <td>Verify Heal AI</td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'btn_heal_ai_locator': Message: [Artifacts =&gt; screenshot: None_None_112400.png | page: None_N [Link to PJ_P2_Engine_HealAi_D2_4.txt]">Error in xGetText: xGetText failed for locator 'btn_heal_ai_locator': Message: [Artifacts =&gt; screens…</td>
+        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

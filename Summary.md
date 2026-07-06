@@ -1,28 +1,51 @@
 # FoXYiZ / BRAHL / qoa_web — Team Summary
 
-**Handoff index for `KK/`** · Last updated: 2026-07-03
+**Handoff index for `KK/`** · Last updated: 2026-07-05
 
 **Formula:** `f(x, y) = z` — engine + yPAD → results in `z/`.
+
+**Status:** **qoa_web v1.3** — invite GTM + demo personas. Verify **49/49** green after `reset_demo_data`.
+
+**New machine / new AI:** read [Docs/README.md](Docs/README.md) → [Docs/HANDOFF.md](Docs/HANDOFF.md) → [qoa_web/MEMORY.md](qoa_web/MEMORY.md).
+
+**End of session:** [Docs/MAINTENANCE.md](Docs/MAINTENANCE.md) · `python u/cleaner.py --apply`
 
 ---
 
 ## Doc map (read this first)
 
-| Doc | Use when |
+| Doc | Audience |
 |-----|----------|
-| **Summary.md** (this file) | Handoff, commands, suite status, doc index |
-| [Docs/BRAHL.md](Docs/BRAHL.md) | Full BRAHL cycle, reports, Step 0, agent skill |
-| [Docs/rules.md](Docs/rules.md) | Agent rules: Playwright-only explore, heal loops, edit scope |
-| [Docs/FoXYiZ.md](Docs/FoXYiZ.md) | yPAD columns, xActions, tags, CLI flags |
-| [Docs/README.md](Docs/README.md) | End-user FoXYiZ install & quick start |
-| [qoa_web/README.md](qoa_web/README.md) | Local BRAHL web app quick start |
-| [qoa_web/AVATARS_AND_BUILD.md](qoa_web/AVATARS_AND_BUILD.md) | Client vs HITL, Build chat, budget, APIs |
-| [qoa_web/PRD.md](qoa_web/PRD.md) | Product requirements, cloud worker architecture |
-| [qoa_web/RESEARCH.md](qoa_web/RESEARCH.md) | Why qoa2 cannot run FoXYiZ in Base44 |
-| [.cursor/rules/token-efficiency.md](.cursor/rules/token-efficiency.md) | Cursor agent token discipline |
-| [f/Exec.md](f/Exec.md) | Exe build notes |
+| **Summary.md** (this file) | Team index |
+| [Docs/README.md](Docs/README.md) | **Docs hub** — start on new machine |
+| [Docs/HANDOFF.md](Docs/HANDOFF.md) | Minimum export bundle |
+| [Docs/MAINTENANCE.md](Docs/MAINTENANCE.md) | Session checklist (~30 min) |
+| [qoa_web/MEMORY.md](qoa_web/MEMORY.md) | **Cursor agents** — read first for qoa_web |
+| [qoa_web/qoa_userDoc.md](qoa_web/qoa_userDoc.md) | **Users & in-app AI** — personas, launch, phases |
+| [qoa_web/DEPLOY.md](qoa_web/DEPLOY.md) | VPS / Docker deploy + post-deploy smoke |
+| [qoa_web/DEMO_SCRIPT.md](qoa_web/DEMO_SCRIPT.md) | 10-minute team demo walkthrough |
+| [Docs/BRAHL.md](Docs/BRAHL.md) | Full BRAHL reference (human / deep dive) |
+| [Docs/ATOMIC77.md](Docs/ATOMIC77.md) | **Atomic 77** — idea-to-launch plugin in qoa_web |
+| [Docs/FoXYiZ.md](Docs/FoXYiZ.md) | yPAD contract, f(x,y)=z |
+| [f/fStart_SCOPE.md](f/fStart_SCOPE.md) | Which fStart configs are in scope |
 
-**Rule:** Detail lives in linked docs. This file stays short — update here when suite status or qoa_web changes.
+**Agents:** `qoa_web/MEMORY.md` + `.cursorignore` — skip inactive suites unless asked.
+
+---
+
+## Product snapshot (v1.3)
+
+| Area | Shipped |
+|------|---------|
+| **GTM funnel** | `/welcome` invite code → 7-day trial → `/signin` persona grid → `/app` arena |
+| **Avatars** | Creator · QA Hunter · Nalanda (all profiles can switch) |
+| **BRAHL UI** | Build → Run → Analyze → Heal → Loop → BRAHL + **Atomic 77 (A77)** + **$** pricing tab |
+| **Persona UX** | Compact dismissible badge (Tips / ×) — not a full task strip |
+| **Themes** | **Pro** (text) ↔ **Arena** (visual fight-ring, icon nav, reward rail) |
+| **Launch** | Go/No-Go, version compare (baseline vs new), hunt evidence (QA Hunter) |
+| **Verify** | **49/49** gate (`Run=Y`, tag **Verify**) — see [CHANGELOG](qoa_web/CHANGELOG.md) |
+| **Journey library** | **~800** plans (`y1Plans_journey.csv`, tag **Journey**) — parallel batches via tag fStarts |
+| **Batch dashboard** | `python u/zBatchDash.py` → `z/zDash_batch_<name>.html` |
 
 ---
 
@@ -30,136 +53,56 @@
 
 ```
 KK/
-  BRAHL.py              ← desktop GUI (Build/Run/Analyze/Heal/Loop)
-  Summary.md            ← you are here
-  f/fEngine2.py         ← engine source
-  f/Foxyiz2.exe         ← rebuild after x/xActions.py changes
-  f/fStart*.json        ← run configs (tags, timeout, headless)
-  x/xActions.py         ← UI/API actions (no xWaitFor)
-  y/<suite>/            ← y1Plans, y2Actions, y3Designs, *.json
-  z/                    ← run output (*_zResults, *_zDash, brahl_report.md)
-  qoa_web/              ← local web UI + API (port 8765)
-  Docs/                 ← BRAHL, rules, FoXYiZ
+  f/fEngine2.py         ← engine (do not move to u/)
+  x/xActions.py         ← actions (do not move to u/)
+  u/                    ← utilities + zBatchDash.py
+  y/qoa_web/            ← active suite (49 verify + ~800 journey library)
+  z/                    ← run output (ephemeral; run u/cleaner.py)
+  qoa_web/              ← web UI + API (port 8765)
+  Docs/test-user-data/  ← fictional personas P1–P9 (source of truth)
+  archive/cleanup/      ← cleaner output (delete anytime)
+  archive/demo-bundle/  ← export_demo_bundle output (optional)
 ```
 
 ---
 
-## Quick run
+## Quick run (qoa_web v1.3)
 
 From **`KK/`**:
 
 ```powershell
-# BRAHL desktop
-python BRAHL.py
-
-# qoa_web (browser UI)
-python qoa_web/run_local.py          # → http://127.0.0.1:8765
-
-# Sunshine smoke / full
-python f\fEngine2.py --config f\fStart_sunshine_smoke.json
-python f\fEngine2.py --config f\fStart_sunshine.json
-
-# qoa2 full / smoke / admin
-python f\fEngine2.py --config f\fStart.json
-python f\fEngine2.py --config f\fStart_smoke.json
-python f\fEngine2.py --config f\fStart_admin.json
-
-# qoa_web self-test (server must be running)
-python f\fEngine2.py --config f\fStart_qoa_web_smoke_headless.json   # 5 plans
-python f\fEngine2.py --config f\fStart_qoa_web_verify.json           # 60 plans
+python qoa_web/run_local.py          # → http://127.0.0.1:8765/welcome
+python u/reset_demo_data.py          # reset join/submit state before verify
+python f\fEngine2.py --config f\fStart_qoa_web_verify.json   # 49 plans (Run=Y)
 ```
 
-| Config | Suite | Tags | Plans |
-|--------|-------|------|-------|
-| `fStart_sunshine_smoke.json` | sunshine | Smoke | 5 |
-| `fStart_sunshine.json` | sunshine | all | 26 |
-| `fStart_smoke.json` | qoa2 | Smoke | subset |
-| `fStart_admin.json` | qoa2 | Admin | 5 |
-| `fStart.json` | qoa2 | all | ~81 |
-| `fStart_qoa_web_smoke*.json` | qoa_web | Smoke | 5 |
-| `fStart_qoa_web_verify.json` | qoa_web | all Run=Y | 60 |
+| Config | Suite | Plans | Use |
+|--------|-------|-------|-----|
+| `fStart_qoa_web_verify.json` | qoa_web | 49 | Full verify (local) |
+| `fStart_qoa_web_smoke*.json` | qoa_web | 12 | Quick smoke |
+| `fStart_qoa_web_smoke_prod.json` | qoa_web | 12 | Post-deploy (after `patch_ypad_urls`) |
+| `fStart_qoa_web_journey_*.json` | qoa_web | 25–181 | Parallel journey batches by tag |
 
-Defaults for local heal loops: **`timeout: 6`**, **`headless: false`**, **`thread_count: 1`**.
+Defaults: **`timeout: 5`** (verify), **`headless: true`** (verify), **`thread_count: 1`**. Use smoke with `headless: false` while debugging UI.
+
+**Parallel batch dashboard** (after multiple journey runs):
+
+```powershell
+python u/zBatchDash.py --name parallel_demo --logs z/parallel_demo_*.log
+```
+
+**BRAHL protocol:** Loop 1 full → Loops 2–3 failures-only if needed → restore all `Run=Y` → Verify ×3. Run `reset_demo_data.py` before each full verify.
 
 ---
 
 ## FoXYiZ essentials
 
-- **yPAD:** `y1Plans` (what), `y2Actions` (how), `y3Designs` (data). No Python CSV generators.
-- **Expected:** exact string match — use empty `Expected` for presence-only checks, or full UI text.
-- **No `xWaitFor`** — use `xGetText`, `xClick`, `xNavigate` (honor `timeout` in fStart).
-- **Reuse:** after `xReuse OpenSite`, always **`xNavigate base_url`** in parent plan (session reset).
-- **Explore:** Playwright MCP only — no new `explore_*.py` crawlers ([rules.md](Docs/rules.md)).
-- **Heal loops 2–3:** `Run=N` on passes, `Run=Y` only on failures; full `Run=Y` for user/CI Verify.
+- **yPAD:** `y1Plans`, `y2Actions`, `y3Designs` — edit CSVs directly; no daily Python generators.
+- **Expected:** exact string match — empty = presence only.
+- **No `xWaitFor`** — use `xGetText`, `xClick`, `xNavigate`.
+- **After `xReuse`:** **`xNavigate profile_url`** (or `base_url`) before home-page clicks.
 
-### xActions (July 2026)
-
-| Change | Effect |
-|--------|--------|
-| Removed `extra_wait_seconds`, headless 10s floor | Respects fStart `timeout` |
-| Retries | 0 local, 1 when headless |
-| `xWaitFor` removed | Heal old steps to xGetText/xClick |
-
-Rebuild **`f/Foxyiz2.exe`** after pulling `xActions.py`.
-
----
-
-## qoa_web (local BRAHL web — **v1.0**)
-
-**URL:** http://127.0.0.1:8765 · **Restart server** after API/UI changes.
-
-### Roles
-
-| Avatar | Project UX | Build |
-|--------|------------|-------|
-| **Client** | Top bar + Build dropdown synced; **Add project** modal | AI chat, checklist, budget, HITL roster |
-| **HITL** | Top bar + dropdown + browse grid (filter/sort/compact) | Join project, upload report |
-
-### Phases (nav)
-
-Build · Run · Analyze · Heal · Loop · **BRAHL** — project-scoped with **phase progress bar**, locked CTAs when no project.
-
-### v1.0 highlights
-
-- **Heal:** shrink to failures / restore Run=Y (BRAHL.py parity)
-- **Loop:** Step 0, Loop 1/2/3, Verify (auto shrink/restore), cycle history, generate report
-- **Run:** suite picker + fStart config + live job log
-- **API:** `/api/version`, `/api/ypad/shrink`, `/api/ypad/restore`, cycle history
-- **MCP:** `python qoa_web/mcp/server.py` — `foxyiz_run`, `foxyiz_analyze`, etc.
-
-### Verify status
-
-| Run | Result | Output |
-|-----|--------|--------|
-| `z/20260703_155434_qoa_web/` | **60/60** | **v1.0 release** — Client + HITL + brahl_report |
-| `z/20260703_154520_qoa_web/` | 50/50 | v1.0 core features |
-
-Launch guide: [qoa_web/LAUNCH.md](qoa_web/LAUNCH.md) · Changelog: [qoa_web/CHANGELOG.md](qoa_web/CHANGELOG.md)
-
-Detail: [AVATARS_AND_BUILD.md](qoa_web/AVATARS_AND_BUILD.md) · Cloud plan: [PRD.md](qoa_web/PRD.md)
-
----
-
-## External apps under test
-
-| App | URL | Suite |
-|-----|-----|--------|
-| QAonAir2 | https://qoa2.base44.app/ | `y/qoa2/` |
-| Sunshine | https://gosunshine.base44.app/ | `y/sunshine/` |
-| qoa_web (local) | http://127.0.0.1:8765 | `y/qoa_web/` |
-
-### Sunshine (`y/sunshine/`)
-
-- Reuse: `PReuse_sunshine_OpenSite` → always `xNavigate base_url` in step 2.
-- Admin PIN `5566`; post-PIN may redirect to login (A1) — verify `admin_post_pin_locator`.
-- **Latest:** full **26/26** (`z/20260703_101034_sunshine/`), smoke **5/5**.
-
-### qoa2 (`y/qoa2/`)
-
-- Personas: D1 `test1@itelearn.com`, D2 `test2@itelearn.com` / `test@itelearn` ([Common/yD_Secure.csv](y/qoa2/Common/yD_Secure.csv)).
-- Post-login → `/arena`; dismiss onboarding Next ×4.
-- Admin tag: 5 plans, reference **5/5** (`z/20260702_125641_qoa2/`).
-- **Known:** BRAHL Run/Analyze routes 404 in cloud (engine not on Base44).
+Rebuild **`f/Foxyiz2.exe`** after `xActions.py` changes (see Build exe below).
 
 ---
 
@@ -169,30 +112,34 @@ Detail: [AVATARS_AND_BUILD.md](qoa_web/AVATARS_AND_BUILD.md) · Cloud plan: [PRD
 Build (y/) → Run (f/) → Analyze (z/) → Heal (y/) → Loop → Verify → Report
 ```
 
-| Loop | Scope |
-|------|--------|
-| 1 | Full tagged / all Run=Y |
-| 2–3 | Run=Y failures only; Run=N on passes |
-| Verify | Full Run=Y restored; user or CI |
-
-Reports: `z/<timestamp>_<suite>/brahl_report.md` + flat `z/brahl_report_<ts>_<suite>.md`.
+Reports: `z/<timestamp>_<suite>/brahl_report.md` — run **`python u/cleaner.py --apply`** after sessions.
 
 ---
 
-## Known issues
+## Demo deploy (summary)
 
-| Issue | Where | Workaround |
-|-------|--------|------------|
-| Nested reuse cache | Engine | Explicit `xNavigate base_url` after reuse |
-| Exact Expected match | All suites | Empty Expected or full string |
-| Sunshine PIN → login | sunshine | A1; tag Issue on strict dashboard plan |
-| qoa2 Run/Analyze 404 | qoa2 cloud | Use qoa_web local engine |
-| qoa_web stale API | local dev | Restart `run_local.py` |
-| Cosmetic "Failed: 1" on nested reuse | Engine CSV | Ignore if plan passed |
+1. **Export:** `python u/export_demo_bundle.py --zip`
+2. **Prod URLs:** `set APP_BASE_URL=https://demo.yourdomain.com` → `python u/patch_ypad_urls.py`
+3. **Run:** `qoa_web/Dockerfile` or `python qoa_web/run_local.py`
+4. **Smoke:** `f/fStart_qoa_web_smoke_prod.json` on server
+5. **Demo:** [qoa_web/DEMO_SCRIPT.md](qoa_web/DEMO_SCRIPT.md)
+
+Full detail: [qoa_web/DEPLOY.md](qoa_web/DEPLOY.md).
+
+---
+
+## Out of agent scope (unless asked)
+
+| App | Suite | Notes |
+|-----|-------|-------|
+| qoa2 cloud | `y/qoa2/` | Run/Analyze 404 in cloud |
+| Sunshine, ivvu, atomic77 | `y/*` | Archived |
 
 ---
 
 ## Build exe
+
+`f/Foxyiz2.exe` is **gitignored**. Rebuild after engine changes:
 
 ```powershell
 cd c:\006\FXYZ\KK
@@ -200,23 +147,54 @@ pip install -r f\requirements.txt
 pyinstaller --onefile --name Foxyiz2 --paths . ^
   --add-data "x\xActions.py;x" --add-data "z\zDash_template.html;z" ^
   --hidden-import pandas --hidden-import x.xActions ^
-  --hidden-import selenium --hidden-import webdriver_manager ^
-  --hidden-import dotenv --hidden-import multiprocessing.spawn ^
   f\fEngine2.py
 copy dist\Foxyiz2.exe f\Foxyiz2.exe
 ```
 
 ---
 
-## Authoring workflow
+## Cloud vs local (qoa_web deploy boundary)
 
-1. Explore with **Playwright MCP**.
-2. Edit **`y/<suite>/`** CSVs + suite JSON.
-3. Run tagged subset via **`f/fStart_*.json`**.
-4. Analyze **`z/_errors.csv`**, **`*_zDash.html`**.
-5. Heal yPAD; shrink Run=Y for loops 2–3.
-6. User runs full Verify; link report in qoa_web **BRAHL** tab if testing qoa_web.
+**Ships to cloud:**
+
+- `qoa_web/` — FastAPI + static web + invite API
+- `y/qoa_web/` — suite yPAD
+- `Docs/test-user-data/` — persona fixtures
+- `f/fStart_qoa_web*.json` — config only
+- `u/export_demo_bundle.py`, `u/patch_ypad_urls.py` — deploy helpers
+
+**Stays local or separate worker image:**
+
+- `f/Foxyiz2.exe` / `fEngine2.py` subprocess (Run/Loop)
+- Writable `z/`, `qoa_web/data/projects.json`, `qoa_web/data/invites.json`
+- Inactive `y/*` suites, `z/` history
+
+**Environment:**
+
+| Variable | Purpose |
+|----------|---------|
+| `APP_BASE_URL` | Public URL — run `u/patch_ypad_urls.py` before prod verify |
+| `QOA_ADMIN_TOKEN` | Protects admin invite export + ecosystem endpoints |
+| `OPENAI_API_KEY` | In-app AI (Build, Analyze, Heal, BRAHL chat) |
+| `FOXYIZ_HEADLESS` | `true` on Linux servers for FoXYiZ Run tab |
+
+Persona sign-in is **demo-only** (`localStorage` P1–P9). Invite codes unlock 7-day trials; real auth is post-MVP.
 
 ---
 
-*Apps: qoa2.base44.app · gosunshine.base44.app · qoa_web @ :8765*
+## Utilities (`u/`)
+
+```powershell
+python u/cleaner.py --apply         # archive ephemeral z/ + probes
+python u/sync_personas.py           # after editing Docs/test-user-data/
+python u/reset_demo_data.py         # reset projects.json before verify
+python u/export_demo_bundle.py      # slim VPS deploy bundle
+python u/patch_ypad_urls.py         # APP_BASE_URL → yPAD URLs
+python u/zBatchDash.py              # aggregate parallel run logs → batch HTML
+```
+
+See [u/README.md](u/README.md). **Never** put `fEngine2.py` or `xActions.py` in `u/`.
+
+---
+
+*Apps: qoa_web @ :8765 · qoa2.base44.app · gosunshine.base44.app*

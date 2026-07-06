@@ -1,0 +1,434 @@
+﻿{
+    "id":  "d21afcefc002",
+    "name":  "qoa_web Local",
+    "app_url":  "http://127.0.0.1:8765",
+    "purpose":  "Validate qoa_web BRAHL UI: avatar gate, project context, AI toggle, Build chat, BRAHL reports tab",
+    "prompt":  "Validate qoa_web BRAHL UI: avatar gate, project context, AI toggle, Build chat, BRAHL reports tab",
+    "owner_avatar":  "client",
+    "status":  "in_progress",
+    "ai_enabled":  true,
+    "budget_usd":  500,
+    "budget_split":  {
+                         "automation_pct":  50,
+                         "human_pct":  50
+                     },
+    "documents":  [
+
+                  ],
+    "context_items":  [
+                          {
+                              "id":  "ctx1",
+                              "kind":  "url",
+                              "label":  "App URL",
+                              "value":  "http://127.0.0.1:8765",
+                              "added_at":  "2026-07-03T20:08:42+00:00"
+                          }
+                      ],
+    "chat_messages":  [
+                          {
+                              "id":  "welcome",
+                              "role":  "assistant",
+                              "text":  "Hi — I\u0027m your BRAHL Build assistant. What are you trying to test or improve?",
+                              "at":  "2026-07-03T19:28:13+00:00"
+                          },
+                          {
+                              "id":  "u1",
+                              "role":  "user",
+                              "text":  "Test qoa_web essential features: Build, Run, Analyze, Loop, BRAHL tab with project-scoped reports",
+                              "at":  "2026-07-03T20:08:42+00:00"
+                          },
+                          {
+                              "id":  "a1",
+                              "role":  "assistant",
+                              "text":  "Set your project budget below. We split funds between BRAHL automation (AI + FoXYiZ) and Human in the Loop consultants.",
+                              "at":  "2026-07-03T20:08:43+00:00"
+                          }
+                      ],
+    "brahl_chat_messages":  [
+                                {
+                                    "id":  "brahl-welcome",
+                                    "role":  "assistant",
+                                    "text":  "I\u0027m the BRAHL model for qoa_web Local. Ask about the latest Verify report (26/26 pass).",
+                                    "at":  "2026-07-03T20:08:42+00:00"
+                                },
+                                {
+                                    "id":  "6ebfd6f2",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T21:47:50+00:00"
+                                },
+                                {
+                                    "id":  "dd9cba4a",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T21:47:50+00:00"
+                                },
+                                {
+                                    "id":  "7f2da41a",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T21:49:21+00:00"
+                                },
+                                {
+                                    "id":  "bfe18f5d",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T21:49:21+00:00"
+                                },
+                                {
+                                    "id":  "15517b9b",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T21:50:41+00:00"
+                                },
+                                {
+                                    "id":  "24e9dec4",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T21:50:41+00:00"
+                                },
+                                {
+                                    "id":  "95fb000e",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T21:53:03+00:00"
+                                },
+                                {
+                                    "id":  "ceb06877",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T21:53:03+00:00"
+                                },
+                                {
+                                    "id":  "d89b6cfe",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T22:01:24+00:00"
+                                },
+                                {
+                                    "id":  "7edf8377",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T22:01:24+00:00"
+                                },
+                                {
+                                    "id":  "16277fd9",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T22:09:49+00:00"
+                                },
+                                {
+                                    "id":  "54ecdb94",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T22:09:49+00:00"
+                                },
+                                {
+                                    "id":  "809f076e",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T22:10:51+00:00"
+                                },
+                                {
+                                    "id":  "72e45a35",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T22:10:51+00:00"
+                                },
+                                {
+                                    "id":  "bb60b272",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T22:11:45+00:00"
+                                },
+                                {
+                                    "id":  "ad240c5e",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T22:11:45+00:00"
+                                },
+                                {
+                                    "id":  "d98a30a4",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T22:13:43+00:00"
+                                },
+                                {
+                                    "id":  "7b1f0734",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T22:13:43+00:00"
+                                },
+                                {
+                                    "id":  "4c2dc51b",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T22:45:51+00:00"
+                                },
+                                {
+                                    "id":  "3163e3fa",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T22:45:51+00:00"
+                                },
+                                {
+                                    "id":  "4c83db72",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T22:53:59+00:00"
+                                },
+                                {
+                                    "id":  "6ba1a054",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T22:53:59+00:00"
+                                },
+                                {
+                                    "id":  "55769851",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T22:55:05+00:00"
+                                },
+                                {
+                                    "id":  "1d535258",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T22:55:05+00:00"
+                                },
+                                {
+                                    "id":  "3e43f2b8",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T23:00:14+00:00"
+                                },
+                                {
+                                    "id":  "d1edbb88",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T23:00:14+00:00"
+                                },
+                                {
+                                    "id":  "17cd695c",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-03T23:09:21+00:00"
+                                },
+                                {
+                                    "id":  "f13910f7",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-03T23:09:21+00:00"
+                                },
+                                {
+                                    "id":  "4a308733",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-04T17:18:46+00:00"
+                                },
+                                {
+                                    "id":  "08db4e34",
+                                    "role":  "assistant",
+                                    "text":  "**qoa_web Local** — Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans → 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+                                    "at":  "2026-07-04T17:18:46+00:00"
+                                },
+                                {
+                                    "id":  "e27771b4",
+                                    "role":  "user",
+                                    "text":  "how long did the test take",
+                                    "at":  "2026-07-04T17:23:56+00:00"
+                                },
+                                {
+                                    "id":  "10d17223",
+                                    "role":  "assistant",
+                                    "text":  "No BRAHL report file yet for **qoa_web Local**. Run Loop → Verify or have a Human in the Loop consultant submit a report. Project purpose: Validate qoa_web BRAHL UI: avatar gate, project context, AI toggle, Build chat, BRAHL reports tab",
+                                    "at":  "2026-07-04T17:23:56+00:00"
+                                },
+                                {
+                                    "id":  "59440165",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-04T18:47:01+00:00"
+                                },
+                                {
+                                    "id":  "0f7957c8",
+                                    "role":  "assistant",
+                                    "text":  "No verify results yet for **qoa_web Local**. Run Loop → Verify, then open this tab — the report is built from zResults automatically. Project purpose: Validate qoa_web BRAHL UI: avatar gate, project context, AI toggle, Build chat, BRAHL reports tab",
+                                    "at":  "2026-07-04T18:47:01+00:00"
+                                },
+                                {
+                                    "id":  "e66784fd",
+                                    "role":  "user",
+                                    "text":  "What is the executive summary?",
+                                    "at":  "2026-07-04T18:48:21+00:00"
+                                },
+                                {
+                                    "id":  "67b76b28",
+                                    "role":  "assistant",
+                                    "text":  "No verify results yet for **qoa_web Local**. Run Loop → Verify, then open this tab — the report is built from zResults automatically. Project purpose: Validate qoa_web BRAHL UI: avatar gate, project context, AI toggle, Build chat, BRAHL reports tab",
+                                    "at":  "2026-07-04T18:48:21+00:00"
+                                }
+                            ],
+    "hitl_consultants":  [
+
+                         ],
+    "reports":  [
+                    {
+                        "id":  "rep1",
+                        "run_name":  "20260703_120842_qoa_web",
+                        "report_path":  "z/20260703_120842_qoa_web/brahl_report.md",
+                        "submitted_at":  "2026-07-03T20:08:42+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "rep2",
+                        "run_name":  "20260703_131703_qoa_web",
+                        "report_path":  null,
+                        "submitted_at":  "2026-07-03T20:17:03+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "56dec172",
+                        "run_name":  "20260703_144955_qoa_web",
+                        "report_path":  "z/20260703_144955_qoa_web/brahl_report.md",
+                        "submitted_at":  "2026-07-03T21:51:17+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "b15e1a5f",
+                        "run_name":  "20260703_145305_qoa_web",
+                        "report_path":  null,
+                        "submitted_at":  "2026-07-03T21:55:36+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "553a6dde",
+                        "run_name":  "20260703_151115_qoa_web",
+                        "report_path":  "z/20260703_151115_qoa_web/brahl_report.md",
+                        "submitted_at":  "2026-07-03T22:12:12+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "ebf1d878",
+                        "run_name":  "20260703_151314_qoa_web",
+                        "report_path":  "z/20260703_151314_qoa_web/brahl_report.md",
+                        "submitted_at":  "2026-07-03T22:13:59+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "b4bc20ac",
+                        "run_name":  "20260703_154520_qoa_web",
+                        "report_path":  "z/20260703_154520_qoa_web/brahl_report.md",
+                        "submitted_at":  "2026-07-03T22:46:14+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "f3060d16",
+                        "run_name":  "20260703_154553_qoa_web",
+                        "report_path":  null,
+                        "submitted_at":  "2026-07-03T22:49:52+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "4603b0dd",
+                        "run_name":  "20260703_155434_qoa_web",
+                        "report_path":  "z/20260703_155434_qoa_web/brahl_report.md",
+                        "submitted_at":  "2026-07-03T22:55:42+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "9e9ad683",
+                        "run_name":  "20260703_160016_qoa_web",
+                        "report_path":  null,
+                        "submitted_at":  "2026-07-03T23:01:02+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "570b355c",
+                        "run_name":  "20260703_160851_qoa_web",
+                        "report_path":  null,
+                        "submitted_at":  "2026-07-03T23:10:10+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "4d14d61a",
+                        "run_name":  "20260703_160924_qoa_web",
+                        "report_path":  null,
+                        "submitted_at":  "2026-07-04T16:27:48+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "a7c61bb1",
+                        "run_name":  "20260704_101848_qoa_web",
+                        "report_path":  null,
+                        "submitted_at":  "2026-07-04T17:19:14+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "acafb22b",
+                        "run_name":  "20260704_103336_ivvu",
+                        "report_path":  null,
+                        "submitted_at":  "2026-07-04T17:33:56+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "0679dea5",
+                        "run_name":  "20260704_114823_qoa_web",
+                        "report_path":  "z/20260704_114823_qoa_web/brahl_report.md",
+                        "submitted_at":  "2026-07-04T18:58:09+00:00",
+                        "source":  "automation"
+                    },
+                    {
+                        "id":  "25f03eed",
+                        "run_name":  "20260704_120310_qoa_web",
+                        "report_path":  "z/20260704_120310_qoa_web/brahl_report.md",
+                        "submitted_at":  "2026-07-04T19:03:30+00:00",
+                        "source":  "automation"
+                    }
+                ],
+    "brahl_context_path":  "C:\\006\\FXYZ\\KK\\z\\brahl_context_20260704_114822_qoa_web.json",
+    "latest_run":  "20260704_120310_qoa_web",
+    "created_at":  "2026-07-03T19:28:13+00:00",
+    "updated_at":  "2026-07-04T19:59:59+00:00",
+    "cycle_history":  [
+                          {
+                              "id":  "45949933",
+                              "step":  "Run",
+                              "detail":  "completed",
+                              "at":  "2026-07-04T19:03:30+00:00",
+                              "run_name":  "20260704_120310_qoa_web"
+                          },
+                          {
+                              "id":  "68caf0cb",
+                              "step":  "Loop 2",
+                              "detail":  "completed",
+                              "at":  "2026-07-04T17:33:56+00:00",
+                              "run_name":  "20260704_103336_ivvu"
+                          },
+                          {
+                              "id":  "8bdfbee1",
+                              "step":  "Run",
+                              "detail":  "completed",
+                              "at":  "2026-07-04T17:32:49+00:00",
+                              "run_name":  "20260704_103229_ivvu"
+                          },
+                          {
+                              "id":  "71939ed8",
+                              "step":  "Run",
+                              "detail":  "completed",
+                              "at":  "2026-07-04T17:19:14+00:00",
+                              "run_name":  "20260704_101815_qoa_web"
+                          }
+                      ],
+    "suite_name":  "qoa_web",
+    "suite_config":  "",
+    "hitl_stories":  [
+
+                     ],
+    "hitl_invites":  [
+
+                     ],
+    "change_requests":  [
+
+                        ],
+    "runtime_mode":  "local"
+}

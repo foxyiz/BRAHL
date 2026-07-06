@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoXYiZ Defects Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.5; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+        .header { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .header p { opacity: 0.9; font-size: 1rem; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .card { background: white; padding: 1.25rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #64748b; }
+        .card.danger { border-left-color: #dc2626; }
+        .card h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 0.5rem; }
+        .card .value { font-size: 1.75rem; font-weight: 700; color: #1e293b; }
+        section { background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1.5rem; overflow: hidden; }
+        section h2 { padding: 1rem 1.25rem; background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-size: 1.1rem; }
+        .table-wrap { overflow-x: auto; max-height: 400px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        th { background: #f1f5f9; padding: 0.6rem 0.75rem; text-align: left; font-weight: 600; color: #475569; position: sticky; top: 0; }
+        td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #f1f5f9; }
+        tr:hover { background: #f8fafc; }
+        .output-cell { max-width: 280px; word-break: break-word; }
+        .type-badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; }
+        .type-api { background: #fecaca; color: #991b1b; }
+        .type-ui { background: #fed7aa; color: #9a3412; }
+        .type-validation { background: #fef08a; color: #854d0e; }
+        .type-action { background: #e2e8f0; color: #475569; }
+        .type-other { background: #e2e8f0; color: #64748b; }
+        .type-parse { background: #fecaca; color: #7f1d1d; }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Defects Dashboard</h1>
+            <p>Aggregated failures from all zResults.csv runs</p>
+        </div>
+        <div class="summary-grid">
+            <div class="card danger">
+                <h3>Total Defects</h3>
+                <div class="value">184</div>
+            </div>
+            <div class="card">
+                <h3>Runs with failures</h3>
+                <div class="value">15</div>
+            </div>
+            <div class="card">
+                <h3>Plans affected</h3>
+                <div class="value">54</div>
+            </div>
+        </div>
+        <div class="two-col">
+            <section>
+                <h2>By defect type</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Type</th><th>Count</th></tr></thead>
+                        <tbody><tr><td>UI Element / Locator</td><td>43</td></tr><tr><td>Action Error</td><td>45</td></tr><tr><td>Other</td><td>96</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <h2>By suite (top)</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Suite</th><th>Defects</th></tr></thead>
+                        <tbody><tr><td>qoa_web</td><td>144</td></tr><tr><td>qoa2</td><td>40</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+        <div class="two-col">
+            <section>
+                <h2>By run</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Run</th><th>Defects</th></tr></thead>
+                        <tbody><tr><td>z/20260704_154628_qoa_web</td><td>43</td></tr><tr><td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td><td>40</td></tr><tr><td>z/20260704_150735_qoa_web</td><td>23</td></tr><tr><td>z/20260704_151741_qoa_web</td><td>12</td></tr><tr><td>z/20260704_150616_qoa_web</td><td>10</td></tr><tr><td>z/20260704_151203_qoa_web</td><td>10</td></tr><tr><td>z/20260704_151539_qoa_web</td><td>10</td></tr><tr><td>z/20260704_151918_qoa_web</td><td>9</td></tr><tr><td>archive/cleanup/20260704_144356/z/20260704_114239_qoa_web</td><td>8</td></tr><tr><td>z/20260704_154145_qoa_web</td><td>7</td></tr><tr><td>z/20260704_152141_qoa_web</td><td>6</td></tr><tr><td>z/20260704_154720_qoa_web</td><td>3</td></tr><tr><td>archive/cleanup/20260704_144356/z/20260704_114631_qoa_web</td><td>1</td></tr><tr><td>z/20260704_155003_qoa_web</td><td>1</td></tr><tr><td>z/20260704_155228_qoa_web</td><td>1</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <h2>By plan (top 30)</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Plan</th><th>Defects</th></tr></thead>
+                        <tbody><tr><td>PReuse_qoa_web_OpenSite</td><td>36</td></tr><tr><td>PReuse_qoa2_Dashboard</td><td>24</td></tr><tr><td>PReuse_qoa_web_ClientReady</td><td>18</td></tr><tr><td>PPersona_P9_Journey</td><td>12</td></tr><tr><td>PPersona_P1_Journey</td><td>6</td></tr><tr><td>PPersona_P2_Journey</td><td>6</td></tr><tr><td>PPersona_P4_Journey</td><td>6</td></tr><tr><td>PPersona_P5_Journey</td><td>6</td></tr><tr><td>PPersona_P7_Journey</td><td>6</td></tr><tr><td>PWeb_Panel_Build</td><td>5</td></tr><tr><td>PReuse_qoa_web_HitlReady</td><td>4</td></tr><tr><td>PWeb_Manual_AiLocked</td><td>4</td></tr><tr><td>PPersona_P3_Journey</td><td>4</td></tr><tr><td>PWeb_Build_Budget</td><td>3</td></tr><tr><td>PWeb_Topbar_Project</td><td>2</td></tr><tr><td>PWeb_Hitl_Avatar_Switch</td><td>2</td></tr><tr><td>PWeb_XP_Panel</td><td>2</td></tr><tr><td>PWeb_GoNoGo_Block</td><td>2</td></tr><tr><td>PWeb_Login_Full</td><td>1</td></tr><tr><td>PWeb_Perf_LoginPageLoad</td><td>1</td></tr><tr><td>PWeb_Perf_PageLoad</td><td>1</td></tr><tr><td>PWeb_Admin_Users_Tab</td><td>1</td></tr><tr><td>PWeb_Admin_Clients_Tab</td><td>1</td></tr><tr><td>PWeb_Admin_Projects_Tab</td><td>1</td></tr><tr><td>PWeb_Admin_Consultants_Tab</td><td>1</td></tr><tr><td>PWeb_Admin_XP_Payments_Tab</td><td>1</td></tr><tr><td>PWeb_Admin_Live_Activity_Tab</td><td>1</td></tr><tr><td>PWeb_Admin_GTM_Tab</td><td>1</td></tr><tr><td>PWeb_Admin_Broadcast_Button</td><td>1</td></tr><tr><td>PWeb_Admin_User_Actions</td><td>1</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+        <section>
+            <h2>All defects (184 rows)</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Run</th>
+                            <th>Suite</th>
+                            <th>Plan</th>
+                            <th>Step</th>
+                            <th>Step info</th>
+                            <th>Type</th>
+                            <th>Output / error</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Login_Full</td>
+            <td>3</td>
+            <td>Enter email</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xType: xType failed for locator 'css=input[type=email]': Message: [Artifacts =&gt; screenshot: None_None_212952.png | page: None_None_ [Link to PWeb_Login_Full_D1_3.txt]">Error in xType: xType failed for locator 'css=input[type=email]': Message: [Arti…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Perf_LoginPageLoad</td>
+            <td>5</td>
+            <td>Stop timer</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xStopTimer: Timer not started. Call xStartTimer first. [Link to PWeb_Perf_LoginPageLoad_D1_5.png]">Error in xStopTimer: Timer not started. Call xStartTimer first. [Link to PWeb_Pe…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PReuse_qoa2_Dashboard</td>
+            <td>3</td>
+            <td>Verify command center present</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social Assistant')]': Message: [Artifacts =&gt; screenshot: None_None [Link to PReuse_qoa2_Dashboard_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h2[contains(.;'AI Social…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Perf_PageLoad</td>
+            <td>6</td>
+            <td>Stop timer</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xStopTimer: Timer not started. Call xStartTimer first. [Link to PWeb_Perf_PageLoad_D1_6.png]">Error in xStopTimer: Timer not started. Call xStartTimer first. [Link to PWeb_Pe…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Admin_Users_Tab</td>
+            <td>2</td>
+            <td>Verify admin panel</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Admin Panel']': Message: [Artifacts =&gt; screenshot: None_None_2 [Link to PWeb_Admin_Users_Tab_D2_2.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Ad…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Admin_Clients_Tab</td>
+            <td>2</td>
+            <td>Verify admin panel</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Admin Panel']': Message: [Artifacts =&gt; screenshot: None_None_2 [Link to PWeb_Admin_Clients_Tab_D2_2.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Ad…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Admin_Projects_Tab</td>
+            <td>2</td>
+            <td>Verify admin panel</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Admin Panel']': Message: [Artifacts =&gt; screenshot: None_None_2 [Link to PWeb_Admin_Projects_Tab_D2_2.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Ad…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Admin_Consultants_Tab</td>
+            <td>2</td>
+            <td>Verify admin panel</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Admin Panel']': Message: [Artifacts =&gt; screenshot: None_None_2 [Link to PWeb_Admin_Consultants_Tab_D2_2.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Ad…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Admin_XP_Payments_Tab</td>
+            <td>2</td>
+            <td>Verify admin panel</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Admin Panel']': Message: [Artifacts =&gt; screenshot: None_None_2 [Link to PWeb_Admin_XP_Payments_Tab_D2_2.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Ad…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Admin_Live_Activity_Tab</td>
+            <td>2</td>
+            <td>Verify admin panel</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Admin Panel']': Message: [Artifacts =&gt; screenshot: None_None_2 [Link to PWeb_Admin_Live_Activity_Tab_D2_2.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Ad…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Admin_GTM_Tab</td>
+            <td>2</td>
+            <td>Verify admin panel</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Admin Panel']': Message: [Artifacts =&gt; screenshot: None_None_2 [Link to PWeb_Admin_GTM_Tab_D2_2.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Ad…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Admin_Broadcast_Button</td>
+            <td>2</td>
+            <td>Verify admin panel</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Admin Panel']': Message: [Artifacts =&gt; screenshot: None_None_2 [Link to PWeb_Admin_Broadcast_Button_D2_2.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Ad…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PWeb_Admin_User_Actions</td>
+            <td>2</td>
+            <td>Verify admin panel</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Admin Panel']': Message: [Artifacts =&gt; screenshot: None_None_2 [Link to PWeb_Admin_User_Actions_D2_2.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Ad…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PJourney_Auth_Negative_To_Positive</td>
+            <td>3</td>
+            <td>Verify login form visible</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[contains(.;'Welcome')]': Message: [Artifacts =&gt; screenshot: None_None_213731.png  [Link to PJourney_Auth_Negative_To_Positive_D1_3.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[contains(.;'Welcome')…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PJourney_Consultant_Avatar</td>
+            <td>2</td>
+            <td>Verify session on arena</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Arena']': Message: [Artifacts =&gt; screenshot: None_None_213809. [Link to PJourney_Consultant_Avatar_D1_2.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Ar…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PJourney_Arena_Social_Hub</td>
+            <td>11</td>
+            <td>Verify arena still loaded</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Arena']': Message: [Artifacts =&gt; screenshot: None_None_213923. [Link to PJourney_Arena_Social_Hub_D1_11.txt]">Error in xGetText: xGetText failed for locator 'xpath=//h1[normalize-space()='Ar…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260702_212759_qoa2</td>
+            <td>qoa2</td>
+            <td>PJourney_Admin_Full</td>
+            <td>2</td>
+            <td>Enter admin email</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xType: xType failed for locator 'css=input[type=email]': Message: [Artifacts =&gt; screenshot: None_None_213959.png | page: None_None_ [Link to PJourney_Admin_Full_D2_2.txt]">Error in xType: xType failed for locator 'css=input[type=email]': Message: [Arti…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260704_114239_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify project in topbar</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — https://qoa2.base44.app/
+qoa_web — http://127.0.0.1:8765/
+sun [Link to PReuse_qoa_web_ClientReady_D1_3.txt]">atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — h…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260704_114239_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify project in topbar</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — https://qoa2.base44.app/
+qoa_web — http://127.0.0.1:8765/
+sun [Link to PReuse_qoa_web_ClientReady_D1_3.txt]">atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — h…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260704_114239_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify project in topbar</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — https://qoa2.base44.app/
+qoa_web — http://127.0.0.1:8765/
+sun [Link to PReuse_qoa_web_ClientReady_D1_3.txt]">atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — h…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260704_114239_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify project in topbar</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — https://qoa2.base44.app/
+qoa_web — http://127.0.0.1:8765/
+sun [Link to PReuse_qoa_web_ClientReady_D1_3.txt]">atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — h…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260704_114239_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify project in topbar</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — https://qoa2.base44.app/
+qoa_web — http://127.0.0.1:8765/
+sun [Link to PReuse_qoa_web_ClientReady_D1_3.txt]">atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — h…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260704_114239_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify project in topbar</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — https://qoa2.base44.app/
+qoa_web — http://127.0.0.1:8765/
+sun [Link to PReuse_qoa_web_ClientReady_D1_3.txt]">atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — h…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260704_114239_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify project in topbar</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — https://qoa2.base44.app/
+qoa_web — http://127.0.0.1:8765/
+sun [Link to PReuse_qoa_web_ClientReady_D1_3.txt]">atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — h…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260704_114239_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify project in topbar</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — https://qoa2.base44.app/
+qoa_web — http://127.0.0.1:8765/
+sun [Link to PReuse_qoa_web_ClientReady_D1_3.txt]">atomic77 — https://atomic77.base44.app/
+ivvu — https://ivvu.base44.app/
+qoa2 — h…</td>
+        </tr>
+        <tr>
+            <td>archive/cleanup/20260704_144356/z/20260704_114631_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Hitl_Toolbar</td>
+            <td>3</td>
+            <td>Verify topbar Project label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="PROJECT [Link to PWeb_Hitl_Toolbar_D1_3.png]">PROJECT [Link to PWeb_Hitl_Toolbar_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150616_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify topbar challenge label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]">MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150616_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify topbar challenge label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]">MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150616_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify topbar challenge label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]">MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150616_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify topbar challenge label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]">MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150616_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify topbar challenge label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]">MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150616_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify topbar challenge label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]">MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150616_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify topbar challenge label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]">MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150616_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify topbar challenge label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]">MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150616_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify topbar challenge label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]">MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150616_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>3</td>
+            <td>Verify topbar challenge label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]">MY CHALLENGE [Link to PReuse_qoa_web_ClientReady_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_VerifyTitle</td>
+            <td>2</td>
+            <td>Verify title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="BRAHL Web — f(x;y)=z [Link to PWeb_VerifyTitle_D1_2.png] [Link to PWeb_VerifyTitle_D1_2.txt]">BRAHL Web — f(x;y)=z [Link to PWeb_VerifyTitle_D1_2.png] [Link to PWeb_VerifyTit…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Topbar_Project</td>
+            <td>2</td>
+            <td>Verify project dropdown</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="qoa_web — http://127.0.0.1:8765/ [Link to PWeb_Topbar_Project_D1_2.png]">qoa_web — http://127.0.0.1:8765/ [Link to PWeb_Topbar_Project_D1_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Panel_Build</td>
+            <td>3</td>
+            <td>Verify Build title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — qoa_web [Link to PWeb_Panel_Build_D1_3.png]">Build — qoa_web [Link to PWeb_Panel_Build_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Build_Budget</td>
+            <td>2</td>
+            <td>Verify budget</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PWeb_Build_Budget_D1_2.png]">[Link to PWeb_Build_Budget_D1_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Hitl_Avatar_Switch</td>
+            <td>3</td>
+            <td>Verify QA Hunter Build title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — qoa_web (QA Hunter) [Link to PWeb_Hitl_Avatar_Switch_D2_3.png]">Build — qoa_web (QA Hunter) [Link to PWeb_Hitl_Avatar_Switch_D2_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_HitlReady</td>
+            <td>3</td>
+            <td>Verify Build QA Hunter title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — qoa_web (QA Hunter) [Link to PReuse_qoa_web_HitlReady_D3_3.png]">Build — qoa_web (QA Hunter) [Link to PReuse_qoa_web_HitlReady_D3_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Hitl_TierBanner</td>
+            <td>3</td>
+            <td>Verify senior banner</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Senior QA Hunter — mentor-level deliverables; hybrid Automation + AI reports; yPAD shrink/restore guidance. [Link to PWeb_Hitl_TierBanner_D4 [Link to PWeb_Hitl_TierBanner_D4_3.txt]">Senior QA Hunter — mentor-level deliverables; hybrid Automation + AI reports; yP…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Manual_AiLocked</td>
+            <td>2</td>
+            <td>Verify AI off label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="AI off (profile) [Link to PWeb_Manual_AiLocked_D5_2.png]">AI off (profile) [Link to PWeb_Manual_AiLocked_D5_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Power_YpadExplorer</td>
+            <td>3</td>
+            <td>Verify yPAD explorer</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Y Plans
+Y Actions
+Y Designs
+ENV example
+Automated only (Run=Y)
+Edit CSV
+40 rows · y/qoa_web/y1Plans.csv
+PlanId PlanName Run Tags
+PWeb_Signin [Link to PWeb_Power_YpadExplorer_D7_3.txt]">Y Plans
+Y Actions
+Y Designs
+ENV example
+Automated only (Run=Y)
+Edit CSV
+40 rows …</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Panel_Run</td>
+            <td>3</td>
+            <td>Verify Run heading</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Run — FoXYiZ fEngine2 [Link to PWeb_Panel_Run_D1_3.png]">Run — FoXYiZ fEngine2 [Link to PWeb_Panel_Run_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Panel_Analyze</td>
+            <td>3</td>
+            <td>Verify Analyze heading</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Analyze — z/ [Link to PWeb_Panel_Analyze_D1_3.png]">Analyze — z/ [Link to PWeb_Panel_Analyze_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Panel_Heal</td>
+            <td>3</td>
+            <td>Verify shrink button</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Shrink to failures (Loop 2 prep) [Link to PWeb_Panel_Heal_D1_3.png]">Shrink to failures (Loop 2 prep) [Link to PWeb_Panel_Heal_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Panel_Loop</td>
+            <td>3</td>
+            <td>Verify Loop heading</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Loop — BRAHL cycle (FoXYiZ) [Link to PWeb_Panel_Loop_D1_3.png]">Loop — BRAHL cycle (FoXYiZ) [Link to PWeb_Panel_Loop_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Panel_Brahl</td>
+            <td>3</td>
+            <td>Verify BRAHL heading</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="BRAHL — cycle report [Link to PWeb_Panel_Brahl_D1_3.png]">BRAHL — cycle report [Link to PWeb_Panel_Brahl_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P1_Journey</td>
+            <td>2</td>
+            <td>Verify P1 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P1_Journey_D1_2.png]">P7 [Link to PPersona_P1_Journey_D1_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P2_Journey</td>
+            <td>2</td>
+            <td>Verify P2 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P2_Journey_D2_2.png]">P7 [Link to PPersona_P2_Journey_D2_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_HitlReady</td>
+            <td>3</td>
+            <td>Verify Build QA Hunter title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — qoa_web (QA Hunter) [Link to PReuse_qoa_web_HitlReady_D3_3.png]">Build — qoa_web (QA Hunter) [Link to PReuse_qoa_web_HitlReady_D3_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P4_Journey</td>
+            <td>2</td>
+            <td>Verify P4 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P4_Journey_D4_2.png]">P7 [Link to PPersona_P4_Journey_D4_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P5_Journey</td>
+            <td>2</td>
+            <td>Verify P5 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P5_Journey_D5_2.png]">P7 [Link to PPersona_P5_Journey_D5_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P7_Journey</td>
+            <td>2</td>
+            <td>Verify P7 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P6 [Link to PPersona_P7_Journey_D7_2.png]">P6 [Link to PPersona_P7_Journey_D7_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P8_Journey</td>
+            <td>4</td>
+            <td>Verify join</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Join as QA Hunter [Link to PPersona_P8_Journey_D8_4.png]">Join as QA Hunter [Link to PPersona_P8_Journey_D8_4.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>4</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_4.png]">[Link to PPersona_P9_Journey_D9_4.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_150735_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>4</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_4.png]">[Link to PPersona_P9_Journey_D9_4.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151203_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Panel_Build</td>
+            <td>3</td>
+            <td>Verify Build title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — qoa_web (manual) [Link to PWeb_Panel_Build_D1_3.png]">Build — qoa_web (manual) [Link to PWeb_Panel_Build_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151203_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Build_Budget</td>
+            <td>3</td>
+            <td>Verify budget</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PWeb_Build_Budget_D1_3.png]">[Link to PWeb_Build_Budget_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151203_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P1_Journey</td>
+            <td>3</td>
+            <td>Verify P1 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P1_Journey_D1_3.png]">P7 [Link to PPersona_P1_Journey_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151203_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P2_Journey</td>
+            <td>3</td>
+            <td>Verify P2 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P2_Journey_D2_3.png]">P7 [Link to PPersona_P2_Journey_D2_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151203_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P3_Journey</td>
+            <td>3</td>
+            <td>Verify P3 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P3_Journey_D3_3.png]">P7 [Link to PPersona_P3_Journey_D3_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151203_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P4_Journey</td>
+            <td>3</td>
+            <td>Verify P4 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P4_Journey_D4_3.png]">P7 [Link to PPersona_P4_Journey_D4_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151203_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P5_Journey</td>
+            <td>3</td>
+            <td>Verify P5 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P5_Journey_D5_3.png]">P7 [Link to PPersona_P5_Journey_D5_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151203_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P7_Journey</td>
+            <td>3</td>
+            <td>Verify P7 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P6 [Link to PPersona_P7_Journey_D7_3.png]">P6 [Link to PPersona_P7_Journey_D7_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151203_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>5</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_5.png]">[Link to PPersona_P9_Journey_D9_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151203_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>5</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_5.png]">[Link to PPersona_P9_Journey_D9_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151539_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Panel_Build</td>
+            <td>3</td>
+            <td>Verify Build title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — qoa_web (manual) [Link to PWeb_Panel_Build_D1_3.png]">Build — qoa_web (manual) [Link to PWeb_Panel_Build_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151539_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Build_Budget</td>
+            <td>3</td>
+            <td>Verify budget</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PWeb_Build_Budget_D1_3.png]">[Link to PWeb_Build_Budget_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151539_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P1_Journey</td>
+            <td>3</td>
+            <td>Verify P1 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P1_Journey_D1_3.png]">P7 [Link to PPersona_P1_Journey_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151539_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P2_Journey</td>
+            <td>3</td>
+            <td>Verify P2 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P2_Journey_D2_3.png]">P7 [Link to PPersona_P2_Journey_D2_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151539_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P3_Journey</td>
+            <td>3</td>
+            <td>Verify P3 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P3_Journey_D3_3.png]">P7 [Link to PPersona_P3_Journey_D3_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151539_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P4_Journey</td>
+            <td>3</td>
+            <td>Verify P4 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P4_Journey_D4_3.png]">P7 [Link to PPersona_P4_Journey_D4_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151539_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P5_Journey</td>
+            <td>3</td>
+            <td>Verify P5 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P5_Journey_D5_3.png]">P7 [Link to PPersona_P5_Journey_D5_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151539_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P7_Journey</td>
+            <td>3</td>
+            <td>Verify P7 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P6 [Link to PPersona_P7_Journey_D7_3.png]">P6 [Link to PPersona_P7_Journey_D7_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151539_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>5</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_5.png]">[Link to PPersona_P9_Journey_D9_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151539_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>5</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_5.png]">[Link to PPersona_P9_Journey_D9_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Topbar_Project</td>
+            <td>2</td>
+            <td>Verify project dropdown</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="atomic77 — https://atomic77.base44.app/ [Link to PWeb_Topbar_Project_D1_2.png]">atomic77 — https://atomic77.base44.app/ [Link to PWeb_Topbar_Project_D1_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Panel_Build</td>
+            <td>3</td>
+            <td>Verify Build title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — atomic77 [Link to PWeb_Panel_Build_D1_3.png]">Build — atomic77 [Link to PWeb_Panel_Build_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Hitl_Avatar_Switch</td>
+            <td>3</td>
+            <td>Verify QA Hunter Build title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — atomic77 (QA Hunter) [Link to PWeb_Hitl_Avatar_Switch_D2_3.png]">Build — atomic77 (QA Hunter) [Link to PWeb_Hitl_Avatar_Switch_D2_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_HitlReady</td>
+            <td>3</td>
+            <td>Verify Build QA Hunter title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — atomic77 (QA Hunter) [Link to PReuse_qoa_web_HitlReady_D3_3.png]">Build — atomic77 (QA Hunter) [Link to PReuse_qoa_web_HitlReady_D3_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P1_Journey</td>
+            <td>3</td>
+            <td>Verify P1 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P1_Journey_D1_3.png]">P7 [Link to PPersona_P1_Journey_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P2_Journey</td>
+            <td>3</td>
+            <td>Verify P2 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P2_Journey_D2_3.png]">P7 [Link to PPersona_P2_Journey_D2_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_HitlReady</td>
+            <td>3</td>
+            <td>Verify Build QA Hunter title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — atomic77 (QA Hunter) [Link to PReuse_qoa_web_HitlReady_D3_3.png]">Build — atomic77 (QA Hunter) [Link to PReuse_qoa_web_HitlReady_D3_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P4_Journey</td>
+            <td>3</td>
+            <td>Verify P4 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P4_Journey_D4_3.png]">P7 [Link to PPersona_P4_Journey_D4_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P5_Journey</td>
+            <td>3</td>
+            <td>Verify P5 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P5_Journey_D5_3.png]">P7 [Link to PPersona_P5_Journey_D5_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P7_Journey</td>
+            <td>3</td>
+            <td>Verify P7 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P6 [Link to PPersona_P7_Journey_D7_3.png]">P6 [Link to PPersona_P7_Journey_D7_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>5</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_5.png]">[Link to PPersona_P9_Journey_D9_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151741_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>5</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_5.png]">[Link to PPersona_P9_Journey_D9_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151918_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Panel_Build</td>
+            <td>3</td>
+            <td>Verify Build title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — qoa_web (manual) [Link to PWeb_Panel_Build_D1_3.png]">Build — qoa_web (manual) [Link to PWeb_Panel_Build_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151918_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P1_Journey</td>
+            <td>3</td>
+            <td>Verify P1 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P1_Journey_D1_3.png]">P7 [Link to PPersona_P1_Journey_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151918_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P2_Journey</td>
+            <td>3</td>
+            <td>Verify P2 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P2_Journey_D2_3.png]">P7 [Link to PPersona_P2_Journey_D2_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151918_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P3_Journey</td>
+            <td>3</td>
+            <td>Verify P3 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P3_Journey_D3_3.png]">P7 [Link to PPersona_P3_Journey_D3_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151918_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P4_Journey</td>
+            <td>3</td>
+            <td>Verify P4 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P4_Journey_D4_3.png]">P7 [Link to PPersona_P4_Journey_D4_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151918_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P5_Journey</td>
+            <td>3</td>
+            <td>Verify P5 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P5_Journey_D5_3.png]">P7 [Link to PPersona_P5_Journey_D5_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151918_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P7_Journey</td>
+            <td>3</td>
+            <td>Verify P7 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P6 [Link to PPersona_P7_Journey_D7_3.png]">P6 [Link to PPersona_P7_Journey_D7_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151918_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>5</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_5.png]">[Link to PPersona_P9_Journey_D9_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_151918_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>5</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_5.png]">[Link to PPersona_P9_Journey_D9_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_152141_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P1_Journey</td>
+            <td>3</td>
+            <td>Verify P1 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P1_Journey_D1_3.png]">P7 [Link to PPersona_P1_Journey_D1_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_152141_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P2_Journey</td>
+            <td>3</td>
+            <td>Verify P2 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P2_Journey_D2_3.png]">P7 [Link to PPersona_P2_Journey_D2_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_152141_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P3_Journey</td>
+            <td>3</td>
+            <td>Verify P3 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P3_Journey_D3_3.png]">P7 [Link to PPersona_P3_Journey_D3_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_152141_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P4_Journey</td>
+            <td>3</td>
+            <td>Verify P4 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P4_Journey_D4_3.png]">P7 [Link to PPersona_P4_Journey_D4_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_152141_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P5_Journey</td>
+            <td>3</td>
+            <td>Verify P5 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P7 [Link to PPersona_P5_Journey_D5_3.png]">P7 [Link to PPersona_P5_Journey_D5_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_152141_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P7_Journey</td>
+            <td>3</td>
+            <td>Verify P7 chip</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="P6 [Link to PPersona_P7_Journey_D7_3.png]">P6 [Link to PPersona_P7_Journey_D7_3.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154145_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Signin_CreatorPitch</td>
+            <td>3</td>
+            <td>Verify Creator pitch</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Go / No-Go for launch. Green-or-red health report for Creators — prod-ready or not. Start with $20+ credits and BRAHL the brawl. [Link to PW [Link to PWeb_Signin_CreatorPitch_D1_3.txt]">Go / No-Go for launch. Green-or-red health report for Creators — prod-ready or n…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154145_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Signin_HunterPitch</td>
+            <td>3</td>
+            <td>Verify Hunter pitch</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Ships are sinking. Find and kill the bugs. Human (QA) + Automation + AI — hunt before premature launch. [Link to PWeb_Signin_HunterPitch_D1_ [Link to PWeb_Signin_HunterPitch_D1_3.txt]">Ships are sinking. Find and kill the bugs. Human (QA) + Automation + AI — hunt b…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154145_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Avatar_ThreeBar</td>
+            <td>2</td>
+            <td>Verify Creator label</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=.avatar-btn[data-avatar='client'] .avatar-label': Message: [Artifacts =&gt; screenshot: Non [Link to PWeb_Avatar_ThreeBar_D1_2.txt]">Error in xGetText: xGetText failed for locator 'css=.avatar-btn[data-avatar='cli…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154145_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Networker_Promote</td>
+            <td>2</td>
+            <td>Click Networker avatar</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar='networker']': Message: [Artifacts =&gt; screenshot: None_None_154345.p [Link to PWeb_Networker_Promote_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar='network…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154145_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_XP_Panel</td>
+            <td>2</td>
+            <td>Click Cost tab</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase='cost']': Message: [Artifacts =&gt; screenshot: None_None_154358.png | page:  [Link to PWeb_XP_Panel_D1_2.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase='cost']': Mess…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154145_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_GoNoGo_Block</td>
+            <td>2</td>
+            <td>Click BRAHL tab</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase='brahl']': Message: [Artifacts =&gt; screenshot: None_None_154410.png | page: [Link to PWeb_GoNoGo_Block_D1_2.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase='brahl']': Mes…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154145_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_P1_SwitchHunter</td>
+            <td>2</td>
+            <td>Click QA Hunter avatar</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar='consultant']': Message: [Artifacts =&gt; screenshot: None_None_154422. [Link to PWeb_P1_SwitchHunter_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar='consult…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PAPI_Health</td>
+            <td>1</td>
+            <td>GET health</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xGet: Invalid URL 'api_base_urlapi_health_endpoint': No scheme supplied. Perhaps you meant https://api_base_urlapi_health_endpoint?">Error in xGet: Invalid URL 'api_base_urlapi_health_endpoint': No scheme supplied…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PAPI_Signin</td>
+            <td>1</td>
+            <td>GET signin</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xGet: Invalid URL 'api_base_urlapi_signin_endpoint': No scheme supplied. Perhaps you meant https://api_base_urlapi_signin_endpoint?">Error in xGet: Invalid URL 'api_base_urlapi_signin_endpoint': No scheme supplied…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PAPI_ProfilesJs</td>
+            <td>1</td>
+            <td>GET profiles.js</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xGet: Invalid URL 'api_base_urlapi_profiles_js_endpoint': No scheme supplied. Perhaps you meant https://api_base_urlapi_profiles_js [Link to PAPI_ProfilesJs_D1_1.txt]">Error in xGet: Invalid URL 'api_base_urlapi_profiles_js_endpoint': No scheme sup…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PAPI_Suites</td>
+            <td>1</td>
+            <td>GET suites</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xGet: Invalid URL 'api_base_urlapi_suites_endpoint': No scheme supplied. Perhaps you meant https://api_base_urlapi_suites_endpoint?">Error in xGet: Invalid URL 'api_base_urlapi_suites_endpoint': No scheme supplied…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PAPI_ProjectsConsultant</td>
+            <td>1</td>
+            <td>GET consultant projects</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xGet: Invalid URL 'api_base_urlapi_projects_consultant_endpoint': No scheme supplied. Perhaps you meant https://api_base_urlapi_pro [Link to PAPI_ProjectsConsultant_D3_1.txt]">Error in xGet: Invalid URL 'api_base_urlapi_projects_consultant_endpoint': No sc…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>1</td>
+            <td>Load P9 profile URL</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: profile_url. Must start with http:// or https:// [Link to PPersona_P9_Journey_D9_1.png]">Error in xNavigate: Invalid URL: profile_url. Must start with http:// or https:/…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PPersona_P9_Journey</td>
+            <td>1</td>
+            <td>Load P9 profile URL</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: profile_url. Must start with http:// or https:// [Link to PPersona_P9_Journey_D9_1.png]">Error in xNavigate: Invalid URL: profile_url. Must start with http:// or https:/…</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154720_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Manual_AiLocked</td>
+            <td>2</td>
+            <td>Verify AI off label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="AI on [Link to PWeb_Manual_AiLocked_D5_2.png]">AI on [Link to PWeb_Manual_AiLocked_D5_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154720_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_XP_Panel</td>
+            <td>5</td>
+            <td>Verify XP heading</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="XP &amp; value — Creator [Link to PWeb_XP_Panel_D1_5.png]">XP &amp; value — Creator [Link to PWeb_XP_Panel_D1_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_154720_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_GoNoGo_Block</td>
+            <td>6</td>
+            <td>Verify Go/No-Go label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="NO-GO — Not launch-ready [Link to PWeb_GoNoGo_Block_D1_6.png]">NO-GO — Not launch-ready [Link to PWeb_GoNoGo_Block_D1_6.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_155003_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Manual_AiLocked</td>
+            <td>2</td>
+            <td>Verify AI off label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="AI on [Link to PWeb_Manual_AiLocked_D5_2.png]">AI on [Link to PWeb_Manual_AiLocked_D5_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260704_155228_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PWeb_Manual_AiLocked</td>
+            <td>2</td>
+            <td>Verify AI off label</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="AI on [Link to PWeb_Manual_AiLocked_D5_2.png]">AI on [Link to PWeb_Manual_AiLocked_D5_2.png]</td>
+        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

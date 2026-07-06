@@ -1,0 +1,43 @@
+{
+  "batches": [
+    {
+      "id": "batch_seed_creator",
+      "label": "Seed — 5 Creators (local demo)",
+      "batch_type": "creator",
+      "size": 5,
+      "trial_days": 7,
+      "created_at": "2026-07-05T00:00:00+00:00"
+    },
+    {
+      "id": "batch_seed_hunter",
+      "label": "Seed — 5 QA Hunters (local demo)",
+      "batch_type": "consultant",
+      "size": 5,
+      "trial_days": 7,
+      "created_at": "2026-07-05T00:00:00+00:00"
+    }
+  ],
+  "codes": [
+    {
+      "code": "QOA-CR5-001-001-DEMO",
+      "batch_id": "batch_seed_creator",
+      "batch_type": "creator",
+      "trial_days": 7,
+      "max_uses": 1,
+      "uses": 0,
+      "created_at": "2026-07-05T00:00:00+00:00",
+      "revoked": false
+    },
+    {
+      "code": "QOA-QH5-001-001-DEMO",
+      "batch_id": "batch_seed_hunter",
+      "batch_type": "consultant",
+      "trial_days": 7,
+      "max_uses": 1,
+      "uses": 0,
+      "created_at": "2026-07-05T00:00:00+00:00",
+      "revoked": false
+    }
+  ],
+  "redemptions": []
+}

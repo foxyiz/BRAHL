@@ -1,0 +1,28 @@
+PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PReuse_NalandaApp_OpenSite,1,Open browser,xUI,xOpenBrowser,edge,,,y
+PReuse_NalandaApp_OpenSite,2,Navigate to Nalanda,xUI,xNavigate,base_url,,,y
+PReuse_NalandaApp_OpenSite,3,Verify body present,xUI,xGetText,body_locator,,,y
+PNalanda_Smoke_Landing,1,Open site,xReuse,PReuse_NalandaApp_OpenSite,,,,y
+PNalanda_Smoke_Landing,2,Verify page title,xUI,xGetTitle,,,landing_title_expected,y
+PNalanda_Smoke_Landing,3,Verify page body,xUI,xGetText,body_locator,,,y
+PNalanda_Smoke_Explore,1,Open site,xReuse,PReuse_NalandaApp_OpenSite,,,,y
+PNalanda_Smoke_Explore,2,Navigate Explore,xUI,xNavigate,explore_url,,,y
+PNalanda_Smoke_Explore,3,Verify body on Explore,xUI,xGetText,body_locator,,,y
+PNalanda_Smoke_Explore,4,Verify Explore page title,xUI,xGetTitle,,,explore_title_expected,y
+PNalanda_Smoke_LearningPath,1,Open site,xReuse,PReuse_NalandaApp_OpenSite,,,,y
+PNalanda_Smoke_LearningPath,2,Navigate Learning Path,xUI,xNavigate,learning_path_url,,,y
+PNalanda_Smoke_LearningPath,3,Verify body on Learning Path,xUI,xGetText,body_locator,,,y
+PNalanda_Smoke_Quiz,1,Open site,xReuse,PReuse_NalandaApp_OpenSite,,,,y
+PNalanda_Smoke_Quiz,2,Navigate Quiz,xUI,xNavigate,quiz_url,,,y
+PNalanda_Smoke_Quiz,3,Verify body on Quiz,xUI,xGetText,body_locator,,,y
+PNalanda_Smoke_AITutor,1,Open site,xReuse,PReuse_NalandaApp_OpenSite,,,,y
+PNalanda_Smoke_AITutor,2,Navigate AI Tutor,xUI,xNavigate,ai_tutor_url,,,y
+PNalanda_Smoke_AITutor,3,Verify body on AI Tutor,xUI,xGetText,body_locator,,,y
+PNalanda_Launch_Health,1,Open site,xReuse,PReuse_NalandaApp_OpenSite,,,,y
+PNalanda_Launch_Health,2,Reset to home,xUI,xNavigate,base_url,,,y
+PNalanda_Launch_Health,3,Home title check,xUI,xGetTitle,,,landing_title_expected,y
+PNalanda_Launch_Health,4,Explore route,xUI,xNavigate,explore_url,,,y
+PNalanda_Launch_Health,5,Learning Path route,xUI,xNavigate,learning_path_url,,,y
+PNalanda_Launch_Health,6,Quiz route,xUI,xNavigate,quiz_url,,,y
+PNalanda_Launch_Health,7,AI Tutor route,xUI,xNavigate,ai_tutor_url,,,y
+PNalanda_Launch_Health,8,Final body check,xUI,xGetText,body_locator,,,y

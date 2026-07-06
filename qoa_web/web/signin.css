@@ -1,0 +1,232 @@
+.signin-page {
+  min-height: 100vh;
+  background: linear-gradient(165deg, #0f1419 0%, #1a2332 45%, #121820 100%);
+  color: var(--text, #e8ecf1);
+}
+
+.signin-header {
+  padding: 2rem 1.5rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.signin-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.signin-kicker {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent, #6eb5ff);
+  margin: 0 0 0.35rem;
+}
+
+.signin-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+}
+
+.signin-lead {
+  max-width: 42rem;
+  color: var(--muted, #9aa8b8);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.signin-about-link {
+  white-space: nowrap;
+}
+
+.signin-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.signin-welcome-hero {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.15rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.signin-welcome-hero .welcome-pitch {
+  margin: 0 0 0.65rem;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted, #9aa8b8);
+}
+
+.signin-welcome-hero .welcome-pitch:last-child { margin-bottom: 0; }
+
+.signin-welcome-hero .welcome-pitch-creator strong:first-child { color: #3dd68c; }
+
+.signin-welcome-hero .welcome-pitch-hunter {
+  color: #fca5a5;
+  border-left: 3px solid #ef4444;
+  padding-left: 0.75rem;
+}
+
+.signin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.signin-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.15rem 1.25rem 1.25rem;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.signin-card:hover {
+  border-color: rgba(110, 181, 255, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.signin-card-active {
+  border-color: var(--accent, #6eb5ff);
+  box-shadow: 0 0 0 1px rgba(110, 181, 255, 0.35);
+}
+
+.signin-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.signin-code {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--accent, #6eb5ff);
+  font-family: ui-monospace, monospace;
+}
+
+.signin-badge {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.signin-badge-client { background: rgba(94, 196, 160, 0.2); color: #7ee4bc; }
+.signin-badge-hitl { background: rgba(196, 148, 94, 0.2); color: #f0c080; }
+.signin-badge-dual { background: rgba(148, 120, 196, 0.2); color: #c9b0f0; }
+.signin-badge-admin { background: rgba(255, 120, 120, 0.2); color: #ffb0b0; }
+.signin-badge-newcomer { background: rgba(160, 220, 255, 0.2); color: #a0dcff; }
+.signin-badge-senior { background: rgba(255, 200, 80, 0.2); color: #ffd080; }
+
+.signin-name {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.signin-title {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted, #9aa8b8);
+}
+
+.signin-blurb {
+  margin: 0.25rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(232, 236, 241, 0.88);
+}
+
+.signin-more {
+  align-self: flex-start;
+  margin: 0.15rem 0 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--accent, #6eb5ff);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.signin-more:hover { color: #9ecfff; }
+
+.signin-select {
+  width: 100%;
+  margin-top: auto;
+}
+
+.signin-footnote {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted, #9aa8b8);
+}
+
+.signin-reset {
+  background: none;
+  border: none;
+  color: var(--accent, #6eb5ff);
+  cursor: pointer;
+  text-decoration: underline;
+  font: inherit;
+  padding: 0;
+}
+
+.signin-accent-senior .signin-code { color: #ffd080; }
+.signin-accent-manual .signin-code { color: #a0b0c0; }
+.signin-accent-power .signin-code { color: #80e0c0; }
+
+.demo-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 1rem;
+  background: rgba(110, 181, 255, 0.12);
+  border-bottom: 1px solid rgba(110, 181, 255, 0.25);
+  font-size: 0.85rem;
+  color: var(--muted, #9aa8b8);
+}
+.demo-banner-link {
+  color: var(--accent, #6eb5ff);
+  font-weight: 600;
+  text-decoration: none;
+}
+.demo-banner-link:hover { text-decoration: underline; }
+
+.waitlist-status { margin: 0.5rem 0 0; font-size: 0.9rem; }
+.waitlist-status-ok { color: #6ee7a0; }
+.waitlist-status-err { color: #f07178; }
+.signin-section-title {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: var(--muted);
+}
+.signin-accent-newcomer .signin-code { color: #a0dcff; }
+.signin-trial-badge {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
