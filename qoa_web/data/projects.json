@@ -772,5 +772,111 @@
     "app_version": "",
     "baseline_version": "",
     "baseline_run": null
+  },
+  {
+    "id": "af7bf748b639",
+    "name": "Math",
+    "app_url": "",
+    "suite_name": "Math",
+    "suite_config": "y/Math/Math.json",
+    "purpose": "",
+    "prompt": "",
+    "owner_avatar": "client",
+    "status": "open",
+    "documents": [],
+    "context_items": [],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-06T18:31:11+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "af3a6deb",
+        "run_name": "20260706_113344_Math",
+        "report_path": "z/20260706_113344_Math/brahl_report.md",
+        "submitted_at": "2026-07-06T18:33:46+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "e3efcc26",
+        "run_name": "20260706_113451_Math",
+        "report_path": "z/20260706_113451_Math/brahl_report.md",
+        "submitted_at": "2026-07-06T18:34:52+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "2765943c",
+        "run_name": "20260706_113620_Math",
+        "report_path": "z/20260706_113620_Math/brahl_report.md",
+        "submitted_at": "2026-07-06T18:36:21+00:00",
+        "source": "automation"
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "latest_run": "20260706_113620_Math",
+    "created_at": "2026-07-06T18:31:11+00:00",
+    "updated_at": "2026-07-06T18:36:21+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
+        "at": "2026-07-06T18:31:11+00:00"
+      }
+    ],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-06T18:31:11+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [
+      {
+        "id": "9fca5b71",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-06T18:36:21+00:00",
+        "run_name": "20260706_113620_Math"
+      },
+      {
+        "id": "71282bb0",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-06T18:34:52+00:00",
+        "run_name": "20260706_113451_Math"
+      },
+      {
+        "id": "53f6f534",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-06T18:33:46+00:00",
+        "run_name": "20260706_113344_Math"
+      }
+    ],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "runtime_mode": "local",
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null
   }
 ]
