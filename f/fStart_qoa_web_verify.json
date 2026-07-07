@@ -1,6 +1,6 @@
 {
   "configs": [
-    "y/qoa_web/qoa_web.json"
+    "y/qoa_web/qoa_web_verify_gate.json"
   ],
   "thread_count": 1,
   "timeout": 5,

@@ -1,0 +1,381 @@
+
+============================================================
+  FoXYiZ Test Framework
+============================================================
+[i] Loading configuration...
+[i] Headless mode enabled
+[i] Using 1 threads for parallel execution
+
+============================================================
+  Processing Test Suite 1/1
+============================================================
+[i] Test Suite: qoa_web
+[i] Output Directory: C:\006\FXYZ\KK\z\20260706_203628_qoa_web
+[i] Loaded plan file: y1Plans.csv (55 plans)
+[i] Loaded plan file: y1Plans_journey.csv (800 plans)
+[i] Total plans loaded: 855 from 2 file(s)
+[i] Tag filter: Running plans with tags: API
+[i] Found 67 plans to execute
+[~] Starting plan: PAPI_Health
+[OK]   [OK] GET health
+[OK] Plan PAPI_Health completed successfully (1/1 actions)
+Progress: |------------------------------| 1.5% (1/67 plans)
+[~] Starting plan: PAPI_Signin
+[OK]   [OK] GET signin
+[OK] Plan PAPI_Signin completed successfully (1/1 actions)
+Progress: |------------------------------| 3.0% (2/67 plans)
+[~] Starting plan: PAPI_ProfilesJs
+[OK]   [OK] GET profiles.js
+[OK] Plan PAPI_ProfilesJs completed successfully (1/1 actions)
+Progress: |#-----------------------------| 4.5% (3/67 plans)
+[~] Starting plan: PAPI_Suites
+[OK]   [OK] GET suites
+[OK] Plan PAPI_Suites completed successfully (1/1 actions)
+Progress: |#-----------------------------| 6.0% (4/67 plans)
+[~] Starting plan: PAPI_ProjectsConsultant
+[OK]   [OK] GET consultant projects
+[OK] Plan PAPI_ProjectsConsultant completed successfully (1/1 actions)
+Progress: |##----------------------------| 7.5% (5/67 plans)
+[~] Starting plan: PJ_P1_API_Health
+[OK]   [OK] Open site
+[OK]   [OK] GET Health
+[OK] Plan PJ_P1_API_Health completed successfully (2/2 actions)
+Progress: |##----------------------------| 9.0% (6/67 plans)
+[~] Starting plan: PJ_P1_API_Version
+[OK]   [OK] Open site
+[OK]   [OK] GET Version
+[OK] Plan PJ_P1_API_Version completed successfully (2/2 actions)
+Progress: |###---------------------------| 10.4% (7/67 plans)
+[~] Starting plan: PJ_P1_API_Suites
+[OK]   [OK] Open site
+[OK]   [OK] GET Suites
+[OK] Plan PJ_P1_API_Suites completed successfully (2/2 actions)
+Progress: |###---------------------------| 11.9% (8/67 plans)
+[~] Starting plan: PJ_P1_API_ProjectsClient
+[OK]   [OK] Open site
+[OK]   [OK] GET ProjectsClient
+[OK] Plan PJ_P1_API_ProjectsClient completed successfully (2/2 actions)
+Progress: |####--------------------------| 13.4% (9/67 plans)
+[~] Starting plan: PJ_P1_API_ProjectsConsultant
+[OK]   [OK] Open site
+[OK]   [OK] GET ProjectsConsultant
+[OK] Plan PJ_P1_API_ProjectsConsultant completed successfully (2/2 actions)
+Progress: |####--------------------------| 14.9% (10/67 plans)
+[~] Starting plan: PJ_P1_API_Runs
+[OK]   [OK] Open site
+[OK]   [OK] GET Runs
+[OK] Plan PJ_P1_API_Runs completed successfully (2/2 actions)
+Progress: |####--------------------------| 16.4% (11/67 plans)
+[~] Starting plan: PJ_P1_API_WaitlistCount
+[OK]   [OK] Open site
+[X]   [X] GET WaitlistCount - Error in xGet: Failed to parse: http://127.0.0.1:8765api_waitlist_count_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P1_API_WaitlistCount / design D1.
+[!] Plan PJ_P1_API_WaitlistCount completed with issues (1/2 actions passed)
+Progress: |#####-------------------------| 17.9% (12/67 plans)
+[~] Starting plan: PJ_P1_API_ProfilesJs
+[OK]   [OK] Open site
+[OK]   [OK] GET ProfilesJs
+[OK] Plan PJ_P1_API_ProfilesJs completed successfully (2/2 actions)
+Progress: |#####-------------------------| 19.4% (13/67 plans)
+[~] Starting plan: PJ_P1_API_Index
+[OK]   [OK] Open site
+[OK]   [OK] GET Index
+[OK] Plan PJ_P1_API_Index completed successfully (2/2 actions)
+Progress: |######------------------------| 20.9% (14/67 plans)
+[~] Starting plan: PJ_P1_API_Styles
+[OK]   [OK] Open site
+[OK]   [OK] GET Styles
+[OK] Plan PJ_P1_API_Styles completed successfully (2/2 actions)
+Progress: |######------------------------| 22.4% (15/67 plans)
+[~] Starting plan: PJ_P1_API_AppJs
+[OK]   [OK] Open site
+[OK]   [OK] GET AppJs
+[OK] Plan PJ_P1_API_AppJs completed successfully (2/2 actions)
+Progress: |#######-----------------------| 23.9% (16/67 plans)
+[~] Starting plan: PJ_P1_API_ThemesCss
+[OK]   [OK] Open site
+[X]   [X] GET ThemesCss - Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P1_API_ThemesCss / design D1.
+[!] Plan PJ_P1_API_ThemesCss completed with issues (1/2 actions passed)
+Progress: |#######-----------------------| 25.4% (17/67 plans)
+[~] Starting plan: PJ_P1_API_ThemeJs
+[OK]   [OK] Open site
+[X]   [X] GET ThemeJs - Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P1_API_ThemeJs / design D1.
+[!] Plan PJ_P1_API_ThemeJs completed with issues (1/2 actions passed)
+Progress: |########----------------------| 26.9% (18/67 plans)
+[~] Starting plan: PJ_P1_API_AboutEcosystem
+[OK]   [OK] Open site
+[X]   [X] GET AboutEcosystem - Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P1_API_AboutEcosystem / design D1.
+[!] Plan PJ_P1_API_AboutEcosystem completed with issues (1/2 actions passed)
+Progress: |########----------------------| 28.4% (19/67 plans)
+[~] Starting plan: PJ_P1_API_Signin
+[OK]   [OK] Open site
+[OK]   [OK] GET Signin
+[OK] Plan PJ_P1_API_Signin completed successfully (2/2 actions)
+Progress: |########----------------------| 29.9% (20/67 plans)
+[~] Starting plan: PJ_P2_API_Health
+[OK]   [OK] Open site
+[OK]   [OK] GET Health
+[OK] Plan PJ_P2_API_Health completed successfully (2/2 actions)
+Progress: |#########---------------------| 31.3% (21/67 plans)
+[~] Starting plan: PJ_P2_API_Version
+[OK]   [OK] Open site
+[OK]   [OK] GET Version
+[OK] Plan PJ_P2_API_Version completed successfully (2/2 actions)
+Progress: |#########---------------------| 32.8% (22/67 plans)
+[~] Starting plan: PJ_P2_API_Suites
+[OK]   [OK] Open site
+[OK]   [OK] GET Suites
+[OK] Plan PJ_P2_API_Suites completed successfully (2/2 actions)
+Progress: |##########--------------------| 34.3% (23/67 plans)
+[~] Starting plan: PJ_P2_API_ProjectsClient
+[OK]   [OK] Open site
+[OK]   [OK] GET ProjectsClient
+[OK] Plan PJ_P2_API_ProjectsClient completed successfully (2/2 actions)
+Progress: |##########--------------------| 35.8% (24/67 plans)
+[~] Starting plan: PJ_P2_API_ProjectsConsultant
+[OK]   [OK] Open site
+[OK]   [OK] GET ProjectsConsultant
+[OK] Plan PJ_P2_API_ProjectsConsultant completed successfully (2/2 actions)
+Progress: |###########-------------------| 37.3% (25/67 plans)
+[~] Starting plan: PJ_P2_API_Runs
+[OK]   [OK] Open site
+[OK]   [OK] GET Runs
+[OK] Plan PJ_P2_API_Runs completed successfully (2/2 actions)
+Progress: |###########-------------------| 38.8% (26/67 plans)
+[~] Starting plan: PJ_P2_API_WaitlistCount
+[OK]   [OK] Open site
+[X]   [X] GET WaitlistCount - Error in xGet: Failed to parse: http://127.0.0.1:8765api_waitlist_count_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P2_API_WaitlistCount / design D2.
+[!] Plan PJ_P2_API_WaitlistCount completed with issues (1/2 actions passed)
+Progress: |############------------------| 40.3% (27/67 plans)
+[~] Starting plan: PJ_P2_API_ProfilesJs
+[OK]   [OK] Open site
+[OK]   [OK] GET ProfilesJs
+[OK] Plan PJ_P2_API_ProfilesJs completed successfully (2/2 actions)
+Progress: |############------------------| 41.8% (28/67 plans)
+[~] Starting plan: PJ_P2_API_Index
+[OK]   [OK] Open site
+[OK]   [OK] GET Index
+[OK] Plan PJ_P2_API_Index completed successfully (2/2 actions)
+Progress: |############------------------| 43.3% (29/67 plans)
+[~] Starting plan: PJ_P2_API_Styles
+[OK]   [OK] Open site
+[OK]   [OK] GET Styles
+[OK] Plan PJ_P2_API_Styles completed successfully (2/2 actions)
+Progress: |#############-----------------| 44.8% (30/67 plans)
+[~] Starting plan: PJ_P2_API_AppJs
+[OK]   [OK] Open site
+[OK]   [OK] GET AppJs
+[OK] Plan PJ_P2_API_AppJs completed successfully (2/2 actions)
+Progress: |#############-----------------| 46.3% (31/67 plans)
+[~] Starting plan: PJ_P2_API_ThemesCss
+[OK]   [OK] Open site
+[X]   [X] GET ThemesCss - Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P2_API_ThemesCss / design D2.
+[!] Plan PJ_P2_API_ThemesCss completed with issues (1/2 actions passed)
+Progress: |##############----------------| 47.8% (32/67 plans)
+[~] Starting plan: PJ_P2_API_ThemeJs
+[OK]   [OK] Open site
+[X]   [X] GET ThemeJs - Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P2_API_ThemeJs / design D2.
+[!] Plan PJ_P2_API_ThemeJs completed with issues (1/2 actions passed)
+Progress: |##############----------------| 49.3% (33/67 plans)
+[~] Starting plan: PJ_P2_API_AboutEcosystem
+[OK]   [OK] Open site
+[X]   [X] GET AboutEcosystem - Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P2_API_AboutEcosystem / design D2.
+[!] Plan PJ_P2_API_AboutEcosystem completed with issues (1/2 actions passed)
+Progress: |###############---------------| 50.7% (34/67 plans)
+[~] Starting plan: PJ_P2_API_Signin
+[OK]   [OK] Open site
+[OK]   [OK] GET Signin
+[OK] Plan PJ_P2_API_Signin completed successfully (2/2 actions)
+Progress: |###############---------------| 52.2% (35/67 plans)
+[~] Starting plan: PJ_P3_API_Health
+[OK]   [OK] Open site
+[OK]   [OK] GET Health
+[OK] Plan PJ_P3_API_Health completed successfully (2/2 actions)
+Progress: |################--------------| 53.7% (36/67 plans)
+[~] Starting plan: PJ_P3_API_Version
+[OK]   [OK] Open site
+[OK]   [OK] GET Version
+[OK] Plan PJ_P3_API_Version completed successfully (2/2 actions)
+Progress: |################--------------| 55.2% (37/67 plans)
+[~] Starting plan: PJ_P3_API_Suites
+[OK]   [OK] Open site
+[OK]   [OK] GET Suites
+[OK] Plan PJ_P3_API_Suites completed successfully (2/2 actions)
+Progress: |#################-------------| 56.7% (38/67 plans)
+[~] Starting plan: PJ_P3_API_ProjectsClient
+[OK]   [OK] Open site
+[OK]   [OK] GET ProjectsClient
+[OK] Plan PJ_P3_API_ProjectsClient completed successfully (2/2 actions)
+Progress: |#################-------------| 58.2% (39/67 plans)
+[~] Starting plan: PJ_P3_API_ProjectsConsultant
+[OK]   [OK] Open site
+[OK]   [OK] GET ProjectsConsultant
+[OK] Plan PJ_P3_API_ProjectsConsultant completed successfully (2/2 actions)
+Progress: |#################-------------| 59.7% (40/67 plans)
+[~] Starting plan: PJ_P3_API_Runs
+[OK]   [OK] Open site
+[OK]   [OK] GET Runs
+[OK] Plan PJ_P3_API_Runs completed successfully (2/2 actions)
+Progress: |##################------------| 61.2% (41/67 plans)
+[~] Starting plan: PJ_P3_API_WaitlistCount
+[OK]   [OK] Open site
+[X]   [X] GET WaitlistCount - Error in xGet: Failed to parse: http://127.0.0.1:8765api_waitlist_count_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P3_API_WaitlistCount / design D3.
+[!] Plan PJ_P3_API_WaitlistCount completed with issues (1/2 actions passed)
+Progress: |##################------------| 62.7% (42/67 plans)
+[~] Starting plan: PJ_P3_API_ProfilesJs
+[OK]   [OK] Open site
+[OK]   [OK] GET ProfilesJs
+[OK] Plan PJ_P3_API_ProfilesJs completed successfully (2/2 actions)
+Progress: |###################-----------| 64.2% (43/67 plans)
+[~] Starting plan: PJ_P3_API_Index
+[OK]   [OK] Open site
+[OK]   [OK] GET Index
+[OK] Plan PJ_P3_API_Index completed successfully (2/2 actions)
+Progress: |###################-----------| 65.7% (44/67 plans)
+[~] Starting plan: PJ_P3_API_Styles
+[OK]   [OK] Open site
+[OK]   [OK] GET Styles
+[OK] Plan PJ_P3_API_Styles completed successfully (2/2 actions)
+Progress: |####################----------| 67.2% (45/67 plans)
+[~] Starting plan: PJ_P3_API_AppJs
+[OK]   [OK] Open site
+[OK]   [OK] GET AppJs
+[OK] Plan PJ_P3_API_AppJs completed successfully (2/2 actions)
+Progress: |####################----------| 68.7% (46/67 plans)
+[~] Starting plan: PJ_P3_API_ThemesCss
+[OK]   [OK] Open site
+[X]   [X] GET ThemesCss - Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P3_API_ThemesCss / design D3.
+[!] Plan PJ_P3_API_ThemesCss completed with issues (1/2 actions passed)
+Progress: |#####################---------| 70.1% (47/67 plans)
+[~] Starting plan: PJ_P3_API_ThemeJs
+[OK]   [OK] Open site
+[X]   [X] GET ThemeJs - Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P3_API_ThemeJs / design D3.
+[!] Plan PJ_P3_API_ThemeJs completed with issues (1/2 actions passed)
+Progress: |#####################---------| 71.6% (48/67 plans)
+[~] Starting plan: PJ_P3_API_AboutEcosystem
+[OK]   [OK] Open site
+[X]   [X] GET AboutEcosystem - Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P3_API_AboutEcosystem / design D3.
+[!] Plan PJ_P3_API_AboutEcosystem completed with issues (1/2 actions passed)
+Progress: |#####################---------| 73.1% (49/67 plans)
+[~] Starting plan: PJ_P3_API_Signin
+[OK]   [OK] Open site
+[OK]   [OK] GET Signin
+[OK] Plan PJ_P3_API_Signin completed successfully (2/2 actions)
+Progress: |######################--------| 74.6% (50/67 plans)
+[~] Starting plan: PJ_P4_API_Health
+[OK]   [OK] Open site
+[OK]   [OK] GET Health
+[OK] Plan PJ_P4_API_Health completed successfully (2/2 actions)
+Progress: |######################--------| 76.1% (51/67 plans)
+[~] Starting plan: PJ_P4_API_Version
+[OK]   [OK] Open site
+[OK]   [OK] GET Version
+[OK] Plan PJ_P4_API_Version completed successfully (2/2 actions)
+Progress: |#######################-------| 77.6% (52/67 plans)
+[~] Starting plan: PJ_P4_API_Suites
+[OK]   [OK] Open site
+[OK]   [OK] GET Suites
+[OK] Plan PJ_P4_API_Suites completed successfully (2/2 actions)
+Progress: |#######################-------| 79.1% (53/67 plans)
+[~] Starting plan: PJ_P4_API_ProjectsClient
+[OK]   [OK] Open site
+[OK]   [OK] GET ProjectsClient
+[OK] Plan PJ_P4_API_ProjectsClient completed successfully (2/2 actions)
+Progress: |########################------| 80.6% (54/67 plans)
+[~] Starting plan: PJ_P4_API_ProjectsConsultant
+[OK]   [OK] Open site
+[OK]   [OK] GET ProjectsConsultant
+[OK] Plan PJ_P4_API_ProjectsConsultant completed successfully (2/2 actions)
+Progress: |########################------| 82.1% (55/67 plans)
+[~] Starting plan: PJ_P4_API_Runs
+[OK]   [OK] Open site
+[OK]   [OK] GET Runs
+[OK] Plan PJ_P4_API_Runs completed successfully (2/2 actions)
+Progress: |#########################-----| 83.6% (56/67 plans)
+[~] Starting plan: PJ_P4_API_WaitlistCount
+[OK]   [OK] Open site
+[X]   [X] GET WaitlistCount - Error in xGet: Failed to parse: http://127.0.0.1:8765api_waitlist_count_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P4_API_WaitlistCount / design D4.
+[!] Plan PJ_P4_API_WaitlistCount completed with issues (1/2 actions passed)
+Progress: |#########################-----| 85.1% (57/67 plans)
+[~] Starting plan: PJ_P4_API_ProfilesJs
+[OK]   [OK] Open site
+[OK]   [OK] GET ProfilesJs
+[OK] Plan PJ_P4_API_ProfilesJs completed successfully (2/2 actions)
+Progress: |#########################-----| 86.6% (58/67 plans)
+[~] Starting plan: PJ_P4_API_Index
+[OK]   [OK] Open site
+[OK]   [OK] GET Index
+[OK] Plan PJ_P4_API_Index completed successfully (2/2 actions)
+Progress: |##########################----| 88.1% (59/67 plans)
+[~] Starting plan: PJ_P4_API_Styles
+[OK]   [OK] Open site
+[OK]   [OK] GET Styles
+[OK] Plan PJ_P4_API_Styles completed successfully (2/2 actions)
+Progress: |##########################----| 89.6% (60/67 plans)
+[~] Starting plan: PJ_P4_API_AppJs
+[OK]   [OK] Open site
+[OK]   [OK] GET AppJs
+[OK] Plan PJ_P4_API_AppJs completed successfully (2/2 actions)
+Progress: |###########################---| 91.0% (61/67 plans)
+[~] Starting plan: PJ_P4_API_ThemesCss
+[OK]   [OK] Open site
+[X]   [X] GET ThemesCss - Error in xGet: Failed to parse: http://127.0.0.1:8765api_themes_css_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P4_API_ThemesCss / design D4.
+[!] Plan PJ_P4_API_ThemesCss completed with issues (1/2 actions passed)
+Progress: |###########################---| 92.5% (62/67 plans)
+[~] Starting plan: PJ_P4_API_ThemeJs
+[OK]   [OK] Open site
+[X]   [X] GET ThemeJs - Error in xGet: Failed to parse: http://127.0.0.1:8765api_theme_js_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P4_API_ThemeJs / design D4.
+[!] Plan PJ_P4_API_ThemeJs completed with issues (1/2 actions passed)
+Progress: |############################--| 94.0% (63/67 plans)
+[~] Starting plan: PJ_P4_API_AboutEcosystem
+[OK]   [OK] Open site
+[X]   [X] GET AboutEcosystem - Error in xGet: Failed to parse: http://127.0.0.1:8765api_ecosystem_endpoint
+[!]   -> Critical step failed. Skipping remaining actions for plan PJ_P4_API_AboutEcosystem / design D4.
+[!] Plan PJ_P4_API_AboutEcosystem completed with issues (1/2 actions passed)
+Progress: |############################--| 95.5% (64/67 plans)
+[~] Starting plan: PJ_P4_API_Signin
+[OK]   [OK] Open site
+[OK]   [OK] GET Signin
+[OK] Plan PJ_P4_API_Signin completed successfully (2/2 actions)
+Progress: |#############################-| 97.0% (65/67 plans)
+[~] Starting plan: PJ_P5_API_Health
+[OK]   [OK] Open site
+[OK]   [OK] GET Health
+[OK] Plan PJ_P5_API_Health completed successfully (2/2 actions)
+Progress: |#############################-| 98.5% (66/67 plans)
+[~] Starting plan: PJ_P5_API_Version
+[OK]   [OK] Open site
+[OK]   [OK] GET Version
+[OK] Plan PJ_P5_API_Version completed successfully (2/2 actions)
+Progress: |##############################| 100.0% (67/67 plans)
+
+[i] Generating results and dashboard...
+[i] Cleaned up 70 empty directory(ies)
+[!] Error summary saved: C:\006\FXYZ\KK\z\20260706_203628_qoa_web\_errors.csv
+
+============================================================
+  EXECUTION SUMMARY
+============================================================
+? Total Plans: 67
+? Passed: 51
+? Failed: 16
+??  Total Time: 16.37 seconds
+? Results saved to: C:\006\FXYZ\KK\z\20260706_203628_qoa_web
+? Dashboard: C:\006\FXYZ\KK\z\20260706_203628_qoa_web\qoa_web_zDash.html
+============================================================
+
+[OK] Test suite 'qoa_web' completed successfully!

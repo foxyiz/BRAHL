@@ -1,0 +1,94 @@
+
+============================================================
+  FoXYiZ Test Framework
+============================================================
+[i] Loading configuration...
+[i] Headless mode enabled
+[i] Using 1 threads for parallel execution
+
+============================================================
+  Processing Test Suite 1/1
+============================================================
+[i] Test Suite: qoa_web
+[i] Output Directory: C:\006\FXYZ\KK\z\20260706_203628_qoa_web
+[i] Loaded plan file: y1Plans.csv (55 plans)
+[i] Loaded plan file: y1Plans_journey.csv (800 plans)
+[i] Total plans loaded: 855 from 2 file(s)
+[i] Tag filter: Running plans with tags: Smoke
+[i] Found 12 plans to execute
+[~] Starting plan: PWeb_OpenHome
+[X]   [X] Client ready - Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts => screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]
+[!]   -> Critical step failed. Skipping remaining actions for plan PWeb_OpenHome / design D1.
+[OK] Plan PWeb_OpenHome completed successfully (0/0 actions)
+Progress: |##----------------------------| 8.3% (1/12 plans)
+[~] Starting plan: PWeb_VerifyTitle
+[X]   [X] Client ready - Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts => screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]
+[!]   -> Critical step failed. Skipping remaining actions for plan PWeb_VerifyTitle / design D1.
+[OK] Plan PWeb_VerifyTitle completed successfully (0/0 actions)
+Progress: |#####-------------------------| 16.7% (2/12 plans)
+[~] Starting plan: PWeb_Nav_SixPhases
+[X]   [X] Client ready - Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts => screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]
+[!]   -> Critical step failed. Skipping remaining actions for plan PWeb_Nav_SixPhases / design D1.
+[OK] Plan PWeb_Nav_SixPhases completed successfully (0/0 actions)
+Progress: |#######-----------------------| 25.0% (3/12 plans)
+[~] Starting plan: PWeb_Panel_Build
+[X]   [X] Client ready - Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts => screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]
+[!]   -> Critical step failed. Skipping remaining actions for plan PWeb_Panel_Build / design D1.
+[OK] Plan PWeb_Panel_Build completed successfully (0/0 actions)
+Progress: |##########--------------------| 33.3% (4/12 plans)
+[~] Starting plan: PWeb_Panel_Run
+[X]   [X] Client ready - Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts => screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]
+[!]   -> Critical step failed. Skipping remaining actions for plan PWeb_Panel_Run / design D1.
+[OK] Plan PWeb_Panel_Run completed successfully (0/0 actions)
+Progress: |############------------------| 41.7% (5/12 plans)
+[~] Starting plan: PWeb_Panel_Analyze
+[X]   [X] Client ready - Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts => screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]
+[!]   -> Critical step failed. Skipping remaining actions for plan PWeb_Panel_Analyze / design D1.
+[OK] Plan PWeb_Panel_Analyze completed successfully (0/0 actions)
+Progress: |###############---------------| 50.0% (6/12 plans)
+[~] Starting plan: PWeb_Panel_Heal
+[X]   [X] Client ready - Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts => screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]
+[!]   -> Critical step failed. Skipping remaining actions for plan PWeb_Panel_Heal / design D1.
+[OK] Plan PWeb_Panel_Heal completed successfully (0/0 actions)
+Progress: |#################-------------| 58.3% (7/12 plans)
+[~] Starting plan: PWeb_Panel_Loop
+[X]   [X] Client ready - Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts => screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]
+[!]   -> Critical step failed. Skipping remaining actions for plan PWeb_Panel_Loop / design D1.
+[OK] Plan PWeb_Panel_Loop completed successfully (0/0 actions)
+Progress: |####################----------| 66.7% (8/12 plans)
+[~] Starting plan: PWeb_Panel_Brahl
+[X]   [X] Client ready - Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts => screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]
+[!]   -> Critical step failed. Skipping remaining actions for plan PWeb_Panel_Brahl / design D1.
+[OK] Plan PWeb_Panel_Brahl completed successfully (0/0 actions)
+Progress: |######################--------| 75.0% (9/12 plans)
+[~] Starting plan: PWeb_Footer_Health
+[X]   [X] Client ready - Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts => screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]
+[!]   -> Critical step failed. Skipping remaining actions for plan PWeb_Footer_Health / design D1.
+[OK] Plan PWeb_Footer_Health completed successfully (0/0 actions)
+Progress: |#########################-----| 83.3% (10/12 plans)
+[~] Starting plan: PAPI_Health
+[OK]   [OK] GET health
+[OK] Plan PAPI_Health completed successfully (1/1 actions)
+Progress: |###########################---| 91.7% (11/12 plans)
+[~] Starting plan: PWeb_Admin_Ecosystem
+[X]   [X] P6 ready - Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts => screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]
+[!]   -> Critical step failed. Skipping remaining actions for plan PWeb_Admin_Ecosystem / design D6.
+[OK] Plan PWeb_Admin_Ecosystem completed successfully (0/0 actions)
+Progress: |##############################| 100.0% (12/12 plans)
+
+[i] Generating results and dashboard...
+[i] Cleaned up 14 empty directory(ies)
+[!] Error summary saved: C:\006\FXYZ\KK\z\20260706_203628_qoa_web\_errors.csv
+
+============================================================
+  EXECUTION SUMMARY
+============================================================
+? Total Plans: 12
+? Passed: 1
+? Failed: 1
+??  Total Time: 26.56 seconds
+? Results saved to: C:\006\FXYZ\KK\z\20260706_203628_qoa_web
+? Dashboard: C:\006\FXYZ\KK\z\20260706_203628_qoa_web\qoa_web_zDash.html
+============================================================
+
+[OK] Test suite 'qoa_web' completed successfully!

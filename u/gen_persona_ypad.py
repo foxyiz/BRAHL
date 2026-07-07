@@ -10,6 +10,7 @@ from _paths import KK_ROOT, SUITE_QOA_WEB
 ROOT = SUITE_QOA_WEB
 DATA_DIR = KK_ROOT / "Docs" / "test-user-data"
 BASE = "http://127.0.0.1:8765"
+APP = f"{BASE}/app"
 
 
 def load_personas_from_docs() -> list[tuple]:
@@ -41,7 +42,9 @@ PROFILE_URLS: dict[str, str] = {}
 for entry in _idx.get("personas", []):
     p = json.loads((DATA_DIR / entry["file"]).read_text(encoding="utf-8"))
     col = entry["ypad_design_column"]
-    PROFILE_URLS[col] = p.get("profile_url") or f"{BASE}/?profile={p['id']}&suite=qoa_web"
+    PROFILE_URLS[col] = p.get("profile_url") or (
+        f"{APP}?reset=1&profile={p['id']}&suite=qoa_web&demo=1"
+    )
 
 
 def col_vals(fn):
@@ -71,8 +74,8 @@ add(
 add("UI", "persona_tasks_source", col_vals(lambda _p: "Docs/test-user-data/"))
 
 SHARED = {
-    "fresh_url": f"{BASE}/?reset=1",
-    "base_url": f"{BASE}/",
+    "fresh_url": f"{APP}?reset=1&demo=1",
+    "base_url": f"{APP}/?demo=1",
     "body_locator": "css=body",
     "app_title_locator": "css=#app-title",
     "tagline_locator": "css=.tagline",
