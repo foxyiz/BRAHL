@@ -1,8 +1,12 @@
 {
-  "configs": ["y/qoa2/qoa2.json"],
+  "configs": [
+    "y/qoa2/qoa2.json"
+  ],
   "thread_count": 1,
-  "timeout": 10,
-  "headless": true,
+  "timeout": 6,
+  "headless": false,
   "debug": false,
-  "tags": ["Admin"]
+  "tags": [
+    "Admin"
+  ]
 }

@@ -1,6 +1,6 @@
 ﻿Type,DataName,D1,D2,D3
 Math,v1,12,200,5
-Math,v2,23,300,10
+Math,v2,22,300,10
 Math,vAdd,35,500,15
 Math,vSub,-11,100,
 Math,vMul,276,,

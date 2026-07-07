@@ -1,4 +1,4 @@
-PlanId,PlanName,DesignId,Run,Tags,Output
+﻿PlanId,PlanName,DesignId,Run,Tags,Output
 PReuse_qoa2_OpenSite,Open browser and navigate to QAonAir2 qoa2,D1,N,Reuse,site_loaded
 PReuse_qoa2_Login,Login to qoa2 with test credentials,D1,N,Reuse,login_success
 PReuse_qoa2_Dashboard,Open dashboard with active session,D1,N,Reuse,dashboard_ready
@@ -36,8 +36,8 @@ PWeb_Dashboard_Social_Assistant,Verify AI Social Assistant section on dashboard,
 PWeb_Dashboard_Avatar_Tabs,Switch avatar tabs on dashboard,D1,Y,qoa2;Dashboard;Avatar,avatar_tabs_ok
 PWeb_Dashboard_Referral,Verify referral link section,D1,Y,qoa2;Dashboard;Promoter,referral_ok
 PWeb_Dashboard_Copy_Link,Click Copy Link button,D1,Y,qoa2;Dashboard;Interaction,copy_link_ok
-PWeb_Dashboard_Onboarding_Next,Advance onboarding carousel,D1,N,qoa2;Dashboard;Onboarding,onboarding_next_ok
-PWeb_Dashboard_Onboarding_Back,Go back in onboarding carousel,D1,N,qoa2;Dashboard;Onboarding,onboarding_back_ok
+PWeb_Dashboard_Onboarding_Next,Advance onboarding carousel,D1,Y,qoa2;Dashboard;Onboarding,onboarding_next_ok
+PWeb_Dashboard_Onboarding_Back,Go back in onboarding carousel,D1,Y,qoa2;Dashboard;Onboarding,onboarding_back_ok
 PWeb_Nav_Build,Navigate to BRAHL Build page,D1,Y,qoa2;BRAHL;Navigation,build_page_ok
 PWeb_Nav_Heal,Navigate to BRAHL Heal page,D1,Y,qoa2;BRAHL;Navigation,heal_page_ok
 PWeb_Nav_Loop,Navigate to BRAHL Loop page,D1,Y,qoa2;BRAHL;Navigation,loop_page_ok
