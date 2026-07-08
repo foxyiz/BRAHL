@@ -1,0 +1,18 @@
+Issues noticed on qoa_new
+Profiles
+Improper Profile Switching & Access Control: Profile settings cannot be modified. For example, Profile 1 (Alex Chen) is designated as a "Creator" but is blocked from accessing QA Hunter and Nalanda.
+Product Question: Is this strict restriction the intended workflow for the Creator role?
+Build Phase
+Inconsistent Cost Metrics: The Cost Meter appears inconsistently across different projects; some display it, while others do not. What is the logic dictating its visibility?
+Environment Variables Configuration Clarity: There is an .env example page visible, but it is unclear if this is where users are expected to input their secrets. If a separate production environment configuration page is planned, it currently lacks input fields/text boxes for user entry.
+Broken Action Button: The "Invite QA Hunter" button is currently non-functional and triggers no action upon click.
+Run Phase
+Hardcoded Routing: The "View zDash" button uses a static URL path. It attempts to route every project to qoa_web_zDash.html, throwing an error for any project other than the hardcoded default.
+Inaccurate Test Metrics: On the qoa2.base44.app project, executing the admin_smoke test displays a metric discrepancy: the UI states there are 16 failed plans, despite there only being 15 total plans available.
+Architecture & Logic (A77)
+Redundant Pipeline Phases: The current workflow explicitly includes both a Build phase and a BRAHL phase. Given that the "B" in BRAHL stands for Build, this introduces an apparent redundancy. Why are there two separate build steps?
+UI/UX Enhancements
+Cluttered Interface: The overall UI/UX is unpolished and lacks organization. It misses the mark on a "minimalist, clean" aesthetic, currently feeling cluttered and resembling generic AI-generated layouts ("AI slop").
+Poor Markdown Rendering: In the Build tab, the "View AI context documents.md" viewport is restricted. Because the markdown files contain long sentences and substantial data, the text overflows horizontally beyond the window boundaries rather than wrapping, making it difficult to read.
+Technical Suggestions
+State Management & Storage: The application appears to rely heavily on browser cache (Local/Session Storage) for persistent data. To improve security, reliability, and data integrity, it is highly recommended to migrate this data to a dedicated database or server-side storage class.

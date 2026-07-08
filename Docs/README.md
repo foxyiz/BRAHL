@@ -42,7 +42,7 @@ The goal: **start from docs + a small file slice**, not the whole repo (~90 MB w
 | [../qoa_web/qoa_userDoc.md](../qoa_web/qoa_userDoc.md) | Users & in-app AI — avatars, phases, APIs |
 | [../qoa_web/MEMORY.md](../qoa_web/MEMORY.md) | Agent memory for qoa_web |
 | [../qoa_web/DEPLOY.md](../qoa_web/DEPLOY.md) | Demo / VPS deploy |
-| [../u/README.md](../u/README.md) | Python utilities, zBatchDash |
+| [../pyUtils/README.md](../pyUtils/README.md) | Python utilities (cleaner, yVisualizer, zDefects, zBatchDash) |
 | [../f/fStart_SCOPE.md](../f/fStart_SCOPE.md) | Which fStart configs are in scope |
 
 ---
@@ -60,7 +60,7 @@ f(x, y) = z
 | **y** | `y/<suite>/` | yPAD — plans, actions, designs |
 | **z** | `z/<run>/` | Results — CSV, dashboard HTML, BRAHL report (ephemeral) |
 
-**Utilities:** `u/` — cleaner, persona sync, `zBatchDash.py`. **Not** engine code.
+**Utilities:** `pyUtils/` — cleaner, persona sync, `zBatchDash.py`. HTML reports: `pyUtils/y_visualization.html`, `pyUtils/zDefectsDashboard.html`. **Not** engine code.
 
 ---
 
@@ -69,8 +69,10 @@ f(x, y) = z
 ```powershell
 python qoa_web/run_local.py
 python f\fEngine2.py --config f\fStart_qoa_web_verify.json
-python u\sync_personas.py
-python u\cleaner.py --apply
+python pyUtils\sync_personas.py
+python pyUtils\cleaner.py --apply
+python pyUtils\yVisualizer.py
+python pyUtils\zDefects.py
 ```
 
 See [MAINTENANCE.md](./MAINTENANCE.md) for the full session checklist.

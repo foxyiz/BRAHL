@@ -560,11 +560,13 @@ body {
   margin: 0;
   padding: 0.85rem;
   overflow: auto;
+  max-width: 100%;
   font-family: var(--mono);
   font-size: 0.74rem;
   line-height: 1.45;
   white-space: pre-wrap;
   word-break: break-word;
+  overflow-wrap: anywhere;
   background: #0f172a;
   color: var(--text);
   min-height: 280px;
@@ -1347,6 +1349,24 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   white-space: pre-wrap;
   color: var(--muted);
   font-family: inherit;
+}
+
+.cycle-stat {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.cycle-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+}
+
+.cycle-recovered {
+  background: rgba(34, 197, 94, 0.18);
+  color: #22c55e;
 }
 
 .avatar-btn-restricted {

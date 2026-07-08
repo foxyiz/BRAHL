@@ -1,6 +1,6 @@
 # qoa_web v1.3 — Agent memory (read this first)
 
-**Status:** v1.3 invite GTM · **Verify:** 49/49 (`Run=Y`, tag **Verify** in `y/qoa_web/y1Plans.csv`)
+**Status:** v1.3 invite GTM · **yPAD `y/qoa_web/` removed** (too large / context noise) — to be re-added later. Reporting/UI reads from `z/` runs; Run/Loop/Verify + shrink/restore need the yPAD restored first.
 
 **App:** http://127.0.0.1:8765/welcome · **Arena:** `/app` · **Test project:** qoa_web Local (`d21afcefc002`)
 
@@ -17,13 +17,9 @@
 | `qoa_web/web/` | index.html, app.js, welcome, signin, invite-gate, about |
 | `qoa_web/api/` | main.py, runner.py, projects.py, invites.py, pricing.py, ypad.py, ai_* |
 | `qoa_web/mcp/server.py` | Cursor MCP bridge |
-| `y/qoa_web/` | y1Plans (49 Verify), **y1Plans_journey** (~800 Journey), y2Actions, y3Designs |
+| `y/qoa_web/` | **Removed** — yPAD (y1Plans/y2Actions/y3Designs) to be re-added later |
 | `Docs/test-user-data/` | Persona source of truth (P1–P9) |
-| `f/fStart_qoa_web_verify.json` | Full verify (49 plans, tag **Verify**) |
-| `f/fStart_qoa_web_journey_*.json` | Journey batches by tag (~25–181 plans) — see [fStart_SCOPE.md](../f/fStart_SCOPE.md) |
-| `f/fStart_qoa_web_regression.json` | **Overnight only** — all 800 Journey plans |
-| `f/fStart_qoa_web_smoke_prod.json` | Post-deploy smoke |
-| `f/fStart_qoa_web_smoke*.json` | Quick smoke (~12 plans) |
+| `f/fStart_qoa_web_*.json` | verify / journey / smoke configs — inert until `y/qoa_web/` is restored |
 | `u/` | cleaner, persona sync, zBatchDash |
 
 ## Out of scope (do not read/edit in agent sessions)
@@ -86,6 +82,7 @@ Unified UX — same top bar; labels vary (**My challenge** vs **Open challenges*
 | Doc | Use |
 |-----|-----|
 | [qoa_userDoc.md](./qoa_userDoc.md) | Users, arena, APIs, personas |
+| [Docs/BRAHL_DEFECTS.md](../Docs/BRAHL_DEFECTS.md) | qoa_new defect closure log (BRAHL-001–004 + UX) |
 | [Docs/BRAHL.md](../Docs/BRAHL.md) | Full BRAHL loop + qoa_web quick ref at top |
 | [Docs/MAINTENANCE.md](../Docs/MAINTENANCE.md) | End-of-session cleaner + doc sync |
 | [u/README.md](../u/README.md) | cleaner, persona sync, zBatchDash |

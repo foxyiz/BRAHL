@@ -1,0 +1,59 @@
+BRAHL PLATFORMDEFECT ASSESSMENT REPORTDate: 07 July 2026
+Executive Summary
+This report summarizes defects identified during execution of the Atomic77 suite within the BRAHL platform. The execution engine completed successfully; however, reporting, dashboard accessibility, and statistics consistency issues were observed.
+ID
+Issue
+Severity
+Priority
+BRAHL-001
+Inconsistent Pass Counts
+High
+P1
+BRAHL-002
+zDash File Not Found
+Critical
+P1
+BRAHL-003
+Loop Recovery Visibility
+Medium
+P2
+BRAHL-004
+Run vs Analyze Mismatch
+High
+P1
+BRAHL-001 – Inconsistent Pass Count Reporting
+Severity: High / Critical as noted in summary
+Issue Description
+Analyze displays varying counts such as 2, 33, and 71 passes across runs, while execution summaries show different totals.
+Expected vs Actual Result
+Expected: All modules display identical finalized execution counts.Actual: Different modules display different totals.
+Recommended Action
+Standardize data sources, validate file paths, improve audit tracking, and ensure all modules use the same execution dataset.
+Evidence Screenshots
+BRAHL-002 – zDash Accessibility Failure
+Severity: High / Critical as noted in summary
+Issue Description
+After successful execution, clicking View zDash returns 'File not found' even though results exist and are visible elsewhere.
+Expected vs Actual Result
+Expected: Generated zDash opens directly from Run module.Actual: File not found error is returned.
+Recommended Action
+Standardize data sources, validate file paths, improve audit tracking, and ensure all modules use the same execution dataset.
+Evidence Screenshots
+BRAHL-003 – Loop Failure Recovery Tracking
+Severity: High / Critical as noted in summary
+Issue Description
+Two plans failed after tag modifications. Loop → Failures recovered the failures and Verify-Full passed all plans, but recovery history is not clearly presented.
+Expected vs Actual Result
+Expected: Recovery status should be visible in final reporting.Actual: Recovery workflow lacks clear traceability.
+Recommended Action
+Standardize data sources, validate file paths, improve audit tracking, and ensure all modules use the same execution dataset.
+Evidence Screenshots
+BRAHL-004 – Run and Analyze Statistics Mismatch
+Severity: High / Critical as noted in summary
+Issue Description
+Run summaries and Analyze statistics appear to use different counting logic, resulting in conflicting metrics.
+Expected vs Actual Result
+Expected: Unified statistics across all modules.Actual: Run and Analyze display different values.
+Recommended Action
+Standardize data sources, validate file paths, improve audit tracking, and ensure all modules use the same execution dataset.
+Evidence Screenshots

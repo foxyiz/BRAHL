@@ -25,6 +25,8 @@ Verify   restore all Run=Y → full run → BRAHL report
 
 **Go/No-Go** and **version compare** live on the BRAHL tab (Creator). Do not weaken assertions for A1 app defects.
 
+**Reporting (all counts are plan-level, not action rows):** Run list, Analyze, and BRAHL share `plan_stats_from_zresults()` / `GET /api/runs/{run}/stats`, so `fails ≤ total_plans` everywhere. zDash links resolve the real `*_zDash.html` (e.g. `qoa_web_verify_gate_zDash.html`). Cycle history stores pass/fail snapshots and shows a **Recovered** badge; the BRAHL report has a `## Recovery trace`. **Build** = product/requirements; **BRAHL** = launch-readiness report (not duplicate Build work). Defect log: [BRAHL_DEFECTS.md](./BRAHL_DEFECTS.md).
+
 ---
 
 ---

@@ -23,7 +23,7 @@ qoa_web/
   web/                           # static UI (welcome, signin, app)
   mcp/                           # optional Cursor bridge
   data/                          # projects + invites seed
-u/                             # utilities + zBatchDash.py
+pyUtils/                       # utilities + zBatchDash.py
 f/
   fEngine2.py
   fStart_qoa_web_verify.json
@@ -85,7 +85,7 @@ Paste or @-mention:
 
 **Task one-liner example:**
 
-> We work on **qoa_web v1.3** only. Active suite is `y/qoa_web/`. Follow BRAHL loop in `Docs/BRAHL.md`. Do not edit `fEngine2.py` unless I ask. Run `python u/cleaner.py --apply` when done.
+> We work on **qoa_web v1.3** only. Active suite is `y/qoa_web/`. Follow BRAHL loop in `Docs/BRAHL.md`. Do not edit `fEngine2.py` unless I ask. Run `python pyUtils/cleaner.py --apply` when done.
 
 ---
 
@@ -118,7 +118,7 @@ Keep those four aligned when product copy or verify scope changes.
 
 Before closing a session, confirm:
 
-- [ ] `python u/cleaner.py --apply` ran (ephemeral `z/` archived)
+- [ ] `python pyUtils/cleaner.py --apply` ran (ephemeral `z/` archived)
 - [ ] `Summary.md` and `Docs/README.md` verify counts match `y/qoa_web/y1Plans.csv` (`Run=Y` + tag Verify)
 - [ ] `qoa_web/MEMORY.md` status line updated if verify or scope changed
 - [ ] No secrets in commits (`.env`, API keys)

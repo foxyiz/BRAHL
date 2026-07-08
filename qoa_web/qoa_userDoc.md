@@ -53,6 +53,8 @@ Full fictional data lives in **`Docs/test-user-data/`** (source of truth). Each 
 | **P8** | Riley Okonkwo | Bug-bounty QA Hunter | QA Hunter — critical issues focus |
 | **P9** | Casey Nguyen | **First-time user** | Empty state — no preloaded project |
 
+**Avatar permissions:** each profile declares `allowed_avatars`. Client-only profiles (e.g. **P1 Alex Chen**) intentionally cannot switch to QA Hunter/Nalanda — those avatar buttons appear **disabled with a tooltip** ("switch profile at Sign-in for dual-role access"), not a silent no-op. Dual-role personas (P2 Jordan Lee) can switch freely.
+
 **Deep-links (testing):**
 
 ```
@@ -190,6 +192,8 @@ Selecting **challenge** in the top bar scopes Run, Analyze, Heal, Loop, and BRAH
 
 **Payouts:** cash out at **$100+** wallet balance, or apply credits to QA-hunt your own creations.
 
+**Cost meter visibility:** the Build-tab teaser and the **$** tab appear whenever a project is selected. With no budget set, they show a hint to set a budget on the **$** tab rather than hiding — so tracking is always discoverable.
+
 **Creator view:** budget vs spend by BRAHL phase — local vs cloud runtime toggle.  
 **QA Hunter view:** wallet, earnings by project, progress to $100 payout threshold.  
 **Networker (internal key `networker`):** see **Nalanda** section below — community XP, not paid BRAHL arena.
@@ -214,6 +218,17 @@ Philosophy: minimize cloud/AI cost; maximize local FoXYiZ + human craft.
 Community contribution earns **XP** (lessons, shares, replies). Data persists in `data/nalanda.json`.
 
 **Progress dots** under the main tabs show Build → BRAHL completion for Creator/QA Hunter projects only.
+
+---
+
+## 9c. Reporting, zDash & secrets
+
+- **Consistent counts:** Run list, Analyze, and BRAHL all show **plan-level** pass/fail/total (shared `GET /api/runs/{run}/stats`). Failures can never exceed total plans.
+- **zDash:** "View zDash" opens the run's actual dashboard file (e.g. `qoa_web_verify_gate_zDash.html`); the link is hidden until the dashboard exists.
+- **Loop recovery:** cycle history shows pass/fail per step and a **Recovered** badge when Loop/Verify drives failures to zero; the BRAHL report includes a **Recovery trace**.
+- **Secrets / ENV:** the yPAD **ENV** panel is **reference only**. Never enter secrets in the browser — copy keys into `f/.env` (or host environment) on the machine running FoXYiZ.
+
+**Roadmap — storage:** profile and project selection currently persist in browser `localStorage`. A future server-side store (per-user DB) is planned so state follows the account across devices; no DB migration is included today.
 
 ---
 

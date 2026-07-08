@@ -557,6 +557,18 @@ def runs(suite: str | None = None) -> dict[str, Any]:
     return {"runs": list_z_runs(suite)}
 
 
+@app.get("/api/runs/{run_name}/stats")
+def run_stats(run_name: str) -> dict[str, Any]:
+    run_dir = KK_ROOT / "z" / run_name
+    if not run_dir.is_dir():
+        raise HTTPException(404, f"Run not found: {run_name}")
+    stats = analyze_run(run_name)
+    stats["health"] = "green" if stats.get("fails", 0) == 0 and stats.get("total_plans", 0) > 0 else (
+        "amber" if stats.get("total_plans", 0) > 0 else "unknown"
+    )
+    return stats
+
+
 @app.get("/api/runs/{run_name}/failures")
 def run_failures(run_name: str) -> dict[str, Any]:
     run_dir = KK_ROOT / "z" / run_name

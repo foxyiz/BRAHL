@@ -222,11 +222,14 @@ function updateTopbarProjectLabel() {
 
 function syncAvatarButtons(profile, activeAvatar) {
   $$(".avatar-btn").forEach((b) => {
-    const allowed = profileAllowsAvatar(profile, b.dataset.avatar);
+    const allowed = !profile || profileAllowsAvatar(profile, b.dataset.avatar);
     b.classList.toggle("active", b.dataset.avatar === activeAvatar);
-    b.classList.toggle("avatar-btn-restricted", false);
-    b.disabled = false;
-    b.setAttribute("aria-disabled", "false");
+    b.classList.toggle("avatar-btn-restricted", !allowed);
+    b.disabled = !allowed;
+    b.setAttribute("aria-disabled", allowed ? "false" : "true");
+    if (!allowed) {
+      b.title = `${avatarLabel(b.dataset.avatar).short} — switch profile at Sign-in for dual-role access`;
+    }
   });
 }
 
@@ -743,12 +746,12 @@ function syncProjectStatus() {
   }
   strip?.classList.add("has-project");
   const phaseHints = {
-    build: "Describe purpose · set budget · add context (AI chat when on)",
+    build: "Build = product & requirements · budget · context (AI chat when on)",
     run: "FoXYiZ fEngine2 — Run yPAD (no AI)",
     analyze: isAiOn() ? "Refresh runs · AI root-cause or manual RCA" : "Refresh runs · classify T1/T2/T3/A1 manually",
     heal: isAiOn() ? "AI heal suggestions · shrink/restore y1Plans" : "Edit yPAD · shrink/restore for Loop",
     loop: "Step 0 context · Loop 1–3 + Verify via fEngine2",
-    brahl: "Review reports · chat with model",
+    brahl: "BRAHL = launch-readiness report (Go/No-Go, recovery) — not a duplicate of Build",
     cost: state.avatar === "consultant" ? "QA Hunter wallet · earnings by project" : "Budget meter · AI vs QA Hunter vs local/cloud",
     nalanda: "Learn · teach · discuss · invite — free knowledge community",
   };
@@ -833,16 +836,37 @@ function pickRunViaModal() {
   });
 }
 
-function showRunPostActions(runName) {
+function zDashHref(dashboardRelPath) {
+  if (!dashboardRelPath) return null;
+  const parts = dashboardRelPath.replace(/\\/g, "/").split("/");
+  if (parts[0] === "z" && parts.length >= 3) {
+    return `/api/files/z/${encodeURIComponent(parts[1])}/${parts.slice(2).join("/")}`;
+  }
+  return null;
+}
+
+async function showRunPostActions(runName) {
   const wrap = $("#run-post-actions");
   if (!wrap || !runName) {
     if (wrap) wrap.hidden = true;
     return;
   }
   wrap.hidden = false;
-  const zdash = `/api/files/z/${encodeURIComponent(runName)}/qoa_web_zDash.html`;
   const link = $("#run-zdash-link");
-  if (link) link.href = zdash;
+  if (!link) return;
+  let href = null;
+  try {
+    const stats = await api(`/api/runs/${encodeURIComponent(runName)}/stats`);
+    href = zDashHref(stats.dashboard);
+  } catch {
+    /* stats not ready */
+  }
+  if (href) {
+    link.href = href;
+    link.hidden = false;
+  } else {
+    link.hidden = true;
+  }
 }
 
 async function loadAppVersion() {
@@ -859,13 +883,25 @@ function renderCycleHistory() {
   const el = $("#cycle-history");
   if (!el) return;
   const items = activeProject?.cycle_history || [];
+  const peakFails = items.reduce((m, e) => Math.max(m, Number(e.stats?.fails ?? 0)), 0);
   el.innerHTML = items.length
     ? items
-        .map(
-          (e) =>
-            `<li><strong>${escapeHtml(e.step)}</strong> ${escapeHtml(e.detail || "")} ` +
+        .map((e) => {
+          const s = e.stats;
+          let statPill = "";
+          let badge = "";
+          if (s && (s.total_plans || s.passes || s.fails)) {
+            statPill = ` <span class="cycle-stat">${s.passes ?? 0}/${s.total_plans ?? 0} pass · ${s.fails ?? 0} fail</span>`;
+            const isLoopStep = /^(verify|loop)/i.test(e.step || "");
+            if (peakFails > 0 && Number(s.fails) === 0 && isLoopStep) {
+              badge = ' <span class="cycle-badge cycle-recovered">Recovered</span>';
+            }
+          }
+          return (
+            `<li><strong>${escapeHtml(e.step)}</strong> ${escapeHtml(e.detail || "")}${statPill}${badge} ` +
             `<span class="meta">${escapeHtml((e.at || "").replace("T", " ").slice(0, 19))}</span></li>`
-        )
+          );
+        })
         .join("")
     : '<li class="empty-hint">No cycle steps yet — Capture Step 0 or Run Loop 1.</li>';
 }
@@ -896,6 +932,7 @@ async function recordCycleEvent(step, detail, runName) {
 
 function updateProjectBanner(payoutPreview) {
   applyAiMode();
+  updateInviteButtonState();
   const meta = $("#project-banner-meta");
   const strip = $("#context-strip");
   const suite = state.suites.find((s) => s.name === state.suiteName);
@@ -1295,18 +1332,14 @@ function renderBrahlSummaryStats(stats, runName) {
     timeWrap.hidden = true;
   }
   const zdash = $("#brahl-zdash-link");
-  if (zdash && runName) {
-    if (stats.dashboard) {
-      const parts = stats.dashboard.replace(/\\/g, "/").split("/");
-      if (parts[0] === "z" && parts.length >= 3) {
-        zdash.href = `/api/files/z/${encodeURIComponent(parts[1])}/${parts.slice(2).join("/")}`;
-      } else {
-        zdash.href = `/api/files/z/${encodeURIComponent(runName)}/qoa_web_zDash.html`;
-      }
+  if (zdash) {
+    const href = zDashHref(stats.dashboard);
+    if (href) {
+      zdash.href = href;
+      zdash.hidden = false;
     } else {
-      zdash.href = `/api/files/z/${encodeURIComponent(runName)}/qoa_web_zDash.html`;
+      zdash.hidden = true;
     }
-    zdash.hidden = false;
   }
   renderGoNoGo(stats);
 }
@@ -1818,11 +1851,12 @@ async function renderBuildCostTeaser() {
   }
   try {
     const { cost_meter: m } = await api(`/api/projects/${state.projectId}/cost-meter`);
+    wrap.hidden = false;
     if (!m.budget_usd) {
-      wrap.hidden = true;
+      body.innerHTML =
+        `<span class="empty-hint">Set a budget on the $ tab to enable cost tracking (AI vs QA Hunter vs local/cloud).</span>`;
       return;
     }
-    wrap.hidden = false;
     body.innerHTML =
       `<span class="ypad-stat-pill">Budget <strong>$${m.budget_usd}</strong></span>` +
       `<span class="ypad-stat-pill">Spent ~<strong>$${m.spent_total_usd}</strong></span>` +
@@ -2442,8 +2476,19 @@ async function saveYpadSheet() {
   setStatus(`Saved y${ypadState.tab === "plans" ? "1Plans" : ypadState.tab === "actions" ? "2Actions" : "3Designs"}.csv`);
 }
 
+function updateInviteButtonState() {
+  const btn = $("#btn-invite-hitl");
+  if (!btn) return;
+  const enabled = !!state.projectId;
+  btn.disabled = !enabled;
+  btn.title = enabled ? "" : "Select or create a challenge first";
+}
+
 function openInviteHitlModal() {
-  if (!state.projectId) return;
+  if (!state.projectId) {
+    setStatus("Select or create a challenge before inviting QA Hunters.");
+    return;
+  }
   $("#invite-consultant-name").value = "";
   $("#invite-email").value = "";
   $("#invite-tag").value = "";
@@ -3708,14 +3753,14 @@ async function loadRuns() {
   list.innerHTML = runs.length ? "" : `<li>No ${escapeHtml(suite)} runs yet</li>`;
   runs.forEach((r, i) => {
     const li = document.createElement("li");
-    li.innerHTML = `${escapeHtml(r.name)}<span class="meta">${r.passes} pass · ${r.fails} fail</span>`;
-    li.onclick = () => selectRun(r.name, li);
+    li.innerHTML = `${escapeHtml(r.name)}<span class="meta">${r.passes}/${r.total_plans ?? r.passes + r.fails} pass · ${r.fails} fail</span>`;
+    li.onclick = () => selectRun(r.name, li, r);
     list.appendChild(li);
-    if (i === 0) selectRun(r.name, li);
+    if (i === 0) selectRun(r.name, li, r);
   });
 }
 
-async function selectRun(name, li) {
+async function selectRun(name, li, run) {
   selectedRun = name;
   lastAnalyzeMarkdown = "";
   renderAiMarkdown($("#analyze-ai-result"), "");
@@ -3732,8 +3777,10 @@ async function selectRun(name, li) {
         )
         .join("")
     : "<tr><td colspan='3'>No failures</td></tr>";
-  const suite = state.suiteName || name.split("_").slice(2).join("_") || "qoa_web";
-  $("#dash-link").innerHTML = `<a href="/api/files/z/${encodeURIComponent(name)}/${encodeURIComponent(suite)}_zDash.html" target="_blank">Open zDash</a>`;
+  const dashHref = zDashHref(run?.dashboard);
+  $("#dash-link").innerHTML = dashHref
+    ? `<a href="${dashHref}" target="_blank">Open zDash</a>`
+    : '<span class="empty-hint">No zDash for this run yet.</span>';
   updateHealHint();
   if (state.projectId) {
     await api(`/api/projects/${state.projectId}`, {

@@ -264,6 +264,15 @@ def append_cycle_event(project_id: str, step: str, detail: str = "", run_name: s
         entry: dict[str, Any] = {"id": uuid.uuid4().hex[:8], "step": step, "detail": detail, "at": _now()}
         if run_name:
             entry["run_name"] = run_name
+            from runner import report_stats
+
+            st = report_stats(run_name)
+            entry["stats"] = {
+                "passes": st.get("passes", 0),
+                "fails": st.get("fails", 0),
+                "total_plans": st.get("total_plans", 0),
+                "health": st.get("health"),
+            }
         history = list(p.get("cycle_history") or [])
         history.insert(0, entry)
         p["cycle_history"] = history[:50]

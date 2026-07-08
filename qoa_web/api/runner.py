@@ -142,6 +142,55 @@ def delete_fstart_config(rel_path: str) -> None:
     path.unlink()
 
 
+def plan_stats_from_zresults(results_path: Path) -> dict[str, Any]:
+    """Aggregate zResults.csv at plan level (not action row level)."""
+    plan_results: dict[str, str] = {}
+    failures: list[dict[str, str]] = []
+    duration = 0.0
+    if not results_path.is_file():
+        return {
+            "passes": 0,
+            "fails": 0,
+            "total_plans": 0,
+            "plan_results": plan_results,
+            "failures": failures,
+            "duration_sec": 0.0,
+            "has_results": False,
+        }
+    with results_path.open(encoding="utf-8-sig", newline="") as f:
+        for row in csv.DictReader(f):
+            plan_id = (row.get("PlanId") or "").strip()
+            try:
+                duration += float(row.get("TimeTaken") or 0)
+            except (TypeError, ValueError):
+                pass
+            result = (row.get("Result") or "").strip().lower()
+            if plan_id:
+                if result == "fail":
+                    plan_results[plan_id] = "fail"
+                elif plan_id not in plan_results or plan_results[plan_id] != "fail":
+                    plan_results[plan_id] = "pass"
+            if result == "fail":
+                failures.append(
+                    {
+                        "planId": plan_id,
+                        "stepId": row.get("StepId", ""),
+                        "output": (row.get("Output") or "")[:200],
+                    }
+                )
+    passes = sum(1 for v in plan_results.values() if v == "pass")
+    fails = sum(1 for v in plan_results.values() if v == "fail")
+    return {
+        "passes": passes,
+        "fails": fails,
+        "total_plans": passes + fails,
+        "plan_results": plan_results,
+        "failures": failures,
+        "duration_sec": round(duration, 1),
+        "has_results": True,
+    }
+
+
 def list_z_runs(suite_suffix: str | None = None) -> list[dict[str, Any]]:
     if not Z_DIR.is_dir():
         return []
@@ -154,20 +203,15 @@ def list_z_runs(suite_suffix: str | None = None) -> list[dict[str, Any]]:
         results = next(path.glob("*_zResults.csv"), None)
         if not results:
             continue
-        passes = fails = 0
-        with results.open(encoding="utf-8-sig", newline="") as f:
-            for row in csv.DictReader(f):
-                if (row.get("Result") or "").lower() == "fail":
-                    fails += 1
-                else:
-                    passes += 1
+        agg = plan_stats_from_zresults(results)
         dash = next(path.glob("*_zDash.html"), None)
         runs.append(
             {
                 "name": path.name,
                 "path": str(path.relative_to(KK_ROOT)).replace("\\", "/"),
-                "passes": passes,
-                "fails": fails,
+                "passes": agg["passes"],
+                "fails": agg["fails"],
+                "total_plans": agg["total_plans"],
                 "dashboard": str(dash.relative_to(KK_ROOT)).replace("\\", "/") if dash else None,
                 "report": str((path / "brahl_report.md").relative_to(KK_ROOT)).replace("\\", "/")
                 if (path / "brahl_report.md").is_file()
@@ -279,64 +323,25 @@ def analyze_run(run_name: str) -> dict[str, Any]:
         out["dashboard"] = dash.relative_to(KK_ROOT).as_posix()
     if not results or not results.is_file():
         return out
-    out["has_results"] = True
-    seen_plans: set[str] = set()
-    plan_results: dict[str, str] = {}
-    duration = 0.0
-    failures: list[dict[str, str]] = []
-    with results.open(encoding="utf-8-sig", newline="") as f:
-        for row in csv.DictReader(f):
-            plan_id = row.get("PlanId", "")
-            if plan_id and plan_id not in seen_plans:
-                seen_plans.add(plan_id)
-            try:
-                duration += float(row.get("TimeTaken") or 0)
-            except (TypeError, ValueError):
-                pass
-            result = (row.get("Result") or "").strip().lower()
-            if plan_id:
-                if result == "fail":
-                    plan_results[plan_id] = "fail"
-                elif plan_id not in plan_results or plan_results[plan_id] != "fail":
-                    plan_results[plan_id] = "pass"
-            if result == "fail":
-                failures.append(
-                    {
-                        "planId": plan_id,
-                        "stepId": row.get("StepId", ""),
-                        "output": (row.get("Output") or "")[:200],
-                    }
-                )
-    passes = sum(1 for v in plan_results.values() if v == "pass")
-    fails = sum(1 for v in plan_results.values() if v == "fail")
-    out["passes"] = passes
-    out["fails"] = fails
-    out["total_plans"] = passes + fails
-    out["failures"] = failures[:25]
-    out["duration_sec"] = round(duration, 1)
+    agg = plan_stats_from_zresults(results)
+    out["has_results"] = agg["has_results"]
+    out["passes"] = agg["passes"]
+    out["fails"] = agg["fails"]
+    out["total_plans"] = agg["total_plans"]
+    out["failures"] = agg["failures"][:25]
+    out["duration_sec"] = agg["duration_sec"]
     return out
 
 
 def plan_result_map(run_name: str) -> dict[str, str]:
     """PlanId → pass|fail for the latest result row per plan."""
     run_dir = Z_DIR / run_name
-    plan_results: dict[str, str] = {}
     if not run_dir.is_dir():
-        return plan_results
+        return {}
     results = next(run_dir.glob("*_zResults.csv"), None)
     if not results or not results.is_file():
-        return plan_results
-    with results.open(encoding="utf-8-sig", newline="") as f:
-        for row in csv.DictReader(f):
-            plan_id = (row.get("PlanId") or "").strip()
-            if not plan_id:
-                continue
-            result = (row.get("Result") or "").strip().lower()
-            if result == "fail":
-                plan_results[plan_id] = "fail"
-            elif plan_id not in plan_results or plan_results[plan_id] != "fail":
-                plan_results[plan_id] = "pass"
-    return plan_results
+        return {}
+    return plan_stats_from_zresults(results)["plan_results"]
 
 
 def compare_verify_runs(baseline_run: str, current_run: str) -> dict[str, Any]:
@@ -479,17 +484,54 @@ def _cycle_table_rows(cycle_history: list[dict[str, Any]]) -> list[dict[str, str
         step = entry.get("step") or ""
         run = entry.get("run_name") or ""
         detail = entry.get("detail") or ""
-        stats = analyze_run(run) if run else {}
+        snap = entry.get("stats") if isinstance(entry.get("stats"), dict) else None
+        stats = snap if snap else (analyze_run(run) if run else {})
+        pf = stats.get("passes", "—")
+        ff = stats.get("fails", "—")
+        total = stats.get("total_plans", "—")
         rows.append(
             {
                 "step": step,
                 "run": run or "—",
-                "pass": str(stats.get("passes", "—")),
-                "fail": str(stats.get("fails", "—")),
+                "pass": str(pf),
+                "fail": str(ff),
+                "total": str(total),
                 "detail": detail,
             }
         )
     return rows
+
+
+def _recovery_trace_section(cycle_history: list[dict[str, Any]]) -> str:
+    """Summarize shrink/loop/verify recovery when failures drop to zero."""
+    if not cycle_history:
+        return ""
+    ordered = list(reversed(cycle_history))
+    lines: list[str] = []
+    peak_fails = 0
+    recovered = False
+    for entry in ordered:
+        step = entry.get("step") or ""
+        snap = entry.get("stats") if isinstance(entry.get("stats"), dict) else None
+        run = entry.get("run_name") or ""
+        stats = snap if snap else (analyze_run(run) if run else {})
+        fails = int(stats.get("fails") or 0) if stats else 0
+        if fails > peak_fails:
+            peak_fails = fails
+        if peak_fails > 0 and fails == 0 and step.lower().startswith(("verify", "loop")):
+            recovered = True
+        if step in ("Shrink", "Restore") or step.startswith("Loop") or step == "Verify":
+            pf = stats.get("passes", "—")
+            tf = stats.get("total_plans", "—")
+            lines.append(f"- **{step}** — {pf}/{tf} pass · {fails} fail · {entry.get('detail') or ''}")
+    if not lines:
+        return ""
+    header = "## Recovery trace\n\n"
+    if recovered:
+        header += f"Failures recovered from **{peak_fails}** to **0** across the BRAHL loop.\n\n"
+    else:
+        header += "Cycle steps recorded during heal/loop (see table above).\n\n"
+    return header + "\n".join(lines) + "\n\n"
 
 
 def generate_brahl_report_md(
@@ -512,6 +554,7 @@ def generate_brahl_report_md(
     ctx = _load_brahl_context(project.get("brahl_context_path"))
     ctx_prompt = (ctx or {}).get("initialPrompt") or purpose
     cycle_rows = _cycle_table_rows(list(project.get("cycle_history") or []))
+    recovery_block = _recovery_trace_section(list(project.get("cycle_history") or []))
 
     health = "green" if fails == 0 and total > 0 else ("amber" if total > 0 else "unknown")
     verdict_checks = [
@@ -540,13 +583,13 @@ def generate_brahl_report_md(
 
     cycle_table = ""
     if cycle_rows:
-        cycle_table = "| Step | Run folder | Pass | Fail | Detail |\n|------|------------|------|------|--------|\n"
+        cycle_table = "| Step | Run folder | Pass | Fail | Total | Detail |\n|------|------------|------|------|-------|--------|\n"
         cycle_table += "\n".join(
-            f"| {r['step']} | `{r['run']}` | {r['pass']} | {r['fail']} | {r['detail']} |"
+            f"| {r['step']} | `{r['run']}` | {r['pass']} | {r['fail']} | {r['total']} | {r['detail']} |"
             for r in cycle_rows
         )
     else:
-        cycle_table = f"| {step_label} | `{run_name}` | {passes} | {fails} | verify run |"
+        cycle_table = f"| {step_label} | `{run_name}` | {passes} | {fails} | {total} | verify run |"
 
     version_block = _version_compare_report_section(project, run_name)
 
@@ -607,7 +650,7 @@ def generate_brahl_report_md(
 
 {cycle_table}
 
-## Loop detail — {step_label}
+{recovery_block}## Loop detail — {step_label}
 
 - **Plans executed:** {total} ({passes} pass · {fails} fail)
 - **Failures:**

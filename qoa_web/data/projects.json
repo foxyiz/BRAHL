@@ -53,7 +53,7 @@
     "brahl_context_path": null,
     "latest_run": "20260706_203628_qoa_web",
     "created_at": "2026-07-07T04:46:32+00:00",
-    "updated_at": "2026-07-07T05:07:04+00:00",
+    "updated_at": "2026-07-07T15:57:04+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -126,12 +126,20 @@
       "human_pct": 50
     },
     "hitl_consultants": [],
-    "reports": [],
+    "reports": [
+      {
+        "id": "17d5624e",
+        "run_name": "20260707_091732_atomic77",
+        "report_path": "z/20260707_091732_atomic77/brahl_report.md",
+        "submitted_at": "2026-07-07T16:17:53+00:00",
+        "source": "automation"
+      }
+    ],
     "ai_enabled": true,
     "brahl_context_path": null,
-    "latest_run": null,
+    "latest_run": "20260707_091732_atomic77",
     "created_at": "2026-07-07T04:48:13+00:00",
-    "updated_at": "2026-07-07T04:48:13+00:00",
+    "updated_at": "2026-07-08T02:11:59+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -153,8 +161,24 @@
       "tokens_est": 0,
       "user_messages": 0
     },
-    "cycle_history": [],
-    "hitl_stories": [],
+    "cycle_history": [
+      {
+        "id": "7de580ef",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-07T16:17:53+00:00",
+        "run_name": "20260707_091732_atomic77"
+      }
+    ],
+    "hitl_stories": [
+      {
+        "id": "ea97fc9d",
+        "title": "test on mobile realdevice",
+        "description": "UI UX",
+        "status": "open",
+        "created_at": "2026-07-07T15:49:02+00:00"
+      }
+    ],
     "hitl_invites": [],
     "change_requests": [],
     "runtime_mode": "local",
@@ -203,13 +227,20 @@
         "report_path": "z/20260706_215102_ivvu/brahl_report.md",
         "submitted_at": "2026-07-07T04:51:30+00:00",
         "source": "automation"
+      },
+      {
+        "id": "7e2d611a",
+        "run_name": "20260707_085039_ivvu",
+        "report_path": "z/20260707_085039_ivvu/brahl_report.md",
+        "submitted_at": "2026-07-07T15:51:15+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": null,
-    "latest_run": "20260706_215102_ivvu",
+    "latest_run": "20260707_085039_ivvu",
     "created_at": "2026-07-07T04:48:20+00:00",
-    "updated_at": "2026-07-07T05:00:50+00:00",
+    "updated_at": "2026-07-07T21:47:58+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -232,6 +263,13 @@
       "user_messages": 0
     },
     "cycle_history": [
+      {
+        "id": "7fc7c2a2",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-07T15:51:14+00:00",
+        "run_name": "20260707_085039_ivvu"
+      },
       {
         "id": "e7e81760",
         "step": "Run",
@@ -321,9 +359,9 @@
     ],
     "ai_enabled": true,
     "brahl_context_path": null,
-    "latest_run": "20260706_215514_Math",
+    "latest_run": "20260706_215402_Math",
     "created_at": "2026-07-07T04:52:32+00:00",
-    "updated_at": "2026-07-07T04:55:15+00:00",
+    "updated_at": "2026-07-07T21:48:09+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -346,6 +384,13 @@
       "user_messages": 0
     },
     "cycle_history": [
+      {
+        "id": "14a4f762",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-07T15:41:58+00:00",
+        "run_name": "20260707_084157_Math"
+      },
       {
         "id": "aaa29e96",
         "step": "Loop 2",
@@ -515,7 +560,7 @@
     "brahl_context_path": null,
     "latest_run": "20260706_221029_sunshine",
     "created_at": "2026-07-07T05:10:23+00:00",
-    "updated_at": "2026-07-07T05:15:04+00:00",
+    "updated_at": "2026-07-07T15:37:13+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -546,6 +591,84 @@
         "run_name": "20260706_221029_sunshine"
       }
     ],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "runtime_mode": "local",
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null
+  },
+  {
+    "id": "b77104dece55",
+    "name": "nalanda_app",
+    "app_url": "https://nalanda.base44.app/",
+    "suite_name": "nalanda_app",
+    "suite_config": "y/nalanda_app/nalanda_app.json",
+    "purpose": "Nalanda SkillFlow AI (nalanda.base44.app) \u2014 launch readiness smoke for Creator Go/No-Go",
+    "prompt": "Nalanda SkillFlow AI (nalanda.base44.app) \u2014 launch readiness smoke for Creator Go/No-Go",
+    "owner_avatar": "client",
+    "status": "open",
+    "documents": [],
+    "context_items": [
+      {
+        "id": "4a8ea7b7",
+        "kind": "url",
+        "label": "App URL",
+        "value": "https://nalanda.base44.app/",
+        "added_at": "2026-07-07T21:49:14+00:00"
+      }
+    ],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-07T21:49:14+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "1d9dd595",
+        "run_name": "20260705_232130_nalanda_app",
+        "report_path": "z/20260705_232130_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-07T21:49:14+00:00",
+        "source": "automation"
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "latest_run": "20260705_232130_nalanda_app",
+    "created_at": "2026-07-07T21:49:14+00:00",
+    "updated_at": "2026-07-07T21:49:14+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
+        "at": "2026-07-07T21:49:14+00:00"
+      }
+    ],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-07T21:49:14+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [],
     "hitl_stories": [],
     "hitl_invites": [],
     "change_requests": [],

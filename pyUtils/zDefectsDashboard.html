@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoXYiZ Defects Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.5; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+        .header { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .header p { opacity: 0.9; font-size: 1rem; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .card { background: white; padding: 1.25rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #64748b; }
+        .card.danger { border-left-color: #dc2626; }
+        .card h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 0.5rem; }
+        .card .value { font-size: 1.75rem; font-weight: 700; color: #1e293b; }
+        section { background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1.5rem; overflow: hidden; }
+        section h2 { padding: 1rem 1.25rem; background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-size: 1.1rem; }
+        .table-wrap { overflow-x: auto; max-height: 400px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        th { background: #f1f5f9; padding: 0.6rem 0.75rem; text-align: left; font-weight: 600; color: #475569; position: sticky; top: 0; }
+        td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #f1f5f9; }
+        tr:hover { background: #f8fafc; }
+        .output-cell { max-width: 280px; word-break: break-word; }
+        .type-badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; }
+        .type-api { background: #fecaca; color: #991b1b; }
+        .type-ui { background: #fed7aa; color: #9a3412; }
+        .type-validation { background: #fef08a; color: #854d0e; }
+        .type-action { background: #e2e8f0; color: #475569; }
+        .type-other { background: #e2e8f0; color: #64748b; }
+        .type-parse { background: #fecaca; color: #7f1d1d; }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Defects Dashboard</h1>
+            <p>Aggregated failures from all zResults.csv runs</p>
+        </div>
+        <div class="summary-grid">
+            <div class="card danger">
+                <h3>Total Defects</h3>
+                <div class="value">249</div>
+            </div>
+            <div class="card">
+                <h3>Runs with failures</h3>
+                <div class="value">12</div>
+            </div>
+            <div class="card">
+                <h3>Plans affected</h3>
+                <div class="value">55</div>
+            </div>
+        </div>
+        <div class="two-col">
+            <section>
+                <h2>By defect type</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Type</th><th>Count</th></tr></thead>
+                        <tbody><tr><td>UI Element / Locator</td><td>185</td></tr><tr><td>Action Error</td><td>49</td></tr><tr><td>Other</td><td>15</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <h2>By suite (top)</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Suite</th><th>Defects</th></tr></thead>
+                        <tbody><tr><td>qoa_web_verify_gate</td><td>150</td></tr><tr><td>qoa_web</td><td>86</td></tr><tr><td>Math</td><td>6</td></tr><tr><td>nalanda_app</td><td>5</td></tr><tr><td>qoa2</td><td>2</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+        <div class="two-col">
+            <section>
+                <h2>By run</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Run</th><th>Defects</th></tr></thead>
+                        <tbody><tr><td>z/20260706_203628_qoa_web</td><td>86</td></tr><tr><td>z/20260706_214807_qoa_web_verify_gate</td><td>49</td></tr><tr><td>z/20260706_214350_qoa_web_verify_gate</td><td>40</td></tr><tr><td>z/20260706_214628_qoa_web_verify_gate</td><td>38</td></tr><tr><td>z/20260706_204659_qoa_web_verify_gate</td><td>14</td></tr><tr><td>z/20260706_214959_qoa_web_verify_gate</td><td>9</td></tr><tr><td>z/20260705_134732_nalanda_app</td><td>3</td></tr><tr><td>z/20260706_113451_Math</td><td>3</td></tr><tr><td>z/20260706_215402_Math</td><td>3</td></tr><tr><td>z/20260705_134835_nalanda_app</td><td>2</td></tr><tr><td>z/20260706_215651_qoa2</td><td>1</td></tr><tr><td>z/20260706_215958_qoa2</td><td>1</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <h2>By plan (top 30)</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Plan</th><th>Defects</th></tr></thead>
+                        <tbody><tr><td>PReuse_PersonaReady</td><td>53</td></tr><tr><td>PReuse_qoa_web_OpenSite</td><td>40</td></tr><tr><td>PReuse_qoa_web_ClientReady</td><td>23</td></tr><tr><td>PPersona_P9_Journey</td><td>12</td></tr><tr><td>PReuse_J_P1_Shell_Client</td><td>9</td></tr><tr><td>PReuse_J_P2_Shell_Client</td><td>9</td></tr><tr><td>PReuse_J_P5_Shell_Client</td><td>9</td></tr><tr><td>PReuse_J_P6_Shell_Client</td><td>9</td></tr><tr><td>PReuse_J_P7_Shell_Client</td><td>9</td></tr><tr><td>PReuse_J_P9_Shell_Client</td><td>9</td></tr><tr><td>PReuse_J_P2_Shell_Consultant</td><td>3</td></tr><tr><td>PReuse_J_P3_Shell_Consultant</td><td>3</td></tr><tr><td>PReuse_J_P4_Shell_Consultant</td><td>3</td></tr><tr><td>PReuse_J_P6_Shell_Consultant</td><td>3</td></tr><tr><td>PReuse_J_P8_Shell_Consultant</td><td>3</td></tr><tr><td>PReuse_qoa_web_HitlReady</td><td>3</td></tr><tr><td>PNalanda_Smoke_Explore</td><td>2</td></tr><tr><td>PNalanda_Launch_Health</td><td>2</td></tr><tr><td>PMath_Addition</td><td>2</td></tr><tr><td>PMath_Multiplication</td><td>2</td></tr><tr><td>PMath_Division</td><td>2</td></tr><tr><td>PReuse_J_P3_Shell_Client</td><td>2</td></tr><tr><td>PReuse_J_P4_Shell_Client</td><td>2</td></tr><tr><td>PReuse_J_P8_Shell_Client</td><td>2</td></tr><tr><td>PPersona_P6_Journey</td><td>2</td></tr><tr><td>PJourney_Admin_Full</td><td>2</td></tr><tr><td>PNalanda_Smoke_Landing</td><td>1</td></tr><tr><td>PReuse_J_P1_Shell_Networker</td><td>1</td></tr><tr><td>PReuse_J_P2_Shell_Networker</td><td>1</td></tr><tr><td>PReuse_J_P3_Shell_Networker</td><td>1</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+        <section>
+            <h2>All defects (249 rows)</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Run</th>
+                            <th>Suite</th>
+                            <th>Plan</th>
+                            <th>Step</th>
+                            <th>Step info</th>
+                            <th>Type</th>
+                            <th>Output / error</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr>
+            <td>z/20260705_134732_nalanda_app</td>
+            <td>nalanda_app</td>
+            <td>PNalanda_Smoke_Landing</td>
+            <td>2</td>
+            <td>Verify page title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PNalanda_Smoke_Landing_D1_2.png]">[Link to PNalanda_Smoke_Landing_D1_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260705_134732_nalanda_app</td>
+            <td>nalanda_app</td>
+            <td>PNalanda_Smoke_Explore</td>
+            <td>4</td>
+            <td>Verify title still Nalanda</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PNalanda_Smoke_Explore_D1_4.png]">[Link to PNalanda_Smoke_Explore_D1_4.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260705_134732_nalanda_app</td>
+            <td>nalanda_app</td>
+            <td>PNalanda_Launch_Health</td>
+            <td>2</td>
+            <td>Home landing h1</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="What do you want to master? [Link to PNalanda_Launch_Health_D1_2.png]">What do you want to master? [Link to PNalanda_Launch_Health_D1_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260705_134835_nalanda_app</td>
+            <td>nalanda_app</td>
+            <td>PNalanda_Smoke_Explore</td>
+            <td>4</td>
+            <td>Verify title still Nalanda</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Explore | Nalanda - SkillFlow AI [Link to PNalanda_Smoke_Explore_D1_4.png]">Explore | Nalanda - SkillFlow AI [Link to PNalanda_Smoke_Explore_D1_4.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260705_134835_nalanda_app</td>
+            <td>nalanda_app</td>
+            <td>PNalanda_Launch_Health</td>
+            <td>2</td>
+            <td>Home title check</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="AITutor | Nalanda - SkillFlow AI [Link to PNalanda_Launch_Health_D1_2.png]">AITutor | Nalanda - SkillFlow AI [Link to PNalanda_Launch_Health_D1_2.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260706_113451_Math</td>
+            <td>Math</td>
+            <td>PMath_Addition</td>
+            <td>1</td>
+            <td>Verify_Math_Addition</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="33.0">33.0</td>
+        </tr>
+        <tr>
+            <td>z/20260706_113451_Math</td>
+            <td>Math</td>
+            <td>PMath_Multiplication</td>
+            <td>1</td>
+            <td>Verify_Math_Multiplication</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="252.0">252.0</td>
+        </tr>
+        <tr>
+            <td>z/20260706_113451_Math</td>
+            <td>Math</td>
+            <td>PMath_Division</td>
+            <td>1</td>
+            <td>Verify_Math_Division</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="0.5714285714285714">0.5714285714285714</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203650.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P1_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203712.png | page: Non [Link to PReuse_J_P1_Shell_Client_D1_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203734.png | page: Non [Link to PReuse_J_P2_Shell_Client_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203756.png | page: Non [Link to PReuse_J_P2_Shell_Consultant_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P3_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203817.png | page: Non [Link to PReuse_J_P3_Shell_Consultant_D3_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P4_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203839.png | page: Non [Link to PReuse_J_P4_Shell_Consultant_D4_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P5_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203901.png | page: Non [Link to PReuse_J_P5_Shell_Client_D5_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203922.png | page: Non [Link to PReuse_J_P6_Shell_Client_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203944.png | page: Non [Link to PReuse_J_P6_Shell_Consultant_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P7_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204006.png | page: Non [Link to PReuse_J_P7_Shell_Client_D7_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P8_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204027.png | page: Non [Link to PReuse_J_P8_Shell_Consultant_D8_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P9_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204049.png | page: Non [Link to PReuse_J_P9_Shell_Client_D9_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P1_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203712.png | page: Non [Link to PReuse_J_P1_Shell_Client_D1_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203734.png | page: Non [Link to PReuse_J_P2_Shell_Client_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203756.png | page: Non [Link to PReuse_J_P2_Shell_Consultant_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P3_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204111.png | page: Non [Link to PReuse_J_P3_Shell_Client_D3_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P3_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203817.png | page: Non [Link to PReuse_J_P3_Shell_Consultant_D3_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P4_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204133.png | page: Non [Link to PReuse_J_P4_Shell_Client_D4_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P4_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203839.png | page: Non [Link to PReuse_J_P4_Shell_Consultant_D4_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P5_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203901.png | page: Non [Link to PReuse_J_P5_Shell_Client_D5_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203922.png | page: Non [Link to PReuse_J_P6_Shell_Client_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203944.png | page: Non [Link to PReuse_J_P6_Shell_Consultant_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P7_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204006.png | page: Non [Link to PReuse_J_P7_Shell_Client_D7_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P8_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204156.png | page: Non [Link to PReuse_J_P8_Shell_Client_D8_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P8_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204027.png | page: Non [Link to PReuse_J_P8_Shell_Consultant_D8_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P9_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204049.png | page: Non [Link to PReuse_J_P9_Shell_Client_D9_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P1_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203712.png | page: Non [Link to PReuse_J_P1_Shell_Client_D1_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P1_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203712.png | page: Non [Link to PReuse_J_P1_Shell_Client_D1_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P1_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203712.png | page: Non [Link to PReuse_J_P1_Shell_Client_D1_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P1_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203712.png | page: Non [Link to PReuse_J_P1_Shell_Client_D1_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P1_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203712.png | page: Non [Link to PReuse_J_P1_Shell_Client_D1_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P1_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203712.png | page: Non [Link to PReuse_J_P1_Shell_Client_D1_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203734.png | page: Non [Link to PReuse_J_P2_Shell_Client_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203734.png | page: Non [Link to PReuse_J_P2_Shell_Client_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203734.png | page: Non [Link to PReuse_J_P2_Shell_Client_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203734.png | page: Non [Link to PReuse_J_P2_Shell_Client_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203734.png | page: Non [Link to PReuse_J_P2_Shell_Client_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203734.png | page: Non [Link to PReuse_J_P2_Shell_Client_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P5_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203901.png | page: Non [Link to PReuse_J_P5_Shell_Client_D5_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P5_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203901.png | page: Non [Link to PReuse_J_P5_Shell_Client_D5_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P5_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203901.png | page: Non [Link to PReuse_J_P5_Shell_Client_D5_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P5_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203901.png | page: Non [Link to PReuse_J_P5_Shell_Client_D5_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P5_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203901.png | page: Non [Link to PReuse_J_P5_Shell_Client_D5_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P5_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203901.png | page: Non [Link to PReuse_J_P5_Shell_Client_D5_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203922.png | page: Non [Link to PReuse_J_P6_Shell_Client_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203922.png | page: Non [Link to PReuse_J_P6_Shell_Client_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203922.png | page: Non [Link to PReuse_J_P6_Shell_Client_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203922.png | page: Non [Link to PReuse_J_P6_Shell_Client_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203922.png | page: Non [Link to PReuse_J_P6_Shell_Client_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203922.png | page: Non [Link to PReuse_J_P6_Shell_Client_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P7_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204006.png | page: Non [Link to PReuse_J_P7_Shell_Client_D7_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P7_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204006.png | page: Non [Link to PReuse_J_P7_Shell_Client_D7_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P7_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204006.png | page: Non [Link to PReuse_J_P7_Shell_Client_D7_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P7_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204006.png | page: Non [Link to PReuse_J_P7_Shell_Client_D7_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P7_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204006.png | page: Non [Link to PReuse_J_P7_Shell_Client_D7_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P7_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204006.png | page: Non [Link to PReuse_J_P7_Shell_Client_D7_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P9_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204049.png | page: Non [Link to PReuse_J_P9_Shell_Client_D9_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P9_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204049.png | page: Non [Link to PReuse_J_P9_Shell_Client_D9_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P9_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204049.png | page: Non [Link to PReuse_J_P9_Shell_Client_D9_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P9_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204049.png | page: Non [Link to PReuse_J_P9_Shell_Client_D9_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P9_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204049.png | page: Non [Link to PReuse_J_P9_Shell_Client_D9_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P9_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204049.png | page: Non [Link to PReuse_J_P9_Shell_Client_D9_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P1_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203712.png | page: Non [Link to PReuse_J_P1_Shell_Client_D1_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P1_Shell_Networker</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204226.png | page: Non [Link to PReuse_J_P1_Shell_Networker_D1_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203734.png | page: Non [Link to PReuse_J_P2_Shell_Client_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203756.png | page: Non [Link to PReuse_J_P2_Shell_Consultant_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P2_Shell_Networker</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204248.png | page: Non [Link to PReuse_J_P2_Shell_Networker_D2_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P3_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204111.png | page: Non [Link to PReuse_J_P3_Shell_Client_D3_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P3_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203817.png | page: Non [Link to PReuse_J_P3_Shell_Consultant_D3_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P3_Shell_Networker</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204310.png | page: Non [Link to PReuse_J_P3_Shell_Networker_D3_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P4_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204133.png | page: Non [Link to PReuse_J_P4_Shell_Client_D4_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P4_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203839.png | page: Non [Link to PReuse_J_P4_Shell_Consultant_D4_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P4_Shell_Networker</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204332.png | page: Non [Link to PReuse_J_P4_Shell_Networker_D4_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P5_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203901.png | page: Non [Link to PReuse_J_P5_Shell_Client_D5_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P5_Shell_Networker</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204354.png | page: Non [Link to PReuse_J_P5_Shell_Networker_D5_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203922.png | page: Non [Link to PReuse_J_P6_Shell_Client_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_203944.png | page: Non [Link to PReuse_J_P6_Shell_Consultant_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P6_Shell_Networker</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204416.png | page: Non [Link to PReuse_J_P6_Shell_Networker_D6_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P7_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204006.png | page: Non [Link to PReuse_J_P7_Shell_Client_D7_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P7_Shell_Networker</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204437.png | page: Non [Link to PReuse_J_P7_Shell_Networker_D7_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P8_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204156.png | page: Non [Link to PReuse_J_P8_Shell_Client_D8_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P8_Shell_Consultant</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204027.png | page: Non [Link to PReuse_J_P8_Shell_Consultant_D8_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P8_Shell_Networker</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204459.png | page: Non [Link to PReuse_J_P8_Shell_Networker_D8_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P9_Shell_Client</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204049.png | page: Non [Link to PReuse_J_P9_Shell_Client_D9_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_203628_qoa_web</td>
+            <td>qoa_web</td>
+            <td>PReuse_J_P9_Shell_Networker</td>
+            <td>4</td>
+            <td>Verify profile chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204521.png | page: Non [Link to PReuse_J_P9_Shell_Networker_D9_4.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_204659_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_204716.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>3</td>
+            <td>Verify P9 chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214431.png | page: Non [Link to PPersona_P9_Journey_D9_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>3</td>
+            <td>Verify P9 chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214431.png | page: Non [Link to PPersona_P9_Journey_D9_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>3</td>
+            <td>Verify P9 chip</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214431.png | page: Non [Link to PPersona_P9_Journey_D9_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214350_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_PersonaReady</td>
+            <td>3</td>
+            <td>Verify profile chip code</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message: [Artifacts =&gt; screenshot: None_None_214405.png | page: Non [Link to PReuse_PersonaReady_D1_3.txt]">Error in xGetText: xGetText failed for locator 'css=#profile-chip-code': Message…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PWeb_Hitl_Avatar_Switch</td>
+            <td>2</td>
+            <td>Click HITL avatar</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;consultant&amp;#x27;]': Message: invalid selector: An invalid or i [Link to PWeb_Hitl_Avatar_Switch_D2_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;co…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_HitlReady</td>
+            <td>2</td>
+            <td>Click HITL avatar</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;consultant&amp;#x27;]': Message: invalid selector: An invalid or i [Link to PReuse_qoa_web_HitlReady_D3_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;co…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PWeb_Hitl_TierBanner</td>
+            <td>2</td>
+            <td>Click Build</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x27;]': Message: invalid selector: An invalid or illegal sele [Link to PWeb_Hitl_TierBanner_D4_2.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PWeb_Power_YpadExplorer</td>
+            <td>2</td>
+            <td>Click Build</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x27;]': Message: invalid selector: An invalid or illegal sele [Link to PWeb_Power_YpadExplorer_D7_2.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P2_Journey</td>
+            <td>5</td>
+            <td>Click HITL</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;consultant&amp;#x27;]': Message: invalid selector: An invalid or i [Link to PPersona_P2_Journey_D2_5.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;co…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_HitlReady</td>
+            <td>2</td>
+            <td>Click HITL avatar</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;consultant&amp;#x27;]': Message: invalid selector: An invalid or i [Link to PReuse_qoa_web_HitlReady_D3_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;co…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P4_Journey</td>
+            <td>5</td>
+            <td>Click Build</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x27;]': Message: invalid selector: An invalid or illegal sele [Link to PPersona_P4_Journey_D4_5.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P6_Journey</td>
+            <td>5</td>
+            <td>Verify dual HITL click</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;consultant&amp;#x27;]': Message: invalid selector: An invalid or i [Link to PPersona_P6_Journey_D6_5.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;co…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P7_Journey</td>
+            <td>5</td>
+            <td>Click Build</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x27;]': Message: invalid selector: An invalid or illegal sele [Link to PPersona_P7_Journey_D7_5.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P8_Journey</td>
+            <td>2</td>
+            <td>Click Build</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x27;]': Message: invalid selector: An invalid or illegal sele [Link to PPersona_P8_Journey_D8_2.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>4</td>
+            <td>Click Build</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x27;]': Message: invalid selector: An invalid or illegal sele [Link to PPersona_P9_Journey_D9_4.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>4</td>
+            <td>Click Build</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x27;]': Message: invalid selector: An invalid or illegal sele [Link to PPersona_P9_Journey_D9_4.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_ClientReady</td>
+            <td>2</td>
+            <td>Click Client if needed</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;client&amp;#x27;]': Message: invalid selector: An invalid or illeg [Link to PReuse_qoa_web_ClientReady_D1_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;cl…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_HitlReady</td>
+            <td>2</td>
+            <td>Click HITL avatar</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;consultant&amp;#x27;]': Message: invalid selector: An invalid or i [Link to PReuse_qoa_web_HitlReady_D3_2.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;co…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>4</td>
+            <td>Click Build</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x27;]': Message: invalid selector: An invalid or illegal sele [Link to PPersona_P9_Journey_D9_4.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase=&amp;#x27;build&amp;#x…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214628_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P6_Journey</td>
+            <td>5</td>
+            <td>Verify dual HITL click</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;consultant&amp;#x27;]': Message: invalid selector: An invalid or i [Link to PPersona_P6_Journey_D6_5.txt]">Error in xClick: xClick failed for locator 'css=.avatar-btn[data-avatar=&amp;#x27;co…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PAPI_Health</td>
+            <td>1</td>
+            <td>GET health</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xGet: Invalid URL 'api_base_urlapi_health_endpoint': No scheme supplied. Perhaps you meant https://api_base_urlapi_health_endpoint?">Error in xGet: Invalid URL 'api_base_urlapi_health_endpoint': No scheme supplied…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PAPI_Signin</td>
+            <td>1</td>
+            <td>GET signin</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xGet: Invalid URL 'api_base_urlapi_signin_endpoint': No scheme supplied. Perhaps you meant https://api_base_urlapi_signin_endpoint?">Error in xGet: Invalid URL 'api_base_urlapi_signin_endpoint': No scheme supplied…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PAPI_ProfilesJs</td>
+            <td>1</td>
+            <td>GET profiles.js</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xGet: Invalid URL 'api_base_urlapi_profiles_js_endpoint': No scheme supplied. Perhaps you meant https://api_base_urlapi_profiles_js [Link to PAPI_ProfilesJs_D1_1.txt]">Error in xGet: Invalid URL 'api_base_urlapi_profiles_js_endpoint': No scheme sup…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PAPI_Suites</td>
+            <td>1</td>
+            <td>GET suites</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xGet: Invalid URL 'api_base_urlapi_suites_endpoint': No scheme supplied. Perhaps you meant https://api_base_urlapi_suites_endpoint?">Error in xGet: Invalid URL 'api_base_urlapi_suites_endpoint': No scheme supplied…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PAPI_ProjectsConsultant</td>
+            <td>1</td>
+            <td>GET consultant projects</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xGet: Invalid URL 'api_base_urlapi_projects_consultant_endpoint': No scheme supplied. Perhaps you meant https://api_base_urlapi_pro [Link to PAPI_ProjectsConsultant_D3_1.txt]">Error in xGet: Invalid URL 'api_base_urlapi_projects_consultant_endpoint': No sc…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>1</td>
+            <td>Load P9 profile URL</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: profile_url. Must start with http:// or https:// [Link to PPersona_P9_Journey_D9_1.png]">Error in xNavigate: Invalid URL: profile_url. Must start with http:// or https:/…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>1</td>
+            <td>Load P9 profile URL</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: profile_url. Must start with http:// or https:// [Link to PPersona_P9_Journey_D9_1.png]">Error in xNavigate: Invalid URL: profile_url. Must start with http:// or https:/…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PWeb_Signin_Profiles</td>
+            <td>1</td>
+            <td>Open sign-in</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: signin_url. Must start with http:// or https:// [Link to PWeb_Signin_Profiles_D1_1.png]">Error in xNavigate: Invalid URL: signin_url. Must start with http:// or https://…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>1</td>
+            <td>Load P9 profile URL</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: profile_url. Must start with http:// or https:// [Link to PPersona_P9_Journey_D9_1.png]">Error in xNavigate: Invalid URL: profile_url. Must start with http:// or https:/…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214807_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PReuse_qoa_web_OpenSite</td>
+            <td>2</td>
+            <td>Navigate home</td>
+            <td><span class="type-badge type-action">Action Error</span></td>
+            <td class="output-cell" title="Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// [Link to PReuse_qoa_web_OpenSite_D1_2.png]">Error in xNavigate: Invalid URL: base_url. Must start with http:// or https:// […</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214959_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>5</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_5.png]">[Link to PPersona_P9_Journey_D9_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214959_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>5</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_5.png]">[Link to PPersona_P9_Journey_D9_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214959_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PWeb_Nalanda_Panel</td>
+            <td>6</td>
+            <td>Click Nalanda tab</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=.phase-btn[data-phase='nalanda']': Message: [Artifacts =&gt; screenshot: None_None_215216.png | [Link to PWeb_Nalanda_Panel_D1_6.txt]">Error in xClick: xClick failed for locator 'css=.phase-btn[data-phase='nalanda']…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214959_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PWeb_P1_SwitchHunter</td>
+            <td>6</td>
+            <td>Verify Hunter Build title</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="Build — qoa_web (manual) [Link to PWeb_P1_SwitchHunter_D1_6.png]">Build — qoa_web (manual) [Link to PWeb_P1_SwitchHunter_D1_6.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214959_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PWeb_Version_LaunchSection</td>
+            <td>2</td>
+            <td>Click Build</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase='build']': Message: [Artifacts =&gt; screenshot: None_None_215251.png | page: [Link to PWeb_Version_LaunchSection_D1_2.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase='build']': Mes…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214959_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PWeb_Version_BaselineBtn</td>
+            <td>2</td>
+            <td>Click Build</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase='build']': Message: [Artifacts =&gt; screenshot: None_None_215304.png | page: [Link to PWeb_Version_BaselineBtn_D1_2.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase='build']': Mes…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214959_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PWeb_Hunt_EvidencePanel</td>
+            <td>2</td>
+            <td>Click Build</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xClick: xClick failed for locator 'css=button[data-phase='build']': Message: [Artifacts =&gt; screenshot: None_None_215316.png | page: [Link to PWeb_Hunt_EvidencePanel_D3_2.txt]">Error in xClick: xClick failed for locator 'css=button[data-phase='build']': Mes…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214959_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PPersona_P9_Journey</td>
+            <td>5</td>
+            <td>Verify add-challenge affordance</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="[Link to PPersona_P9_Journey_D9_5.png]">[Link to PPersona_P9_Journey_D9_5.png]</td>
+        </tr>
+        <tr>
+            <td>z/20260706_214959_qoa_web_verify_gate</td>
+            <td>qoa_web_verify_gate</td>
+            <td>PWeb_Admin_Ecosystem</td>
+            <td>3</td>
+            <td>Verify ecosystem heading</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xGetText: xGetText failed for locator 'css=#admin-ecosystem h2': Message: [Artifacts =&gt; screenshot: None_None_215330.png | page: No [Link to PWeb_Admin_Ecosystem_D6_3.txt]">Error in xGetText: xGetText failed for locator 'css=#admin-ecosystem h2': Messag…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_215402_Math</td>
+            <td>Math</td>
+            <td>PMath_Addition</td>
+            <td>1</td>
+            <td>Verify_Math_Addition</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="34.0">34.0</td>
+        </tr>
+        <tr>
+            <td>z/20260706_215402_Math</td>
+            <td>Math</td>
+            <td>PMath_Multiplication</td>
+            <td>1</td>
+            <td>Verify_Math_Multiplication</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="264.0">264.0</td>
+        </tr>
+        <tr>
+            <td>z/20260706_215402_Math</td>
+            <td>Math</td>
+            <td>PMath_Division</td>
+            <td>1</td>
+            <td>Verify_Math_Division</td>
+            <td><span class="type-badge type-other">Other</span></td>
+            <td class="output-cell" title="0.5454545454545454">0.5454545454545454</td>
+        </tr>
+        <tr>
+            <td>z/20260706_215651_qoa2</td>
+            <td>qoa2</td>
+            <td>PJourney_Admin_Full</td>
+            <td>2</td>
+            <td>Enter admin email</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xType: xType failed for locator 'css=input[type=email]': Message: [Artifacts =&gt; screenshot: None_None_215748.png | page: None_None_ [Link to PJourney_Admin_Full_D2_2.txt]">Error in xType: xType failed for locator 'css=input[type=email]': Message: [Arti…</td>
+        </tr>
+        <tr>
+            <td>z/20260706_215958_qoa2</td>
+            <td>qoa2</td>
+            <td>PJourney_Admin_Full</td>
+            <td>2</td>
+            <td>Enter admin email</td>
+            <td><span class="type-badge type-ui">UI Element / Locator</span></td>
+            <td class="output-cell" title="Error in xType: xType failed for locator 'css=input[type=email]': Message: [Artifacts =&gt; screenshot: None_None_220054.png | page: None_None_ [Link to PJourney_Admin_Full_D2_2.txt]">Error in xType: xType failed for locator 'css=input[type=email]': Message: [Arti…</td>
+        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
