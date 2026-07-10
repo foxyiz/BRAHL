@@ -13,7 +13,7 @@
 | Who | Goal |
 |-----|------|
 | **Creator** | Post a challenge to the arena, set budget, run automation, review BRAHL reports, invite QA Hunters |
-| **QA Hunter** | Join open challenges, explore manually, upload yPADs offline, submit enriched brawl reports |
+| **QA Hunter** | Join open challenges, explore manually, upload tests offline, submit enriched BRAHL reports |
 | **Admin** | View ecosystem health (About → Admin) |
 
 BRAHL automation (AI + FoXYiZ) handles bulk coverage. QA Hunters add real journeys, UX findings, and security issues AI misses.
@@ -342,7 +342,7 @@ Requires qoa_web server running on :8765.
 | **BRAHL** | Build · Run · Analyze · Heal · Loop — testing lifecycle |
 | **FoXYiZ** | Low-code engine: f(x,y)=z |
 | **yPAD** | y1Plans + y2Actions + y3Designs (+ ENV) |
-| **QA Hunter** | Problem-solver role (avatar **H**) — joins challenges, submits brawl reports |
+| **QA Hunter** | Problem-solver role (avatar **H**) — joins challenges, submits BRAHL reports |
 | **Creator** | Challenge-poster role (avatar **C**) — posts apps to the arena |
 | **Persona** | Test profile P1–P9 (not production auth) |
 | **Suite** | Named folder under `y/` (e.g. `qoa_web`, `ivvu`) |

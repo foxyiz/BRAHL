@@ -139,7 +139,7 @@
     "brahl_context_path": null,
     "latest_run": "20260707_091732_atomic77",
     "created_at": "2026-07-07T04:48:13+00:00",
-    "updated_at": "2026-07-08T02:11:59+00:00",
+    "updated_at": "2026-07-09T07:39:18+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -240,7 +240,7 @@
     "brahl_context_path": null,
     "latest_run": "20260707_085039_ivvu",
     "created_at": "2026-07-07T04:48:20+00:00",
-    "updated_at": "2026-07-07T21:47:58+00:00",
+    "updated_at": "2026-07-09T07:35:04+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -462,13 +462,41 @@
         "report_path": "z/20260706_215651_qoa2/brahl_report.md",
         "submitted_at": "2026-07-07T04:57:56+00:00",
         "source": "automation"
+      },
+      {
+        "id": "4f3f4b1a",
+        "run_name": "20260706_215958_qoa2",
+        "report_path": "z/20260706_215958_qoa2/brahl_report.md",
+        "submitted_at": "2026-07-09T05:22:37+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "88d8f41d",
+        "run_name": "20260708_222302_qoa2",
+        "report_path": "z/20260708_222302_qoa2/brahl_report.md",
+        "submitted_at": "2026-07-09T05:24:09+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "2111c2f0",
+        "run_name": "20260708_224153_qoa2",
+        "report_path": "z/20260708_224153_qoa2/brahl_report.md",
+        "submitted_at": "2026-07-09T05:43:03+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "25ca3587",
+        "run_name": "20260708_224522_qoa2",
+        "report_path": "z/20260708_224522_qoa2/brahl_report.md",
+        "submitted_at": "2026-07-09T05:46:23+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": null,
-    "latest_run": "20260706_215651_qoa2",
+    "latest_run": "20260708_224522_qoa2",
     "created_at": "2026-07-07T04:56:05+00:00",
-    "updated_at": "2026-07-07T04:59:56+00:00",
+    "updated_at": "2026-07-09T05:46:59+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -491,6 +519,51 @@
       "user_messages": 0
     },
     "cycle_history": [
+      {
+        "id": "b483d044",
+        "step": "Verify",
+        "detail": "completed",
+        "at": "2026-07-09T05:46:22+00:00",
+        "run_name": "20260708_224522_qoa2",
+        "stats": {
+          "passes": 14,
+          "fails": 1,
+          "total_plans": 15,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "ec1687d7",
+        "step": "Restore",
+        "detail": "Verify prep \u2014 all Run=Y",
+        "at": "2026-07-09T05:45:19+00:00"
+      },
+      {
+        "id": "64195b58",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-09T05:43:02+00:00",
+        "run_name": "20260708_224153_qoa2",
+        "stats": {
+          "passes": 14,
+          "fails": 2,
+          "total_plans": 16,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "673c5cbf",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-09T05:24:06+00:00",
+        "run_name": "20260708_222302_qoa2",
+        "stats": {
+          "passes": 14,
+          "fails": 2,
+          "total_plans": 16,
+          "health": "amber"
+        }
+      },
       {
         "id": "c9d3e51b",
         "step": "Restore",
@@ -605,8 +678,8 @@
     "app_url": "https://nalanda.base44.app/",
     "suite_name": "nalanda_app",
     "suite_config": "y/nalanda_app/nalanda_app.json",
-    "purpose": "Nalanda SkillFlow AI (nalanda.base44.app) \u2014 launch readiness smoke for Creator Go/No-Go",
-    "prompt": "Nalanda SkillFlow AI (nalanda.base44.app) \u2014 launch readiness smoke for Creator Go/No-Go",
+    "purpose": "quickly test https://jusdone.base44.app/",
+    "prompt": "quickly test https://jusdone.base44.app/",
     "owner_avatar": "client",
     "status": "open",
     "documents": [],
@@ -625,6 +698,18 @@
         "role": "assistant",
         "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
         "at": "2026-07-07T21:49:14+00:00"
+      },
+      {
+        "id": "a617988d",
+        "role": "user",
+        "text": "quickly test https://jusdone.base44.app/",
+        "at": "2026-07-09T07:42:55+00:00"
+      },
+      {
+        "id": "ee1b2025",
+        "role": "assistant",
+        "text": "What is the main purpose of this BRAHL cycle? Describe what we should validate, explore, or improve.",
+        "at": "2026-07-09T07:42:55+00:00"
       }
     ],
     "budget_usd": 0.0,
@@ -640,13 +725,20 @@
         "report_path": "z/20260705_232130_nalanda_app/brahl_report.md",
         "submitted_at": "2026-07-07T21:49:14+00:00",
         "source": "automation"
+      },
+      {
+        "id": "1ea80aaa",
+        "run_name": "20260709_004501_nalanda_app",
+        "report_path": "z/20260709_004501_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-09T07:45:15+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": null,
-    "latest_run": "20260705_232130_nalanda_app",
+    "latest_run": "20260709_004501_nalanda_app",
     "created_at": "2026-07-07T21:49:14+00:00",
-    "updated_at": "2026-07-07T21:49:14+00:00",
+    "updated_at": "2026-07-10T05:54:01+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -668,7 +760,157 @@
       "tokens_est": 0,
       "user_messages": 0
     },
-    "cycle_history": [],
+    "cycle_history": [
+      {
+        "id": "950e1c39",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-09T07:45:14+00:00",
+        "run_name": "20260709_004501_nalanda_app",
+        "stats": {
+          "passes": 6,
+          "fails": 0,
+          "total_plans": 6,
+          "health": "green"
+        }
+      }
+    ],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "runtime_mode": "local",
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null
+  },
+  {
+    "id": "2b13d26039b3",
+    "name": "API_Petstore",
+    "app_url": "",
+    "suite_name": "API_Petstore",
+    "suite_config": "y/API_Petstore/api_tests.json",
+    "purpose": "give me BRAHL report",
+    "prompt": "give me BRAHL report",
+    "owner_avatar": "client",
+    "status": "open",
+    "documents": [],
+    "context_items": [],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-09T05:30:10+00:00"
+      },
+      {
+        "id": "09b6af8e",
+        "role": "user",
+        "text": "https://konfiga.com/ go ahead and test the basic web features for this web app.",
+        "at": "2026-07-09T05:48:38+00:00"
+      },
+      {
+        "id": "cac333b6",
+        "role": "assistant",
+        "text": "What is the main purpose of this BRAHL cycle? Describe what we should validate, explore, or improve.",
+        "at": "2026-07-09T05:48:38+00:00"
+      },
+      {
+        "id": "05a6e185",
+        "role": "user",
+        "text": "https://konfiga.com/",
+        "at": "2026-07-09T05:48:57+00:00"
+      },
+      {
+        "id": "afe8ec06",
+        "role": "assistant",
+        "text": "Any connector or source of truth? (JIRA, Linear, Confluence, GitHub, specs, API docs). Tap + to add one \u2014 or reply 'none' to skip.",
+        "at": "2026-07-09T05:48:57+00:00"
+      },
+      {
+        "id": "a3fef3ce",
+        "role": "user",
+        "text": "None.",
+        "at": "2026-07-09T05:49:06+00:00"
+      },
+      {
+        "id": "05355bb6",
+        "role": "assistant",
+        "text": "Set your project budget below. We split funds between BRAHL automation (AI + FoXYiZ) and QA Hunters who enrich reports offline.",
+        "at": "2026-07-09T05:49:06+00:00"
+      },
+      {
+        "id": "0dd8fe07",
+        "role": "user",
+        "text": "Updated budget to $150 (50% automation / 50% QA Hunter)",
+        "at": "2026-07-09T05:49:20+00:00"
+      },
+      {
+        "id": "6db10f12",
+        "role": "assistant",
+        "text": "Budget $150 saved (50% BRAHL automation / 50% QA Hunter). Invite QA Hunters when you need exploratory UX or edge-case coverage.",
+        "at": "2026-07-09T05:49:20+00:00"
+      },
+      {
+        "id": "8f2d1cc3",
+        "role": "user",
+        "text": "give me BRAHL report",
+        "at": "2026-07-09T05:49:54+00:00"
+      },
+      {
+        "id": "5ad2a00e",
+        "role": "assistant",
+        "text": "Budget $150 noted (50% automation / 50% QA Hunter). QA Hunters can join when you're ready. Use Loop to capture Step 0 context.",
+        "at": "2026-07-09T05:49:55+00:00"
+      }
+    ],
+    "budget_usd": 150.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "latest_run": "20260708_223222_api_tests",
+    "created_at": "2026-07-09T05:30:10+00:00",
+    "updated_at": "2026-07-09T05:50:11+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
+        "at": "2026-07-09T05:30:10+00:00"
+      }
+    ],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-09T05:30:10+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [
+      {
+        "id": "f4972e6a",
+        "step": "Run",
+        "detail": "failed",
+        "at": "2026-07-09T05:32:23+00:00",
+        "run_name": "20260708_223222_api_tests",
+        "stats": {
+          "passes": 0,
+          "fails": 0,
+          "total_plans": 0,
+          "health": "unknown"
+        }
+      }
+    ],
     "hitl_stories": [],
     "hitl_invites": [],
     "change_requests": [],

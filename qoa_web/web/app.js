@@ -4,6 +4,11 @@ const $$ = (sel) => document.querySelectorAll(sel);
 const STORAGE_AVATAR = "qoa_web_avatar";
 const STORAGE_PROJECT = "qoa_web_project_id";
 const STORAGE_SUITE = "qoa_web_suite";
+const STORAGE_AUTH_TOKEN = "qoa_auth_token";
+const STORAGE_AUTH_USER = "qoa_auth_user";
+const STORAGE_DRAFT_REQUIREMENT = "qoa_draft_requirement";
+
+let pendingBrahlPlan = null;
 
 function maybeResetFromQuery() {
   const params = new URLSearchParams(location.search);
@@ -95,8 +100,11 @@ const ypadState = {
 };
 
 async function api(path, opts = {}) {
+  const headers = { "Content-Type": "application/json", ...(opts.headers || {}) };
+  const token = localStorage.getItem(STORAGE_AUTH_TOKEN);
+  if (token) headers.Authorization = `Bearer ${token}`;
   const res = await fetch(path, {
-    headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
+    headers,
     ...opts,
   });
   if (!res.ok) throw new Error((await res.text()) || res.statusText);
@@ -386,14 +394,27 @@ function bindPersonaBadge() {
 function applyProfileUI() {
   const profile = state.profile || getActiveProfile();
   state.profile = profile;
-  const chip = $("#profile-chip");
+  const chip = $("#user-menu-btn");
   const codeEl = $("#profile-chip-code");
   const nameEl = $("#profile-chip-name");
-  if (chip && profile) {
+  const authUser = getAuthUser();
+  if (chip) {
     chip.hidden = false;
-    if (codeEl) codeEl.textContent = profile.code;
-    if (nameEl) nameEl.textContent = profile.name;
-    chip.title = `${profile.code} · ${profile.title} — click to switch profile`;
+    if (authUser) {
+      if (codeEl) codeEl.textContent = authUser.email.split("@")[0];
+      if (nameEl) nameEl.textContent = authUser.name || authUser.email;
+      chip.title = `${authUser.email} — account menu`;
+      const so = $("#user-menu-signout");
+      const li = $("#user-menu-login");
+      const su = $("#user-menu-signup");
+      if (so) so.hidden = false;
+      if (li) li.hidden = true;
+      if (su) su.hidden = true;
+    } else if (profile) {
+      if (codeEl) codeEl.textContent = profile.code;
+      if (nameEl) nameEl.textContent = profile.name;
+      chip.title = `${profile.code} · ${profile.title} — account menu`;
+    }
   }
   const adminLink = $("#footer-admin-link");
   if (adminLink) adminLink.classList.toggle("footer-admin-link-active", !!profile?.admin);
@@ -1509,8 +1530,9 @@ function renderBuildChecklist() {
 function openAddProjectModal() {
   const modal = $("#add-project-modal");
   if (!modal) return;
+  const draft = sessionStorage.getItem(STORAGE_DRAFT_REQUIREMENT) || "";
   $("#new-project-name").value = "";
-  $("#new-project-purpose").value = "";
+  $("#new-project-purpose").value = draft || $("#brahl-plan-requirement")?.value.trim() || "";
   $("#new-project-url").value = "";
   $("#new-project-budget").value = "";
   $("#new-project-connector").value = "";
@@ -1809,11 +1831,11 @@ function renderYpadInsights() {
   const designs = ins?.designRows ?? "—";
   const tagN = ins?.tagCount ?? 0;
   el.innerHTML =
-    `<span class="ypad-stat-pill"><strong>${auto}</strong> automated plans (Run=Y)</span>` +
-    `<span class="ypad-stat-pill"><strong>${total}</strong> total plans</span>` +
-    `<span class="ypad-stat-pill"><strong>${actions}</strong> action steps</span>` +
-    `<span class="ypad-stat-pill"><strong>${designs}</strong> design rows</span>` +
-    `<span class="ypad-stat-pill"><strong>${tagN}</strong> tags · filter by tag below</span>`;
+    `<span class="ypad-stat-pill"><strong>${auto}</strong> automated tests</span>` +
+    `<span class="ypad-stat-pill"><strong>${total}</strong> total tests</span>` +
+    `<span class="ypad-stat-pill"><strong>${actions}</strong> steps</span>` +
+    `<span class="ypad-stat-pill"><strong>${designs}</strong> test data rows</span>` +
+    `<span class="ypad-stat-pill"><strong>${tagN}</strong> tags</span>`;
   if (cloud) {
     if (ins?.tags?.length) {
       cloud.hidden = false;
@@ -1842,30 +1864,159 @@ function renderYpadInsights() {
 
 const COST_TYPE_LABELS = { ai: "AI", local: "Local · free", cloud: "Cloud", human: "Human" };
 
-async function renderBuildCostTeaser() {
-  const wrap = $("#build-cost-teaser");
-  const body = $("#build-cost-teaser-body");
-  if (!wrap || !body || !state.projectId || state.avatar === "consultant") {
-    if (wrap) wrap.hidden = true;
+function getAuthUser() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_AUTH_USER) || "null");
+  } catch {
+    return null;
+  }
+}
+
+function initUserMenu() {
+  const btn = $("#user-menu-btn");
+  const menu = $("#user-menu-dropdown");
+  if (!btn || !menu) return;
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = menu.hidden;
+    menu.hidden = !open;
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  document.addEventListener("click", () => {
+    menu.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+  });
+  menu.querySelectorAll("[data-user-action]").forEach((el) => {
+    el.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      menu.hidden = true;
+      const action = el.dataset.userAction;
+      if (action === "nalanda") showPhase("nalanda");
+      else if (action === "atomic77") showPhase("atomic77");
+      else if (action === "cost") showPhase("cost");
+      else if (action === "theme-pro") window.QoaTheme?.setTheme?.("pro");
+      else if (action === "theme-arena") window.QoaTheme?.setTheme?.("arena");
+      else if (action === "role-creator") await setAvatar("client");
+      else if (action === "role-hunter") await setAvatar("consultant");
+      else if (action === "signout") {
+        localStorage.removeItem(STORAGE_AUTH_TOKEN);
+        localStorage.removeItem(STORAGE_AUTH_USER);
+        location.href = "/login";
+      }
+    });
+  });
+  const themeBtns = document.querySelectorAll("[data-theme-btn]");
+  themeBtns.forEach((b) => {
+    b.addEventListener("click", () => {
+      window.QoaTheme?.setTheme?.(b.dataset.themeBtn);
+    });
+  });
+}
+
+async function renderBuildCostRail() {
+  const rail = $("#build-cost-rail");
+  const body = $("#build-cost-rail-body");
+  if (!rail || !body) return;
+  if (!state.projectId || state.avatar === "consultant") {
+    rail.hidden = true;
     return;
   }
+  rail.hidden = false;
   try {
     const { cost_meter: m } = await api(`/api/projects/${state.projectId}/cost-meter`);
-    wrap.hidden = false;
-    if (!m.budget_usd) {
-      body.innerHTML =
-        `<span class="empty-hint">Set a budget on the $ tab to enable cost tracking (AI vs QA Hunter vs local/cloud).</span>`;
+    const budget = Number(m.budget_usd) || 0;
+    const spentAi = Number(m.spent_automation_usd) || 0;
+    const spentHuman = Number(m.spent_human_usd) || 0;
+    const remaining = Number(m.remaining_usd) || 0;
+    if (!budget) {
+      body.innerHTML = `<span class="empty-hint">Set budget in optional section below.</span>`;
       return;
     }
     body.innerHTML =
-      `<span class="ypad-stat-pill">Budget <strong>$${m.budget_usd}</strong></span>` +
-      `<span class="ypad-stat-pill">Spent ~<strong>$${m.spent_total_usd}</strong></span>` +
-      `<span class="ypad-stat-pill">AI/auto <strong>$${m.spent_automation_usd}</strong></span>` +
-      `<span class="ypad-stat-pill">QA Hunter <strong>$${m.spent_human_usd}</strong></span>` +
-      `<span class="meta">${m.runtime_mode === "local" ? "Local Run/Loop free" : "Cloud mode"}</span>`;
+      `<div><strong>Budget</strong> $${budget}</div>` +
+      `<div>AI $${spentAi.toFixed(0)} · QA Hunters $${spentHuman.toFixed(0)}</div>` +
+      `<div><strong>Remaining</strong> $${remaining.toFixed(0)}</div>`;
   } catch {
-    wrap.hidden = true;
+    body.innerHTML = `<span class="empty-hint">Cost data unavailable.</span>`;
   }
+}
+
+
+async function generateBrahlPlan() {
+  if (!state.projectId) {
+    setStatus("Select or create a project first.");
+    return;
+  }
+  const req = $("#brahl-plan-requirement")?.value.trim();
+  if (!req) {
+    setStatus("Enter a requirement to generate a BRAHL Plan.");
+    return;
+  }
+  sessionStorage.setItem(STORAGE_DRAFT_REQUIREMENT, req);
+  const btn = $("#btn-generate-brahl-plan");
+  if (btn) btn.disabled = true;
+  try {
+    const data = await api(`/api/projects/${state.projectId}/brahl-plan/generate`, {
+      method: "POST",
+      body: JSON.stringify({ requirement: req }),
+    });
+    pendingBrahlPlan = data.brahl_plan;
+    const review = $("#brahl-plan-review");
+    const stats = $("#brahl-plan-stats");
+    const body = $("#brahl-plan-body");
+    const accept = $("#btn-accept-brahl-plan");
+    if (review) review.hidden = false;
+    if (stats) {
+      const p = data.brahl_plan || {};
+      stats.innerHTML =
+        `<span class="brahl-plan-stat">${(p.user_stories || []).length} user stories</span>` +
+        `<span class="brahl-plan-stat">${(p.test_cases || []).length} test cases</span>` +
+        `<span class="brahl-plan-stat">${p.automated_count ?? 0} automated</span>` +
+        `<span class="brahl-plan-stat">${p.manual_count ?? 0} manual</span>`;
+    }
+    if (body) body.textContent = data.preview_markdown || "";
+    if (accept) accept.hidden = false;
+    setStatus(data.ai ? "BRAHL Plan ready — review and accept" : "BRAHL Plan (offline template) — review and accept");
+  } catch (e) {
+    setStatus(`BRAHL Plan error: ${e.message}`);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function acceptBrahlPlan() {
+  if (!state.projectId || !pendingBrahlPlan) return;
+  try {
+    const data = await api(`/api/projects/${state.projectId}/brahl-plan/accept`, {
+      method: "POST",
+      body: JSON.stringify({ brahl_plan: pendingBrahlPlan }),
+    });
+    activeProject = data.project;
+    sessionStorage.removeItem(STORAGE_DRAFT_REQUIREMENT);
+    pendingBrahlPlan = null;
+    $("#btn-accept-brahl-plan").hidden = true;
+    await loadBuildBoard();
+    setStatus("BRAHL Plan accepted — stories and purpose saved.");
+  } catch (e) {
+    setStatus(`Accept failed: ${e.message}`);
+  }
+}
+
+function restoreDraftRequirementIfNeeded() {
+  const params = new URLSearchParams(location.search);
+  if (params.get("restore_draft") !== "1") return;
+  const draft = sessionStorage.getItem(STORAGE_DRAFT_REQUIREMENT);
+  const ta = $("#brahl-plan-requirement");
+  if (draft && ta) ta.value = draft;
+  params.delete("restore_draft");
+  const qs = params.toString();
+  history.replaceState({}, "", qs ? `${location.pathname}?${qs}` : location.pathname);
+}
+
+async function renderBuildCostTeaser() {
+  await renderBuildCostRail();
+  const wrap = $("#build-cost-teaser");
+  if (wrap) wrap.hidden = true;
 }
 
 function renderCostMeter(m) {
@@ -2523,9 +2674,9 @@ async function loadBuildBoard() {
 }
 
 function renderBuildBoard(data) {
-  const reqEl = $("#build-requirement-text");
-  if (reqEl) {
-    reqEl.textContent = data.requirement || "No requirement captured yet — use Refine with AI below.";
+  const brahlReq = $("#brahl-plan-requirement");
+  if (brahlReq && !brahlReq.value.trim()) {
+    brahlReq.value = data.requirement || activeProject?.purpose || "";
   }
   const verifyEl = $("#build-verify-summary");
   if (verifyEl) {
@@ -4062,7 +4213,22 @@ $$(".phase-locked-add").forEach((btn) => btn.addEventListener("click", createNew
 $$(".phase-locked-build").forEach((btn) => btn.addEventListener("click", goToBuildPanel));
 $("#chat-form")?.addEventListener("submit", sendChat);
 $("#btn-add-context")?.addEventListener("click", () => {
-  $("#add-context-panel").hidden = false;
+  const panel = $("#add-context-panel");
+  const section = $(".context-section");
+  if (section) section.hidden = false;
+  if (panel) panel.hidden = false;
+});
+$("#btn-build-add-context")?.addEventListener("click", () => {
+  const panel = $("#add-context-panel");
+  const section = $(".context-section");
+  if (section) section.hidden = false;
+  if (panel) panel.hidden = false;
+});
+$("#btn-topbar-add-project")?.addEventListener("click", openAddProjectModal);
+$("#btn-generate-brahl-plan")?.addEventListener("click", generateBrahlPlan);
+$("#btn-accept-brahl-plan")?.addEventListener("click", acceptBrahlPlan);
+$("#ypad-foxyiz-help")?.addEventListener("click", () => {
+  window.open("https://foxyiz.com", "_blank", "noopener");
 });
 $("#btn-save-context")?.addEventListener("click", saveContextItem);
 $("#btn-cancel-context")?.addEventListener("click", () => {
@@ -4166,6 +4332,14 @@ $$(".phase-progress-dot").forEach((dot) => {
 });
 
 initAvatarGate();
+initUserMenu();
+restoreDraftRequirementIfNeeded();
+(function initAuthRole() {
+  const u = getAuthUser();
+  if (!u || state.avatar) return;
+  if (u.role === "qa_hunter") setAvatar("consultant");
+  else setAvatar("client");
+})();
 bindPersonaBadge();
 window.QoaTheme?.initTheme?.();
 window.addEventListener("qoa-theme-change", (ev) => {

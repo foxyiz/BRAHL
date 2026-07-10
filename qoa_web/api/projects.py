@@ -58,6 +58,8 @@ def _normalize(project: dict[str, Any]) -> dict[str, Any]:
     project.setdefault("app_version", "")
     project.setdefault("baseline_version", "")
     project.setdefault("baseline_run", None)
+    project.setdefault("owner_user_id", None)
+    project.setdefault("brahl_plan_draft", None)
     if not project.get("chat_messages"):
         project["chat_messages"] = [
             {
@@ -191,6 +193,7 @@ def create_project(body: dict[str, Any]) -> dict[str, Any]:
             "purpose": purpose,
             "prompt": purpose,
             "owner_avatar": "client",
+            "owner_user_id": body.get("owner_user_id"),
             "status": "open",
             "documents": [],
             "context_items": context_items,
@@ -1180,3 +1183,40 @@ def ecosystem_stats() -> dict[str, Any]:
             "headline": "Keep clients and consultants modestly happy — and very satisfied.",
         },
     }
+
+
+def apply_brahl_plan(project_id: str, plan: dict[str, Any]) -> dict[str, Any]:
+    """Persist accepted BRAHL Plan — purpose, stories, draft test cases."""
+    projects = load_projects()
+    for i, p in enumerate(projects):
+        if p.get("id") != project_id:
+            continue
+        p = _normalize(p)
+        summary = (plan.get("summary") or "").strip()
+        if summary:
+            p["purpose"] = summary
+            p["prompt"] = summary
+        stories = list(p.get("hitl_stories") or [])
+        for story in plan.get("user_stories") or []:
+            title = (story.get("title") or "").strip()
+            if not title:
+                continue
+            desc = story.get("description") or ""
+            if story.get("automated") is False:
+                desc = (desc + " [manual — QA Hunter]").strip()
+            stories.append(
+                {
+                    "id": uuid.uuid4().hex[:8],
+                    "title": title,
+                    "description": desc.strip(),
+                    "status": "open",
+                    "created_at": _now(),
+                }
+            )
+        p["hitl_stories"] = stories
+        p["brahl_plan_draft"] = plan
+        p["updated_at"] = _now()
+        projects[i] = p
+        save_projects(projects)
+        return get_project(project_id) or p
+    raise KeyError(project_id)

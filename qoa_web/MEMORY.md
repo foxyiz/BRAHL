@@ -82,7 +82,9 @@ Unified UX — same top bar; labels vary (**My challenge** vs **Open challenges*
 | Doc | Use |
 |-----|-----|
 | [qoa_userDoc.md](./qoa_userDoc.md) | Users, arena, APIs, personas |
-| [Docs/BRAHL_DEFECTS.md](../Docs/BRAHL_DEFECTS.md) | qoa_new defect closure log (BRAHL-001–004 + UX) |
+| [Docs/BRAHL_DEFECTS.md](../Docs/BRAHL_DEFECTS.md) | Defect closure log |
+| [Docs/MVP_LAUNCH_CHECKLIST.md](../Docs/MVP_LAUNCH_CHECKLIST.md) | Post-MVP launch smoke |
+| [Docs/Bluehost.md](../Docs/Bluehost.md) | VPS deploy + auth |
 | [Docs/BRAHL.md](../Docs/BRAHL.md) | Full BRAHL loop + qoa_web quick ref at top |
 | [Docs/MAINTENANCE.md](../Docs/MAINTENANCE.md) | End-of-session cleaner + doc sync |
 | [u/README.md](../u/README.md) | cleaner, persona sync, zBatchDash |

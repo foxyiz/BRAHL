@@ -42,11 +42,40 @@ import ypad as ypad_store
 import waitlist as waitlist_store
 import invites as invite_store
 import nalanda as nalanda_store
+import auth as auth_store
+import brahl_plan as brahl_plan_store
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 APP_VERSION = "1.3.0"
 
 app = FastAPI(title="qoa_web", description="BRAHL web — FoXYiZ local API", version=APP_VERSION)
+
+
+@app.on_event("startup")
+def _startup() -> None:
+    auth_store.init_db()
+
+
+class AuthRegisterRequest(BaseModel):
+    email: str
+    password: str
+    name: str = ""
+    role: str = "creator"
+
+
+class AuthLoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class BrahlPlanGenerateRequest(BaseModel):
+    requirement: str
+    budget_usd: float | None = None
+    automation_pct: int | None = None
+
+
+class BrahlPlanAcceptRequest(BaseModel):
+    brahl_plan: dict[str, Any]
 
 
 class RunRequest(BaseModel):
@@ -257,6 +286,61 @@ def version() -> dict[str, str]:
 @app.get("/api/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "service": "qoa_web", "version": APP_VERSION, "root": str(KK_ROOT)}
+
+
+@app.post("/api/auth/register")
+def auth_register(body: AuthRegisterRequest) -> dict[str, Any]:
+    try:
+        user = auth_store.register_user(body.email, body.password, body.name, body.role)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    token = auth_store.create_token(user)
+    return {"user": user, "token": token}
+
+
+@app.post("/api/auth/login")
+def auth_login(body: AuthLoginRequest) -> dict[str, Any]:
+    user = auth_store.authenticate_user(body.email, body.password)
+    if not user:
+        raise HTTPException(401, "Invalid email or password")
+    token = auth_store.create_token(user)
+    return {"user": user, "token": token}
+
+
+@app.get("/api/auth/me")
+def auth_me(request: Request) -> dict[str, Any]:
+    user = auth_store.user_from_request(request.headers.get("Authorization"))
+    if not user:
+        raise HTTPException(401, "Not authenticated")
+    return {"user": user}
+
+
+@app.post("/api/projects/{project_id}/brahl-plan/generate")
+def brahl_plan_generate(project_id: str, body: BrahlPlanGenerateRequest) -> dict[str, Any]:
+    project = project_store.get_project(project_id)
+    if not project:
+        raise HTTPException(404, "Project not found")
+    if not project.get("ai_enabled", True):
+        raise HTTPException(400, "AI is off for this project")
+    try:
+        result = brahl_plan_store.generate_brahl_plan(
+            body.requirement,
+            project_name=project.get("name") or "project",
+            app_url=project.get("app_url") or "",
+            budget_usd=float(body.budget_usd or project.get("budget_usd") or 0),
+        )
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    return result
+
+
+@app.post("/api/projects/{project_id}/brahl-plan/accept")
+def brahl_plan_accept(project_id: str, body: BrahlPlanAcceptRequest) -> dict[str, Any]:
+    try:
+        project = project_store.apply_brahl_plan(project_id, body.brahl_plan)
+    except KeyError:
+        raise HTTPException(404, "Project not found") from None
+    return {"project": project}
 
 
 class FstartCreate(BaseModel):
@@ -484,7 +568,7 @@ def ypad_project_workspace(suite_name: str) -> dict[str, Any]:
 
 
 @app.post("/api/ypad-projects")
-def create_ypad_project(body: YpadProjectCreate) -> dict[str, Any]:
+def create_ypad_project(body: YpadProjectCreate, request: Request) -> dict[str, Any]:
     name = body.name.strip()
     if not name:
         raise HTTPException(400, "name required")
@@ -493,6 +577,7 @@ def create_ypad_project(body: YpadProjectCreate) -> dict[str, Any]:
     except ValueError as exc:
         raise HTTPException(409, str(exc)) from exc
     safe = detail["name"]
+    auth_user = auth_store.user_from_request(request.headers.get("Authorization"))
     project = project_store.create_project(
         {
             "name": safe,
@@ -503,6 +588,7 @@ def create_ypad_project(body: YpadProjectCreate) -> dict[str, Any]:
             "budget_usd": body.budget_usd,
             "ai_enabled": body.ai_enabled,
             "context_items": body.context_items,
+            "owner_user_id": auth_user.get("id") if auth_user else None,
         }
     )
     payout = project_store.compute_payout_preview(project)
@@ -1436,6 +1522,22 @@ def signin_page():
     if not signin_path.is_file():
         raise HTTPException(404, "Sign-in page not found")
     return FileResponse(signin_path)
+
+
+@app.get("/login")
+def login_page():
+    login_path = WEB_DIR / "login.html"
+    if not login_path.is_file():
+        raise HTTPException(404, "Login page not found")
+    return FileResponse(login_path)
+
+
+@app.get("/signup")
+def signup_page():
+    signup_path = WEB_DIR / "signup.html"
+    if not signup_path.is_file():
+        raise HTTPException(404, "Signup page not found")
+    return FileResponse(signup_path)
 
 
 @app.get("/app")

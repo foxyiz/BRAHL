@@ -19,18 +19,32 @@
         <p class="tagline" id="app-tagline">You Build, We QA — let's BRAHL! · Champion vs Contender</p>
       </div>
       <div class="topbar-right">
-        <a href="/signin" id="profile-chip" class="profile-chip" hidden title="Switch test profile">
-          <span id="profile-chip-code" class="profile-chip-code">—</span>
-          <span id="profile-chip-name" class="profile-chip-name">Profile</span>
-        </a>
-        <div class="theme-switch" role="group" aria-label="Visual theme">
-          <button type="button" class="theme-switch-btn active" data-theme-btn="pro" aria-pressed="true" title="Professional — full text">Pro</button>
-          <button type="button" class="theme-switch-btn" data-theme-btn="arena" aria-pressed="false" title="Arena — visual fight ring, less text">Arena</button>
+        <div class="user-menu-wrap">
+          <button type="button" id="user-menu-btn" class="profile-chip user-menu-trigger" title="Account menu" aria-haspopup="true" aria-expanded="false">
+            <span id="profile-chip-code" class="profile-chip-code">—</span>
+            <span id="profile-chip-name" class="profile-chip-name">Account</span>
+            <span class="user-menu-caret" aria-hidden="true">▾</span>
+          </button>
+          <div id="user-menu-dropdown" class="user-menu-dropdown" hidden role="menu">
+            <a href="/signin" class="user-menu-item" role="menuitem" id="user-menu-profile">Profile / Sign in</a>
+            <button type="button" class="user-menu-item" role="menuitem" data-user-action="nalanda">Nalanda</button>
+            <button type="button" class="user-menu-item" role="menuitem" data-user-action="atomic77">Atomic 77</button>
+            <button type="button" class="user-menu-item" role="menuitem" data-user-action="cost">Wallet ($)</button>
+            <div class="user-menu-divider" role="separator"></div>
+            <button type="button" class="user-menu-item" role="menuitem" data-user-action="theme-pro">Theme: Pro</button>
+            <button type="button" class="user-menu-item" role="menuitem" data-user-action="theme-arena">Theme: Arena</button>
+            <div class="user-menu-divider" role="separator"></div>
+            <button type="button" class="user-menu-item" role="menuitem" data-user-action="role-creator" id="user-menu-role-creator">View as Creator</button>
+            <button type="button" class="user-menu-item" role="menuitem" data-user-action="role-hunter" id="user-menu-role-hunter">View as QA Hunter</button>
+            <a href="/login" class="user-menu-item" role="menuitem" id="user-menu-login">Log in</a>
+            <a href="/signup" class="user-menu-item" role="menuitem" id="user-menu-signup">Sign up</a>
+            <button type="button" class="user-menu-item" role="menuitem" data-user-action="signout" id="user-menu-signout" hidden>Sign out</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="topbar-row topbar-row-controls">
-      <nav class="avatar-bar" aria-label="Choose avatar">
+      <nav class="avatar-bar mvp-hidden" aria-label="Choose avatar" hidden>
         <button type="button" class="avatar-btn" data-avatar="client" title="Creator — Post a challenge">
           <span class="avatar-icon">C</span>
           <span class="avatar-label">Creator</span>
@@ -47,6 +61,7 @@
       <div id="topbar-project" class="topbar-project" hidden>
         <span class="topbar-project-label">My challenge</span>
         <select id="topbar-project-select" aria-label="Switch project"></select>
+        <button type="button" id="btn-topbar-add-project" class="icon-btn topbar-add-btn" title="New project">+</button>
       </div>
       <div id="ai-toggle-wrap" class="ai-toggle-wrap" hidden>
         <label class="ai-toggle" title="AI on: assistants guide Build and BRAHL. AI off: QA Hunters run FoXYiZ locally and upload Automation + AI reports.">
@@ -133,7 +148,7 @@
         <div class="visual-card-item"><span class="v-icon">📚</span><strong>Nalanda</strong><span>Learn · teach · discuss</span></div>
       </div>
       <p>BRAHL automation handles bulk testing. <strong>QA Hunters</strong> enrich reports with real journeys and break apps offline.</p>
-      <p class="blurb arena-oneliner">Creators throw apps into the arena. QA Hunters break them and deliver the brawl report.</p>
+      <p class="blurb arena-oneliner">Creators throw apps into the arena. QA Hunters break them and deliver the BRAHL report.</p>
       <div class="avatar-gate-actions">
         <button type="button" class="avatar-choice primary" data-avatar="client">
           <strong>Creator</strong>
@@ -141,7 +156,7 @@
         </button>
         <button type="button" class="avatar-choice" data-avatar="consultant">
           <strong>QA Hunter</strong>
-          <span>Join open challenges · upload yPADs · submit brawl reports</span>
+          <span>Join open challenges · upload tests · submit BRAHL reports</span>
         </button>
         <button type="button" class="avatar-choice" data-avatar="networker">
           <strong>Nalanda</strong>
@@ -334,15 +349,15 @@
   </div>
 
   <nav class="phase-nav" aria-label="BRAHL phases">
-    <button type="button" class="phase-btn phase-nalanda" data-phase="nalanda" hidden>Nalanda</button>
     <button type="button" class="phase-btn active" data-phase="build">Build</button>
     <button type="button" class="phase-btn" data-phase="run">Run</button>
     <button type="button" class="phase-btn" data-phase="analyze">Analyze</button>
     <button type="button" class="phase-btn" data-phase="heal">Heal</button>
     <button type="button" class="phase-btn" data-phase="loop">Loop</button>
     <button type="button" class="phase-btn phase-brahl" data-phase="brahl">BRAHL</button>
-    <button type="button" class="phase-btn phase-atomic77" data-phase="atomic77" title="Atomic 77 — idea to launch assistant">A77</button>
-    <button type="button" class="phase-btn phase-cost" data-phase="cost" title="XP calculator · cost meter · wallet">$</button>
+    <button type="button" class="phase-btn phase-nalanda mvp-hidden" data-phase="nalanda" hidden>Nalanda</button>
+    <button type="button" class="phase-btn phase-atomic77 mvp-hidden" data-phase="atomic77" hidden>A77</button>
+    <button type="button" class="phase-btn phase-cost mvp-hidden" data-phase="cost" hidden>$</button>
   </nav>
   <div id="phase-progress" class="phase-progress" aria-label="BRAHL cycle progress" hidden>
     <div class="phase-progress-track" role="list">
@@ -376,25 +391,32 @@
             <button type="button" id="client-empty-add" class="primary avatar-client-only">Add challenge to arena</button>
           </div>
           <div id="client-workspace" hidden>
+            <div class="build-layout">
+            <div class="build-main-col">
             <header class="build-project-header">
-              <h2 id="build-panel-title">Build</h2>
+              <div class="build-header-row">
+                <h2 id="build-panel-title">Build</h2>
+                <button type="button" id="btn-build-add-context" class="icon-btn" title="Add context">+</button>
+              </div>
               <p id="hunter-hero-tagline" class="hunter-hero-tagline avatar-consultant-only" hidden>
                 <strong>There are ships sinking. Find and kill the bugs.</strong>
                 Human (QA) + Automation + AI — record evidence, submit findings, get paid.
               </p>
-              <p class="blurb" id="build-panel-blurb"></p>
+              <p class="blurb build-hero-blurb" id="build-panel-blurb">Build your test strategy — automated (FoXYiZ) and manual scenarios.</p>
+              <p id="build-verify-summary" class="verify-summary" hidden></p>
             </header>
 
-            <section id="build-requirement" class="build-section">
-              <h3 class="section-sub">Original requirement</h3>
-              <blockquote id="build-requirement-text" class="requirement-quote">—</blockquote>
-              <p id="build-verify-summary" class="verify-summary" hidden></p>
-              <div id="build-cost-teaser" class="build-cost-teaser avatar-client-only" hidden>
-                <div class="cost-teaser-head">
-                  <strong>Cost meter</strong>
-                  <button type="button" class="linkish" id="build-goto-cost">Open $ tab →</button>
-                </div>
-                <div id="build-cost-teaser-body" class="cost-teaser-body"></div>
+            <section id="build-brahl-plan" class="build-section build-brahl-plan-section">
+              <h3 class="section-sub">BRAHL Plan</h3>
+              <p class="blurb">Paste your requirement — AI generates test strategy, user stories, and test cases (automated + manual).</p>
+              <textarea id="brahl-plan-requirement" class="brahl-plan-input" rows="4" placeholder="Describe what to test — MVP launch, changed build, edge cases for QA Hunters…"></textarea>
+              <div class="form-row actions">
+                <button type="button" id="btn-generate-brahl-plan" class="primary">Generate BRAHL Plan</button>
+                <button type="button" id="btn-accept-brahl-plan" class="secondary" hidden>Accept plan</button>
+              </div>
+              <div id="brahl-plan-review" class="brahl-plan-review" hidden>
+                <div id="brahl-plan-stats" class="brahl-plan-stats"></div>
+                <div id="brahl-plan-body" class="brahl-plan-body"></div>
               </div>
             </section>
 
@@ -486,22 +508,23 @@
             </section>
 
             <section id="build-automation" class="build-section">
-              <h3 class="section-sub">Automation coverage</h3>
+              <h3 class="section-sub">Test coverage</h3>
               <div id="ypad-insights" class="ypad-insights">
                 <p class="ypad-insights-lead">
-                  <strong>FoXYiZ</strong> automates your app as <code>f(x,y)=z</code> — the engine runs your
-                  <strong>yPAD</strong> files (<em>y</em> plans, actions, designs) and writes results to <em>z/</em>.
-                  Click a row for full details. Reports and history live on the <button type="button" class="linkish" id="ypad-goto-brahl">BRAHL</button> tab.
+                  <strong><a href="https://foxyiz.com" target="_blank" rel="noopener">FoXYiZ</a></strong> automates tests as <code>f(x,y)=z</code> —
+                  four files: <strong>Tests</strong>, <strong>Steps</strong>, <strong>Test data</strong>, plus environment reference.
+                  Results go to <em>z/</em>. Reports on the <button type="button" class="linkish" id="ypad-goto-brahl">BRAHL</button> tab.
+                  <button type="button" class="linkish" id="ypad-foxyiz-help">What is FoXYiZ?</button>
                 </p>
                 <div class="ypad-insights-stats" id="ypad-insights-stats"></div>
                 <div id="ypad-tag-cloud" class="ypad-tag-cloud" hidden></div>
               </div>
               <div id="ypad-explorer" class="ypad-explorer">
-                <div class="ypad-tabs" role="tablist" aria-label="yPAD sheets">
-                  <button type="button" class="ypad-tab active" data-ypad-tab="plans" role="tab" aria-selected="true">Y Plans</button>
-                  <button type="button" class="ypad-tab" data-ypad-tab="actions" role="tab">Y Actions</button>
-                  <button type="button" class="ypad-tab" data-ypad-tab="designs" role="tab">Y Designs</button>
-                  <button type="button" class="ypad-tab" data-ypad-tab="env" role="tab">ENV example</button>
+                <div class="ypad-tabs" role="tablist" aria-label="Test files">
+                  <button type="button" class="ypad-tab active" data-ypad-tab="plans" role="tab" aria-selected="true">Tests</button>
+                  <button type="button" class="ypad-tab" data-ypad-tab="actions" role="tab">Steps</button>
+                  <button type="button" class="ypad-tab" data-ypad-tab="designs" role="tab">Test data</button>
+                  <button type="button" class="ypad-tab" data-ypad-tab="env" role="tab">Environment example</button>
                 </div>
                 <div class="ypad-toolbar">
                   <input type="search" id="ypad-filter" class="ypad-filter" placeholder="Filter rows…" />
@@ -543,26 +566,28 @@
               </div>
             </section>
 
-            <section id="build-hitl-stories" class="build-section avatar-client-only">
-              <h3 class="section-sub">QA Hunter — user stories to cover</h3>
-              <p class="blurb">Non-automated tests, UX exploration, and manual scenarios for consultants.</p>
+            <details id="build-hitl-stories" class="build-section build-collapsible avatar-client-only">
+              <summary class="section-sub">Manual scenarios (QA Hunter)</summary>
+              <p class="blurb">Tests automation cannot cover — mobile devices, UX exploration, edge cases.</p>
               <ul id="hitl-story-list" class="hitl-story-list"></ul>
               <form id="hitl-story-form" class="hitl-story-form">
-                <input type="text" id="hitl-story-title" placeholder="User story title" required />
+                <input type="text" id="hitl-story-title" placeholder="Scenario title" required />
                 <input type="text" id="hitl-story-desc" placeholder="What should QA Hunters verify manually?" />
-                <button type="submit" class="secondary">+ Add user story</button>
+                <button type="submit" class="secondary">+ Add scenario</button>
               </form>
-            </section>
+            </details>
 
-            <section id="build-hitl-team" class="build-section avatar-client-only">
-              <h3 class="section-sub">QA Hunter team</h3>
-              <p class="blurb">Invite external QA teams or consultants to join <strong id="hitl-project-label">this project</strong> — optional bug bounty note welcome.</p>
+            <details id="build-hitl-team-wrap" class="build-section build-collapsible avatar-client-only">
+              <summary class="section-sub">QA Hunter team</summary>
+              <p class="blurb">Invite QA teams to join <strong id="hitl-project-label">this project</strong>.</p>
               <div id="hitl-roster" class="hitl-roster"></div>
               <div id="hitl-invites" class="hitl-invites"></div>
               <button type="button" id="btn-invite-hitl" class="primary">Invite QA Hunter</button>
-            </section>
+            </details>
 
-            <section id="build-change" class="build-section build-change-section avatar-client-only">
+            <details id="build-advanced" class="build-section build-collapsible avatar-client-only">
+              <summary class="section-sub">Advanced — versions &amp; change requests</summary>
+            <section id="build-change" class="build-change-section">
               <h3 class="section-sub">App versions &amp; launch compare</h3>
               <p class="blurb">
                 Before a new release: run Verify on the <strong>old</strong> app and save baseline (all failures captured).
@@ -585,97 +610,75 @@
               </div>
             </section>
 
-            <section id="build-change-requests" class="build-section build-change-section avatar-client-only">
-              <h3 class="section-sub">Project changed?</h3>
-              <p class="blurb">App or requirements changed since the last BRAHL cycle — request a new round of assistance.</p>
-              <button type="button" id="btn-request-change" class="secondary">This project has changed — I need assistance again</button>
+            <section id="build-change-requests" class="build-change-section">
+              <button type="button" id="btn-request-change" class="secondary">Project changed — request assistance</button>
               <ul id="change-request-list" class="change-request-list"></ul>
             </section>
+            </details>
 
-            <details id="build-refine-details" class="build-refine-details avatar-client-only" open>
-              <summary>Refine with AI · budget · connectors</summary>
-              <ol id="build-checklist" class="build-checklist" aria-label="Getting started">
-                <li id="checklist-step-project" class="checklist-item" data-step="project">
-                  <span class="checklist-marker" aria-hidden="true"></span>
-                  <span class="checklist-text">Add challenge</span>
-                </li>
-                <li id="checklist-step-purpose" class="checklist-item" data-step="purpose">
-                  <span class="checklist-marker" aria-hidden="true"></span>
-                  <span class="checklist-text">Describe purpose in chat</span>
-                </li>
-                <li id="checklist-step-verify" class="checklist-item" data-step="verify">
-                  <span class="checklist-marker" aria-hidden="true"></span>
-                  <span class="checklist-text">Run Loop → Verify and view BRAHL report</span>
-                </li>
-              </ol>
+            <details id="build-refine-details" class="build-refine-details avatar-client-only">
+              <summary>Budget &amp; AI chat (optional)</summary>
               <div id="client-ai-build">
                 <p id="build-ai-status" class="build-ai-status meta" aria-live="polite"></p>
-                <p class="build-ai-docs-link" id="build-ai-docs-link-wrap" hidden>
-                  <button type="button" class="linkish" id="build-open-ai-docs">View AI context documents (.md)</button>
-                  <span class="meta"> — BRAHL, FoXYiZ, rules, README · shared across projects</span>
-                </p>
-                <div id="chat-thread" class="chat-thread" aria-live="polite"></div>
+                <div id="chat-thread" class="chat-thread chat-thread-compact" aria-live="polite"></div>
                 <form id="chat-form" class="chat-form">
-                  <button type="button" id="btn-add-context" class="icon-btn" title="Add context">+</button>
-                  <input type="text" id="chat-input" placeholder="Describe what you want BRAHL to test…" autocomplete="off" />
+                  <input type="text" id="chat-input" placeholder="Follow-up question…" autocomplete="off" />
                   <button type="submit" class="primary" id="chat-send-btn">Send</button>
                 </form>
               </div>
               <div id="client-manual-build" class="manual-build" hidden>
-                <p class="hint">AI off — describe purpose manually.</p>
-                <label for="manual-purpose">Project purpose</label>
-                <textarea id="manual-purpose" rows="3" placeholder="What should be tested…"></textarea>
-                <button type="button" id="btn-save-manual-purpose" class="primary">Save purpose</button>
-                <button type="button" id="btn-add-context-manual" class="secondary">+ Add context</button>
+                <textarea id="manual-purpose" rows="2" placeholder="Project purpose…"></textarea>
+                <button type="button" id="btn-save-manual-purpose" class="secondary">Save purpose</button>
               </div>
-              <div class="context-section">
-                <h3 class="section-sub">Sources of truth &amp; context</h3>
-                <p class="blurb">Existing connectors and references for this challenge — shared with QA Hunters.</p>
-                <ul id="context-list" class="context-list"></ul>
-                <p id="context-empty" class="empty-hint" hidden>No context yet — add a connector, URL, screenshot path, or API docs link below.</p>
-                <div id="context-chips" class="context-chips" hidden aria-hidden="true"></div>
-                <div id="add-context-panel" class="add-context-panel" hidden>
-                  <select id="ctx-kind">
-                    <option value="connector">Connector / source of truth</option>
-                    <option value="url">App URL</option>
-                    <option value="api_docs">API docs</option>
-                    <option value="github">GitHub / repo</option>
-                    <option value="jira">JIRA / ticket</option>
-                    <option value="screenshot">Screenshot / recording</option>
-                    <option value="figma">Figma / design</option>
-                    <option value="note">Note</option>
-                    <option value="document">Document path</option>
-                  </select>
-                  <input type="text" id="ctx-label" placeholder="Label (e.g. JIRA, GitHub, checkout UX)" />
-                  <input type="text" id="ctx-value" placeholder="URL, path, or description" />
-                  <button type="button" id="btn-save-context" class="primary">Add</button>
-                  <button type="button" id="btn-cancel-context">Cancel</button>
-                </div>
-                <div class="context-examples">
-                  <span class="context-examples-label">Quick add:</span>
-                  <button type="button" class="ctx-example-btn" data-kind="jira" data-label="JIRA" data-value="https://your-team.atlassian.net/browse/PROJ-123">JIRA ticket</button>
-                  <button type="button" class="ctx-example-btn" data-kind="github" data-label="GitHub" data-value="https://github.com/org/repo">GitHub repo</button>
-                  <button type="button" class="ctx-example-btn" data-kind="api_docs" data-label="API docs" data-value="https://api.example.com/docs">API docs</button>
-                  <button type="button" class="ctx-example-btn" data-kind="screenshot" data-label="UX screenshot" data-value="screenshots/checkout-flow.png">Screenshot path</button>
-                  <button type="button" class="ctx-example-btn" data-kind="figma" data-label="Figma" data-value="https://figma.com/file/...">Figma link</button>
-                </div>
-              </div>
-              <div class="budget-block">
-                <h3 class="section-sub">Budget</h3>
+              <div class="budget-block budget-block-compact">
                 <div class="form-row">
                   <label for="budget-usd">QA wallet ($)</label>
                   <input type="number" id="budget-usd" min="50" step="50" placeholder="500" />
-                  <button type="button" id="btn-save-budget" class="primary">Save budget</button>
+                  <button type="button" id="btn-save-budget" class="secondary">Save</button>
                 </div>
-                <p class="hint">Minimum $50 · QAonAIR retains 5% · splits AI, human payouts, ops — see $ tab.</p>
                 <div class="split-row">
-                  <label>BRAHL automation <span id="auto-pct">50</span>%</label>
+                  <label>Auto <span id="auto-pct">50</span>%</label>
                   <input type="range" id="budget-split" min="10" max="90" value="50" />
                   <label>QA Hunter <span id="human-pct">50</span>%</label>
                 </div>
                 <div id="payout-preview" class="payout-preview"></div>
               </div>
+              <div class="context-section context-section-collapsed" hidden>
+                <ul id="context-list" class="context-list"></ul>
+                <p id="context-empty" class="empty-hint" hidden>No context yet.</p>
+                <div id="context-chips" class="context-chips" hidden aria-hidden="true"></div>
+                <div id="add-context-panel" class="add-context-panel" hidden>
+                  <select id="ctx-kind">
+                    <option value="connector">Connector</option>
+                    <option value="url">App URL</option>
+                    <option value="api_docs">API docs</option>
+                    <option value="github">GitHub</option>
+                    <option value="jira">JIRA</option>
+                    <option value="screenshot">Screenshot</option>
+                    <option value="figma">Figma</option>
+                    <option value="note">Note</option>
+                    <option value="document">Document</option>
+                  </select>
+                  <input type="text" id="ctx-label" placeholder="Label" />
+                  <input type="text" id="ctx-value" placeholder="URL or path" />
+                  <button type="button" id="btn-save-context" class="primary">Add</button>
+                  <button type="button" id="btn-cancel-context">Cancel</button>
+                </div>
+              </div>
+              <ol id="build-checklist" class="build-checklist" hidden aria-hidden="true"></ol>
             </details>
+            </div><!-- build-main-col -->
+
+            <aside id="build-cost-rail" class="build-cost-rail avatar-client-only" hidden>
+              <div class="build-cost-rail-card">
+                <h3 class="section-sub">Project cost</h3>
+                <div id="build-cost-rail-body" class="build-cost-rail-body">
+                  <p class="empty-hint">Set budget in optional section below.</p>
+                </div>
+                <button type="button" class="linkish" id="build-goto-cost">Full wallet →</button>
+              </div>
+            </aside>
+            </div><!-- build-layout -->
           </div>
         </div>
       </div>
@@ -692,7 +695,7 @@
       <div id="run-content">
         <h2>Run — FoXYiZ fEngine2</h2>
         <p id="run-project-scope" class="phase-scope"></p>
-        <p class="blurb">Executes yPAD via <strong>python f/fEngine2.py</strong> — no AI in this phase (BRAHL Run = f, x, y → z).</p>
+        <p class="blurb">Executes your Tests via <strong>FoXYiZ fEngine2</strong> (<code>python f/fEngine2.py</code>) — no AI in Run (BRAHL: f + y → z).</p>
         <div class="form-row">
           <label>Test suite</label>
           <span id="run-suite-display" class="run-suite-readonly">—</span>
