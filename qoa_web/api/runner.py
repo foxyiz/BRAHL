@@ -840,7 +840,16 @@ def default_fstart_for_suite(suite_name: str) -> str:
         except (OSError, json.JSONDecodeError):
             continue
     if not matches:
-        return f"f/fStart_{suite_name}_verify.json" if (F_DIR / f"fStart_{suite_name}_verify.json").is_file() else "f/fStart_qoa_web_verify.json"
+        for candidate in (
+            f"fStart_{suite_name}_verify.json",
+            f"fStart_{suite_name}_smoke.json",
+            f"fStart_{suite_name}.json",
+            "fStart_Math_verify.json",
+            "fStart_Math.json",
+        ):
+            if (F_DIR / candidate).is_file():
+                return f"f/{candidate}"
+        return "f/fStart_Math.json"
     for pref in ("verify", "smoke"):
         for m in matches:
             if pref in m.lower():
@@ -854,19 +863,43 @@ def slug_suite_name(name: str) -> str:
     return slug or "project"
 
 
-def create_ypad_suite(name: str, app_url: str = "", description: str = "") -> dict[str, Any]:
-    """Scaffold y/<name>/ with D1–D9 persona y3Designs and starter smoke plans."""
+def create_ypad_suite(
+    name: str,
+    app_url: str = "",
+    description: str = "",
+    brahl_plan: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Scaffold y/<name>/ with persona y3Designs and plan-driven or smoke plans."""
     import sys
 
-    u_dir = KK_ROOT / "u"
-    if str(u_dir) not in sys.path:
-        sys.path.insert(0, str(u_dir))
+    py_utils = KK_ROOT / "pyUtils"
+    if str(py_utils) not in sys.path:
+        sys.path.insert(0, str(py_utils))
     from scaffold_app_ypad import write_app_ypad_suite
 
     try:
-        result = write_app_ypad_suite(name, app_url, description)
+        result = write_app_ypad_suite(name, app_url, description, brahl_plan=brahl_plan)
     except ValueError:
         raise
     safe = result["name"]
     detail = get_suite_detail(safe)
-    return detail or result
+    if detail:
+        detail["ypad"] = result.get("ypad")
+        return detail
+    return result
+
+
+def materialize_brahl_plan_for_suite(
+    suite_name: str,
+    app_url: str = "",
+    brahl_plan: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Rewrite existing suite y1/y2 from an accepted BRAHL plan."""
+    import sys
+
+    py_utils = KK_ROOT / "pyUtils"
+    if str(py_utils) not in sys.path:
+        sys.path.insert(0, str(py_utils))
+    from scaffold_app_ypad import materialize_brahl_plan_suite
+
+    return materialize_brahl_plan_suite(suite_name, app_url, brahl_plan)

@@ -1,0 +1,434 @@
+/* Techno-corporate form system — shared across signup, login, arena forms */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
+
+:root {
+  --tc-bg0: #05080e;
+  --tc-bg1: #0a1018;
+  --tc-surface: #0e1622;
+  --tc-surface-2: #152233;
+  --tc-line: rgba(0, 212, 200, 0.18);
+  --tc-line-strong: rgba(0, 212, 200, 0.42);
+  --tc-text: #e8eef6;
+  --tc-muted: #8494a8;
+  --tc-cyan: #00d4c8;
+  --tc-blue: #3d8bfd;
+  --tc-fail: #ff6b7a;
+  --tc-ok: #3dd68c;
+  --tc-warn: #f0b429;
+  --tc-radius: 4px;
+  --tc-font: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --tc-mono: "IBM Plex Mono", "Cascadia Code", monospace;
+  --tc-glow: 0 0 0 1px var(--tc-line), 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.tc-page {
+  min-height: 100vh;
+  font-family: var(--tc-font);
+  color: var(--tc-text);
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(0, 212, 200, 0.08), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(61, 139, 253, 0.07), transparent 50%),
+    linear-gradient(165deg, var(--tc-bg0), var(--tc-bg1) 45%, #0c121c);
+}
+
+.tc-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tc-page-header h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.tc-kicker {
+  font-family: var(--tc-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-cyan);
+  margin: 0 0 0.35rem;
+}
+
+.tc-lead {
+  margin: 0.35rem 0 0;
+  color: var(--tc-muted);
+  font-size: 0.95rem;
+  max-width: 36rem;
+}
+
+.tc-shell {
+  width: min(560px, calc(100% - 2rem));
+  margin: 1.75rem auto 2.5rem;
+  padding: 1.35rem 1.4rem 1.5rem;
+  background: var(--tc-surface);
+  border: 1px solid var(--tc-line);
+  border-radius: var(--tc-radius);
+  box-shadow: var(--tc-glow);
+  position: relative;
+}
+
+.tc-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--tc-cyan), transparent 70%);
+  opacity: 0.85;
+}
+
+.tc-steps {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 0 1.15rem;
+  padding: 0;
+  list-style: none;
+}
+
+.tc-steps li {
+  flex: 1;
+  text-align: center;
+  font-family: var(--tc-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--tc-muted);
+  border-radius: var(--tc-radius);
+}
+
+.tc-steps li.active {
+  color: var(--tc-cyan);
+  border-color: var(--tc-line-strong);
+  background: rgba(0, 212, 200, 0.06);
+}
+
+.tc-steps li.done {
+  color: var(--tc-ok);
+  border-color: rgba(61, 214, 140, 0.35);
+}
+
+.tc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.tc-form .tc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.tc-form label,
+.tc-label {
+  font-family: var(--tc-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tc-muted);
+}
+
+.tc-optional {
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  opacity: 0.75;
+}
+
+.tc-form input[type="text"],
+.tc-form input[type="email"],
+.tc-form input[type="password"],
+.tc-form input[type="tel"],
+.tc-form input[type="url"],
+.tc-form input[type="number"],
+.tc-form input[type="file"],
+.tc-form select,
+.tc-form textarea,
+.tc-input {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--tc-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--tc-surface-2);
+  color: var(--tc-text);
+  font-family: var(--tc-font);
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tc-form input:focus,
+.tc-form select:focus,
+.tc-form textarea:focus,
+.tc-input:focus {
+  outline: none;
+  border-color: var(--tc-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 212, 200, 0.12);
+}
+
+.tc-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 520px) {
+  .tc-row { grid-template-columns: 1fr; }
+}
+
+.tc-check-grid {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.tc-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--tc-radius);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.tc-check:hover {
+  border-color: var(--tc-line);
+}
+
+.tc-check:has(input:checked) {
+  border-color: var(--tc-line-strong);
+  background: rgba(0, 212, 200, 0.07);
+}
+
+.tc-check input {
+  margin-top: 0.2rem;
+  accent-color: var(--tc-cyan);
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.tc-check strong {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.tc-check span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--tc-muted);
+  margin-top: 0.15rem;
+  line-height: 1.35;
+}
+
+.tc-conditional {
+  margin-top: 0.25rem;
+  padding: 0.75rem;
+  border-left: 2px solid var(--tc-cyan);
+  background: rgba(0, 212, 200, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.tc-conditional[hidden] {
+  display: none !important;
+}
+
+.tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.6rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--tc-radius);
+  border: 1px solid transparent;
+  font-family: var(--tc-font);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.tc-btn:active { transform: translateY(1px); }
+
+.tc-btn-primary {
+  background: linear-gradient(180deg, #1aa89f, #0e7f78);
+  color: #041012;
+  border-color: rgba(0, 212, 200, 0.5);
+}
+
+.tc-btn-primary:hover {
+  background: linear-gradient(180deg, #22c4b9, #12938b);
+}
+
+.tc-btn-ghost {
+  background: transparent;
+  color: var(--tc-text);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.tc-btn-ghost:hover {
+  border-color: var(--tc-line-strong);
+  color: var(--tc-cyan);
+}
+
+.tc-btn-block { width: 100%; }
+
+.tc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.tc-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.35rem 0;
+  color: var(--tc-muted);
+  font-family: var(--tc-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tc-divider::before,
+.tc-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.tc-social {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+@media (max-width: 420px) {
+  .tc-social { grid-template-columns: 1fr; }
+}
+
+.tc-social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.55rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--tc-radius);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--tc-surface-2);
+  color: var(--tc-text);
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tc-social-btn:hover {
+  border-color: var(--tc-line-strong);
+}
+
+.tc-social-btn .tc-social-mark {
+  font-family: var(--tc-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: 1.4rem;
+  height: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tc-social-google .tc-social-mark { color: #ea4335; }
+.tc-social-facebook .tc-social-mark { color: #4a9fff; }
+.tc-social-whatsapp .tc-social-mark { color: #25d366; }
+.tc-social-instagram .tc-social-mark { color: #f58529; }
+
+.tc-error {
+  color: var(--tc-fail);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.tc-hint {
+  color: var(--tc-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.tc-footer-links {
+  margin-top: 1.1rem;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--tc-muted);
+}
+
+.tc-footer-links a {
+  color: var(--tc-cyan);
+  text-decoration: none;
+}
+
+.tc-footer-links a:hover { text-decoration: underline; }
+
+.tc-panel-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+/* Bridge existing auth-form class to techno system when used together */
+.tc-shell .auth-form label {
+  font-family: var(--tc-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tc-muted);
+  margin: 0;
+}
+
+.tc-shell .auth-form input,
+.tc-shell .auth-form select,
+.tc-shell .auth-form textarea {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--tc-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--tc-surface-2);
+  color: var(--tc-text);
+}
+
+/* Arena modals / planner align to same language */
+.modal-card.tc-form-card,
+.modal-card-planner {
+  font-family: var(--tc-font);
+  border-color: var(--tc-line) !important;
+  box-shadow: var(--tc-glow);
+}
+
+.modal-card .form-row label,
+#add-project-modal label {
+  font-family: var(--tc-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tc-muted);
+}

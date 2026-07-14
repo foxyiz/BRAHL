@@ -1,8 +1,0 @@
-{
-  "configs": ["y/qoa2/qoa2.json"],
-  "thread_count": 1,
-  "timeout": 10,
-  "headless": true,
-  "debug": false,
-  "tags": ["Journey"]
-}

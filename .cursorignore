@@ -1,39 +1,44 @@
 ﻿# Token efficiency — exclude from Cursor index unless @-mentioned
-y/qoa2/
-y/sunshine/
-y/ivvu/
-y/atomic77/
+
+# Archives / run noise (move archive/ out of KK when done)
+archive/
 z/2026*/
 z/2025*/
 z/brahl_*
 z/*_zResults*
 z/*_zDash*
-archive/cleanup/
+z/_*.log
+z/_*.log.err
+z/zDash_batch_*
+
+# Engine binary + bulky starts
 f/Foxyiz2.exe
-f/fStart.json
-f/fStart_smoke.json
-f/fStart_admin.json
-f/fStart_admin_smoke.json
-f/fStart_avatar.json
-f/fStart_journey.json
-f/fStart_journey_smoke.json
-f/fStart_atomic77.json
-f/fStart_atomic77_smoke.json
-f/fStart_ivvu.json
-f/fStart_ivvu_smoke.json
-f/fStart_sunshine.json
-f/fStart_sunshine_smoke.json
-f/fStart_tagonly.json
-f/fStart_qoa_web.json
-BRAHL.py
-f/fGUI.py
+f/__pycache__/
+
+# Inactive / archived suites (also under archive/not-needed-*)
+y/qoa2/
+y/sunshine/
+y/ivvu/
+y/atomic77/
+y/API_Petstore/
+y/Cogmento/
+y/Mix/
+y/qoa_web/
+
+# Large / non-agent docs
+Docs/**/*.mp4
+Docs/**/*.docx
+Docs/**/*.pdf
+Docs/QoA_Comps.md
+Docs/test-user-data/
+
+# App seed/runtime data
+qoa_web/data/projects.json
+qoa_web/data/users.db
+qoa_web/data/uploads/
 qoa_web/PRD.md
 qoa_web/RESEARCH.md
-Docs/QoA_Comps.md
-qoa_web/data/projects.json
-atomic77_probe.json
-ivvu_probe.json
-ivvu_link_probe.json
-qoa_web/probe_qoa2_login.py
-qoa2_login_probe.json
-y/qoa_web/y2Actions_journey.csv
+
+# Caches
+**/__pycache__/
+.pytest_cache/

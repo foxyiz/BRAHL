@@ -135,14 +135,21 @@ function isNalanda() {
 function applyAvatarModeNav() {
   document.body.classList.toggle("mode-networker", isNetworker());
   const brahlPhases = ["build", "run", "analyze", "heal", "loop", "brahl"];
+  const utilityPhases = new Set(["nalanda", "atomic77", "promoter", "cost"]);
   $$(".phase-btn").forEach((btn) => {
     const ph = btn.dataset.phase;
-    if (ph === "nalanda") btn.hidden = !isNetworker();
-    else if (ph === "atomic77" || ph === "cost") btn.hidden = isNetworker();
-    else if (brahlPhases.includes(ph)) btn.hidden = isNetworker();
+    if (ph === "nalanda") {
+      // Visible in phase nav for Nalanda avatar; others open it from the user menu
+      btn.hidden = !isNetworker();
+    } else if (ph === "atomic77" || ph === "cost" || ph === "promoter") {
+      btn.hidden = true; // menu / deep-link surfaces
+    } else if (brahlPhases.includes(ph)) {
+      btn.hidden = isNetworker();
+    }
   });
-  if (isNetworker() && state.phase !== "nalanda") showPhase("nalanda");
-  if (!isNetworker() && state.phase === "nalanda") showPhase("build");
+  // Don't yank users off Promoter / A77 / Wallet / menu-opened Nalanda
+  if (utilityPhases.has(state.phase)) return;
+  if (isNetworker() && brahlPhases.includes(state.phase)) showPhase("nalanda");
 }
 
 function showPhase(name) {
@@ -150,7 +157,8 @@ function showPhase(name) {
   $$(".phase-btn").forEach((b) => b.classList.toggle("active", b.dataset.phase === name));
   $$(".panel").forEach((p) => p.classList.toggle("active", p.dataset.panel === name));
   updatePhaseLock();
-  if (!hasScope() && name !== "build") {
+  const utility = ["nalanda", "atomic77", "promoter", "cost"].includes(name);
+  if (!hasScope() && name !== "build" && !utility) {
     setStatus(state.avatar && !state.suites.length ? "Add your first challenge to the arena" : "Select a challenge in the top bar");
   } else {
     syncProjectStatus();
@@ -159,9 +167,19 @@ function showPhase(name) {
   if (name === "atomic77") loadAtomic77Panel();
   if (name === "cost") loadCostPanel();
   if (name === "nalanda") window.QoaNalanda?.loadPanel?.();
+  if (name === "promoter") loadPromoterPanel();
   if (name === "analyze" && selectedRun && isAiOn()) {
     /* user can click AI analyze or we leave prior result visible */
   }
+  if (["nalanda", "atomic77", "promoter", "cost"].includes(name)) {
+    try {
+      history.replaceState(null, "", `#${name}`);
+    } catch {
+      /* ignore */
+    }
+  }
+  const activePanel = $(`.panel.active`);
+  activePanel?.scrollIntoView?.({ block: "start", behavior: "smooth" });
   renderPhaseProgress();
   updateVisualRewardRail();
 }
@@ -679,7 +697,7 @@ async function selectProject(projectId) {
 function suiteConfigPath() {
   if (activeProject?.suite_config) return activeProject.suite_config;
   if (state.suiteName) return `y/${state.suiteName}/${state.suiteName}.json`;
-  return "y/qoa_web/qoa_web.json";
+  return "y/Math/Math.json";
 }
 
 function renderAiMarkdown(el, markdown) {
@@ -775,6 +793,8 @@ function syncProjectStatus() {
     brahl: "BRAHL = launch-readiness report (Go/No-Go, recovery) — not a duplicate of Build",
     cost: state.avatar === "consultant" ? "QA Hunter wallet · earnings by project" : "Budget meter · AI vs QA Hunter vs local/cloud",
     nalanda: "Learn · teach · discuss · invite — free knowledge community",
+    promoter: "Grow the arena — share invites · earn XP & wallet credits",
+    atomic77: "Atomic 77 — idea-to-launch assistant",
   };
   setStatus(phaseHints[state.phase] || "Project active");
 }
@@ -1293,38 +1313,87 @@ function renderGoNoGo(stats) {
   const block = $("#gonogo-block");
   const label = $("#gonogo-label");
   const cb = $("#gonogo-launch-ready");
-  const verdict = $("#gonogo-verdict");
+  const scorecard = $("#scorecard");
+  const stamp = $("#scorecard-stamp");
+  const pctEl = $("#scorecard-pct");
+  const ring = $("#scorecard-ring-fg");
+  const obs = $("#scorecard-observations");
   if (!block) return;
   if (state.avatar !== "client") {
     block.hidden = true;
     return;
   }
   block.hidden = false;
-  if (!stats?.total_plans) {
+  const total = stats?.total_plans || 0;
+  if (!total) {
     if (label) label.textContent = "Run Verify on Loop for a Go / No-Go opinion";
     if (cb) cb.checked = false;
-    if (verdict) {
-      verdict.classList.remove("gonogo-go", "gonogo-nogo");
-      verdict.classList.add("gonogo-pending");
+    if (scorecard) {
+      scorecard.className = "scorecard scorecard-pending";
     }
+    if (stamp) stamp.textContent = "PENDING";
+    if (pctEl) pctEl.textContent = "—";
+    if (ring) ring.style.strokeDashoffset = String(2 * Math.PI * 52);
+    if (obs) {
+      obs.hidden = true;
+      obs.innerHTML = "";
+    }
+    $("#sc-pass").textContent = "0";
+    $("#sc-fail").textContent = "0";
+    $("#sc-total").textContent = "0";
+    $("#sc-time").textContent = "—";
     return;
   }
+  const passes = stats.passes ?? 0;
+  const fails = stats.fails ?? 0;
   const go =
-    (stats.fails ?? 0) === 0 &&
-    (stats.passes ?? 0) > 0 &&
+    fails === 0 &&
+    passes > 0 &&
     !(lastVersionCompare?.regression_count > 0);
+  const pct = Math.round((passes / total) * 100);
   if (cb) cb.checked = go;
   if (label) {
     if (lastVersionCompare?.regression_count > 0) {
-      label.textContent = `NO-GO — ${lastVersionCompare.regression_count} regression(s) vs baseline`;
+      label.textContent = `${lastVersionCompare.regression_count} regression(s) vs baseline — hold launch`;
     } else {
-      label.textContent = go ? "GO — Launch approved" : "NO-GO — Not launch-ready";
+      label.textContent = go
+        ? "Verify clean — launch approved for this scope"
+        : "Failures remaining — not launch-ready for this scope";
     }
   }
-  if (verdict) {
-    verdict.classList.toggle("gonogo-go", go);
-    verdict.classList.toggle("gonogo-nogo", !go);
-    verdict.classList.remove("gonogo-pending");
+  if (stamp) stamp.textContent = go ? "GO" : "NO-GO";
+  if (pctEl) pctEl.textContent = `${pct}%`;
+  if (scorecard) {
+    scorecard.className = `scorecard ${go ? "scorecard-go" : "scorecard-nogo"}`;
+  }
+  if (ring) {
+    const c = 2 * Math.PI * 52;
+    ring.style.strokeDasharray = String(c);
+    ring.style.strokeDashoffset = String(c * (1 - pct / 100));
+  }
+  $("#sc-pass").textContent = String(passes);
+  $("#sc-fail").textContent = String(fails);
+  $("#sc-total").textContent = String(total);
+  $("#sc-time").textContent = stats.duration_sec > 0 ? `${stats.duration_sec}s` : "—";
+  if (obs) {
+    const failures = stats.failures || [];
+    if (failures.length) {
+      obs.hidden = false;
+      obs.innerHTML =
+        `<h4>Key observations</h4><ul>` +
+        failures
+          .slice(0, 6)
+          .map((f) => {
+            const pid = f.planId || f.PlanId || "plan";
+            const info = f.stepInfo || f.StepInfo || f.message || "failed step";
+            return `<li><strong>${escapeHtml(pid)}</strong> — ${escapeHtml(String(info).slice(0, 120))}</li>`;
+          })
+          .join("") +
+        `</ul>`;
+    } else {
+      obs.hidden = false;
+      obs.innerHTML = `<h4>Key observations</h4><p>All automated plans in scope passed. Review zDash for timing and evidence before production cutover.</p>`;
+    }
   }
 }
 
@@ -1480,8 +1549,11 @@ async function submitLinkReportForm(ev) {
 }
 
 function projectOptionsHtml(includePlaceholder = false) {
+  const ph = state.avatar
+    ? avatarLabel(state.avatar).projectPlaceholder
+    : "Select a challenge…";
   const placeholder = includePlaceholder
-    ? `<option value="">${ph}</option>`
+    ? `<option value="">${escapeHtml(ph)}</option>`
     : "";
   return (
     placeholder +
@@ -1527,61 +1599,252 @@ function renderBuildChecklist() {
   setStep("verify", hasVerify, 3);
 }
 
+let plannerDraft = null;
+let plannerHistory = [];
+let plannerBrahlPlan = null;
+let plannerRecognition = null;
+
 function openAddProjectModal() {
   const modal = $("#add-project-modal");
   if (!modal) return;
-  const draft = sessionStorage.getItem(STORAGE_DRAFT_REQUIREMENT) || "";
-  $("#new-project-name").value = "";
-  $("#new-project-purpose").value = draft || $("#brahl-plan-requirement")?.value.trim() || "";
-  $("#new-project-url").value = "";
-  $("#new-project-budget").value = "";
-  $("#new-project-connector").value = "";
-  $("#new-project-connector-url").value = "";
-  $("#new-project-ai").checked = true;
+  plannerDraft = null;
+  plannerHistory = [];
+  plannerBrahlPlan = null;
+  const log = $("#planner-chat-log");
+  if (log) log.innerHTML = "";
+  const draftReq =
+    sessionStorage.getItem(STORAGE_DRAFT_REQUIREMENT) ||
+    $("#brahl-plan-requirement")?.value.trim() ||
+    "";
+  const input = $("#planner-input");
+  if (input) input.value = draftReq;
+  updatePlannerDraftUI(null);
+  const preview = $("#planner-plan-preview");
+  if (preview) {
+    preview.hidden = true;
+    preview.innerHTML = "";
+  }
+  const statusEl = $("#planner-status");
+  if (statusEl) statusEl.hidden = true;
   modal.hidden = false;
-  $("#new-project-name").focus();
+  modal.style.display = "flex";
+  appendPlannerMessage(
+    "assistant",
+    "Hi — I’m the BRAHL planner. Paste your **app URL** and what you want covered (or tap 🎤 to speak). I’ll draft a lean strategy and yPAD white pads, then we can run a quick BRAHL for Go/No-Go."
+  );
+  input?.focus();
 }
 
 function closeAddProjectModal() {
   const modal = $("#add-project-modal");
-  if (modal) modal.hidden = true;
+  if (modal) {
+    modal.hidden = true;
+    modal.style.display = "";
+  }
+  stopPlannerMic();
+}
+
+function appendPlannerMessage(role, text) {
+  const log = $("#planner-chat-log");
+  if (!log) return;
+  const div = document.createElement("div");
+  div.className = `planner-msg planner-msg-${role}`;
+  div.innerHTML = renderMarkdown(String(text || "").replace(/\n/g, "  \n"));
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function updatePlannerDraftUI(draft) {
+  plannerDraft = draft;
+  const ready = !!draft?.ready;
+  const nameEl = $("#planner-draft-name");
+  const urlEl = $("#planner-draft-url");
+  const purposeEl = $("#planner-draft-purpose");
+  if (nameEl) nameEl.textContent = draft?.name || "—";
+  if (urlEl) urlEl.textContent = draft?.app_url || "—";
+  const purpose = (draft?.purpose || "").trim();
+  if (purposeEl) {
+    purposeEl.textContent = purpose
+      ? purpose.slice(0, 220) + (purpose.length > 220 ? "…" : "")
+      : "—";
+  }
+  const createBtn = $("#planner-create");
+  const brahlBtn = $("#planner-create-brahl");
+  if (createBtn) createBtn.disabled = !ready;
+  if (brahlBtn) brahlBtn.disabled = !ready;
+  const hint = $("#planner-ready-hint");
+  if (hint) {
+    hint.textContent = ready
+      ? "Draft ready — create yPAD, or Create & quick BRAHL for a scorecard."
+      : `Share ${(draft?.missing || ["name", "app_url", "purpose"]).join(", ")} to unlock create.`;
+  }
+}
+
+function showPlannerPlanPreview(preview) {
+  const el = $("#planner-plan-preview");
+  if (!el) return;
+  if (!preview) {
+    el.hidden = true;
+    el.innerHTML = "";
+    plannerBrahlPlan = null;
+    return;
+  }
+  plannerBrahlPlan = preview.brahl_plan || null;
+  el.hidden = false;
+  el.innerHTML =
+    `<strong>Strategy preview</strong> · ${preview.automated_count ?? 0} automated · ${preview.manual_count ?? 0} manual` +
+    (preview.summary ? `<p>${escapeHtml(preview.summary)}</p>` : "");
+}
+
+async function sendPlannerChat(ev) {
+  ev?.preventDefault?.();
+  const input = $("#planner-input");
+  const message = input?.value.trim();
+  if (!message) return;
+  input.value = "";
+  appendPlannerMessage("user", message);
+  plannerHistory.push({ role: "user", text: message });
+  try {
+    const data = await api("/api/planner/chat", {
+      method: "POST",
+      body: JSON.stringify({ message, draft: plannerDraft, history: plannerHistory.slice(-8) }),
+    });
+    appendPlannerMessage("assistant", data.reply);
+    plannerHistory.push({ role: "assistant", text: data.reply });
+    updatePlannerDraftUI(data.draft);
+    showPlannerPlanPreview(data.plan_preview);
+  } catch (e) {
+    appendPlannerMessage("assistant", `Could not reach planner: ${e.message}`);
+    setStatus(`Planner error: ${e.message}`);
+  }
+}
+
+function stopPlannerMic() {
+  try {
+    plannerRecognition?.stop?.();
+  } catch {
+    /* ignore */
+  }
+  plannerRecognition = null;
+  $("#planner-mic")?.classList.remove("listening");
+}
+
+function togglePlannerMic() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    setStatus("Voice not supported in this browser — type instead");
+    return;
+  }
+  if (plannerRecognition) {
+    stopPlannerMic();
+    return;
+  }
+  const rec = new SR();
+  plannerRecognition = rec;
+  rec.lang = "en-US";
+  rec.interimResults = false;
+  rec.continuous = false;
+  $("#planner-mic")?.classList.add("listening");
+  rec.onresult = (event) => {
+    const text = Array.from(event.results)
+      .map((r) => r[0]?.transcript || "")
+      .join(" ")
+      .trim();
+    if (text) {
+      const input = $("#planner-input");
+      input.value = input.value ? `${input.value.trim()} ${text}` : text;
+    }
+  };
+  rec.onerror = () => stopPlannerMic();
+  rec.onend = () => {
+    $("#planner-mic")?.classList.remove("listening");
+    plannerRecognition = null;
+  };
+  rec.start();
+}
+
+async function pollQuickBrahlJob(jobId, projectId) {
+  const statusEl = $("#planner-status");
+  if (statusEl) {
+    statusEl.hidden = false;
+    statusEl.textContent = "Quick BRAHL running…";
+  }
+  for (let i = 0; i < 90; i++) {
+    await new Promise((r) => setTimeout(r, 1000));
+    const j = await api(`/api/jobs/${jobId}`);
+    if (j.status === "completed" || j.status === "failed") {
+      if (j.output_dir && projectId) {
+        const runName = j.output_dir.replace(/\\/g, "/").split("/").pop();
+        await api(`/api/projects/${projectId}`, {
+          method: "PATCH",
+          body: JSON.stringify({ latest_run: runName }),
+        });
+        try {
+          await api(`/api/projects/${projectId}/brahl/reports`, {
+            method: "POST",
+            body: JSON.stringify({ run_name: runName, source: "automation" }),
+          });
+        } catch {
+          /* report may auto-ensure on load */
+        }
+        selectedBrahlRun = runName;
+      }
+      return j;
+    }
+  }
+  throw new Error("Quick BRAHL timed out");
+}
+
+async function finishPlannerCreate(quickBrahl) {
+  if (!plannerDraft?.ready) {
+    setStatus("Draft not ready — keep chatting");
+    return;
+  }
+  const statusEl = $("#planner-status");
+  if (statusEl) {
+    statusEl.hidden = false;
+    statusEl.textContent = quickBrahl ? "Creating suite + starting BRAHL…" : "Creating yPAD suite…";
+  }
+  $("#planner-create").disabled = true;
+  $("#planner-create-brahl").disabled = true;
+  try {
+    const data = await api("/api/planner/create", {
+      method: "POST",
+      body: JSON.stringify({
+        draft: plannerDraft,
+        brahl_plan: plannerBrahlPlan,
+        quick_brahl: !!quickBrahl,
+      }),
+    });
+    await loadSuites();
+    await selectYpadProject(data.suite.name);
+    if (quickBrahl && data.quick_brahl_job?.job_id) {
+      const job = await pollQuickBrahlJob(data.quick_brahl_job.job_id, data.project.id);
+      closeAddProjectModal();
+      showPhase("brahl");
+      await loadBrahlPanel();
+      setStatus(
+        job.status === "completed"
+          ? `Quick BRAHL done for ${data.suite.name} — see scorecard`
+          : `Quick BRAHL finished with status ${job.status}`
+      );
+    } else {
+      closeAddProjectModal();
+      showPhase("build");
+      setStatus(`Created ${data.suite.name} — lean yPAD ready on Build`);
+      if (data.quick_brahl_error) setStatus(`Created, but quick BRAHL failed: ${data.quick_brahl_error}`);
+    }
+  } catch (e) {
+    appendPlannerMessage("assistant", `Create failed: ${e.message}`);
+    setStatus(`Create failed: ${e.message}`);
+    updatePlannerDraftUI(plannerDraft);
+  }
 }
 
 async function submitAddProjectForm(ev) {
-  ev.preventDefault();
-  const name = $("#new-project-name")?.value.trim();
-  const purpose = $("#new-project-purpose")?.value.trim() || "";
-  const appUrl = $("#new-project-url")?.value.trim() || "";
-  const budget = parseFloat($("#new-project-budget")?.value) || 0;
-  const aiEnabled = $("#new-project-ai")?.checked !== false;
-  if (!name) return;
-
-  const context_items = [];
-  if (appUrl) {
-    context_items.push({ kind: "url", label: "App URL", value: appUrl });
-  }
-  const connLabel = $("#new-project-connector")?.value.trim();
-  const connUrl = $("#new-project-connector-url")?.value.trim();
-  if (connLabel && connUrl) {
-    context_items.push({ kind: "connector", label: connLabel, value: connUrl });
-  }
-
-  const body = {
-    name,
-    purpose,
-    app_url: appUrl,
-    budget_usd: budget,
-    ai_enabled: aiEnabled,
-    context_items,
-  };
-  const data = await api("/api/ypad-projects", {
-    method: "POST",
-    body: JSON.stringify(body),
-  });
-  closeAddProjectModal();
-  await loadSuites();
-  await selectYpadProject(data.suite.name);
-  setStatus(`Created: ${data.suite.name}`);
+  // Legacy form removed — planner chat handles create
+  ev?.preventDefault?.();
+  await sendPlannerChat(ev);
 }
 
 function openRoleSwitchModal(nextAvatar) {
@@ -1893,6 +2156,7 @@ function initUserMenu() {
       const action = el.dataset.userAction;
       if (action === "nalanda") showPhase("nalanda");
       else if (action === "atomic77") showPhase("atomic77");
+      else if (action === "promoter") showPhase("promoter");
       else if (action === "cost") showPhase("cost");
       else if (action === "theme-pro") window.QoaTheme?.setTheme?.("pro");
       else if (action === "theme-arena") window.QoaTheme?.setTheme?.("arena");
@@ -1911,6 +2175,222 @@ function initUserMenu() {
       window.QoaTheme?.setTheme?.(b.dataset.themeBtn);
     });
   });
+}
+
+const PROMOTER_SHARES_KEY = "qoa_promoter_shares";
+let promoterChannel = "linkedin";
+let promoterInvite = { code: "", url: "" };
+
+function promoterShareCount() {
+  return Number(sessionStorage.getItem(PROMOTER_SHARES_KEY) || "0") || 0;
+}
+
+function bumpPromoterShare() {
+  const n = promoterShareCount() + 1;
+  sessionStorage.setItem(PROMOTER_SHARES_KEY, String(n));
+  return n;
+}
+
+function promoterReferralUrl(code) {
+  const c = code || promoterInvite.code || "";
+  return `${location.origin}/welcome?code=${encodeURIComponent(c)}`;
+}
+
+function promoterTemplates(code, url, name) {
+  const who = name || "a QA teammate";
+  const c = code || "YOUR-CODE";
+  const link = url || promoterReferralUrl(c);
+  return {
+    linkedin:
+      `Creators and QA Hunters: stop guessing launch readiness.\n\n` +
+      `QA on Air is an invite-only arena where you BRAHL apps with FoXYiZ — Build → Run → Analyze → Heal → Loop — then get a clear Go/No-Go.\n\n` +
+      `I'm sharing my referral for a 7-day trial:\n` +
+      `Code: ${c}\n${link}\n\n` +
+      `#QualityEngineering #QA #ProductLaunch #QAonAir #BRAHL`,
+    instagram:
+      `Arena mode ON. \n` +
+      `Creators post. QA Hunters break. BRAHL decides Go/No-Go.\n\n` +
+      `7-day trial with my code:\n${c}\n${link}\n\n` +
+      `#QAonAir #BRAHL #QAHunters #BuildInPublic`,
+    whatsapp:
+      `Hey — try QA on Air with me.\n` +
+      `7-day invite trial → build a small challenge and BRAHL it.\n\n` +
+      `Code: ${c}\n${link}`,
+    blog:
+      `Title: Why I'm promoting QA on Air (and how to join with my referral)\n\n` +
+      `${who} here. Launch decisions shouldn't wait for heroics — they need evidence.\n\n` +
+      `QA on Air pairs Creators with QA Hunters inside a BRAHL loop (Build, Run, Analyze, Heal, Loop) powered by FoXYiZ. ` +
+      `The output is a standardized Go/No-Go on whether an app is production-ready.\n\n` +
+      `If you want a 7-day trial, use my referral code **${c}** or open:\n${link}\n\n` +
+      `Once inside: try Promoter to share your own code, Atomic 77 for idea-to-launch help, and Wallet for XP.\n`,
+  };
+}
+
+function defaultPromoterDraft(code) {
+  return promoterTemplates(code, promoterReferralUrl(code)).linkedin;
+}
+
+function applyPromoterTemplate(channel) {
+  const templates = promoterTemplates(
+    promoterInvite.code,
+    promoterInvite.url,
+    getAuthUser()?.name || state.profile?.name
+  );
+  const draft = $("#promoter-share-text");
+  if (draft) draft.value = templates[channel] || templates.linkedin;
+  const label = $("#promoter-channel-label");
+  const titles = {
+    linkedin: "LinkedIn post",
+    instagram: "Instagram caption",
+    whatsapp: "WhatsApp message",
+    blog: "Blog draft",
+  };
+  if (label) label.textContent = titles[channel] || "Post";
+}
+
+function refreshPromoterStats() {
+  const n = promoterShareCount();
+  if ($("#promoter-shares")) $("#promoter-shares").textContent = String(n);
+  if ($("#promoter-xp")) $("#promoter-xp").textContent = String(40 + n * 15);
+  if ($("#promoter-credits")) $("#promoter-credits").textContent = `$${(n * 2.5).toFixed(1)}`;
+}
+
+function setPromoterStatus(msg) {
+  const status = $("#promoter-status");
+  if (!status) return;
+  status.hidden = !msg;
+  status.textContent = msg || "";
+}
+
+async function copyText(text) {
+  await navigator.clipboard.writeText(text);
+}
+
+async function publishPromoterPost() {
+  const text = $("#promoter-share-text")?.value?.trim() || "";
+  if (!text) {
+    setPromoterStatus("Add some post text first.");
+    return;
+  }
+  const url = promoterInvite.url || promoterReferralUrl(promoterInvite.code);
+  let opened = false;
+  try {
+    if (promoterChannel === "whatsapp") {
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+      opened = true;
+    } else if (promoterChannel === "linkedin") {
+      window.open(
+        `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+        "_blank",
+        "noopener"
+      );
+      await copyText(text);
+      opened = true;
+      setPromoterStatus("LinkedIn opened — post text copied; paste into your update.");
+    } else if (promoterChannel === "instagram") {
+      await copyText(text);
+      window.open("https://www.instagram.com/", "_blank", "noopener");
+      opened = true;
+      setPromoterStatus("Instagram opened — caption copied; paste into your post.");
+    } else if (promoterChannel === "blog") {
+      await copyText(text);
+      setPromoterStatus("Blog draft copied — paste into your CMS / Notion / Medium.");
+    }
+  } catch (e) {
+    setPromoterStatus(e.message || "Publish failed — try Copy post.");
+    return;
+  }
+  bumpPromoterShare();
+  refreshPromoterStats();
+  if (opened && promoterChannel === "whatsapp") {
+    setPromoterStatus("WhatsApp opened with your invite message.");
+  }
+  setStatus("Promoter publish counted");
+}
+
+async function loadPromoterPanel() {
+  const profile = state.profile || (typeof getActiveProfile === "function" ? getActiveProfile() : null);
+  const auth = getAuthUser();
+  const profileId = profile?.id || (auth?.id ? `u${String(auth.id).slice(0, 6)}` : "p1");
+  const authorName = profile?.name || auth?.name || [auth?.first_name, auth?.last_name].filter(Boolean).join(" ") || "Promoter";
+  refreshPromoterStats();
+  setPromoterStatus("");
+  try {
+    const data = await api(
+      `/api/nalanda/invite?profile_id=${encodeURIComponent(profileId)}&author_name=${encodeURIComponent(authorName)}`
+    );
+    const code = data.code || "QOA-CR5-001-001-DEMO";
+    const path = data.invite_path || `/welcome?code=${encodeURIComponent(code)}`;
+    const abs = path.startsWith("http") ? path : `${location.origin}${path.startsWith("/") ? path : `/${path}`}`;
+    promoterInvite = { code, url: abs };
+    if ($("#promoter-invite-code")) $("#promoter-invite-code").textContent = code;
+    if ($("#promoter-invite-link")) {
+      $("#promoter-invite-link").href = path.startsWith("http") ? path : path;
+      $("#promoter-invite-link").textContent = abs;
+    }
+  } catch {
+    const code = "QOA-CR5-001-001-DEMO";
+    const abs = promoterReferralUrl(code);
+    promoterInvite = { code, url: abs };
+    if ($("#promoter-invite-code")) $("#promoter-invite-code").textContent = code;
+    if ($("#promoter-invite-link")) {
+      $("#promoter-invite-link").href = `/welcome?code=${encodeURIComponent(code)}`;
+      $("#promoter-invite-link").textContent = abs;
+    }
+  }
+  applyPromoterTemplate(promoterChannel);
+  $$(".promoter-channel").forEach((btn) => {
+    const on = btn.dataset.channel === promoterChannel;
+    btn.classList.toggle("active", on);
+    btn.setAttribute("aria-selected", on ? "true" : "false");
+  });
+}
+
+function initPromoterPanel() {
+  $$(".promoter-channel").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      promoterChannel = btn.dataset.channel || "linkedin";
+      $$(".promoter-channel").forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      applyPromoterTemplate(promoterChannel);
+      setPromoterStatus("");
+    });
+  });
+  $("#btn-promoter-copy")?.addEventListener("click", async () => {
+    try {
+      await copyText($("#promoter-share-text")?.value || "");
+      bumpPromoterShare();
+      refreshPromoterStats();
+      setPromoterStatus("Post copied.");
+    } catch {
+      setPromoterStatus("Could not copy — select the text manually.");
+    }
+  });
+  $("#btn-promoter-copy-code")?.addEventListener("click", async () => {
+    try {
+      await copyText(promoterInvite.code || $("#promoter-invite-code")?.textContent || "");
+      setPromoterStatus("Referral code copied.");
+    } catch {
+      setPromoterStatus("Could not copy code.");
+    }
+  });
+  $("#btn-promoter-copy-link")?.addEventListener("click", async () => {
+    try {
+      await copyText(promoterInvite.url || promoterReferralUrl(promoterInvite.code));
+      setPromoterStatus("Referral link copied.");
+    } catch {
+      setPromoterStatus("Could not copy link.");
+    }
+  });
+  $("#btn-promoter-publish")?.addEventListener("click", () => publishPromoterPost());
+  $("#btn-promoter-draft")?.addEventListener("click", () => {
+    applyPromoterTemplate(promoterChannel);
+    setPromoterStatus("Template reset.");
+  });
+  $("#btn-promoter-wallet")?.addEventListener("click", () => showPhase("cost"));
 }
 
 async function renderBuildCostRail() {
@@ -1996,7 +2476,7 @@ async function acceptBrahlPlan() {
     pendingBrahlPlan = null;
     $("#btn-accept-brahl-plan").hidden = true;
     await loadBuildBoard();
-    setStatus("BRAHL Plan accepted — stories and purpose saved.");
+    setStatus("BRAHL Plan accepted — white pads + stories updated on disk.");
   } catch (e) {
     setStatus(`Accept failed: ${e.message}`);
   }
@@ -2004,13 +2484,30 @@ async function acceptBrahlPlan() {
 
 function restoreDraftRequirementIfNeeded() {
   const params = new URLSearchParams(location.search);
-  if (params.get("restore_draft") !== "1") return;
   const draft = sessionStorage.getItem(STORAGE_DRAFT_REQUIREMENT);
   const ta = $("#brahl-plan-requirement");
   if (draft && ta) ta.value = draft;
-  params.delete("restore_draft");
-  const qs = params.toString();
-  history.replaceState({}, "", qs ? `${location.pathname}?${qs}` : location.pathname);
+  const openPlanner =
+    params.get("planner") === "1" ||
+    params.get("restore_draft") === "1" ||
+    sessionStorage.getItem("qoa_open_planner") === "1";
+  if (openPlanner) {
+    sessionStorage.removeItem("qoa_open_planner");
+    params.delete("planner");
+    params.delete("restore_draft");
+    const qs = params.toString();
+    history.replaceState({}, "", qs ? `${location.pathname}?${qs}` : location.pathname);
+    setTimeout(() => {
+      if (state.avatar) openAddProjectModal();
+    }, 400);
+    return;
+  }
+  if (params.has("restore_draft") || params.has("planner")) {
+    params.delete("restore_draft");
+    params.delete("planner");
+    const qs = params.toString();
+    history.replaceState({}, "", qs ? `${location.pathname}?${qs}` : location.pathname);
+  }
 }
 
 async function renderBuildCostTeaser() {
@@ -3877,22 +4374,25 @@ async function captureContext() {
     alert("Select a project first.");
     return;
   }
-  const prompt = activeProject.purpose || activeProject.prompt || "";
+  const prompt =
+    (activeProject.purpose || activeProject.prompt || "").trim() ||
+    ($("#brahl-plan-requirement")?.value || "").trim() ||
+    "BRAHL cycle — purpose not yet set in Build.";
   const documents = (activeProject.context_items || [])
     .filter((c) => c.kind === "document" || c.kind === "connector")
     .map((c) => ({ name: c.label, path: c.value }));
-  const config_path = $("#config-select").value;
+  const config_path = $("#config-select")?.value || "";
   const logEl = $("#loop-log");
   try {
     const res = await api("/api/context", {
       method: "POST",
       body: JSON.stringify({ prompt, config_path, documents, project_id: state.projectId }),
     });
-    logEl.textContent = `[Step 0] Context saved: ${res.context_path}\n`;
+    if (logEl) logEl.textContent = `[Step 0] Context saved: ${res.context_path}\n`;
     await recordCycleEvent("Step 0", res.context_path);
     await refreshActiveProject();
   } catch (e) {
-    logEl.textContent = `[Step 0] Error: ${e.message}\n`;
+    if (logEl) logEl.textContent = `[Step 0] Error: ${e.message}\n`;
   }
 }
 
@@ -4201,7 +4701,10 @@ $("#btn-fstart-new")?.addEventListener("click", openFstartNew);
 $("#fstart-save")?.addEventListener("click", saveFstartEditor);
 $("#fstart-delete")?.addEventListener("click", deleteFstartEditor);
 $("#fstart-cancel")?.addEventListener("click", closeFstartModal);
-$("#add-project-form")?.addEventListener("submit", submitAddProjectForm);
+$("#planner-chat-form")?.addEventListener("submit", sendPlannerChat);
+$("#planner-mic")?.addEventListener("click", togglePlannerMic);
+$("#planner-create")?.addEventListener("click", () => finishPlannerCreate(false));
+$("#planner-create-brahl")?.addEventListener("click", () => finishPlannerCreate(true));
 $("#add-project-cancel")?.addEventListener("click", closeAddProjectModal);
 $("#role-switch-confirm")?.addEventListener("click", async () => {
   const next = pendingAvatar;
@@ -4218,12 +4721,7 @@ $("#btn-add-context")?.addEventListener("click", () => {
   if (section) section.hidden = false;
   if (panel) panel.hidden = false;
 });
-$("#btn-build-add-context")?.addEventListener("click", () => {
-  const panel = $("#add-context-panel");
-  const section = $(".context-section");
-  if (section) section.hidden = false;
-  if (panel) panel.hidden = false;
-});
+$("#btn-build-add-context")?.addEventListener("click", openAddProjectModal);
 $("#btn-topbar-add-project")?.addEventListener("click", openAddProjectModal);
 $("#btn-generate-brahl-plan")?.addEventListener("click", generateBrahlPlan);
 $("#btn-accept-brahl-plan")?.addEventListener("click", acceptBrahlPlan);
@@ -4333,6 +4831,7 @@ $$(".phase-progress-dot").forEach((dot) => {
 
 initAvatarGate();
 initUserMenu();
+initPromoterPanel();
 restoreDraftRequirementIfNeeded();
 (function initAuthRole() {
   const u = getAuthUser();
@@ -4359,3 +4858,17 @@ loadSuites();
 loadConfigsForSuite();
 loadRuns();
 setInterval(checkHealth, 15000);
+
+(function applyDeepLinkPhase() {
+  const raw = (location.hash || "").replace(/^#/, "").trim().toLowerCase();
+  if (!raw) return;
+  const allowed = new Set(["build", "run", "analyze", "heal", "loop", "brahl", "nalanda", "atomic77", "promoter", "cost"]);
+  if (!allowed.has(raw)) return;
+  const go = () => showPhase(raw);
+  // Wait a tick so suites/avatar init settle
+  setTimeout(go, 200);
+  window.addEventListener("hashchange", () => {
+    const h = (location.hash || "").replace(/^#/, "").trim().toLowerCase();
+    if (allowed.has(h)) showPhase(h);
+  });
+})();

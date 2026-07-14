@@ -8,13 +8,61 @@ from pathlib import Path
 from typing import Any
 
 KK_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SUITE = "y/qoa_web/qoa_web.json"
+DEFAULT_SUITE = "y/Math/Math.json"
+
+
+def _resolve_cfg_path(suite_config: str) -> Path:
+    cfg_path = KK_ROOT / suite_config.replace("/", "\\")
+    if not cfg_path.is_file():
+        raise FileNotFoundError(
+            f"Suite config not found: {suite_config}. "
+            f"Use an existing lean suite (e.g. {DEFAULT_SUITE})."
+        )
+    return cfg_path
+
+
+def _baseline_path(suite_config: str) -> Path:
+    cfg = _resolve_cfg_path(suite_config)
+    return cfg.with_name(f"{cfg.stem}_run_y_baseline.json")
+
+
+def current_run_y_ids(suite_config: str = DEFAULT_SUITE) -> set[str]:
+    ids: set[str] = set()
+    for plans_path in _resolve_y1_paths(suite_config):
+        with plans_path.open(encoding="utf-8-sig", newline="") as f:
+            for row in csv.DictReader(f):
+                pid = (row.get("PlanId") or "").strip()
+                if not pid or pid.startswith("PReuse_"):
+                    continue
+                if (row.get("Run") or "").strip().upper() == "Y":
+                    ids.add(pid)
+    return ids
+
+
+def save_run_y_baseline(suite_config: str = DEFAULT_SUITE) -> list[str]:
+    """Snapshot current Run=Y plan ids so restore recovers the pre-shrink set."""
+    ids = sorted(current_run_y_ids(suite_config))
+    path = _baseline_path(suite_config)
+    path.write_text(json.dumps({"run_y": ids}, indent=2) + "\n", encoding="utf-8")
+    return ids
+
+
+def load_run_y_baseline(suite_config: str = DEFAULT_SUITE) -> set[str] | None:
+    path = _baseline_path(suite_config)
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    raw = data.get("run_y") if isinstance(data, dict) else None
+    if not isinstance(raw, list):
+        return None
+    return {str(x).strip() for x in raw if str(x).strip()}
 
 
 def _resolve_y1_paths(suite_config: str = DEFAULT_SUITE) -> list[Path]:
-    cfg_path = KK_ROOT / suite_config.replace("/", "\\")
-    if not cfg_path.is_file():
-        raise FileNotFoundError(f"Suite config not found: {suite_config}")
+    cfg_path = _resolve_cfg_path(suite_config)
     data = json.loads(cfg_path.read_text(encoding="utf-8"))
     paths: list[Path] = []
     for rel in data.get("input_files", {}).get("yPlans", []):
@@ -38,7 +86,24 @@ def failed_plan_ids(run_name: str) -> set[str]:
                 pid = (row.get("PlanId") or "").strip()
                 if pid:
                     failed.add(pid)
+                    # FoXYiZ may prefix PlanId with P in zResults
+                    if pid.startswith("P") and len(pid) > 1:
+                        failed.add(pid[1:])
+                    else:
+                        failed.add(f"P{pid}")
     return failed
+
+
+def _normalize_plan_match(candidate: set[str], catalog: set[str]) -> set[str]:
+    """Map zResults PlanIds onto y1Plans PlanIds (handles optional P prefix)."""
+    matched: set[str] = set()
+    for pid in catalog:
+        if pid in candidate or f"P{pid}" in candidate:
+            matched.add(pid)
+            continue
+        if pid.startswith("P") and pid[1:] in candidate:
+            matched.add(pid)
+    return matched
 
 
 def plan_stats(suite_config: str = DEFAULT_SUITE) -> dict[str, Any]:
@@ -112,10 +177,26 @@ def _edit_run_flags(
 
 
 def shrink_to_failures(run_name: str, suite_config: str = DEFAULT_SUITE) -> dict[str, Any]:
-    failed = failed_plan_ids(run_name)
-    if not failed:
+    failed_raw = failed_plan_ids(run_name)
+    if not failed_raw:
         return {"ok": False, "error": "No failures in run", "run_y": 0, "run_n": 0, "changed": 0}
+    baseline = load_run_y_baseline(suite_config)
+    if baseline is None:
+        baseline_ids = save_run_y_baseline(suite_config)
+    else:
+        baseline_ids = sorted(baseline)
     all_ids = all_plan_ids(suite_config)
+    failed = _normalize_plan_match(failed_raw, all_ids)
+    if not failed:
+        return {
+            "ok": False,
+            "error": "Failures are not in this suite's y1Plans",
+            "run_y": 0,
+            "run_n": 0,
+            "changed": 0,
+            "baseline_run_y": baseline_ids,
+            "raw_failed": sorted(failed_raw),
+        }
     pass_ids = all_ids - failed
     changed = _edit_run_flags(run_y_ids=failed, run_n_ids=pass_ids, suite_config=suite_config)
     return {
@@ -124,13 +205,34 @@ def shrink_to_failures(run_name: str, suite_config: str = DEFAULT_SUITE) -> dict
         "run_n": len(pass_ids),
         "changed": changed,
         "failed_plans": sorted(failed),
+        "baseline_run_y": baseline_ids,
     }
 
 
 def restore_all_run_y(suite_config: str = DEFAULT_SUITE) -> dict[str, Any]:
-    run_y = all_plan_ids(suite_config)
-    changed = _edit_run_flags(run_y_ids=run_y, run_n_ids=None, suite_config=suite_config)
-    return {"ok": True, "run_y": len(run_y), "changed": changed}
+    """Restore Run=Y to pre-shrink baseline when present; otherwise all non-PReuse plans."""
+    all_ids = all_plan_ids(suite_config)
+    baseline = load_run_y_baseline(suite_config)
+    from_baseline = baseline is not None
+    if from_baseline:
+        run_y = baseline & all_ids
+        if not run_y:
+            run_y = all_ids
+            from_baseline = False
+    else:
+        run_y = all_ids
+    run_n = all_ids - run_y
+    changed = _edit_run_flags(run_y_ids=run_y, run_n_ids=run_n, suite_config=suite_config)
+    if not from_baseline:
+        path = _baseline_path(suite_config)
+        path.write_text(json.dumps({"run_y": sorted(run_y)}, indent=2) + "\n", encoding="utf-8")
+    return {
+        "ok": True,
+        "run_y": len(run_y),
+        "run_n": len(run_n),
+        "changed": changed,
+        "from_baseline": from_baseline,
+    }
 
 
 def list_automation_plans(suite_config: str = DEFAULT_SUITE) -> list[dict[str, str]]:
@@ -165,10 +267,7 @@ _SHEET_KEYS = {
 
 
 def _resolve_suite_config(suite_config: str = DEFAULT_SUITE) -> dict[str, Any]:
-    cfg_path = KK_ROOT / suite_config.replace("/", "\\")
-    if not cfg_path.is_file():
-        raise FileNotFoundError(f"Suite config not found: {suite_config}")
-    return json.loads(cfg_path.read_text(encoding="utf-8"))
+    return json.loads(_resolve_cfg_path(suite_config).read_text(encoding="utf-8"))
 
 
 def _resolve_sheet_paths(suite_config: str, sheet: str) -> list[Path]:

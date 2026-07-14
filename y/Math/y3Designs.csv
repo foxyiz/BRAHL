@@ -1,9 +1,9 @@
 ﻿Type,DataName,D1,D2,D3
 Math,v1,12,200,5
 Math,v2,22,300,10
-Math,vAdd,35,500,15
+Math,vAdd,34,500,15
 Math,vSub,-11,100,
-Math,vMul,276,,
+Math,vMul,264,,
 Math,vDiv,0.521739,0.67,
 Math,vArea,452.16,125600,
 Math,vSquare,144,40000,

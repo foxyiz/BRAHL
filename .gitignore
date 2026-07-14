@@ -14,8 +14,8 @@ z/brahl_*
 z/*_zResults*
 z/*_zDash*
 
-# Cleaner archives (safe to delete entire folder)
-archive/cleanup/
+# Cleaner / lean-out archives (safe to delete or move entire archive/ out of KK)
+archive/
 
 # Engine binary (rebuild locally; ship via release artifact for cloud)
 f/Foxyiz2.exe

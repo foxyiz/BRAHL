@@ -5,63 +5,143 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sign up — QAonAir BRAHL</title>
   <link rel="stylesheet" href="/assets/styles.css" />
+  <link rel="stylesheet" href="/assets/forms.css" />
   <link rel="stylesheet" href="/assets/signin.css" />
 </head>
-<body class="signin-page">
-  <header class="signin-header">
-    <div class="signin-header-inner">
+<body class="tc-page">
+  <header class="tc-page-header">
+    <div>
+      <p class="tc-kicker">QAonAir · BRAHL</p>
       <h1>Sign up</h1>
-      <p class="signin-lead">Create your QAonAir account.</p>
+      <p class="tc-lead">Start with social or email, then complete your profile. Multiple avatars are supported.</p>
     </div>
-    <a href="/app" class="secondary">Arena</a>
+    <a href="/app" class="tc-btn tc-btn-ghost">Arena</a>
   </header>
-  <main class="signin-main auth-form-main">
-    <form id="signup-form" class="auth-form">
-      <label for="signup-name">Name</label>
-      <input type="text" id="signup-name" autocomplete="name" />
-      <label for="signup-email">Email</label>
-      <input type="email" id="signup-email" required autocomplete="email" />
-      <label for="signup-password">Password (8+ chars)</label>
-      <input type="password" id="signup-password" required minlength="8" autocomplete="new-password" />
-      <label for="signup-role">Role</label>
-      <select id="signup-role">
-        <option value="creator">Creator</option>
-        <option value="qa_hunter">QA Hunter</option>
-        <option value="both">Creator + QA Hunter</option>
-      </select>
-      <p id="signup-error" class="hint auth-error" hidden></p>
-      <button type="submit" class="primary">Create account</button>
-    </form>
-    <p class="signin-footer-hint">Have an account? <a href="/login">Log in</a> · <a href="/signin">Demo profiles</a></p>
+
+  <main class="tc-shell">
+    <ol class="tc-steps" aria-label="Signup progress">
+      <li id="step-indicator-1" class="active">1 · Account</li>
+      <li id="step-indicator-2">2 · Profile</li>
+    </ol>
+
+    <section id="signup-step-1" class="tc-form">
+      <h2 class="tc-panel-title">Continue with</h2>
+      <div class="tc-social">
+        <button type="button" class="tc-social-btn tc-social-google" data-provider="google"><span class="tc-social-mark">G</span> Google</button>
+        <button type="button" class="tc-social-btn tc-social-facebook" data-provider="facebook"><span class="tc-social-mark">f</span> Facebook</button>
+        <button type="button" class="tc-social-btn tc-social-whatsapp" data-provider="whatsapp"><span class="tc-social-mark">W</span> WhatsApp</button>
+        <button type="button" class="tc-social-btn tc-social-instagram" data-provider="instagram"><span class="tc-social-mark">Ig</span> Instagram</button>
+      </div>
+      <div id="social-email-panel" class="tc-conditional" hidden>
+        <div class="tc-field">
+          <label for="social-email">Email for <span id="social-provider-label">provider</span></label>
+          <input type="email" id="social-email" class="tc-input" autocomplete="email" placeholder="you@company.com" />
+        </div>
+        <div class="tc-field">
+          <label for="social-name">Display name <span class="tc-optional">(optional)</span></label>
+          <input type="text" id="social-name" class="tc-input" autocomplete="name" />
+        </div>
+        <button type="button" id="social-continue" class="tc-btn tc-btn-primary tc-btn-block">Continue</button>
+      </div>
+      <div class="tc-divider">or email</div>
+      <form id="signup-email-form" class="tc-form">
+        <div class="tc-field">
+          <label for="signup-email">Work email</label>
+          <input type="email" id="signup-email" required autocomplete="email" />
+        </div>
+        <div class="tc-field">
+          <label for="signup-password">Password (8+ chars)</label>
+          <input type="password" id="signup-password" required minlength="8" autocomplete="new-password" />
+        </div>
+        <p id="signup-error-1" class="tc-error" hidden></p>
+        <button type="submit" class="tc-btn tc-btn-primary tc-btn-block">Continue to profile</button>
+      </form>
+    </section>
+
+    <section id="signup-step-2" class="tc-form" hidden>
+      <h2 class="tc-panel-title">Your profile</h2>
+      <p class="tc-hint">Some fields are optional — you can refine them later. Choose every avatar you use.</p>
+      <form id="signup-profile-form" class="tc-form">
+        <div class="tc-row">
+          <div class="tc-field">
+            <label for="signup-first">First name</label>
+            <input type="text" id="signup-first" required autocomplete="given-name" />
+          </div>
+          <div class="tc-field">
+            <label for="signup-last">Last name</label>
+            <input type="text" id="signup-last" required autocomplete="family-name" />
+          </div>
+        </div>
+        <div class="tc-row">
+          <div class="tc-field">
+            <label for="signup-country">Country <span class="tc-optional">(optional)</span></label>
+            <input type="text" id="signup-country" autocomplete="country-name" placeholder="United States" />
+          </div>
+          <div class="tc-field">
+            <label for="signup-phone">Phone <span class="tc-optional">(optional)</span></label>
+            <input type="tel" id="signup-phone" autocomplete="tel" placeholder="+1 …" />
+          </div>
+        </div>
+
+        <fieldset class="tc-field">
+          <legend class="tc-label">Roles / avatars</legend>
+          <div class="tc-check-grid">
+            <label class="tc-check">
+              <input type="checkbox" name="roles" value="creator" checked />
+              <div>
+                <strong>Creator</strong>
+                <span>Own challenges, Build → BRAHL, Go/No-Go launch calls.</span>
+              </div>
+            </label>
+            <label class="tc-check">
+              <input type="checkbox" name="roles" value="qa_hunter" id="role-hunter" />
+              <div>
+                <strong>QA Hunter</strong>
+                <span>Join hunts, deliver evidence, consultant workflows.</span>
+              </div>
+            </label>
+            <label class="tc-check">
+              <input type="checkbox" name="roles" value="nalanda" />
+              <div>
+                <strong>Nalanda</strong>
+                <span>Learn / Teach / Discuss network surface.</span>
+              </div>
+            </label>
+            <label class="tc-check">
+              <input type="checkbox" name="roles" value="promoter" id="role-promoter" />
+              <div>
+                <strong>Promoter</strong>
+                <span>Grow the arena — invites, XP, and wallet credits.</span>
+              </div>
+            </label>
+          </div>
+        </fieldset>
+
+        <div id="creator-extra" class="tc-conditional">
+          <div class="tc-field">
+            <label for="signup-app-url">Main application URL <span class="tc-optional">(private, optional)</span></label>
+            <input type="url" id="signup-app-url" placeholder="https://your-app.example.com" autocomplete="url" />
+            <p class="tc-hint">Not shared publicly — used to prefill your BRAHL challenges.</p>
+          </div>
+        </div>
+
+        <div id="hunter-extra" class="tc-conditional" hidden>
+          <div class="tc-field">
+            <label for="signup-profile-file">Upload profile / résumé <span class="tc-optional">(optional)</span></label>
+            <input type="file" id="signup-profile-file" accept=".pdf,.doc,.docx,.txt,image/*" />
+          </div>
+        </div>
+
+        <p id="signup-error-2" class="tc-error" hidden></p>
+        <div class="tc-actions">
+          <button type="button" id="signup-back" class="tc-btn tc-btn-ghost">Back</button>
+          <button type="submit" class="tc-btn tc-btn-primary" style="flex:1">Finish &amp; enter arena</button>
+        </div>
+      </form>
+    </section>
+
+    <p class="tc-footer-links">Have an account? <a href="/login">Log in</a> · <a href="/signin">Demo profiles</a></p>
   </main>
-  <script>
-    const $ = (s) => document.querySelector(s);
-    $("#signup-form").addEventListener("submit", async (ev) => {
-      ev.preventDefault();
-      const err = $("#signup-error");
-      err.hidden = true;
-      try {
-        const res = await fetch("/api/auth/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: $("#signup-name").value.trim(),
-            email: $("#signup-email").value.trim(),
-            password: $("#signup-password").value,
-            role: $("#signup-role").value,
-          }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.detail || res.statusText);
-        localStorage.setItem("qoa_auth_token", data.token);
-        localStorage.setItem("qoa_auth_user", JSON.stringify(data.user));
-        const draft = sessionStorage.getItem("qoa_draft_requirement");
-        location.href = draft ? "/app?restore_draft=1" : "/app";
-      } catch (e) {
-        err.textContent = e.message;
-        err.hidden = false;
-      }
-    });
-  </script>
+  <script src="/assets/signup.js"></script>
 </body>
 </html>

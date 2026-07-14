@@ -24,6 +24,7 @@ services:
       QOA_ADMIN_TOKEN: ${QOA_ADMIN_TOKEN:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       FOXYIZ_HEADLESS: "true"
+      QOA_ALLOW_DEMO: ${QOA_ALLOW_DEMO:-0}
       DATABASE_URL: postgresql://brahl:${POSTGRES_PASSWORD:-brahl_dev_password}@db:5432/brahl
     volumes:
       - brahl-data:/app/qoa_web/data

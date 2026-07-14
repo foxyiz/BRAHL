@@ -1,10 +1,10 @@
 [
   {
     "id": "0a5cf5e38c68",
-    "name": "qoa_web",
+    "name": "Math (lean BRAHL)",
     "app_url": "http://127.0.0.1:8765/",
-    "suite_name": "qoa_web",
-    "suite_config": "y/qoa_web/qoa_web.json",
+    "suite_name": "Math",
+    "suite_config": "y/Math/Math.json",
     "purpose": "BRAHL web app \u2014 verify gate (52) + journey regression library (800 plans, tag Journey)",
     "prompt": "BRAHL web app \u2014 verify gate (52) + journey regression library (800 plans, tag Journey)",
     "owner_avatar": "client",
@@ -47,13 +47,34 @@
         "report_path": "z/20260706_215958_qoa2/brahl_report.md",
         "submitted_at": "2026-07-07T05:01:03+00:00",
         "source": "automation_ai"
+      },
+      {
+        "id": "ef16d775",
+        "run_name": "20260714_091733_qoa_web",
+        "report_path": "z/20260714_091733_qoa_web/brahl_report.md",
+        "submitted_at": "2026-07-14T16:18:07+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "a41cb2b1",
+        "run_name": "20260714_091852_qoa_web",
+        "report_path": null,
+        "submitted_at": "2026-07-14T16:18:52+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "5c8e8f68",
+        "run_name": "20260714_091906_qoa_web",
+        "report_path": null,
+        "submitted_at": "2026-07-14T16:19:07+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": null,
-    "latest_run": "20260706_203628_qoa_web",
+    "latest_run": "20260714_091733_qoa_web",
     "created_at": "2026-07-07T04:46:32+00:00",
-    "updated_at": "2026-07-07T15:57:04+00:00",
+    "updated_at": "2026-07-14T16:25:36+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -77,6 +98,71 @@
     },
     "cycle_history": [
       {
+        "id": "5eaa1b07",
+        "step": "Loop 2",
+        "detail": "completed",
+        "at": "2026-07-14T16:19:07+00:00",
+        "run_name": "20260714_091906_qoa_web",
+        "stats": {
+          "passes": 0,
+          "fails": 0,
+          "total_plans": 0,
+          "health": "unknown"
+        }
+      },
+      {
+        "id": "843de957",
+        "step": "Shrink",
+        "detail": "Loop prep \u2014 2 plans",
+        "at": "2026-07-14T16:19:04+00:00",
+        "run_name": "20260714_091733_qoa_web",
+        "stats": {
+          "passes": 1,
+          "fails": 2,
+          "total_plans": 3,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "5b242223",
+        "step": "Loop 2",
+        "detail": "completed",
+        "at": "2026-07-14T16:18:52+00:00",
+        "run_name": "20260714_091852_qoa_web",
+        "stats": {
+          "passes": 0,
+          "fails": 0,
+          "total_plans": 0,
+          "health": "unknown"
+        }
+      },
+      {
+        "id": "b0ca4c72",
+        "step": "Shrink",
+        "detail": "Loop prep \u2014 2 plans",
+        "at": "2026-07-14T16:18:50+00:00",
+        "run_name": "20260714_091733_qoa_web",
+        "stats": {
+          "passes": 1,
+          "fails": 2,
+          "total_plans": 3,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "8dfcf8ed",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-14T16:18:07+00:00",
+        "run_name": "20260714_091733_qoa_web",
+        "stats": {
+          "passes": 1,
+          "fails": 2,
+          "total_plans": 3,
+          "health": "amber"
+        }
+      },
+      {
         "id": "70f873c5",
         "step": "Verify",
         "detail": "completed",
@@ -92,7 +178,8 @@
     "baseline_version": "",
     "baseline_run": null,
     "owner_user_id": null,
-    "brahl_plan_draft": null
+    "brahl_plan_draft": null,
+    "notes": " [retargeted from missing y/qoa_web]"
   },
   {
     "id": "7b3d38860642",
@@ -179,176 +266,6 @@
         "description": "UI UX",
         "status": "open",
         "created_at": "2026-07-07T15:49:02+00:00"
-      }
-    ],
-    "hitl_invites": [],
-    "change_requests": [],
-    "runtime_mode": "local",
-    "app_version": "",
-    "baseline_version": "",
-    "baseline_run": null,
-    "owner_user_id": null,
-    "brahl_plan_draft": null
-  },
-  {
-    "id": "56027c9bd5a5",
-    "name": "ivvu",
-    "app_url": "https://ivvu.base44.app/",
-    "suite_name": "ivvu",
-    "suite_config": "y/ivvu/ivvu.json",
-    "purpose": "IVVU (ivvu.base44.app) - Gift presence and care for parents in India",
-    "prompt": "IVVU (ivvu.base44.app) - Gift presence and care for parents in India",
-    "owner_avatar": "client",
-    "status": "open",
-    "documents": [],
-    "context_items": [
-      {
-        "id": "86945083",
-        "kind": "url",
-        "label": "App URL",
-        "value": "https://ivvu.base44.app/",
-        "added_at": "2026-07-07T04:48:20+00:00"
-      }
-    ],
-    "chat_messages": [
-      {
-        "id": "welcome",
-        "role": "assistant",
-        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
-        "at": "2026-07-07T04:48:20+00:00"
-      }
-    ],
-    "budget_usd": 0.0,
-    "budget_split": {
-      "automation_pct": 50,
-      "human_pct": 50
-    },
-    "hitl_consultants": [],
-    "reports": [
-      {
-        "id": "f4ac670d",
-        "run_name": "20260706_215102_ivvu",
-        "report_path": "z/20260706_215102_ivvu/brahl_report.md",
-        "submitted_at": "2026-07-07T04:51:30+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "7e2d611a",
-        "run_name": "20260707_085039_ivvu",
-        "report_path": "z/20260707_085039_ivvu/brahl_report.md",
-        "submitted_at": "2026-07-07T15:51:15+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "3c7379ad",
-        "run_name": "20260711_161706_ivvu",
-        "report_path": "z/20260711_161706_ivvu/brahl_report.md",
-        "submitted_at": "2026-07-11T23:17:30+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "a5edb4eb",
-        "run_name": "20260712_201854_ivvu",
-        "report_path": "z/20260712_201854_ivvu/brahl_report.md",
-        "submitted_at": "2026-07-13T03:19:22+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "120a0975",
-        "run_name": "20260713_222227_ivvu",
-        "report_path": "z/20260713_222227_ivvu/brahl_report.md",
-        "submitted_at": "2026-07-14T05:22:58+00:00",
-        "source": "automation"
-      }
-    ],
-    "ai_enabled": true,
-    "brahl_context_path": null,
-    "latest_run": "20260713_222227_ivvu",
-    "created_at": "2026-07-07T04:48:20+00:00",
-    "updated_at": "2026-07-14T05:22:58+00:00",
-    "brahl_chat_messages": [
-      {
-        "id": "brahl-welcome",
-        "role": "assistant",
-        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
-        "at": "2026-07-07T04:48:20+00:00"
-      }
-    ],
-    "atomic77_chat_messages": [
-      {
-        "id": "a77-welcome",
-        "role": "assistant",
-        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
-        "at": "2026-07-07T04:48:20+00:00"
-      }
-    ],
-    "atomic77_usage": {
-      "messages": 0,
-      "tokens_est": 0,
-      "user_messages": 0
-    },
-    "cycle_history": [
-      {
-        "id": "5b7dcbab",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-14T05:22:58+00:00",
-        "run_name": "20260713_222227_ivvu",
-        "stats": {
-          "passes": 14,
-          "fails": 0,
-          "total_plans": 14,
-          "health": "green"
-        }
-      },
-      {
-        "id": "96a3933e",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-13T03:19:19+00:00",
-        "run_name": "20260712_201854_ivvu",
-        "stats": {
-          "passes": 14,
-          "fails": 0,
-          "total_plans": 14,
-          "health": "green"
-        }
-      },
-      {
-        "id": "9b03a8ff",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-11T23:17:30+00:00",
-        "run_name": "20260711_161706_ivvu",
-        "stats": {
-          "passes": 14,
-          "fails": 0,
-          "total_plans": 14,
-          "health": "green"
-        }
-      },
-      {
-        "id": "7fc7c2a2",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-07T15:51:14+00:00",
-        "run_name": "20260707_085039_ivvu"
-      },
-      {
-        "id": "e7e81760",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-07T04:51:30+00:00",
-        "run_name": "20260706_215102_ivvu"
-      }
-    ],
-    "hitl_stories": [
-      {
-        "id": "44d98a36",
-        "title": "check all links",
-        "description": "if they dont throw 404 error pages",
-        "status": "open",
-        "created_at": "2026-07-07T04:49:52+00:00"
       }
     ],
     "hitl_invites": [],
@@ -970,13 +887,27 @@
         "report_path": "z/20260711_110843_nalanda_app/brahl_report.md",
         "submitted_at": "2026-07-11T18:08:57+00:00",
         "source": "automation"
+      },
+      {
+        "id": "1fb7a06a",
+        "run_name": "20260714_090840_nalanda_app",
+        "report_path": "z/20260714_090840_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-14T16:08:57+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "73c20708",
+        "run_name": "20260714_090938_nalanda_app",
+        "report_path": "z/20260714_090938_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-14T16:09:55+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
-    "brahl_context_path": null,
-    "latest_run": "20260711_110843_nalanda_app",
+    "brahl_context_path": "C:\\006\\FXYZ\\KK\\z\\brahl_context_20260714_090930_nalanda_app.json",
+    "latest_run": "20260714_090938_nalanda_app",
     "created_at": "2026-07-07T21:49:14+00:00",
-    "updated_at": "2026-07-11T23:16:32+00:00",
+    "updated_at": "2026-07-14T16:14:59+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -999,6 +930,38 @@
       "user_messages": 0
     },
     "cycle_history": [
+      {
+        "id": "c5aa2343",
+        "step": "Loop 1",
+        "detail": "completed",
+        "at": "2026-07-14T16:09:55+00:00",
+        "run_name": "20260714_090938_nalanda_app",
+        "stats": {
+          "passes": 6,
+          "fails": 0,
+          "total_plans": 6,
+          "health": "green"
+        }
+      },
+      {
+        "id": "60352bbe",
+        "step": "Step 0",
+        "detail": "C:\\006\\FXYZ\\KK\\z\\brahl_context_20260714_090930_nalanda_app.json",
+        "at": "2026-07-14T16:09:30+00:00"
+      },
+      {
+        "id": "2d299911",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-14T16:08:56+00:00",
+        "run_name": "20260714_090840_nalanda_app",
+        "stats": {
+          "passes": 6,
+          "fails": 0,
+          "total_plans": 6,
+          "health": "green"
+        }
+      },
       {
         "id": "db3a8a46",
         "step": "Run",

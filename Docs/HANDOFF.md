@@ -1,126 +1,53 @@
-# Handoff — new machine or new AI session
+# Handoff — short session summary (2026-07-14)
 
-Use this when you copy `KK/` to another PC, zip a slice for a teammate, or open **Cursor / Claude / Copilot** on a fresh workspace.
+Use this instead of the long chat transcript. Read `qoa_web/MEMORY.md` first.
 
-**Principle:** Export **docs + active app + active suite**. Skip `z/` history and inactive `y/*` suites unless you need them.
+## Product
 
----
+- **KK/** = FoXYiZ engine + **qoa_web** (BRAHL arena) at http://127.0.0.1:8765
+- Naming: always **BRAHL**; spelling **FoXYiZ**
 
-## Minimum export bundle
+## Done recently
 
-Copy these paths relative to `KK/`:
+- Defect closure notes: `Docs/BRAHL_DEFECTS.md`
+- Plan-level stats API + zDash path fix + Loop recovery UI bits
+- Auth (signup/login/JWT), project ownership, MVP checklist, Bluehost notes
+- Build BRAHL Plan generate/accept path
 
-```
-Summary.md
-Docs/                          # entire folder (this handoff layer)
-qoa_web/
-  MEMORY.md
-  README.md
-  qoa_userDoc.md
-  DEPLOY.md
-  run_local.py
-  api/                           # FastAPI (invites, pricing, projects)
-  web/                           # static UI (welcome, signin, app)
-  mcp/                           # optional Cursor bridge
-  data/                          # projects + invites seed
-pyUtils/                       # utilities + zBatchDash.py
-f/
-  fEngine2.py
-  fStart_qoa_web_verify.json
-  fStart_qoa_web_smoke.json
-  fStart_qoa_web_smoke_headless.json
-  fStart_SCOPE.md
-  requirements.txt
-x/
-  xActions.py
-  xCapa.csv
-  xCustom.py
-y/qoa_web/                     # active yPAD only
-z/
-  zDash_template.html            # dashboard template only
-.cursorignore                  # optional but recommended for agents
-```
+## Lean KK cleanup (this session)
 
-**Do not require in export:** `z/2026*` run folders, `archive/cleanup/`, `f/Foxyiz2.exe` (rebuild locally), inactive `y/qoa2/` etc.
+Moved noise into **`archive/`** so you can relocate the whole folder out of KK:
 
----
+| Bucket | What |
+|--------|------|
+| `archive/cleanup/<ts>/` | Ephemeral `z/` runs + brahl reports (`cleaner.py --apply`) |
+| `archive/not-needed-20260714/` | Unused `y/*` (qoa2, ivvu, …), unused `fStart_*`, Issues.docx/pdf/extracts, Summary.md, BRAHL.py, test-user-data |
 
-## Bootstrap (new machine)
+**Still in KK:** `qoa_web/`, `f/` (engine + Math/nalanda/qoa_web smoke-verify starts), `x/`, `y/Math`, `y/nalanda_app`, `pyUtils/`, slim `Docs/*.md`.
 
-```powershell
-cd <path-to-KK>
+`f/Foxyiz2.exe` (~69MB) stays for local runs; already gitignored.
 
-# Python 3.10+
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r qoa_web\api\requirements.txt
-pip install -r f\requirements.txt
+## Active next plan (lean roadmap)
 
-python qoa_web\run_local.py
-# → http://127.0.0.1:8765/welcome
-# Demo codes: QOA-CR5-001-001-DEMO · QOA-QH5-001-001-DEMO
-# Arena: http://127.0.0.1:8765/app?demo=1
-```
+1. **A** — hygiene done ✔
+2. **B** — Loop 1/2/3 + Verify on **Math** ✔ (4-plan smoke; shrink/restore baseline; P-prefix PlanId fix)
+3. **C** — Heal **Apply** beyond AI markdown
+4. **D** — Classical BRAHL report Go/No-Go UI
+5. **E** — zDash check, uninvite, nav flake, Tests CSS, mobile
+6. **F** — GitHub + Bluehost (`QOA_ALLOW_DEMO=0`)
+7. **G later** — Career Assistant, voice CS, screenshots, deep Nalanda, waitlist
 
-Verify FoXYiZ (server must be running):
+### Phase B proof (Math)
 
-```powershell
-python u\reset_demo_data.py
-python f\fEngine2.py --config f\fStart_qoa_web_verify.json
-```
+- Suite: `y/Math/` — 4 Run=Y plans (Addition, Multiplication, Modulo, Round)
+- fStart: `f/fStart_Math_smoke.json` / `f/fStart_Math_verify.json`
+- Shrink saves `y/Math/Math_run_y_baseline.json`; restore reapplies that set
+- Unit: `qoa_web/api/test_ypad_loop.py`
 
-Expect **49/49** green on plans with `Run=Y` (tag **Verify**).
+## AI bootstrap (@-mention only these)
 
----
+1. `qoa_web/MEMORY.md`
+2. `Docs/HANDOFF.md` (this file)
+3. `Docs/BRAHL.md` / `Docs/MVP_LAUNCH_CHECKLIST.md` as needed
 
-## Tell the AI what to read first
-
-Paste or @-mention:
-
-1. `Summary.md`
-2. `Docs/README.md`
-3. `qoa_web/MEMORY.md`
-4. `Docs/BRAHL.md` (if doing verify/heal)
-5. `Docs/FoXYiZ.md` (if editing yPAD)
-
-**Task one-liner example:**
-
-> We work on **qoa_web v1.3** only. Active suite is `y/qoa_web/`. Follow BRAHL loop in `Docs/BRAHL.md`. Do not edit `fEngine2.py` unless I ask. Run `python pyUtils/cleaner.py --apply` when done.
-
----
-
-## Personas and yPAD sync
-
-After editing `Docs/test-user-data/*.json`:
-
-```powershell
-python u\sync_personas.py
-```
-
-Regenerates persona columns in `y/qoa_web/y3Designs.csv` and `qoa_web/web/profiles.js`.
-
----
-
-## Context files the app exposes
-
-The **`.md`** button in qoa_web loads slim docs for in-app AI:
-
-- `Docs/BRAHL_PROMPT.md`
-- `Docs/FoXYiZ.md`
-- `Docs/rules.md`
-- `qoa_web/qoa_userDoc.md`
-
-Keep those four aligned when product copy or verify scope changes.
-
----
-
-## Where we left off (checklist)
-
-Before closing a session, confirm:
-
-- [ ] `python pyUtils/cleaner.py --apply` ran (ephemeral `z/` archived)
-- [ ] `Summary.md` and `Docs/README.md` verify counts match `y/qoa_web/y1Plans.csv` (`Run=Y` + tag Verify)
-- [ ] `qoa_web/MEMORY.md` status line updated if verify or scope changed
-- [ ] No secrets in commits (`.env`, API keys)
-
-Full ritual: [MAINTENANCE.md](./MAINTENANCE.md).
+After work: `python pyUtils/cleaner.py --apply`. Safe to delete or move `archive/` anytime.

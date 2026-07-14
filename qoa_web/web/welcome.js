@@ -73,7 +73,38 @@ function showTrialActiveHint() {
   foot.parentElement?.insertBefore(hint, foot.nextSibling);
 }
 
+function bindWelcomeAiPrompt() {
+  const form = $("#welcome-ai-form");
+  if (!form) return;
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = $("#welcome-ai-input")?.value?.trim() || "";
+    if (!text) {
+      $("#welcome-ai-input")?.focus();
+      return;
+    }
+    try {
+      sessionStorage.setItem("qoa_draft_requirement", text);
+      sessionStorage.setItem("qoa_open_planner", "1");
+    } catch {
+      /* ignore quota */
+    }
+    // Prefer arena when trial/demo already unlocked; else sign-in then app
+    const canEnter =
+      window.QoaInviteGate?.isInviteTrialValid?.() ||
+      window.QoaInviteGate?.isDemoBypass?.() ||
+      localStorage.getItem("qoa_web_demo_bypass") === "1";
+    if (canEnter) {
+      location.href = "/app?demo=1&planner=1";
+    } else {
+      window.QoaInviteGate?.enableDemoBypass?.();
+      location.href = "/app?demo=1&planner=1";
+    }
+  });
+}
+
 prefillCodeFromUrl();
 bindInviteForm();
 bindDemoBypass();
+bindWelcomeAiPrompt();
 showTrialActiveHint();

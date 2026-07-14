@@ -1,0 +1,20 @@
+{
+  "input_files": {
+    "yPlans": [
+      "y/qoa_web/y1Plans.csv",
+      "y/qoa_web/y1Plans_journey.csv"
+    ],
+    "yActions": [
+      "y/qoa_web/y2Actions.csv",
+      "y/qoa_web/y2Actions_journey.csv"
+    ],
+    "yDesigns": [
+      "y/qoa_web/y3Designs.csv"
+    ]
+  },
+  "name": "qoa_web",
+  "description": "BRAHL web app \u2014 verify gate (52) + journey regression library (800 plans, tag Journey)",
+  "version": "1.2.0",
+  "url": "http://127.0.0.1:8765/",
+  "journey_plans": 800
+}

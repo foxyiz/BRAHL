@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BRAHL Web — f(x,y)=z</title>
   <link rel="stylesheet" href="/assets/styles.css" />
+  <link rel="stylesheet" href="/assets/forms.css" />
   <link rel="stylesheet" href="/assets/nalanda.css" />
   <link rel="stylesheet" href="/assets/themes.css" />
 </head>
@@ -29,6 +30,7 @@
             <a href="/signin" class="user-menu-item" role="menuitem" id="user-menu-profile">Profile / Sign in</a>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="nalanda">Nalanda</button>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="atomic77">Atomic 77</button>
+            <button type="button" class="user-menu-item" role="menuitem" data-user-action="promoter">Promoter</button>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="cost">Wallet ($)</button>
             <div class="user-menu-divider" role="separator"></div>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="theme-pro">Theme: Pro</button>
@@ -143,9 +145,10 @@
       </div>
       <h2>Enter the arena</h2>
       <div class="visual-card visual-card-grid" aria-hidden="true">
-        <div class="visual-card-item"><span class="v-icon">🥊</span><strong>Creator</strong><span>Post · budget · BRAHL</span></div>
-        <div class="visual-card-item"><span class="v-icon">🎯</span><strong>QA Hunter</strong><span>Hunt · evidence · pay</span></div>
-        <div class="visual-card-item"><span class="v-icon">📚</span><strong>Nalanda</strong><span>Learn · teach · discuss</span></div>
+        <div class="visual-card-item"><span class="v-icon">C</span><strong>Creator</strong><span>Post · budget · BRAHL</span></div>
+        <div class="visual-card-item"><span class="v-icon">H</span><strong>QA Hunter</strong><span>Hunt · evidence · pay</span></div>
+        <div class="visual-card-item"><span class="v-icon">N</span><strong>Nalanda</strong><span>Learn · teach · discuss</span></div>
+        <div class="visual-card-item"><span class="v-icon">P</span><strong>Promoter</strong><span>Invite · grow · XP</span></div>
       </div>
       <p>BRAHL automation handles bulk testing. <strong>QA Hunters</strong> enrich reports with real journeys and break apps offline.</p>
       <p class="blurb arena-oneliner">Creators throw apps into the arena. QA Hunters break them and deliver the BRAHL report.</p>
@@ -167,47 +170,37 @@
   </div>
 
   <div id="add-project-modal" class="modal" hidden role="dialog" aria-labelledby="add-project-title" aria-modal="true">
-    <div class="modal-card modal-card-wide">
-      <h2 id="add-project-title">Add challenge</h2>
-      <p class="blurb">Post a new challenge to the arena. Use AI assistant on Build, or turn AI off for manual QA Hunter workflows.</p>
-      <form id="add-project-form">
-        <div class="form-row">
-          <label for="new-project-name">Project name (yPAD folder)</label>
-          <input type="text" id="new-project-name" required autocomplete="off" placeholder="my_app" />
-          <p class="blurb" style="margin: 0.25rem 0 0">Creates <code>y/&lt;name&gt;/</code> with suite JSON and y1/y2/y3 CSVs.</p>
+    <div class="modal-card modal-card-planner">
+      <h2 id="add-project-title">AI Planner — new challenge</h2>
+      <p class="blurb">Chat or speak your app URL and goals. I’ll draft a BRAHL strategy and lean yPAD (Tests / Steps / Test data), then you can run a quick BRAHL for a Go/No-Go scorecard.</p>
+      <div class="planner-layout">
+        <div class="planner-chat-col">
+          <div id="planner-chat-log" class="planner-chat-log" aria-live="polite"></div>
+          <form id="planner-chat-form" class="planner-compose">
+            <textarea id="planner-input" rows="2" placeholder="Paste app URL and what to cover… or use the mic"></textarea>
+            <div class="planner-compose-actions">
+              <button type="button" id="planner-mic" class="secondary icon-btn" title="Voice input" aria-label="Voice input">🎤</button>
+              <button type="submit" class="primary" id="planner-send">Send</button>
+            </div>
+          </form>
         </div>
-        <div class="form-row">
-          <label for="new-project-url">App URL</label>
-          <input type="url" id="new-project-url" placeholder="https://myapp.example.com" />
-        </div>
-        <div class="form-row">
-          <label for="new-project-purpose">Purpose</label>
-          <textarea id="new-project-purpose" rows="2" placeholder="What should Build → Run → Verify → BRAHL cover?"></textarea>
-        </div>
-        <div class="form-row">
-          <label for="new-project-budget">Budget ($)</label>
-          <input type="number" id="new-project-budget" min="50" step="50" placeholder="500" />
-        </div>
-        <div class="form-row">
-          <label for="new-project-connector">Connector (optional)</label>
-          <input type="text" id="new-project-connector" placeholder="JIRA, GitHub, API docs…" />
-        </div>
-        <div class="form-row">
-          <label for="new-project-connector-url">Connector URL</label>
-          <input type="text" id="new-project-connector-url" placeholder="https://github.com/org/repo" />
-        </div>
-        <div class="form-row">
-          <label class="ai-toggle modal-ai-toggle" for="new-project-ai">
-            <input type="checkbox" id="new-project-ai" checked />
-            <span class="ai-toggle-track" aria-hidden="true"><span class="ai-toggle-thumb"></span></span>
-            <span>AI assistant on Build &amp; BRAHL Q&amp;A</span>
-          </label>
-        </div>
-        <div class="form-row actions">
-          <button type="submit" class="primary">Create project</button>
-          <button type="button" id="add-project-cancel" class="secondary">Cancel</button>
-        </div>
-      </form>
+        <aside class="planner-draft-col">
+          <h3 class="section-sub">Draft</h3>
+          <dl class="planner-draft-dl">
+            <dt>Name</dt><dd id="planner-draft-name">—</dd>
+            <dt>App URL</dt><dd id="planner-draft-url">—</dd>
+            <dt>Purpose</dt><dd id="planner-draft-purpose">—</dd>
+          </dl>
+          <p id="planner-ready-hint" class="blurb">Share URL + purpose to unlock create.</p>
+          <div id="planner-plan-preview" class="planner-plan-preview" hidden></div>
+          <div class="form-row actions planner-actions">
+            <button type="button" id="planner-create" class="primary" disabled>Create yPAD</button>
+            <button type="button" id="planner-create-brahl" class="primary" disabled>Create &amp; quick BRAHL</button>
+            <button type="button" id="add-project-cancel" class="secondary">Cancel</button>
+          </div>
+          <p id="planner-status" class="blurb planner-status" hidden></p>
+        </aside>
+      </div>
     </div>
   </div>
 
@@ -357,6 +350,7 @@
     <button type="button" class="phase-btn phase-brahl" data-phase="brahl">BRAHL</button>
     <button type="button" class="phase-btn phase-nalanda mvp-hidden" data-phase="nalanda" hidden>Nalanda</button>
     <button type="button" class="phase-btn phase-atomic77 mvp-hidden" data-phase="atomic77" hidden>A77</button>
+    <button type="button" class="phase-btn phase-promoter mvp-hidden" data-phase="promoter" hidden>Promoter</button>
     <button type="button" class="phase-btn phase-cost mvp-hidden" data-phase="cost" hidden>$</button>
   </nav>
   <div id="phase-progress" class="phase-progress" aria-label="BRAHL cycle progress" hidden>
@@ -396,7 +390,7 @@
             <header class="build-project-header">
               <div class="build-header-row">
                 <h2 id="build-panel-title">Build</h2>
-                <button type="button" id="btn-build-add-context" class="icon-btn" title="Add context">+</button>
+                <button type="button" id="btn-build-add-context" class="icon-btn" title="New project">+</button>
               </div>
               <p id="hunter-hero-tagline" class="hunter-hero-tagline avatar-consultant-only" hidden>
                 <strong>There are ships sinking. Find and kill the bugs.</strong>
@@ -789,6 +783,7 @@
       <div id="loop-content">
         <h2>Loop — BRAHL cycle (FoXYiZ)</h2>
         <p class="blurb">Step 0 captures context; Loops 1–3 and Verify run <strong>fEngine2.py</strong> (shrink/restore y1Plans between loops). AI assists Analyze &amp; Heal only.</p>
+        <p class="blurb loop-flow-hint"><strong>Loop 1</strong> full Run=Y · <strong>Loop 2/3</strong> shrink to last-run failures · <strong>Verify</strong> restore baseline then full re-run.</p>
         <label for="cycle-prompt">Purpose (from project)</label>
         <textarea id="cycle-prompt" rows="3" readonly></textarea>
         <label for="cycle-docs">Context items (paths)</label>
@@ -825,14 +820,38 @@
           <ul id="version-regression-list" class="version-regression-list" hidden></ul>
         </div>
         <div id="gonogo-block" class="gonogo-block avatar-client-only" hidden>
-          <h3 class="section-sub">Launch readiness — Go / No-Go</h3>
-          <p class="blurb">QA on Air’s core promise for Creators: a clear, standardized opinion on whether your app is ready for production.</p>
-          <div id="gonogo-verdict" class="gonogo-verdict gonogo-pending">
-            <label class="gonogo-check">
-              <input type="checkbox" id="gonogo-launch-ready" disabled aria-labelledby="gonogo-label" />
-              <span id="gonogo-label">Run Verify on Loop for a Go / No-Go opinion</span>
-            </label>
+          <h3 class="section-sub">Launch readiness — Go / No-Go scorecard</h3>
+          <p class="blurb">Standardized opinion on whether your app is ready for production.</p>
+          <div id="scorecard" class="scorecard scorecard-pending">
+            <div class="scorecard-hero">
+              <div class="scorecard-ring-wrap" aria-hidden="true">
+                <svg class="scorecard-ring" viewBox="0 0 120 120">
+                  <circle class="scorecard-ring-bg" cx="60" cy="60" r="52" />
+                  <circle id="scorecard-ring-fg" class="scorecard-ring-fg" cx="60" cy="60" r="52" />
+                </svg>
+                <div class="scorecard-ring-label">
+                  <strong id="scorecard-pct">—</strong>
+                  <span>pass</span>
+                </div>
+              </div>
+              <div class="scorecard-verdict-wrap">
+                <p id="scorecard-stamp" class="scorecard-stamp">PENDING</p>
+                <p id="gonogo-label" class="scorecard-sub">Run Verify on Loop for a Go / No-Go opinion</p>
+                <label class="gonogo-check scorecard-check" hidden>
+                  <input type="checkbox" id="gonogo-launch-ready" disabled />
+                  <span>Launch ready</span>
+                </label>
+              </div>
+            </div>
+            <div class="scorecard-metrics" id="scorecard-metrics">
+              <div class="scorecard-metric"><span class="sm-label">Passed</span><strong id="sc-pass">0</strong></div>
+              <div class="scorecard-metric"><span class="sm-label">Failed</span><strong id="sc-fail">0</strong></div>
+              <div class="scorecard-metric"><span class="sm-label">Plans</span><strong id="sc-total">0</strong></div>
+              <div class="scorecard-metric"><span class="sm-label">Duration</span><strong id="sc-time">—</strong></div>
+            </div>
+            <div id="scorecard-observations" class="scorecard-observations" hidden></div>
           </div>
+          <div id="gonogo-verdict" class="gonogo-verdict gonogo-pending" hidden></div>
         </div>
         <div class="brahl-layout">
           <aside class="brahl-sidebar">
@@ -983,6 +1002,56 @@
           <button type="button" id="btn-nalanda-copy-invite" class="primary">Copy invite message</button>
         </div>
       </section>
+    </section>
+
+    <section id="panel-promoter" class="panel promoter-panel" data-panel="promoter">
+      <header class="promoter-header">
+        <p class="tc-kicker">Grow the arena</p>
+        <h2>Promoter</h2>
+        <p class="blurb">
+          Your referral code opens a 7-day trial on the homepage. Pick a channel, copy or publish a pre-built post,
+          and earn XP toward your wallet.
+        </p>
+      </header>
+
+      <div class="promoter-layout">
+        <aside class="promoter-referral-card">
+          <h3 class="section-sub">Your referral code</h3>
+          <div id="promoter-invite-code" class="promoter-invite-code">—</div>
+          <p class="hint">Share link</p>
+          <a id="promoter-invite-link" href="/welcome" class="promoter-link linkish">Loading…</a>
+          <div class="form-row actions">
+            <button type="button" id="btn-promoter-copy-code" class="primary">Copy code</button>
+            <button type="button" id="btn-promoter-copy-link" class="secondary">Copy link</button>
+          </div>
+          <div class="promoter-scoreboard visual-card visual-card-grid" aria-label="Promoter snapshot">
+            <div class="visual-card-item"><strong id="promoter-xp">—</strong><span>XP</span></div>
+            <div class="visual-card-item"><strong id="promoter-shares">0</strong><span>Publishes</span></div>
+            <div class="visual-card-item"><strong id="promoter-credits">—</strong><span>Est. $</span></div>
+          </div>
+        </aside>
+
+        <div class="promoter-studio">
+          <h3 class="section-sub">Pre-built posts</h3>
+          <p class="blurb">Choose a channel — edit if you like — then publish (opens the network) or copy.</p>
+          <div class="promoter-channels" role="tablist" aria-label="Share channels">
+            <button type="button" class="promoter-channel active" data-channel="linkedin" role="tab" aria-selected="true">LinkedIn</button>
+            <button type="button" class="promoter-channel" data-channel="instagram" role="tab" aria-selected="false">Instagram</button>
+            <button type="button" class="promoter-channel" data-channel="whatsapp" role="tab" aria-selected="false">WhatsApp</button>
+            <button type="button" class="promoter-channel" data-channel="blog" role="tab" aria-selected="false">Blog</button>
+          </div>
+          <label class="tc-label" for="promoter-share-text" id="promoter-channel-label">LinkedIn post</label>
+          <textarea id="promoter-share-text" rows="10" class="promoter-share-text"></textarea>
+          <div class="form-row actions promoter-publish-actions">
+            <button type="button" id="btn-promoter-publish" class="primary">Publish</button>
+            <button type="button" id="btn-promoter-copy" class="secondary">Copy post</button>
+            <button type="button" id="btn-promoter-draft" class="secondary">Reset template</button>
+            <button type="button" id="btn-promoter-wallet" class="secondary">Wallet</button>
+          </div>
+          <p id="promoter-status" class="hint" hidden aria-live="polite"></p>
+          <p class="hint">Publish opens the channel with your post ready where supported (WhatsApp / LinkedIn). Instagram &amp; blog copy to clipboard for paste.</p>
+        </div>
+      </div>
     </section>
 
     <section id="panel-cost" class="panel" data-panel="cost">

@@ -58,14 +58,37 @@ def _startup() -> None:
 
 class AuthRegisterRequest(BaseModel):
     email: str
-    password: str
+    password: str = ""
     name: str = ""
     role: str = "creator"
+    first_name: str = ""
+    last_name: str = ""
+    country: str = ""
+    phone: str = ""
+    roles: list[str] | None = None
+    app_url: str = ""
+    profile_complete: bool = True
 
 
 class AuthLoginRequest(BaseModel):
     email: str
     password: str
+
+
+class AuthSocialRequest(BaseModel):
+    provider: str
+    email: str
+    name: str = ""
+
+
+class AuthProfileUpdate(BaseModel):
+    first_name: str = ""
+    last_name: str = ""
+    country: str = ""
+    phone: str = ""
+    roles: list[str] | None = None
+    app_url: str = ""
+    profile_complete: bool = True
 
 
 class BrahlPlanGenerateRequest(BaseModel):
@@ -78,14 +101,37 @@ class BrahlPlanAcceptRequest(BaseModel):
     brahl_plan: dict[str, Any]
 
 
+class AuthForgotRequest(BaseModel):
+    email: str
+
+
+class AuthResetRequest(BaseModel):
+    token: str
+    password: str
+
+
+def _auth_user(request: Request) -> dict[str, Any] | None:
+    return auth_store.user_from_request(request.headers.get("Authorization"))
+
+
+def _require_project(project_id: str, request: Request) -> dict[str, Any]:
+    project = project_store.get_project(project_id)
+    if not project:
+        raise HTTPException(404, "Project not found")
+    user = _auth_user(request)
+    if not project_store.user_can_access_project(project, user):
+        raise HTTPException(403, "Not allowed to access this project")
+    return project
+
+
 class RunRequest(BaseModel):
-    config_path: str = Field(default="f/fStart_qoa_web_smoke.json")
+    config_path: str = Field(default="f/fStart_Math_smoke.json")
     step_label: str = Field(default="Run")
 
 
 class ContextRequest(BaseModel):
     prompt: str
-    config_path: str = Field(default="f/fStart_qoa_web_smoke.json")
+    config_path: str = Field(default="f/fStart_Math_smoke.json")
     documents: list[dict[str, str]] | None = None
     project_id: str | None = None
 
@@ -97,6 +143,18 @@ class YpadProjectCreate(BaseModel):
     budget_usd: float = 0
     ai_enabled: bool = True
     context_items: list[dict[str, str]] | None = None
+
+
+class PlannerChatRequest(BaseModel):
+    message: str
+    draft: dict[str, Any] | None = None
+    history: list[dict[str, str]] | None = None
+
+
+class PlannerCreateRequest(BaseModel):
+    draft: dict[str, Any]
+    brahl_plan: dict[str, Any] | None = None
+    quick_brahl: bool = False
 
 
 class ProjectCreate(BaseModel):
@@ -199,17 +257,17 @@ class Atomic77PlatformChat(BaseModel):
 
 
 class YpadSuiteRequest(BaseModel):
-    suite_config: str = Field(default="y/qoa_web/qoa_web.json")
+    suite_config: str = Field(default="y/Math/Math.json")
 
 
 class ShrinkRequest(BaseModel):
     run_name: str
-    suite_config: str = Field(default="y/qoa_web/qoa_web.json")
+    suite_config: str = Field(default="y/Math/Math.json")
 
 
 class ReportGenerateRequest(BaseModel):
     run_name: str
-    config_path: str = Field(default="f/fStart_qoa_web_verify.json")
+    config_path: str = Field(default="f/fStart_Math_verify.json")
     step_label: str = Field(default="Verify")
     project_id: str | None = None
 
@@ -291,7 +349,19 @@ def health() -> dict[str, str]:
 @app.post("/api/auth/register")
 def auth_register(body: AuthRegisterRequest) -> dict[str, Any]:
     try:
-        user = auth_store.register_user(body.email, body.password, body.name, body.role)
+        user = auth_store.register_user(
+            body.email,
+            body.password or None,
+            body.name,
+            body.role,
+            first_name=body.first_name,
+            last_name=body.last_name,
+            country=body.country,
+            phone=body.phone,
+            roles=body.roles,
+            app_url=body.app_url,
+            profile_complete=body.profile_complete,
+        )
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
     token = auth_store.create_token(user)
@@ -307,6 +377,17 @@ def auth_login(body: AuthLoginRequest) -> dict[str, Any]:
     return {"user": user, "token": token}
 
 
+@app.post("/api/auth/social")
+def auth_social(body: AuthSocialRequest) -> dict[str, Any]:
+    """Social sign-in stub (wire real OAuth later). Continues to profile step when incomplete."""
+    try:
+        user = auth_store.social_login_or_register(body.provider, body.email, body.name)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    token = auth_store.create_token(user)
+    return {"user": user, "token": token, "needs_profile": not user.get("profile_complete")}
+
+
 @app.get("/api/auth/me")
 def auth_me(request: Request) -> dict[str, Any]:
     user = auth_store.user_from_request(request.headers.get("Authorization"))
@@ -315,11 +396,81 @@ def auth_me(request: Request) -> dict[str, Any]:
     return {"user": user}
 
 
+@app.patch("/api/auth/me")
+async def auth_me_update(request: Request, body: AuthProfileUpdate) -> dict[str, Any]:
+    user = auth_store.user_from_request(request.headers.get("Authorization"))
+    if not user:
+        raise HTTPException(401, "Not authenticated")
+    try:
+        updated = auth_store.update_user_profile(
+            user["id"],
+            {
+                "first_name": body.first_name,
+                "last_name": body.last_name,
+                "country": body.country,
+                "phone": body.phone,
+                "roles": body.roles,
+                "app_url": body.app_url,
+                "profile_complete": body.profile_complete,
+            },
+        )
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    token = auth_store.create_token(updated)
+    return {"user": updated, "token": token}
+
+
+@app.post("/api/auth/me/profile-upload")
+async def auth_profile_upload(request: Request, file: UploadFile = File(...)) -> dict[str, Any]:
+    user = auth_store.user_from_request(request.headers.get("Authorization"))
+    if not user:
+        raise HTTPException(401, "Not authenticated")
+    data = await file.read()
+    if len(data) > 5_000_000:
+        raise HTTPException(400, "Profile file too large (max 5MB)")
+    try:
+        rel = auth_store.save_profile_upload(user["id"], file.filename or "profile.bin", data)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    updated = auth_store.get_user(user["id"])
+    return {"ok": True, "profile_path": rel, "user": updated}
+
+
+@app.get("/api/config")
+def public_config() -> dict[str, Any]:
+    return {
+        "allow_demo": auth_store.demo_allowed(),
+        "auth_enabled": True,
+        "version": APP_VERSION,
+    }
+
+
+@app.post("/api/auth/forgot-password")
+def auth_forgot(body: AuthForgotRequest) -> dict[str, Any]:
+    token = auth_store.create_password_reset(body.email)
+    # Always return ok — do not leak whether email exists. Dev: include reset_token when demo.
+    out: dict[str, Any] = {
+        "ok": True,
+        "message": "If that email is registered, a reset link is available.",
+    }
+    if token and auth_store.demo_allowed():
+        out["reset_token"] = token
+        out["reset_path"] = f"/forgot-password?token={token}"
+    return out
+
+
+@app.post("/api/auth/reset-password")
+def auth_reset(body: AuthResetRequest) -> dict[str, Any]:
+    try:
+        auth_store.reset_password(body.token, body.password)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    return {"ok": True, "message": "Password updated — log in with your new password."}
+
+
 @app.post("/api/projects/{project_id}/brahl-plan/generate")
-def brahl_plan_generate(project_id: str, body: BrahlPlanGenerateRequest) -> dict[str, Any]:
-    project = project_store.get_project(project_id)
-    if not project:
-        raise HTTPException(404, "Project not found")
+def brahl_plan_generate(project_id: str, body: BrahlPlanGenerateRequest, request: Request) -> dict[str, Any]:
+    project = _require_project(project_id, request)
     if not project.get("ai_enabled", True):
         raise HTTPException(400, "AI is off for this project")
     try:
@@ -335,7 +486,8 @@ def brahl_plan_generate(project_id: str, body: BrahlPlanGenerateRequest) -> dict
 
 
 @app.post("/api/projects/{project_id}/brahl-plan/accept")
-def brahl_plan_accept(project_id: str, body: BrahlPlanAcceptRequest) -> dict[str, Any]:
+def brahl_plan_accept(project_id: str, body: BrahlPlanAcceptRequest, request: Request) -> dict[str, Any]:
+    _require_project(project_id, request)
     try:
         project = project_store.apply_brahl_plan(project_id, body.brahl_plan)
     except KeyError:
@@ -576,6 +728,8 @@ def create_ypad_project(body: YpadProjectCreate, request: Request) -> dict[str, 
         detail = create_ypad_suite(name, body.app_url, body.purpose)
     except ValueError as exc:
         raise HTTPException(409, str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(500, f"Could not scaffold yPAD: {exc}") from exc
     safe = detail["name"]
     auth_user = auth_store.user_from_request(request.headers.get("Authorization"))
     project = project_store.create_project(
@@ -593,6 +747,47 @@ def create_ypad_project(body: YpadProjectCreate, request: Request) -> dict[str, 
     )
     payout = project_store.compute_payout_preview(project)
     return {"suite": detail, "project": project, "payout_preview": payout}
+
+
+@app.post("/api/planner/chat")
+def planner_chat(body: PlannerChatRequest) -> dict[str, Any]:
+    import planner as planner_store
+
+    msg = (body.message or "").strip()
+    if not msg:
+        raise HTTPException(400, "message required")
+    return planner_store.planner_turn(msg, body.draft, body.history)
+
+
+@app.post("/api/planner/create")
+def planner_create(body: PlannerCreateRequest, request: Request) -> dict[str, Any]:
+    import planner as planner_store
+
+    auth_user = auth_store.user_from_request(request.headers.get("Authorization"))
+    try:
+        created = planner_store.create_from_planner(
+            body.draft,
+            brahl_plan=body.brahl_plan,
+            owner_user_id=auth_user.get("id") if auth_user else None,
+        )
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(500, f"Could not create project: {exc}") from exc
+
+    job = None
+    if body.quick_brahl:
+        config_path = created.get("config_path") or default_fstart_for_suite(created["suite"]["name"])
+        try:
+            job = start_run(config_path, step_label="Verify")
+            created["quick_brahl_job"] = {
+                "job_id": job.job_id,
+                "status": job.status,
+                "config_path": config_path,
+            }
+        except Exception as exc:
+            created["quick_brahl_error"] = str(exc)
+    return created
 
 
 @app.get("/api/suites/{suite_name}/brahl/reports")
@@ -839,19 +1034,23 @@ def create_context(body: ContextRequest) -> dict[str, Any]:
 
 
 @app.get("/api/projects")
-def list_projects(role: str = "client") -> dict[str, Any]:
+def list_projects(request: Request, role: str = "client") -> dict[str, Any]:
+    user = _auth_user(request)
     if role == "consultant":
         items = project_store.list_consultant_projects()
+        if user and user.get("role") not in ("qa_hunter", "both", "admin"):
+            items = [p for p in items if project_store.user_can_access_project(p, user)]
     else:
-        items = project_store.list_client_projects()
+        owner_id = user.get("id") if user and user.get("role") in ("creator", "both", "admin") else None
+        items = project_store.list_client_projects(owner_user_id=owner_id)
+        if user:
+            items = [p for p in items if project_store.user_can_access_project(p, user)]
     return {"projects": items, "role": role}
 
 
 @app.get("/api/projects/{project_id}/cost-meter")
-def project_cost_meter(project_id: str, runtime: str | None = None) -> dict[str, Any]:
-    project = project_store.get_project(project_id)
-    if not project:
-        raise HTTPException(404, "Project not found")
+def project_cost_meter(project_id: str, request: Request, runtime: str | None = None) -> dict[str, Any]:
+    project = _require_project(project_id, request)
     meter = project_store.compute_cost_meter(project, runtime)
     return {"cost_meter": meter, "project": project}
 
@@ -885,19 +1084,15 @@ def pricing_rules(
 
 
 @app.get("/api/projects/{project_id}")
-def get_project(project_id: str) -> dict[str, Any]:
-    project = project_store.get_project(project_id)
-    if not project:
-        raise HTTPException(404, "Project not found")
+def get_project(project_id: str, request: Request) -> dict[str, Any]:
+    project = _require_project(project_id, request)
     payout = project_store.compute_payout_preview(project)
     return {"project": project, "payout_preview": payout}
 
 
 @app.get("/api/projects/{project_id}/build-board")
-def build_board(project_id: str) -> dict[str, Any]:
-    project = project_store.get_project(project_id)
-    if not project:
-        raise HTTPException(404, "Project not found")
+def build_board(project_id: str, request: Request) -> dict[str, Any]:
+    project = _require_project(project_id, request)
     suite_name = project.get("suite_name") or "qoa_web"
     suite_config = project.get("suite_config") or f"y/{suite_name}/{suite_name}.json"
     try:
@@ -1011,8 +1206,12 @@ def snapshot_version_baseline(project_id: str, body: VersionBaselineRequest) -> 
 
 
 @app.post("/api/projects")
-def create_project(body: ProjectCreate) -> dict[str, Any]:
-    project = project_store.create_project(body.model_dump())
+def create_project(body: ProjectCreate, request: Request) -> dict[str, Any]:
+    data = body.model_dump()
+    user = _auth_user(request)
+    if user:
+        data["owner_user_id"] = user.get("id")
+    project = project_store.create_project(data)
     welcome = project_store.add_chat_message(
         project["id"],
         "assistant",
@@ -1023,7 +1222,8 @@ def create_project(body: ProjectCreate) -> dict[str, Any]:
 
 
 @app.patch("/api/projects/{project_id}")
-def patch_project(project_id: str, body: ProjectUpdate) -> dict[str, Any]:
+def patch_project(project_id: str, body: ProjectUpdate, request: Request) -> dict[str, Any]:
+    _require_project(project_id, request)
     patch = {k: v for k, v in body.model_dump().items() if v is not None}
     try:
         project = project_store.update_project(project_id, patch)
@@ -1033,10 +1233,8 @@ def patch_project(project_id: str, body: ProjectUpdate) -> dict[str, Any]:
 
 
 @app.post("/api/projects/{project_id}/chat")
-def post_chat(project_id: str, body: ChatMessage) -> dict[str, Any]:
-    project = project_store.get_project(project_id)
-    if not project:
-        raise HTTPException(404, "Project not found")
+def post_chat(project_id: str, body: ChatMessage, request: Request) -> dict[str, Any]:
+    project = _require_project(project_id, request)
     if not project.get("ai_enabled", True):
         raise HTTPException(400, "AI is off — use manual purpose field on Build")
     user_msg = project_store.add_chat_message(project_id, "user", body.text)
@@ -1538,6 +1736,14 @@ def signup_page():
     if not signup_path.is_file():
         raise HTTPException(404, "Signup page not found")
     return FileResponse(signup_path)
+
+
+@app.get("/forgot-password")
+def forgot_password_page():
+    path = WEB_DIR / "forgot-password.html"
+    if not path.is_file():
+        raise HTTPException(404, "Forgot-password page not found")
+    return FileResponse(path)
 
 
 @app.get("/app")

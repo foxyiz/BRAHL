@@ -27,7 +27,21 @@ def slug_suite_name(name: str) -> str:
 
 
 def load_personas() -> list[dict[str, str]]:
-    idx = json.loads((DATA_DIR / "index.json").read_text(encoding="utf-8"))
+    """Load Docs/test-user-data personas; fall back to a single D1 column when missing."""
+    idx_path = DATA_DIR / "index.json"
+    if not idx_path.is_file():
+        return [
+            {
+                "column": "D1",
+                "id": "P1",
+                "code": "P1",
+                "name": "Default",
+                "default_avatar": "client",
+                "can_hitl": True,
+                "can_client": True,
+            }
+        ]
+    idx = json.loads(idx_path.read_text(encoding="utf-8"))
     out: list[dict[str, str]] = []
     for entry in idx.get("personas", []):
         p = json.loads((DATA_DIR / entry["file"]).read_text(encoding="utf-8"))
@@ -42,7 +56,17 @@ def load_personas() -> list[dict[str, str]]:
                 "can_client": "client" in (p.get("allowed_avatars") or []),
             }
         )
-    return out
+    return out or [
+        {
+            "column": "D1",
+            "id": "P1",
+            "code": "P1",
+            "name": "Default",
+            "default_avatar": "client",
+            "can_hitl": True,
+            "can_client": True,
+        }
+    ]
 
 
 def _col_map(fn) -> dict[str, str]:
@@ -148,24 +172,125 @@ def write_smoke_ypad(y_dir: Path, suite: str, app_url: str) -> None:
         w.writerows(actions)
 
 
+def _slug_plan_token(text: str, max_len: int = 28) -> str:
+    slug = re.sub(r"[^a-zA-Z0-9]+", "_", (text or "").strip())
+    slug = re.sub(r"_+", "_", slug).strip("_")
+    return (slug or "Case")[:max_len]
+
+
+def write_ypad_from_brahl_plan(
+    y_dir: Path,
+    suite: str,
+    app_url: str,
+    brahl_plan: dict[str, Any] | None,
+    *,
+    max_auto: int = 12,
+) -> dict[str, Any]:
+    """Materialize automated test_cases into y1/y2 white pads (lean URL smoke per case).
+
+    Manual / QA Hunter cases stay out of Run=Y — they belong in HITL stories.
+    Falls back to the fixed smoke landing plan when no automated cases exist.
+    """
+    cases = list((brahl_plan or {}).get("test_cases") or [])
+    auto = [c for c in cases if c.get("automated") is not False][:max_auto]
+    if not auto:
+        write_smoke_ypad(y_dir, suite, app_url)
+        return {"mode": "smoke", "automated_plans": 1, "skipped_manual": len(cases)}
+
+    prefix = _plan_prefix(suite)
+    reuse = f"PReuse_{prefix}_OpenSite"
+    plans: list[tuple] = [
+        (reuse, f"Open browser and navigate to {suite}", "D1", "N", "Reuse", "site_loaded"),
+    ]
+    actions: list[tuple] = [
+        (reuse, 1, "Open browser", "xUI", "xOpenBrowser", "edge", "", "", "y"),
+        (reuse, 2, "Navigate to app", "xUI", "xNavigate", "base_url", "", "", "y"),
+        (reuse, 3, "Verify body present", "xUI", "xGetText", "body_locator", "", "", "y"),
+    ]
+    used_ids: set[str] = {reuse}
+
+    for i, case in enumerate(auto, start=1):
+        title = (case.get("title") or f"Case {i}").strip()
+        tid = (case.get("id") or f"T{i}").strip()
+        token = _slug_plan_token(f"{tid}_{title}")
+        plan_id = f"P{prefix}_{token}"
+        if plan_id in used_ids:
+            plan_id = f"P{prefix}_T{i}_{token}"[:60]
+        used_ids.add(plan_id)
+        plans.append(
+            (
+                plan_id,
+                title[:120],
+                "D1",
+                "Y",
+                f"{suite};Smoke;BRAHL;{tid}",
+                f"case_{i}_ok",
+            )
+        )
+        actions.append((plan_id, 1, "Open site", "xReuse", reuse, "", "", "", "y"))
+        actions.append((plan_id, 2, f"Verify: {title[:80]}", "xUI", "xGetText", "body_locator", "", "", "y"))
+        if app_url.strip():
+            actions.append((plan_id, 3, "Verify page responsive", "xUI", "xGetTitle", "", "", "page_title_contains", "y"))
+
+    with (y_dir / "y1Plans.csv").open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["PlanId", "PlanName", "DesignId", "Run", "Tags", "Output"])
+        w.writerows(plans)
+
+    with (y_dir / "y2Actions.csv").open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["PlanId", "StepId", "StepInfo", "ActionType", "ActionName", "Input", "Output", "Expected", "Critical"])
+        w.writerows(actions)
+
+    manual = len(cases) - len(auto)
+    return {
+        "mode": "brahl_plan",
+        "automated_plans": len(auto),
+        "skipped_manual": max(0, manual),
+        "reuse": reuse,
+    }
+
+
 def write_fstart(suite: str, tag: str | None = None) -> Path:
     safe = slug_suite_name(suite)
-    tag = tag or "".join(p.capitalize() for p in safe.split("_"))
     cfg = {
         "configs": [f"y/{safe}/{safe}.json"],
         "thread_count": 1,
         "timeout": 15,
-        "headless": False,
+        "headless": True,
         "debug": False,
-        "tags": [tag],
+        "tags": [tag or "Smoke"],
     }
     path = F_DIR / f"fStart_{safe}_smoke.json"
     path.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
     return path
 
 
-def write_app_ypad_suite(name: str, app_url: str = "", description: str = "") -> dict[str, Any]:
-    """Create y/<name>/ with persona y3Designs, smoke yPAD, suite JSON, and fStart config."""
+def materialize_brahl_plan_suite(
+    suite_name: str,
+    app_url: str = "",
+    brahl_plan: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Rewrite y1/y2 for an existing suite from a BRAHL plan (keeps y3Designs)."""
+    safe = slug_suite_name(suite_name)
+    y_dir = Y_DIR / safe
+    if not y_dir.is_dir():
+        raise FileNotFoundError(f"Suite folder missing: y/{safe}")
+    if not (y_dir / "y3Designs.csv").is_file():
+        write_y3_designs(y_dir / "y3Designs.csv", app_url)
+    meta = write_ypad_from_brahl_plan(y_dir, safe, app_url, brahl_plan)
+    meta["suite"] = safe
+    meta["path"] = f"y/{safe}/{safe}.json"
+    return meta
+
+
+def write_app_ypad_suite(
+    name: str,
+    app_url: str = "",
+    description: str = "",
+    brahl_plan: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Create y/<name>/ with persona y3Designs, plan-driven or smoke yPAD, suite JSON, and fStart."""
     safe = slug_suite_name(name)
     y_dir = Y_DIR / safe
     config_path = y_dir / f"{safe}.json"
@@ -187,7 +312,7 @@ def write_app_ypad_suite(name: str, app_url: str = "", description: str = "") ->
     }
     config_path.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
     write_y3_designs(y_dir / "y3Designs.csv", app_url)
-    write_smoke_ypad(y_dir, safe, app_url)
+    pad_meta = write_ypad_from_brahl_plan(y_dir, safe, app_url, brahl_plan)
     fstart = write_fstart(safe)
 
     personas = load_personas()
@@ -198,6 +323,7 @@ def write_app_ypad_suite(name: str, app_url: str = "", description: str = "") ->
         "description": description,
         "fstart_smoke": str(fstart.relative_to(KK_ROOT)).replace("\\", "/"),
         "persona_columns": len(personas),
+        "ypad": pad_meta,
     }
 
 

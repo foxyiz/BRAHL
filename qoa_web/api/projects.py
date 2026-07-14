@@ -127,8 +127,15 @@ def get_project(project_id: str) -> dict[str, Any] | None:
     return None
 
 
-def list_client_projects() -> list[dict[str, Any]]:
-    return [p for p in load_projects() if p.get("owner_avatar") == "client"]
+def list_client_projects(owner_user_id: str | None = None) -> list[dict[str, Any]]:
+    items = [p for p in load_projects() if p.get("owner_avatar") == "client"]
+    if owner_user_id:
+        items = [
+            p
+            for p in items
+            if p.get("owner_user_id") == owner_user_id or not p.get("owner_user_id")
+        ]
+    return items
 
 
 def list_consultant_projects() -> list[dict[str, Any]]:
@@ -137,6 +144,23 @@ def list_consultant_projects() -> list[dict[str, Any]]:
         for p in load_projects()
         if p.get("owner_avatar") == "client" and p.get("status") in ("open", "in_progress")
     ]
+
+
+def user_can_access_project(project: dict[str, Any], user: dict[str, Any] | None) -> bool:
+    """Owned projects require matching user; unowned (demo/legacy) stay shared."""
+    owner = project.get("owner_user_id")
+    if not owner:
+        return True
+    if not user:
+        return False
+    if user.get("role") == "admin":
+        return True
+    if user.get("role") in ("qa_hunter", "both") and project.get("status") in (
+        "open",
+        "in_progress",
+    ):
+        return True
+    return owner == user.get("id")
 
 
 def find_project_for_suite(suite_name: str) -> dict[str, Any] | None:
@@ -205,6 +229,7 @@ def create_project(body: dict[str, Any]) -> dict[str, Any]:
             "reports": [],
             "ai_enabled": body.get("ai_enabled", True),
             "brahl_context_path": body.get("brahl_context_path"),
+            "brahl_plan_draft": body.get("brahl_plan_draft"),
             "latest_run": None,
             "created_at": _now(),
             "updated_at": _now(),
@@ -877,7 +902,7 @@ def register_brahl_report(
                 suite_name = "_".join(suite[2:]) if len(suite) >= 3 else ""
                 ensure_brahl_report(
                     run_name,
-                    config_path=default_fstart_for_suite(suite_name) if suite_name else "f/fStart_qoa_web_verify.json",
+                    config_path=default_fstart_for_suite(suite_name) if suite_name else "f/fStart_Math_verify.json",
                     project=p,
                 )
                 resolved = _resolve_report_file(run_name)
@@ -1030,7 +1055,7 @@ def brahl_model_reply(
     user_text: str,
     run_name: str | None = None,
 ) -> str:
-    """Answer from structured report data — not open-ended chat."""
+    """Answer from BRAHL report (+ optional LLM when OPENAI_API_KEY is set)."""
     name = project.get("name") or "this project"
     purpose = project.get("purpose") or project.get("prompt") or "No purpose captured yet."
     lower = user_text.lower().strip()
@@ -1042,6 +1067,43 @@ def brahl_model_reply(
             f"Run Loop → Verify, then open this tab — the report is built from zResults automatically. "
             f"Project purpose: {purpose[:200]}"
         )
+
+    # Prefer grounded LLM over keyword shortcuts when available
+    try:
+        from ai_assist import _chat, is_ai_available
+
+        if is_ai_available() and (user_text or "").strip():
+            stats_hint = ""
+            try:
+                from runner import report_stats
+
+                rn = run_name or project.get("latest_run") or ""
+                if rn:
+                    st = report_stats(rn)
+                    stats_hint = (
+                        f"\nRun stats: {st.get('passes')}/{st.get('total_plans')} pass, "
+                        f"{st.get('fails')} fail, health {st.get('health')}, "
+                        f"~{st.get('duration_sec')}s.\n"
+                    )
+            except Exception:
+                pass
+            system = (
+                "You are the BRAHL report assistant for QAonAir. "
+                "Answer ONLY from the report markdown and stats below. "
+                "Be concise (≤150 words). Use spelling BRAHL (never brawl). "
+                "If the report lacks the answer, say so and suggest Verify or Heal next steps."
+            )
+            user = (
+                f"Project: {name}\nPurpose: {purpose[:400]}\n"
+                f"{stats_hint}\n"
+                f"--- BRAHL report (truncated) ---\n{(report_md or '')[:12000]}\n---\n"
+                f"User question: {user_text}"
+            )
+            reply = _chat(system, user)
+            if reply:
+                return reply.strip()
+    except Exception:
+        pass
 
     summary = _report_headline(report_md)
 
@@ -1089,12 +1151,12 @@ def brahl_model_reply(
             "QA Hunter reports add critical issues and UX findings on top of automation."
         )
 
-    if any(w in lower for w in ("purpose", "scope", "project")):
-        return f"**{name}** purpose: {purpose}\n\nReport headline:\n{summary[:400]}"
+    if any(w in lower for w in ("purpose", "scope", "project", "origin", "prompt")):
+        return f"**{name}** purpose / origin: {purpose}\n\nReport headline:\n{summary[:400]}"
 
     return (
-        f"**{name}** — answers come from the BRAHL report above (not free-form chat). "
-        f"Try: summary, failures, how long, loop, health.\n\n{summary[:350]}"
+        f"**{name}** — answers come from the BRAHL report above. "
+        f"Try: summary, failures, how long, loop, health, origin.\n\n{summary[:350]}"
     )
 
 
@@ -1185,8 +1247,13 @@ def ecosystem_stats() -> dict[str, Any]:
     }
 
 
-def apply_brahl_plan(project_id: str, plan: dict[str, Any]) -> dict[str, Any]:
-    """Persist accepted BRAHL Plan — purpose, stories, draft test cases."""
+def apply_brahl_plan(
+    project_id: str,
+    plan: dict[str, Any],
+    *,
+    write_ypad: bool = True,
+) -> dict[str, Any]:
+    """Persist accepted BRAHL Plan — purpose, stories, draft; optionally rewrite yPAD CSVs."""
     projects = load_projects()
     for i, p in enumerate(projects):
         if p.get("id") != project_id:
@@ -1197,9 +1264,10 @@ def apply_brahl_plan(project_id: str, plan: dict[str, Any]) -> dict[str, Any]:
             p["purpose"] = summary
             p["prompt"] = summary
         stories = list(p.get("hitl_stories") or [])
+        existing_titles = {(s.get("title") or "").strip().lower() for s in stories}
         for story in plan.get("user_stories") or []:
             title = (story.get("title") or "").strip()
-            if not title:
+            if not title or title.lower() in existing_titles:
                 continue
             desc = story.get("description") or ""
             if story.get("automated") is False:
@@ -1213,10 +1281,40 @@ def apply_brahl_plan(project_id: str, plan: dict[str, Any]) -> dict[str, Any]:
                     "created_at": _now(),
                 }
             )
+            existing_titles.add(title.lower())
         p["hitl_stories"] = stories
         p["brahl_plan_draft"] = plan
         p["updated_at"] = _now()
         projects[i] = p
         save_projects(projects)
+
+        if write_ypad:
+            suite = (p.get("suite_name") or "").strip()
+            if suite:
+                try:
+                    from runner import materialize_brahl_plan_for_suite
+
+                    materialize_brahl_plan_for_suite(
+                        suite,
+                        app_url=p.get("app_url") or "",
+                        brahl_plan=plan,
+                    )
+                except Exception:
+                    pass
+            # Capture / refresh Step 0 origin when purpose known
+            try:
+                from runner import capture_brahl_context, default_fstart_for_suite
+
+                prompt = (p.get("purpose") or p.get("prompt") or summary or "").strip()
+                if prompt:
+                    fstart = default_fstart_for_suite(suite) if suite else "f/fStart_Math.json"
+                    ctx = capture_brahl_context(prompt, fstart)
+                    return update_project(
+                        project_id,
+                        {"brahl_context_path": ctx.get("context_path"), "purpose": prompt, "prompt": prompt},
+                    )
+            except Exception:
+                pass
+
         return get_project(project_id) or p
     raise KeyError(project_id)

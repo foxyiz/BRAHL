@@ -1,9 +1,9 @@
-One-off Playwright probe outputs, cleaner archives, and optional demo export bundles.
+﻿# Relocate this folder outside KK
 
-| Folder | Contents |
-|--------|----------|
-| `probes/` | Legacy probe JSON/scripts (out of qoa_web v1 scope) |
-| `cleanup/<timestamp>/` | Moved by `python u/cleaner.py --apply` — **safe to delete entire `cleanup/` folder** |
-| `demo-bundle/` | Output of `python u/export_demo_bundle.py` — keep latest only; delete old snapshots |
+Contents:
+- cleanup/ — ephemeral z/ runs (from pyUtils/cleaner.py)
+- not-needed-20260714/ — unused yPADs, fStart configs, Docs dumps, Summary.md, BRAHL.py
 
-Run cleaner after FoXYiZ sessions to keep `z/` and repo context small.
+Safe to move entire `archive/` to e.g. `c:\006\FXYZ\_KK_archive\` or delete when you no longer need history.
+
+Lean KK keeps: qoa_web/, f/ (engine + Math/nalanda/qoa_web smoke-verify starts), x/, y/Math, y/nalanda_app, pyUtils/, Docs/*.md (slim).

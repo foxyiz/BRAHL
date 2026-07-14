@@ -1,0 +1,188 @@
+PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PAPI_Health,1,GET health,xAPI,xGet,api_base_url;api_health_endpoint,,200,y
+PAPI_ProfilesJs,1,GET profiles.js,xAPI,xGet,api_base_url;api_profiles_js_endpoint,,200,y
+PAPI_ProjectsConsultant,1,GET consultant projects,xAPI,xGet,api_base_url;api_projects_consultant_endpoint,,200,y
+PAPI_Signin,1,GET signin,xAPI,xGet,api_base_url;api_signin_endpoint,,200,y
+PAPI_Suites,1,GET suites,xAPI,xGet,api_base_url;api_suites_endpoint,,200,y
+PPersona_P1_Journey,1,P1 ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PPersona_P1_Journey,2,Reload profile URL,xUI,xNavigate,profile_url,,,y
+PPersona_P1_Journey,3,Wait for profile,xTime,xTimeWait,4,,,y
+PPersona_P1_Journey,4,Verify P1 chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PPersona_P1_Journey,5,Open refine section,xUI,xClick,build_refine_summary_locator,,,y
+PPersona_P1_Journey,6,Verify budget,xUI,xGetText,budget_block_locator,,Budget,y
+PPersona_P2_Journey,1,P2 ready,xReuse,PReuse_PersonaReady,,,,y
+PPersona_P2_Journey,2,Reload profile URL,xUI,xNavigate,profile_url,,,y
+PPersona_P2_Journey,3,Wait for profile,xTime,xTimeWait,4,,,y
+PPersona_P2_Journey,4,Verify P2 chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PPersona_P2_Journey,5,Click HITL,xUI,xClick,avatar_hitl_bar_btn,,,y
+PPersona_P2_Journey,6,Click Build,xUI,xClick,nav_build_btn,,,y
+PPersona_P2_Journey,7,Verify QA Hunter panel,xUI,xGetText,build_consultant_panel_locator,,consultant_panel_heading_expected,y
+PPersona_P3_Journey,1,P3 HITL ready,xReuse,PReuse_qoa_web_HitlReady,,,,y
+PPersona_P3_Journey,2,Reload profile URL,xUI,xNavigate,profile_url,,,y
+PPersona_P3_Journey,3,Wait for profile,xTime,xTimeWait,4,,,y
+PPersona_P3_Journey,4,Verify P3 chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PPersona_P3_Journey,5,Verify join,xUI,xGetText,btn_join_hitl_locator,,join_btn_expected,y
+PPersona_P4_Journey,1,P4 ready,xReuse,PReuse_PersonaReady,,,,y
+PPersona_P4_Journey,2,Reload profile URL,xUI,xNavigate,profile_url,,,y
+PPersona_P4_Journey,3,Wait for profile,xTime,xTimeWait,4,,,y
+PPersona_P4_Journey,4,Verify P4 chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PPersona_P4_Journey,5,Click Build,xUI,xClick,nav_build_btn,,,y
+PPersona_P4_Journey,6,Verify senior banner,xUI,xGetText,consultant_tier_banner_locator,,senior_banner_expected,y
+PPersona_P5_Journey,1,P5 ready,xReuse,PReuse_PersonaReady,,,,y
+PPersona_P5_Journey,2,Reload profile URL,xUI,xNavigate,profile_url,,,y
+PPersona_P5_Journey,3,Wait for profile,xTime,xTimeWait,4,,,y
+PPersona_P5_Journey,4,Verify P5 chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PPersona_P5_Journey,5,Verify AI locked,xUI,xGetText,ai_toggle_label_locator,,ai_off_label_expected,y
+PPersona_P6_Journey,1,P6 ready,xReuse,PReuse_PersonaReady,,,,y
+PPersona_P6_Journey,2,Reload profile URL,xUI,xNavigate,profile_url,,,y
+PPersona_P6_Journey,3,Wait for profile,xTime,xTimeWait,4,,,y
+PPersona_P6_Journey,4,Verify P6 chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PPersona_P6_Journey,5,Verify dual HITL click,xUI,xClick,avatar_hitl_bar_btn,,,y
+PPersona_P7_Journey,1,P7 ready,xReuse,PReuse_PersonaReady,,,,y
+PPersona_P7_Journey,2,Reload profile URL,xUI,xNavigate,profile_url,,,y
+PPersona_P7_Journey,3,Wait for profile,xTime,xTimeWait,4,,,y
+PPersona_P7_Journey,4,Verify P7 chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PPersona_P7_Journey,5,Click Build,xUI,xClick,nav_build_btn,,,y
+PPersona_P7_Journey,6,Verify yPAD,xUI,xGetText,ypad_explorer_locator,,Y Plans,y
+PPersona_P8_Journey,1,P8 persona ready,xReuse,PReuse_PersonaReady,,,,y
+PPersona_P8_Journey,2,Click Build,xUI,xClick,nav_build_btn,,,y
+PPersona_P8_Journey,3,Wait for profile,xTime,xTimeWait,6,,,y
+PPersona_P8_Journey,4,Verify P8 chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PPersona_P8_Journey,5,Verify join,xUI,xGetText,btn_join_hitl_locator,,join_btn_expected,y
+PPersona_P9_Journey,1,Load P9 profile URL,xUI,xNavigate,profile_url,,,y
+PPersona_P9_Journey,2,Wait for init,xTime,xTimeWait,6,,,y
+PPersona_P9_Journey,3,Verify P9 chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PPersona_P9_Journey,4,Click Build,xUI,xClick,nav_build_btn,,,y
+PPersona_P9_Journey,5,Verify add-challenge affordance,xUI,xGetText,btn_new_project_locator,,add_challenge_btn_expected,y
+PReuse_PersonaReady,1,Open browser,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_PersonaReady,2,Load persona profile URL,xUI,xNavigate,profile_url,,,y
+PReuse_PersonaReady,3,Verify profile chip code,xUI,xGetText,profile_chip_code_locator,,,y
+PReuse_qoa_web_ClientReady,1,Persona ready,xReuse,PReuse_PersonaReady,,,,y
+PReuse_qoa_web_ClientReady,2,Click Client if needed,xUI,xClick,avatar_client_bar_btn,,,y
+PReuse_qoa_web_ClientReady,3,Verify topbar challenge label,xUI,xGetText,topbar_project_label_locator,,My challenge,y
+PReuse_qoa_web_HitlReady,1,Persona ready,xReuse,PReuse_PersonaReady,,,,y
+PReuse_qoa_web_HitlReady,2,Click HITL avatar,xUI,xClick,avatar_hitl_bar_btn,,,y
+PReuse_qoa_web_HitlReady,3,Verify Build QA Hunter title,xUI,xGetText,build_panel_title_locator,,build_title_hitl_expected,y
+PReuse_qoa_web_OpenSite,1,Open browser,xUI,xOpenBrowser,edge,,,y
+PReuse_qoa_web_OpenSite,2,Navigate home,xUI,xNavigate,base_url,,,y
+PWeb_About_ArenaVision,1,Open browser,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PWeb_About_ArenaVision,2,Navigate About,xUI,xNavigate,about_url,,,y
+PWeb_About_ArenaVision,3,Verify arena title,xUI,xGetText,about_arena_title_locator,,about_arena_title_expected,y
+PWeb_About_P2PMarketplace,1,Open browser,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PWeb_About_P2PMarketplace,2,Navigate About,xUI,xNavigate,about_url,,,y
+PWeb_About_P2PMarketplace,3,Verify P2P lead,xUI,xGetText,about_p2p_locator,,about_p2p_expected,y
+PWeb_Avatar_ThreeBar,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Avatar_ThreeBar,2,Reload home,xUI,xNavigate,profile_url,,,y
+PWeb_Avatar_ThreeBar,3,Wait for shell,xTime,xTimeWait,3,,,y
+PWeb_Avatar_ThreeBar,4,Verify Creator label,xUI,xGetText,avatar_client_label_locator,,avatar_creator_label_expected,y
+PWeb_Avatar_ThreeBar,5,Verify QA Hunter label,xUI,xGetText,avatar_hitl_label_locator,,avatar_hunter_label_expected,y
+PWeb_Avatar_ThreeBar,6,Verify Nalanda label,xUI,xGetText,avatar_networker_label_locator,,avatar_nalanda_label_expected,y
+PWeb_Build_Budget,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Build_Budget,2,Open refine section,xUI,xClick,build_refine_summary_locator,,,y
+PWeb_Build_Budget,3,Verify budget,xUI,xGetText,budget_block_locator,,Budget,y
+PWeb_Build_ChatInput,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Build_ChatInput,2,Verify chat input,xUI,xGetText,chat_input_locator,,,y
+PWeb_Footer_Health,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Footer_Health,2,Verify health pill,xUI,xGetText,health_pill_locator,,ok,y
+PWeb_GoNoGo_Block,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_GoNoGo_Block,2,Reload home,xUI,xNavigate,profile_url,,,y
+PWeb_GoNoGo_Block,3,Wait for shell,xTime,xTimeWait,3,,,y
+PWeb_GoNoGo_Block,4,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PWeb_GoNoGo_Block,5,Wait for panel,xTime,xTimeWait,3,,,y
+PWeb_GoNoGo_Block,6,Verify Go/No-Go section,xUI,xGetText,gonogo_section_locator,,gonogo_section_expected,y
+PWeb_Hitl_Avatar_Switch,1,P2 persona ready,xReuse,PReuse_PersonaReady,,,,y
+PWeb_Hitl_Avatar_Switch,2,Click HITL avatar,xUI,xClick,avatar_hitl_bar_btn,,,y
+PWeb_Hitl_Avatar_Switch,3,Verify QA Hunter Build title,xUI,xGetText,build_panel_title_locator,,build_title_hitl_expected,y
+PWeb_Hitl_Avatar_Switch,4,Verify join button,xUI,xGetText,btn_join_hitl_locator,,join_btn_expected,y
+PWeb_Hitl_JoinButton,1,HITL ready,xReuse,PReuse_qoa_web_HitlReady,,,,y
+PWeb_Hitl_JoinButton,2,Click Build,xUI,xClick,nav_build_btn,,,y
+PWeb_Hitl_JoinButton,3,Verify join button,xUI,xGetText,btn_join_hitl_locator,,join_btn_expected,y
+PWeb_Hitl_TierBanner,1,P4 persona,xReuse,PReuse_PersonaReady,,,,y
+PWeb_Hitl_TierBanner,2,Click Build,xUI,xClick,nav_build_btn,,,y
+PWeb_Hitl_TierBanner,3,Verify senior banner,xUI,xGetText,consultant_tier_banner_locator,,senior_banner_expected,y
+PWeb_Manual_AiLocked,1,P5 persona,xReuse,PReuse_PersonaReady,,,,y
+PWeb_Manual_AiLocked,2,Reload P5 profile URL,xUI,xNavigate,profile_url,,,y
+PWeb_Manual_AiLocked,3,Wait for profile,xTime,xTimeWait,4,,,y
+PWeb_Manual_AiLocked,4,Verify AI off label,xUI,xGetText,ai_toggle_label_locator,,ai_off_label_expected,y
+PWeb_Nav_CostTab,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Nav_CostTab,2,Verify cost tab,xUI,xGetText,nav_cost_btn,,$,y
+PWeb_Nav_SixPhases,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Nav_SixPhases,2,Build nav,xUI,xGetText,nav_build_btn,,Build,y
+PWeb_Nav_SixPhases,3,Run nav,xUI,xGetText,nav_run_btn,,Run,y
+PWeb_Nav_SixPhases,4,Analyze nav,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PWeb_Nalanda_Panel,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Nalanda_Panel,2,Reload home,xUI,xNavigate,profile_url,,,y
+PWeb_Nalanda_Panel,3,Wait for shell,xTime,xTimeWait,3,,,y
+PWeb_Nalanda_Panel,4,Click Nalanda avatar,xUI,xClick,avatar_networker_bar_btn,,,y
+PWeb_Nalanda_Panel,5,Wait for nav,xTime,xTimeWait,2,,,y
+PWeb_Nalanda_Panel,6,Click Nalanda tab,xUI,xClick,nav_nalanda_btn,,,y
+PWeb_Nalanda_Panel,7,Verify Nalanda heading,xUI,xGetText,nalanda_heading_locator,,nalanda_heading_expected,y
+PWeb_NUX_EmptyBuild,1,P9 profile loaded,xReuse,PPersona_P9_Journey,,,,y
+PWeb_NUX_EmptyBuild,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PWeb_NUX_EmptyBuild,3,Verify add-challenge button,xUI,xGetText,btn_new_project_locator,,add_challenge_btn_expected,y
+PWeb_OpenHome,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_OpenHome,2,Verify body,xUI,xGetText,body_locator,,,y
+PWeb_P1_SwitchHunter,1,P1 client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_P1_SwitchHunter,2,Reload P1 profile,xUI,xNavigate,profile_url,,,y
+PWeb_P1_SwitchHunter,3,Wait for shell,xTime,xTimeWait,3,,,y
+PWeb_P1_SwitchHunter,4,Click QA Hunter avatar,xUI,xClick,avatar_hitl_bar_btn,,,y
+PWeb_P1_SwitchHunter,5,Wait for switch,xTime,xTimeWait,2,,,y
+PWeb_P1_SwitchHunter,6,Verify Hunter Build title,xUI,xGetText,build_panel_title_locator,,build_title_hitl_expected,y
+PWeb_Panel_Analyze,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Panel_Analyze,2,Click Analyze,xUI,xClick,nav_analyze_btn,,,y
+PWeb_Panel_Analyze,3,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,analyze_heading_expected,y
+PWeb_Panel_Brahl,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Panel_Brahl,2,Click BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PWeb_Panel_Brahl,3,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,brahl_heading_expected,y
+PWeb_Panel_Build,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Panel_Build,2,Click Build,xUI,xClick,nav_build_btn,,,y
+PWeb_Panel_Build,3,Verify Build title,xUI,xGetText,build_panel_title_locator,,build_title_client_expected,y
+PWeb_Panel_Heal,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Panel_Heal,2,Click Heal,xUI,xClick,nav_heal_btn,,,y
+PWeb_Panel_Heal,3,Verify shrink button,xUI,xGetText,btn_shrink_locator,,heal_shrink_expected,y
+PWeb_Panel_Loop,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Panel_Loop,2,Click Loop,xUI,xClick,nav_loop_btn,,,y
+PWeb_Panel_Loop,3,Verify Loop heading,xUI,xGetText,loop_heading_locator,,loop_heading_expected,y
+PWeb_Panel_Run,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Panel_Run,2,Click Run,xUI,xClick,nav_run_btn,,,y
+PWeb_Panel_Run,3,Verify Run heading,xUI,xGetText,run_heading_locator,,run_heading_expected,y
+PWeb_Power_YpadExplorer,1,P7 persona,xReuse,PReuse_PersonaReady,,,,y
+PWeb_Power_YpadExplorer,2,Click Build,xUI,xClick,nav_build_btn,,,y
+PWeb_Power_YpadExplorer,3,Verify yPAD explorer,xUI,xGetText,ypad_explorer_locator,,Y Plans,y
+PWeb_Profile_Chip,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Profile_Chip,2,Verify profile code,xUI,xGetText,profile_chip_code_locator,,,y
+PWeb_Signin_CreatorPitch,1,Open browser,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PWeb_Signin_CreatorPitch,2,Navigate sign-in,xUI,xNavigate,signin_url,,,y
+PWeb_Signin_CreatorPitch,3,Verify Creator pitch,xUI,xGetText,signin_creator_pitch_locator,,signin_creator_pitch_expected,y
+PWeb_Signin_HunterPitch,1,Open browser,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PWeb_Signin_HunterPitch,2,Navigate sign-in,xUI,xNavigate,signin_url,,,y
+PWeb_Signin_HunterPitch,3,Verify Hunter pitch,xUI,xGetText,signin_hunter_pitch_locator,,signin_hunter_pitch_expected,y
+PWeb_Signin_Page,1,Open browser,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PWeb_Signin_Page,2,Navigate sign-in,xUI,xNavigate,signin_url,,,y
+PWeb_Signin_Page,3,Verify sign-in grid,xUI,xGetText,body_locator,,,y
+PWeb_Topbar_Project,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Topbar_Project,2,Verify project dropdown,xUI,xGetText,topbar_project_selected_locator,,topbar_suite_expected,y
+PWeb_VerifyTitle,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_VerifyTitle,2,Verify title,xUI,xGetText,app_title_locator,,app_title_expected,y
+PWeb_XP_Panel,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_XP_Panel,2,Reload home,xUI,xNavigate,profile_url,,,y
+PWeb_XP_Panel,3,Wait for shell,xTime,xTimeWait,3,,,y
+PWeb_XP_Panel,4,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PWeb_XP_Panel,5,Verify XP heading,xUI,xGetText,xp_heading_locator,,xp_heading_expected,y
+PWeb_Signin_Profiles,1,Open sign-in,xUI,xNavigate,signin_url,,,y
+PWeb_Signin_Profiles,2,Verify profiles heading,xUI,xGetText,signin_profiles_heading_locator,,signin_profiles_heading_expected,y
+PWeb_Version_LaunchSection,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Version_LaunchSection,2,Click Build,xUI,xClick,nav_build_btn,,,y
+PWeb_Version_LaunchSection,3,Verify version section,xUI,xGetText,version_launch_section_locator,,version_launch_section_expected,y
+PWeb_Version_BaselineBtn,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Version_BaselineBtn,2,Click Build,xUI,xClick,nav_build_btn,,,y
+PWeb_Version_BaselineBtn,3,Verify baseline button,xUI,xGetText,version_baseline_btn_locator,,version_baseline_btn_expected,y
+PWeb_Hunt_EvidencePanel,1,HITL ready,xReuse,PReuse_qoa_web_HitlReady,,,,y
+PWeb_Hunt_EvidencePanel,2,Click Build,xUI,xClick,nav_build_btn,,,y
+PWeb_Hunt_EvidencePanel,3,Verify hunt evidence,xUI,xGetText,hunt_evidence_heading_locator,,hunt_evidence_heading_expected,y
+PWeb_P9_AddProjectModal,1,P9 profile,xReuse,PPersona_P9_Journey,,,,y
+PWeb_P9_AddProjectModal,2,Click new project,xUI,xClick,btn_new_project_locator,,,y
+PWeb_P9_AddProjectModal,3,Verify modal title,xUI,xGetText,add_project_modal_title_locator,,add_project_modal_title_expected,y
+PWeb_Admin_Ecosystem,1,P6 ready,xReuse,PPersona_P6_Journey,,,,y
+PWeb_Admin_Ecosystem,2,Open admin,xUI,xNavigate,admin_url,,,y
+PWeb_Admin_Ecosystem,3,Verify ecosystem heading,xUI,xGetText,admin_ecosystem_heading_locator,,admin_ecosystem_heading_expected,y

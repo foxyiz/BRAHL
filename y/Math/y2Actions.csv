@@ -1,6 +1,6 @@
 PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
 Math_Addition,1,Verify_Math_Addition,xMath,xAdd,v1;v2,vAdd,vAdd,n
-Math_Multiplication,1,Verify_Math_Multiplication,xMath,xMultiply,v1;v2,vMul,276,n
+Math_Multiplication,1,Verify_Math_Multiplication,xMath,xMultiply,v1;v2,vMul,264,n
 Math_Power,1,Verify_Math_Power,xMath,xPower,v1;2,vPow,vPow,n
 Math_Division,1,Verify_Math_Division,xMath,xDiv,v1;v2,vDiv,vDiv,n
 Math_Area,1,Square radius,xMath,xMultiply,v1;v1,vTemp,,n

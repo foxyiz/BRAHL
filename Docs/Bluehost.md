@@ -62,33 +62,47 @@ python u/patch_ypad_urls.py
 
 ---
 
-## 4. Deploy on Bluehost VPS (Docker — easiest)
+## 4. Deploy on Bluehost VPS (Docker Compose — preferred)
 
-SSH into the VPS, upload the demo bundle, then:
+From the demo-bundle or `KK/` root:
 
 ```bash
-cd brahl-demo-<timestamp>
 export APP_BASE_URL=https://demo.yourdomain.com
-python u/patch_ypad_urls.py
+export JWT_SECRET=$(openssl rand -hex 32)
+export QOA_ADMIN_TOKEN=$(openssl rand -hex 16)
+export QOA_ALLOW_DEMO=0
+export POSTGRES_PASSWORD=$(openssl rand -hex 16)
 
-docker build -t brahl-web -f qoa_web/Dockerfile .
-docker run -d -p 8765:8765 \
-  --name brahl \
-  --restart unless-stopped \
-  -e APP_BASE_URL=$APP_BASE_URL \
-  -e QOA_ADMIN_TOKEN=your-long-secret \
-  -e FOXYIZ_HEADLESS=true \
-  -v brahl-data:/app/qoa_web/data \
-  brahl-web
+cd qoa_web
+docker compose up -d --build
 ```
+
+This starts **Postgres** + **brahl-web** ([docker-compose.yml](../qoa_web/docker-compose.yml)). Auth users live in SQLite under `qoa_web/data/users.db` on the data volume; `DATABASE_URL` is reserved for a future projects-DB migration.
 
 Check:
 
 ```bash
 curl http://127.0.0.1:8765/api/health
+curl http://127.0.0.1:8765/api/config   # allow_demo should be false when QOA_ALLOW_DEMO=0
 ```
 
-Users open: `https://demo.yourdomain.com/welcome`
+Users open: `https://demo.yourdomain.com/welcome` → `/signup` or `/login`
+
+### Single-container alternative
+
+```bash
+docker build -t brahl-web -f qoa_web/Dockerfile .
+docker run -d -p 8765:8765 \
+  --name brahl \
+  --restart unless-stopped \
+  -e APP_BASE_URL=$APP_BASE_URL \
+  -e JWT_SECRET=$JWT_SECRET \
+  -e QOA_ADMIN_TOKEN=your-long-secret \
+  -e QOA_ALLOW_DEMO=0 \
+  -e FOXYIZ_HEADLESS=true \
+  -v brahl-data:/app/qoa_web/data \
+  brahl-web
+```
 
 ---
 
@@ -111,8 +125,9 @@ sudo systemctl reload nginx
 | `QOA_ADMIN_TOKEN` | **Yes** (production) | Protects `/admin` APIs |
 | `OPENAI_API_KEY` | Optional | AI on Build / Analyze / Heal |
 | `FOXYIZ_HEADLESS=true` | If running tests on server | Headless FoXYiZ |
-| `DATABASE_URL` | **Yes** (production auth) | PostgreSQL for real users |
-| `JWT_SECRET` or auth provider keys | **Yes** (production auth) | Session / token signing |
+| `QOA_ALLOW_DEMO` | **Yes** (set `0` in prod) | Disables `?demo=1` invite bypass |
+| `JWT_SECRET` | **Yes** (production) | Signs login tokens |
+| `DATABASE_URL` | Optional (compose sets it) | Reserved; users DB is SQLite in `data/users.db` today |
 | `SMTP_*` | **Yes** (production auth) | Verification + password reset email |
 
 Put secrets in `f/.env` on the server (not in the browser). The Build tab **ENV** panel is reference only.

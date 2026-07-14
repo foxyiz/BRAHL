@@ -3,42 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="QA on Air — BRAHL arena for Creators and QA Hunters. Enter your invite for a 7-day free trial." />
+  <meta name="description" content="QA on Air — BRAHL arena for Creators, QA Hunters, Nalanda, and Promoters. Enter your invite for a 7-day free trial." />
   <title>QA on Air — Invite-only trial</title>
   <link rel="stylesheet" href="/assets/styles.css" />
+  <link rel="stylesheet" href="/assets/forms.css" />
   <link rel="stylesheet" href="/assets/signin.css" />
   <link rel="stylesheet" href="/assets/welcome.css" />
 </head>
-<body class="signin-page welcome-page">
+<body class="signin-page welcome-page tc-page">
   <header class="welcome-hero-block">
-    <p class="welcome-kicker">QA on Air · GTM launch</p>
+    <p class="welcome-kicker tc-kicker">QA on Air · GTM launch</p>
     <h1>Experience the arena as a human</h1>
     <p class="welcome-lead">
       We're onboarding batches of <strong>50 Creators</strong> and <strong>50 QA Hunters</strong>.
       Enter your invite code for a <strong>7-day free trial</strong> — earn XP, spin up a small project, and <strong>BRAHL it</strong> with FoXYiZ.
     </p>
+    <section class="welcome-ai-prompt" aria-labelledby="welcome-ai-heading">
+      <h2 id="welcome-ai-heading" class="welcome-ai-title">Or start with a prompt</h2>
+      <p class="welcome-ai-blurb">Paste an app URL and what to cover — we’ll open the BRAHL planner to draft white pads and a Go/No-Go path.</p>
+      <form id="welcome-ai-form" class="welcome-ai-form">
+        <textarea
+          id="welcome-ai-input"
+          rows="3"
+          placeholder="e.g. https://example.com — smoke login, checkout, and landing for MVP launch"
+          aria-label="Requirement prompt"
+        ></textarea>
+        <button type="submit" class="tc-btn tc-btn-primary" id="welcome-ai-submit">Continue with AI →</button>
+      </form>
+    </section>
     <ul class="welcome-value-list">
       <li><strong>Creators</strong> — fund a QA wallet, scope with AI, launch Go/No-Go</li>
       <li><strong>QA Hunters</strong> — hunt defects, enrich reports, earn toward payout</li>
+      <li><strong>Nalanda</strong> — learn, teach, discuss in the free knowledge community</li>
+      <li><strong>Promoters</strong> — grow the arena with invites · earn XP &amp; wallet credits</li>
       <li><strong>Everyone</strong> — ~$5/mo membership after trial · invite-only batches</li>
     </ul>
   </header>
 
+  <nav class="welcome-feature-nav" aria-label="Arena features">
+    <a class="welcome-feature-chip" href="/app#nalanda"><span>Nalanda</span><small>Community</small></a>
+    <a class="welcome-feature-chip" href="/app#atomic77"><span>Atomic 77</span><small>Idea → launch</small></a>
+    <a class="welcome-feature-chip welcome-feature-chip-accent" href="/app#promoter"><span>Promoter</span><small>Invite · XP</small></a>
+    <a class="welcome-feature-chip" href="/app#cost"><span>Wallet</span><small>$ &amp; XP</small></a>
+  </nav>
+
   <main class="welcome-main">
-    <section class="welcome-invite-card" aria-labelledby="invite-heading">
+    <section class="welcome-invite-card tc-shell" aria-labelledby="invite-heading">
       <h2 id="invite-heading">Continue with invite</h2>
-      <p class="welcome-invite-hint">Paste the code from your launch email or open your personal invite link.</p>
-      <form id="invite-form" class="welcome-invite-form">
-        <label for="invite-code">Invite code</label>
-        <input type="text" id="invite-code" name="code" autocomplete="off" placeholder="QOA-CR50-001-001-AB12" spellcheck="false" />
-        <label for="invite-email">Email (optional)</label>
-        <input type="email" id="invite-email" name="email" autocomplete="email" placeholder="you@company.com" />
-        <button type="submit" class="primary welcome-submit">Start 7-day trial</button>
+      <p class="welcome-invite-hint">Paste the code from your launch email, Promoter, or personal invite link.</p>
+      <form id="invite-form" class="welcome-invite-form tc-form">
+        <div class="tc-field">
+          <label for="invite-code">Invite code</label>
+          <input type="text" id="invite-code" name="code" autocomplete="off" placeholder="QOA-CR50-001-001-AB12" spellcheck="false" />
+        </div>
+        <div class="tc-field">
+          <label for="invite-email">Email <span class="tc-optional">(optional)</span></label>
+          <input type="email" id="invite-email" name="email" autocomplete="email" placeholder="you@company.com" />
+        </div>
+        <button type="submit" class="tc-btn tc-btn-primary tc-btn-block welcome-submit">Start 7-day trial</button>
         <p id="invite-status" class="waitlist-status" aria-live="polite" hidden></p>
       </form>
-      <p class="welcome-footnote">
+      <p class="welcome-footnote tc-footer-links">
         Already in trial?
         <a href="/signin" id="welcome-signin-link">Pick your profile →</a>
+        · <a href="/signup">Sign up</a>
         · <a href="/about">About QA on Air</a>
       </p>
     </section>
@@ -47,8 +75,8 @@
       <h3 class="welcome-steps-title">Your first hour</h3>
       <ol class="welcome-steps-list">
         <li><span>1</span> Redeem invite → choose Creator or QA Hunter demo profile</li>
-        <li><span>2</span> Build a small challenge · set a $50+ QA wallet on <strong>$</strong></li>
-        <li><span>3</span> Run FoXYiZ smoke → Analyze → BRAHL report · earn XP</li>
+        <li><span>2</span> Build a small challenge · set a $50+ QA wallet</li>
+        <li><span>3</span> Run FoXYiZ smoke → BRAHL report · open <strong>Promoter</strong> to invite friends</li>
       </ol>
     </section>
   </main>

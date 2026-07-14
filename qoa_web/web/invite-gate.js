@@ -19,14 +19,30 @@ function clearInviteTrial() {
 }
 
 function isDemoBypass() {
+  if (window.__QOA_ALLOW_DEMO__ === false) return false;
   if (localStorage.getItem(STORAGE_DEMO_BYPASS) === "1") return true;
   const params = new URLSearchParams(location.search);
   return params.get("demo") === "1";
 }
 
 function enableDemoBypass() {
+  if (window.__QOA_ALLOW_DEMO__ === false) return;
   localStorage.setItem(STORAGE_DEMO_BYPASS, "1");
 }
+
+(async function loadDemoConfig() {
+  try {
+    const res = await fetch("/api/config");
+    if (!res.ok) return;
+    const cfg = await res.json();
+    window.__QOA_ALLOW_DEMO__ = cfg.allow_demo !== false;
+    if (!window.__QOA_ALLOW_DEMO__) {
+      localStorage.removeItem(STORAGE_DEMO_BYPASS);
+    }
+  } catch {
+    /* keep default allow */
+  }
+})();
 
 function isInviteTrialValid() {
   if (isDemoBypass()) return true;
