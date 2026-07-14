@@ -90,7 +90,9 @@
     "runtime_mode": "local",
     "app_version": "",
     "baseline_version": "",
-    "baseline_run": null
+    "baseline_run": null,
+    "owner_user_id": null,
+    "brahl_plan_draft": null
   },
   {
     "id": "7b3d38860642",
@@ -184,7 +186,9 @@
     "runtime_mode": "local",
     "app_version": "",
     "baseline_version": "",
-    "baseline_run": null
+    "baseline_run": null,
+    "owner_user_id": null,
+    "brahl_plan_draft": null
   },
   {
     "id": "56027c9bd5a5",
@@ -234,13 +238,34 @@
         "report_path": "z/20260707_085039_ivvu/brahl_report.md",
         "submitted_at": "2026-07-07T15:51:15+00:00",
         "source": "automation"
+      },
+      {
+        "id": "3c7379ad",
+        "run_name": "20260711_161706_ivvu",
+        "report_path": "z/20260711_161706_ivvu/brahl_report.md",
+        "submitted_at": "2026-07-11T23:17:30+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "a5edb4eb",
+        "run_name": "20260712_201854_ivvu",
+        "report_path": "z/20260712_201854_ivvu/brahl_report.md",
+        "submitted_at": "2026-07-13T03:19:22+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "120a0975",
+        "run_name": "20260713_222227_ivvu",
+        "report_path": "z/20260713_222227_ivvu/brahl_report.md",
+        "submitted_at": "2026-07-14T05:22:58+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": null,
-    "latest_run": "20260707_085039_ivvu",
+    "latest_run": "20260713_222227_ivvu",
     "created_at": "2026-07-07T04:48:20+00:00",
-    "updated_at": "2026-07-09T07:35:04+00:00",
+    "updated_at": "2026-07-14T05:22:58+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -263,6 +288,45 @@
       "user_messages": 0
     },
     "cycle_history": [
+      {
+        "id": "5b7dcbab",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-14T05:22:58+00:00",
+        "run_name": "20260713_222227_ivvu",
+        "stats": {
+          "passes": 14,
+          "fails": 0,
+          "total_plans": 14,
+          "health": "green"
+        }
+      },
+      {
+        "id": "96a3933e",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-13T03:19:19+00:00",
+        "run_name": "20260712_201854_ivvu",
+        "stats": {
+          "passes": 14,
+          "fails": 0,
+          "total_plans": 14,
+          "health": "green"
+        }
+      },
+      {
+        "id": "9b03a8ff",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-11T23:17:30+00:00",
+        "run_name": "20260711_161706_ivvu",
+        "stats": {
+          "passes": 14,
+          "fails": 0,
+          "total_plans": 14,
+          "health": "green"
+        }
+      },
       {
         "id": "7fc7c2a2",
         "step": "Run",
@@ -292,7 +356,9 @@
     "runtime_mode": "local",
     "app_version": "",
     "baseline_version": "",
-    "baseline_run": null
+    "baseline_run": null,
+    "owner_user_id": null,
+    "brahl_plan_draft": null
   },
   {
     "id": "5bbef113a3a0",
@@ -419,7 +485,9 @@
     "runtime_mode": "local",
     "app_version": "",
     "baseline_version": "",
-    "baseline_run": null
+    "baseline_run": null,
+    "owner_user_id": null,
+    "brahl_plan_draft": null
   },
   {
     "id": "c5be8959c0b6",
@@ -490,13 +558,48 @@
         "report_path": "z/20260708_224522_qoa2/brahl_report.md",
         "submitted_at": "2026-07-09T05:46:23+00:00",
         "source": "automation"
+      },
+      {
+        "id": "76c36f80",
+        "run_name": "20260711_105459_qoa2",
+        "report_path": "z/20260711_105459_qoa2/brahl_report.md",
+        "submitted_at": "2026-07-11T17:55:29+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "d9b81fd5",
+        "run_name": "20260711_105556_qoa2",
+        "report_path": "z/20260711_105556_qoa2/brahl_report.md",
+        "submitted_at": "2026-07-11T17:56:55+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "8d88507b",
+        "run_name": "20260713_222725_qoa2",
+        "report_path": "z/20260713_222725_qoa2/brahl_report.md",
+        "submitted_at": "2026-07-14T05:27:26+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "daa77aec",
+        "run_name": "20260713_222730_qoa2",
+        "report_path": "z/20260713_222730_qoa2/brahl_report.md",
+        "submitted_at": "2026-07-14T05:27:32+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "4052707d",
+        "run_name": "20260713_222741_qoa2",
+        "report_path": "z/20260713_222741_qoa2/brahl_report.md",
+        "submitted_at": "2026-07-14T05:28:44+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": null,
-    "latest_run": "20260708_224522_qoa2",
+    "latest_run": "20260713_222741_qoa2",
     "created_at": "2026-07-07T04:56:05+00:00",
-    "updated_at": "2026-07-09T05:46:59+00:00",
+    "updated_at": "2026-07-14T05:34:33+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -519,6 +622,103 @@
       "user_messages": 0
     },
     "cycle_history": [
+      {
+        "id": "edf9aa77",
+        "step": "Verify",
+        "detail": "completed",
+        "at": "2026-07-14T05:28:44+00:00",
+        "run_name": "20260713_222741_qoa2",
+        "stats": {
+          "passes": 14,
+          "fails": 1,
+          "total_plans": 15,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "f76b2210",
+        "step": "Restore",
+        "detail": "Verify prep \u2014 all Run=Y",
+        "at": "2026-07-14T05:27:39+00:00"
+      },
+      {
+        "id": "211b6d75",
+        "step": "Loop 2",
+        "detail": "completed",
+        "at": "2026-07-14T05:27:31+00:00",
+        "run_name": "20260713_222730_qoa2",
+        "stats": {
+          "passes": 0,
+          "fails": 1,
+          "total_plans": 1,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "9cad400b",
+        "step": "Shrink",
+        "detail": "Loop prep \u2014 1 plans",
+        "at": "2026-07-14T05:27:27+00:00",
+        "run_name": "20260713_222725_qoa2",
+        "stats": {
+          "passes": 0,
+          "fails": 1,
+          "total_plans": 1,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "5118085c",
+        "step": "Loop 1",
+        "detail": "completed",
+        "at": "2026-07-14T05:27:26+00:00",
+        "run_name": "20260713_222725_qoa2",
+        "stats": {
+          "passes": 0,
+          "fails": 1,
+          "total_plans": 1,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "8177357a",
+        "step": "Shrink",
+        "detail": "Loop prep \u2014 1 plans",
+        "at": "2026-07-14T05:27:20+00:00",
+        "run_name": "20260706_215958_qoa2",
+        "stats": {
+          "passes": 14,
+          "fails": 1,
+          "total_plans": 15,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "1c7ee2c4",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-11T17:56:55+00:00",
+        "run_name": "20260711_105556_qoa2",
+        "stats": {
+          "passes": 14,
+          "fails": 1,
+          "total_plans": 15,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "f14c64e4",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-11T17:55:29+00:00",
+        "run_name": "20260711_105459_qoa2",
+        "stats": {
+          "passes": 1,
+          "fails": 1,
+          "total_plans": 2,
+          "health": "amber"
+        }
+      },
       {
         "id": "b483d044",
         "step": "Verify",
@@ -584,7 +784,9 @@
     "runtime_mode": "local",
     "app_version": "",
     "baseline_version": "",
-    "baseline_run": null
+    "baseline_run": null,
+    "owner_user_id": null,
+    "brahl_plan_draft": null
   },
   {
     "id": "0288c862a8ec",
@@ -627,13 +829,20 @@
         "report_path": "z/20260706_221029_sunshine/brahl_report.md",
         "submitted_at": "2026-07-07T05:10:47+00:00",
         "source": "automation"
+      },
+      {
+        "id": "e9f3b677",
+        "run_name": "20260712_202933_sunshine",
+        "report_path": "z/20260712_202933_sunshine/brahl_report.md",
+        "submitted_at": "2026-07-13T03:30:21+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": null,
-    "latest_run": "20260706_221029_sunshine",
+    "latest_run": "20260712_202933_sunshine",
     "created_at": "2026-07-07T05:10:23+00:00",
-    "updated_at": "2026-07-07T15:37:13+00:00",
+    "updated_at": "2026-07-14T05:09:17+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -657,6 +866,19 @@
     },
     "cycle_history": [
       {
+        "id": "9ce64ea2",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-13T03:30:21+00:00",
+        "run_name": "20260712_202933_sunshine",
+        "stats": {
+          "passes": 26,
+          "fails": 0,
+          "total_plans": 26,
+          "health": "green"
+        }
+      },
+      {
         "id": "f782bab2",
         "step": "Run",
         "detail": "completed",
@@ -670,7 +892,9 @@
     "runtime_mode": "local",
     "app_version": "",
     "baseline_version": "",
-    "baseline_run": null
+    "baseline_run": null,
+    "owner_user_id": null,
+    "brahl_plan_draft": null
   },
   {
     "id": "b77104dece55",
@@ -732,13 +956,27 @@
         "report_path": "z/20260709_004501_nalanda_app/brahl_report.md",
         "submitted_at": "2026-07-09T07:45:15+00:00",
         "source": "automation"
+      },
+      {
+        "id": "5e93bc5d",
+        "run_name": "20260710_010121_nalanda_app",
+        "report_path": "z/20260710_010121_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-10T08:01:37+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "ebf94177",
+        "run_name": "20260711_110843_nalanda_app",
+        "report_path": "z/20260711_110843_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-11T18:08:57+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": null,
-    "latest_run": "20260709_004501_nalanda_app",
+    "latest_run": "20260711_110843_nalanda_app",
     "created_at": "2026-07-07T21:49:14+00:00",
-    "updated_at": "2026-07-10T05:54:01+00:00",
+    "updated_at": "2026-07-11T23:16:32+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -762,6 +1000,32 @@
     },
     "cycle_history": [
       {
+        "id": "db3a8a46",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-11T18:08:57+00:00",
+        "run_name": "20260711_110843_nalanda_app",
+        "stats": {
+          "passes": 6,
+          "fails": 0,
+          "total_plans": 6,
+          "health": "green"
+        }
+      },
+      {
+        "id": "9b5fe143",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-10T08:01:37+00:00",
+        "run_name": "20260710_010121_nalanda_app",
+        "stats": {
+          "passes": 6,
+          "fails": 0,
+          "total_plans": 6,
+          "health": "green"
+        }
+      },
+      {
         "id": "950e1c39",
         "step": "Run",
         "detail": "completed",
@@ -781,7 +1045,9 @@
     "runtime_mode": "local",
     "app_version": "",
     "baseline_version": "",
-    "baseline_run": null
+    "baseline_run": null,
+    "owner_user_id": null,
+    "brahl_plan_draft": null
   },
   {
     "id": "2b13d26039b3",
@@ -917,6 +1183,72 @@
     "runtime_mode": "local",
     "app_version": "",
     "baseline_version": "",
-    "baseline_run": null
+    "baseline_run": null,
+    "owner_user_id": null,
+    "brahl_plan_draft": null
+  },
+  {
+    "id": "d3240f1ad39b",
+    "name": "Cogmento",
+    "app_url": "",
+    "suite_name": "Cogmento",
+    "suite_config": "y/Cogmento/Cogmento.json",
+    "purpose": "",
+    "prompt": "",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-14T05:34:36+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "latest_run": null,
+    "created_at": "2026-07-14T05:34:36+00:00",
+    "updated_at": "2026-07-14T05:34:36+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
+        "at": "2026-07-14T05:34:36+00:00"
+      }
+    ],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-14T05:34:36+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "runtime_mode": "local",
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "brahl_plan_draft": null
   }
 ]

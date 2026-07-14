@@ -1,0 +1,23 @@
+PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PCogmento_OpenBrowser,S1,Open Browser,xUI,xOpenBrowser,edge,,,y
+PCogmento_OpenBrowser,S2,Navigate to Cogmento,xUI,xNavigate,cogmento_base_url,,,y
+PCogmento_Login_Valid,S1,Open and navigate to Cogmento,xUI,xNavigate,cogmento_base_url,,,y
+PCogmento_Login_Valid,S2,Enter email,xUI,xType,login_email;login_email_locator,,,y
+PCogmento_Login_Valid,S3,Enter password,xUI,xType,login_password;login_password_locator,,,y
+PCogmento_Login_Valid,S4,Click Login,xUI,xClick,login_button_locator,,,y
+PCogmento_Login_Invalid,S1,Navigate to Cogmento,xUI,xNavigate,login_page_url,,,y
+PCogmento_Login_Invalid,S2,Enter invalid email,xUI,xType,login_invalid_email;login_email_locator,,,y
+PCogmento_Login_Invalid,S3,Enter invalid password,xUI,xType,login_invalid_password;login_password_locator,,,y
+PCogmento_Login_Invalid,S4,Click Login,xUI,xClick,login_button_locator,,,y
+PCogmento_Nav_Home,S1,Click Home in menu,xUI,xClick,nav_home_locator,,,y
+PCogmento_Nav_Contacts,S1,Click Contacts in menu,xUI,xClick,nav_contacts_locator,,,y
+PCogmento_Nav_Deals,S1,Click Deals in menu,xUI,xClick,nav_deals_locator,,,y
+PCogmento_Nav_Tasks,S1,Click Tasks in menu,xUI,xClick,nav_tasks_locator,,,y
+PCogmento_Contact_Create,S1,Navigate to Contacts,xUI,xClick,nav_contacts_locator,,,y
+PCogmento_Contact_Create,S2,Click Create/Add Contact,xUI,xClick,contact_create_button_locator,,,y
+PCogmento_Contact_Create,S3,Fill first name,xUI,xType,contact_first_name;contact_first_name_locator,,,y
+PCogmento_Contact_Create,S4,Fill last name,xUI,xType,contact_last_name;contact_last_name_locator,,,y
+PCogmento_Contact_Create,S5,Fill email,xUI,xType,contact_email;contact_email_field_locator,,,y
+PCogmento_Contact_Create,S6,Save contact,xUI,xClick,contact_save_button_locator,,,y
+PCogmento_Logout,S1,Open user menu or profile,xUI,xClick,user_menu_locator,,,y
+PCogmento_Logout,S2,Click Logout,xUI,xClick,logout_button_locator,,,y
