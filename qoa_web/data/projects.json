@@ -457,8 +457,8 @@
     "id": "nalanda_launch_001",
     "name": "Nalanda SkillFlow AI \u2014 Launch Readiness",
     "app_url": "https://nalanda.base44.app/",
-    "purpose": "Creator launch prompt: Nalanda SkillFlow AI is ready for launch. Run FoXYiZ smoke on core routes (Explore, Learning Path, Quiz, AI Tutor), QA Hunter manual pass on UX gaps, Nalanda community shares the learn path \u2014 then BRAHL Go/No-Go.",
-    "prompt": "Here is my web app https://nalanda.base44.app/ \u2014 Nalanda SkillFlow AI. We're ready for launch. Give me a health report and Go/No-Go: can we ship?",
+    "purpose": "Test plan for Nalanda SkillFlow AI launch readiness focusing on core routes and UX validation.",
+    "prompt": "Test plan for Nalanda SkillFlow AI launch readiness focusing on core routes and UX validation.",
     "owner_avatar": "client",
     "status": "in_progress",
     "ai_enabled": true,
@@ -518,6 +518,41 @@
       {
         "title": "AI Tutor first message",
         "description": "AI Tutor page loads and chat/input is usable"
+      },
+      {
+        "id": "69667861",
+        "title": "Core Route Exploration",
+        "description": "As a user, I want to explore the core routes of the app to ensure they are functioning correctly.",
+        "status": "open",
+        "created_at": "2026-07-15T04:15:15+00:00"
+      },
+      {
+        "id": "8ae3f123",
+        "title": "Learning Path Functionality",
+        "description": "As a user, I want to access and utilize the learning paths to enhance my learning experience.",
+        "status": "open",
+        "created_at": "2026-07-15T04:15:15+00:00"
+      },
+      {
+        "id": "ce4fb8d1",
+        "title": "Quiz Interaction",
+        "description": "As a user, I want to take quizzes to assess my knowledge and skills.",
+        "status": "open",
+        "created_at": "2026-07-15T04:15:15+00:00"
+      },
+      {
+        "id": "0b19bc50",
+        "title": "AI Tutor Engagement",
+        "description": "As a user, I want to interact with the AI Tutor for personalized learning assistance.",
+        "status": "open",
+        "created_at": "2026-07-15T04:15:15+00:00"
+      },
+      {
+        "id": "556acbf4",
+        "title": "UX Gap Identification",
+        "description": "As a QA Hunter, I want to identify any UX gaps in the application for improvement. [manual \u2014 QA Hunter]",
+        "status": "open",
+        "created_at": "2026-07-15T04:15:15+00:00"
       }
     ],
     "hitl_invites": [],
@@ -532,9 +567,49 @@
     ],
     "documents": [],
     "change_requests": [],
-    "cycle_history": [],
+    "cycle_history": [
+      {
+        "id": "7858eaa9",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-15T05:22:50+00:00",
+        "run_name": "20260714_222234_nalanda_app",
+        "stats": {
+          "passes": 0,
+          "fails": 7,
+          "total_plans": 7,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "b432b902",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-15T04:18:34+00:00",
+        "run_name": "20260714_211821_nalanda_app",
+        "stats": {
+          "passes": 0,
+          "fails": 7,
+          "total_plans": 7,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "1233a201",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-15T04:16:48+00:00",
+        "run_name": "20260714_211633_nalanda_app",
+        "stats": {
+          "passes": 0,
+          "fails": 7,
+          "total_plans": 7,
+          "health": "amber"
+        }
+      }
+    ],
     "created_at": "2026-07-05T20:00:00+00:00",
-    "updated_at": "2026-07-05T20:00:00+00:00",
+    "updated_at": "2026-07-15T05:22:50+00:00",
     "atomic77_chat_messages": [
       {
         "id": "a77-welcome",
@@ -552,12 +627,131 @@
     "baseline_version": "",
     "baseline_run": null,
     "owner_user_id": null,
-    "brahl_plan_draft": null,
+    "brahl_plan_draft": {
+      "summary": "Test plan for Nalanda SkillFlow AI launch readiness focusing on core routes and UX validation.",
+      "user_stories": [
+        {
+          "title": "Core Route Exploration",
+          "description": "As a user, I want to explore the core routes of the app to ensure they are functioning correctly.",
+          "automated": true
+        },
+        {
+          "title": "Learning Path Functionality",
+          "description": "As a user, I want to access and utilize the learning paths to enhance my learning experience.",
+          "automated": true
+        },
+        {
+          "title": "Quiz Interaction",
+          "description": "As a user, I want to take quizzes to assess my knowledge and skills.",
+          "automated": true
+        },
+        {
+          "title": "AI Tutor Engagement",
+          "description": "As a user, I want to interact with the AI Tutor for personalized learning assistance.",
+          "automated": true
+        },
+        {
+          "title": "UX Gap Identification",
+          "description": "As a QA Hunter, I want to identify any UX gaps in the application for improvement.",
+          "automated": false
+        }
+      ],
+      "test_cases": [
+        {
+          "id": "T1",
+          "title": "Smoke Test: Explore Route",
+          "automated": true
+        },
+        {
+          "id": "T2",
+          "title": "Smoke Test: Learning Path Access",
+          "automated": true
+        },
+        {
+          "id": "T3",
+          "title": "Smoke Test: Quiz Functionality",
+          "automated": true
+        },
+        {
+          "id": "T4",
+          "title": "Smoke Test: AI Tutor Interaction",
+          "automated": true
+        },
+        {
+          "id": "T5",
+          "title": "Manual UX Test: Explore Route",
+          "automated": false
+        },
+        {
+          "id": "T6",
+          "title": "Manual UX Test: Learning Path Navigation",
+          "automated": false
+        },
+        {
+          "id": "T7",
+          "title": "Manual UX Test: Quiz User Experience",
+          "automated": false
+        },
+        {
+          "id": "T8",
+          "title": "Manual UX Test: AI Tutor Usability",
+          "automated": false
+        },
+        {
+          "id": "T9",
+          "title": "Performance Test: Load on Core Routes",
+          "automated": true
+        },
+        {
+          "id": "T10",
+          "title": "Security Test: User Data Protection",
+          "automated": true
+        },
+        {
+          "id": "T11",
+          "title": "Accessibility Test: Screen Reader Compatibility",
+          "automated": false
+        },
+        {
+          "id": "T12",
+          "title": "Cross-Browser Test: Core Routes",
+          "automated": true
+        }
+      ],
+      "automated_count": 8,
+      "manual_count": 4,
+      "run_how": "Execute via FoXYiZ fEngine2 \u2014 low-code Tests/Steps/Test data CSVs. No Playwright."
+    },
     "ai_usage": {
       "calls": 0,
       "total_tokens": 0,
       "usd_est": 0.0
-    }
+    },
+    "brahl_context_path": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260714_211518_nalanda_app.json",
+    "latest_run": "20260714_222234_nalanda_app",
+    "reports": [
+      {
+        "id": "ef48086c",
+        "run_name": "20260714_211633_nalanda_app",
+        "report_path": "z/20260714_211633_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-15T04:16:49+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "dbc35465",
+        "run_name": "20260714_211821_nalanda_app",
+        "report_path": "z/20260714_211821_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-15T04:18:35+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "f4dc78db",
+        "run_name": "20260714_222234_nalanda_app",
+        "report_path": "z/20260714_222234_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-15T05:22:50+00:00",
+        "source": "automation"
+      }
+    ]
   },
   {
     "id": "66ae1a926c31",
@@ -670,14 +864,21 @@
         "report_path": "z/20260714_140054_Math/brahl_report.md",
         "submitted_at": "2026-07-14T21:50:30+00:00",
         "source": "automation"
+      },
+      {
+        "id": "02394c9e",
+        "run_name": "20260714_212108_Math",
+        "report_path": "z/20260714_212108_Math/brahl_report.md",
+        "submitted_at": "2026-07-15T04:21:09+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": null,
     "brahl_plan_draft": null,
-    "latest_run": "20260714_140054_Math",
+    "latest_run": "20260714_212108_Math",
     "created_at": "2026-07-14T21:50:30+00:00",
-    "updated_at": "2026-07-15T04:08:48+00:00",
+    "updated_at": "2026-07-15T05:45:55+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -699,7 +900,21 @@
       "tokens_est": 0,
       "user_messages": 0
     },
-    "cycle_history": [],
+    "cycle_history": [
+      {
+        "id": "43b8c493",
+        "step": "Run parallel",
+        "detail": "completed",
+        "at": "2026-07-15T04:21:08+00:00",
+        "run_name": "20260714_212108_Math",
+        "stats": {
+          "passes": 0,
+          "fails": 2,
+          "total_plans": 2,
+          "health": "amber"
+        }
+      }
+    ],
     "hitl_stories": [],
     "hitl_invites": [],
     "change_requests": [],

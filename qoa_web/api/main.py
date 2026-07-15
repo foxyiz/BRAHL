@@ -326,6 +326,16 @@ class NalandaReplyRequest(BaseModel):
     author_name: str = ""
 
 
+def _admin_open_mode() -> bool:
+    """Testing: Admin Panel is open without sign-in. Set QOA_ADMIN_OPEN=0 to require auth."""
+    return os.environ.get("QOA_ADMIN_OPEN", "1").strip().lower() not in (
+        "0",
+        "false",
+        "no",
+        "off",
+    )
+
+
 def _admin_token_ok(request: Request) -> bool:
     expected = os.environ.get("QOA_ADMIN_TOKEN", "").strip()
     if expected:
@@ -337,9 +347,16 @@ def _admin_token_ok(request: Request) -> bool:
     return client in ("127.0.0.1", "::1")
 
 
+def _admin_access_ok(request: Request) -> bool:
+    """Open-testing mode, bootstrap token, or localhost (when no QOA_ADMIN_TOKEN)."""
+    if _admin_open_mode():
+        return True
+    return _admin_token_ok(request)
+
+
 def _require_admin(request: Request) -> None:
-    if not _admin_token_ok(request):
-        raise HTTPException(403, "Admin token required (QOA_ADMIN_TOKEN)")
+    if not _admin_access_ok(request):
+        raise HTTPException(403, "Admin token required (QOA_ADMIN_TOKEN) or set QOA_ADMIN_OPEN=1")
 
 
 def _client_ip(request: Request) -> str:
@@ -350,11 +367,11 @@ def _client_ip(request: Request) -> str:
 
 
 def _require_platform_admin(request: Request) -> tuple[dict[str, Any] | None, bool]:
-    """Return (user, token_bootstrap). Raises 403 if neither JWT platform admin nor bootstrap token."""
+    """Return (user, token_bootstrap). Raises 403 if neither JWT platform admin nor open/bootstrap access."""
     user = _auth_user(request)
     if auth_store.is_platform_admin(user):
         return user, False
-    if _admin_token_ok(request):
+    if _admin_access_ok(request):
         return user, True
     raise HTTPException(403, "Platform admin required")
 
@@ -382,23 +399,26 @@ class AdminAiPatch(BaseModel):
 @app.get("/api/admin/me")
 def api_admin_me(request: Request) -> dict[str, Any]:
     user = _auth_user(request)
-    token_ok = _admin_token_ok(request)
+    access_ok = _admin_access_ok(request)
     platform_user = auth_store.is_platform_admin(user)
-    if not user and not token_ok:
+    if not user and not access_ok:
         raise HTTPException(401, "Sign in required for Admin")
     me = admin_panel_store.admin_me(
         user,
-        token_bootstrap=bool(token_ok and not platform_user),
+        token_bootstrap=bool(access_ok and not platform_user),
     )
     if not me.get("can_platform") and not me.get("project_scopes"):
-        # Localhost bootstrap with no projects still allows empty platform shell
-        if token_ok:
+        # Open testing / token bootstrap: full platform shell
+        if access_ok:
             me["can_platform"] = True
             me["is_super_admin"] = True
             me["is_platform_admin"] = True
             me["tabs"] = ["users", "clients", "projects", "consultants", "xp", "live", "gtm"]
+            me["testing_open"] = _admin_open_mode()
         else:
             raise HTTPException(403, "No admin scopes for this account")
+    elif access_ok and _admin_open_mode():
+        me["testing_open"] = True
     return me
 
 
@@ -438,8 +458,8 @@ def api_admin_clients(request: Request) -> dict[str, Any]:
 @app.get("/api/admin/projects")
 def api_admin_projects(request: Request) -> dict[str, Any]:
     user = _auth_user(request)
-    token_ok = _admin_token_ok(request)
-    platform = auth_store.is_platform_admin(user) or token_ok
+    access_ok = _admin_access_ok(request)
+    platform = auth_store.is_platform_admin(user) or access_ok
     if not platform and not user:
         raise HTTPException(401, "Sign in required")
     projects = admin_panel_store.list_projects_for_admin(user, platform=platform)
@@ -455,8 +475,8 @@ def api_admin_projects(request: Request) -> dict[str, Any]:
 @app.get("/api/admin/projects/{project_id}/overview")
 def api_admin_project_overview(project_id: str, request: Request) -> dict[str, Any]:
     user = _auth_user(request)
-    token_ok = _admin_token_ok(request)
-    platform = auth_store.is_platform_admin(user) or token_ok
+    access_ok = _admin_access_ok(request)
+    platform = auth_store.is_platform_admin(user) or access_ok
     try:
         return admin_panel_store.project_overview(project_id, user, platform=platform)
     except KeyError:
@@ -468,13 +488,13 @@ def api_admin_project_overview(project_id: str, request: Request) -> dict[str, A
 @app.patch("/api/admin/projects/{project_id}/ai")
 def api_admin_project_ai(project_id: str, body: AdminAiPatch, request: Request) -> dict[str, Any]:
     user = _auth_user(request)
-    token_ok = _admin_token_ok(request)
+    access_ok = _admin_access_ok(request)
     try:
         project = admin_panel_store.set_project_ai(
             project_id,
             body.ai_enabled,
             user,
-            platform_bootstrap=bool(token_ok and not auth_store.is_platform_admin(user)),
+            platform_bootstrap=bool(access_ok and not auth_store.is_platform_admin(user)),
         )
     except KeyError:
         raise HTTPException(404, "Project not found") from None
@@ -486,8 +506,8 @@ def api_admin_project_ai(project_id: str, body: AdminAiPatch, request: Request) 
 @app.get("/api/admin/consultants")
 def api_admin_consultants(request: Request, project_id: str | None = None) -> dict[str, Any]:
     user = _auth_user(request)
-    token_ok = _admin_token_ok(request)
-    platform = auth_store.is_platform_admin(user) or token_ok
+    access_ok = _admin_access_ok(request)
+    platform = auth_store.is_platform_admin(user) or access_ok
     if not platform and not project_id:
         raise HTTPException(400, "project_id required for project admin")
     if project_id and not platform:
@@ -504,8 +524,8 @@ def api_admin_live(
     project_id: str | None = None,
 ) -> dict[str, Any]:
     user = _auth_user(request)
-    token_ok = _admin_token_ok(request)
-    platform = auth_store.is_platform_admin(user) or token_ok
+    access_ok = _admin_access_ok(request)
+    platform = auth_store.is_platform_admin(user) or access_ok
     if scope == "project":
         if not project_id:
             raise HTTPException(400, "project_id required")
@@ -520,7 +540,6 @@ def api_admin_live(
     if not platform:
         raise HTTPException(403, "Platform admin required for global live view")
     return presence_store.list_live(project_id=None, redact=True)
-
 
 @app.post("/api/presence/heartbeat")
 def api_presence_heartbeat(body: PresenceHeartbeatRequest, request: Request) -> dict[str, Any]:
@@ -663,6 +682,7 @@ async def auth_profile_upload(request: Request, file: UploadFile = File(...)) ->
 def public_config() -> dict[str, Any]:
     return {
         "allow_demo": auth_store.demo_allowed(),
+        "admin_open": _admin_open_mode(),
         "auth_enabled": True,
         "version": APP_VERSION,
     }

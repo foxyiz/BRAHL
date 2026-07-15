@@ -1,0 +1,30 @@
+{
+  "users": {},
+  "projects": {
+    "nalanda_launch_001": {
+      "all": {
+        "calls": 4,
+        "prompt_tokens": 6425,
+        "completion_tokens": 1521,
+        "total_tokens": 7946,
+        "usd_est": 0.003178
+      },
+      "months": {
+        "2026-07": {
+          "calls": 4,
+          "prompt_tokens": 6425,
+          "completion_tokens": 1521,
+          "total_tokens": 7946,
+          "usd_est": 0.003178
+        }
+      }
+    }
+  },
+  "global": {
+    "calls": 5,
+    "prompt_tokens": 6746,
+    "completion_tokens": 1982,
+    "total_tokens": 8728,
+    "usd_est": 0.003491
+  }
+}

@@ -496,6 +496,12 @@
     }
     $("#admin-gate").hidden = true;
     $("#admin-shell").hidden = false;
+    const foot = $("#admin-foot-note");
+    if (foot) {
+      foot.textContent = state.me.testing_open
+        ? "BRAHL Admin · testing open (no sign-in). Set QOA_ADMIN_OPEN=0 when linking user accounts."
+        : "BRAHL Admin · confidentiality: Super Admin cannot view project secrets unless a project member.";
+    }
     if (!state.me.can_platform && state.me.project_scopes?.length) {
       state.scope = "project";
       state.projectId = state.projectId || state.me.project_scopes[0].id;
