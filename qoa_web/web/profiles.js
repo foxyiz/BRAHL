@@ -154,6 +154,7 @@ const TEST_PROFILES = [
     "aiLocked": false,
     "dualRole": true,
     "admin": true,
+    "superAdmin": true,
     "techLevel": "ops",
     "consultantTier": null,
     "allowedAvatars": [
@@ -162,11 +163,11 @@ const TEST_PROFILES = [
     ],
     "landing": "admin",
     "accent": "admin",
-    "blurb": "Ecosystem operator — client & QA Hunter views plus Admin stats.",
+    "blurb": "Super Admin — platform ops, Users/roles, Live Activity; project secrets only when a member.",
     "journey": [
-      "Admin dashboard",
-      "Creator + QA Hunter switch",
-      "Ecosystem stats"
+      "Admin Panel (platform)",
+      "Grant Admin roles",
+      "Creator + QA Hunter switch"
     ],
     "ypadDesignColumn": "D6",
     "firstVisit": false,

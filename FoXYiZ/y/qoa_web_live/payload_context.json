@@ -1,0 +1,11 @@
+{
+  "prompt": "BRAHL API context capture test for qoa_web v0.3 full feature suite",
+  "config_path": "f/fStart_qoa_web_verify.json",
+  "project_id": "d21afcefc002",
+  "documents": [
+    {
+      "name": "PRD.md",
+      "path": "qoa_web/PRD.md"
+    }
+  ]
+}

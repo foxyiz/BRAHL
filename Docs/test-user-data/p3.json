@@ -1,0 +1,71 @@
+{
+  "id": "p3",
+  "code": "P3",
+  "name": "Sam Rivera",
+  "title": "Consultant only",
+  "role": "consultant-only",
+  "defaultAvatar": "consultant",
+  "aiDefault": true,
+  "aiLocked": false,
+  "dualRole": false,
+  "admin": false,
+  "techLevel": "qa",
+  "consultantTier": "standard",
+  "allowedAvatars": [
+    "consultant"
+  ],
+  "landing": "app",
+  "accent": "QA Hunter",
+  "blurb": "QA consultant \u2014 joins Creator challenges, uploads yPADs offline, enriches BRAHL reports.",
+  "journey": [
+    "QA Hunter workspace",
+    "Join \u00b7 deliverables",
+    "Cost \u00b7 QA Hunter wallet"
+  ],
+  "ypadDesignColumn": "D3",
+  "firstVisit": false,
+  "fictional": true,
+  "tasks": [
+    "QA Hunter workspace",
+    "Join \u00b7 deliverables",
+    "Cost \u00b7 QA Hunter wallet"
+  ],
+  "demo_tips": [
+    "QA Hunter workspace",
+    "Join \u00b7 deliverables",
+    "Cost \u00b7 QA Hunter wallet"
+  ],
+  "default_avatar": "consultant",
+  "allowed_avatars": [
+    "consultant"
+  ],
+  "client_tasks": [
+    {
+      "phase": "build",
+      "title": "QA Hunter workspace",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "Join \u00b7 deliverables",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "Cost \u00b7 QA Hunter wallet",
+      "detail": "Demo tip from persona journey."
+    }
+  ],
+  "hitl_tasks": [
+    {
+      "phase": "build",
+      "title": "Join challenge as QA Hunter",
+      "detail": "Open Build, review Creator context, submit findings."
+    },
+    {
+      "phase": "analyze",
+      "title": "Review failures",
+      "detail": "Use Analyze table Input / Expected / Output."
+    }
+  ]
+}

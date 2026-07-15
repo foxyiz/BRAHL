@@ -1,0 +1,269 @@
+/* Scoped Admin Panel */
+.admin-page {
+  min-height: 100vh;
+  background: #0b0f14;
+  color: #e8eef7;
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.admin-top {
+  border-bottom: 1px solid #1e2a3a;
+  padding: 1rem 1.5rem 0.75rem;
+  background: #0e141c;
+}
+
+.admin-top-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-back {
+  color: #8eb6e8;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.admin-brand h1 {
+  margin: 0.15rem 0;
+  font-size: 1.65rem;
+}
+
+.admin-lead {
+  margin: 0;
+  color: #9aa8bc;
+  font-size: 0.92rem;
+  max-width: 52rem;
+}
+
+.admin-scope {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.admin-scope select {
+  background: #121a24;
+  color: #e8eef7;
+  border: 1px solid #2a3a4f;
+  border-radius: 8px;
+  padding: 0.4rem 0.65rem;
+}
+
+.admin-scope-label {
+  color: #9aa8bc;
+  font-size: 0.85rem;
+}
+
+.admin-gate {
+  max-width: 640px;
+  margin: 3rem auto;
+  padding: 1.5rem;
+  border: 1px solid #2a3a4f;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.admin-gate a {
+  display: inline-block;
+  margin: 0.35rem;
+}
+
+.admin-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 3rem;
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.admin-tab {
+  background: transparent;
+  border: 1px solid #2a3a4f;
+  color: #b7c4d6;
+  border-radius: 10px;
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.admin-tab.active {
+  border-color: #3d8bfd;
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(61, 139, 253, 0.35);
+}
+
+.admin-tab[hidden] {
+  display: none !important;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.admin-stat {
+  background: #121a24;
+  border: 1px solid #1e2a3a;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+}
+
+.admin-stat strong {
+  display: block;
+  font-size: 1.45rem;
+  color: #5aa2ff;
+}
+
+.admin-stat span {
+  color: #9aa8bc;
+  font-size: 0.8rem;
+}
+
+.admin-panel-body {
+  background: #121a24;
+  border: 1px solid #1e2a3a;
+  border-radius: 12px;
+  padding: 1rem;
+  min-height: 320px;
+}
+
+.admin-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  padding: 0.75rem 0.25rem;
+  border-bottom: 1px solid #1e2a3a;
+}
+
+.admin-list .meta {
+  color: #9aa8bc;
+  font-size: 0.82rem;
+}
+
+.role-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.role-chip {
+  font-size: 0.72rem;
+  border: 1px solid #3d8bfd;
+  color: #cfe3ff;
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  background: rgba(61, 139, 253, 0.12);
+}
+
+.role-chip.priv {
+  border-color: #e0b44e;
+  color: #ffe6a3;
+  background: rgba(224, 180, 78, 0.12);
+}
+
+.admin-row-actions {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.admin-row-actions button,
+.admin-inline-btn {
+  background: #0b0f14;
+  border: 1px solid #2a3a4f;
+  color: #cfe3ff;
+  border-radius: 8px;
+  padding: 0.3rem 0.55rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.admin-card-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-card {
+  border: 1px solid #1e2a3a;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  background: #0e141c;
+}
+
+.admin-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+
+.admin-map {
+  height: 320px;
+  border-radius: 10px;
+  border: 1px solid #1e2a3a;
+  margin: 0.75rem 0;
+  background: #0b0f14;
+}
+
+.admin-hint {
+  color: #9aa8bc;
+  font-size: 0.85rem;
+}
+
+.admin-foot {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #6f7f94;
+  font-size: 0.8rem;
+}
+
+.admin-foot a {
+  color: #8eb6e8;
+}
+
+.admin-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+}
+
+.admin-search {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0.75rem;
+  background: #0b0f14;
+  border: 1px solid #2a3a4f;
+  color: #e8eef7;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+}
+
+.badge-redacted {
+  font-size: 0.72rem;
+  color: #e0b44e;
+  border: 1px solid #e0b44e;
+  border-radius: 6px;
+  padding: 0.05rem 0.4rem;
+}

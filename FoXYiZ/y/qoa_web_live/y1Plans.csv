@@ -1,0 +1,65 @@
+PlanId,PlanName,DesignId,Run,Tags,Output
+PReuse_qoa_web_OpenSite,Open browser and navigate to BRAHL Web,D1,N,Reuse,site_loaded
+PReuse_PersonaReady,Sign in test persona via profile URL,D1,N,Reuse;Persona,persona_ready
+PReuse_qoa_web_ClientReady,Persona ready as Client with qoa_web project,D1,N,Reuse;Client,client_ready
+PReuse_qoa_web_HitlReady,Persona ready as HITL with qoa_web project,D3,N,Reuse;HITL,hitl_ready
+PWeb_Signin_Page,Sign-in page lists test profiles,D1,Y,Verify;qoa_web_live;Signin;Persona,signin_ok
+PWeb_Profile_Chip,Profile chip shows persona code in top bar,D1,Y,Verify;qoa_web_live;Persona;Shell,profile_chip_ok
+PWeb_Nav_CostTab,Cost meter tab visible in phase nav,D1,Y,Verify;qoa_web_live;Cost;Navigation,cost_nav_ok
+PWeb_OpenHome,Open BRAHL Web home page,D1,Y,Verify;qoa_web_live;Smoke;Landing,home_ok
+PWeb_VerifyTitle,Verify app title element,D1,Y,Verify;qoa_web_live;Smoke;Landing,title_ok
+PWeb_Nav_SixPhases,Verify phase nav buttons,D1,Y,Verify;qoa_web_live;Smoke;Navigation,nav_ok
+PWeb_Topbar_Project,Topbar project dropdown populated,D1,Y,Verify;qoa_web_live;Build;Project,topbar_ok
+PWeb_Panel_Build,Build panel with project title,D1,Y,Verify;qoa_web_live;Smoke;Build,build_ok
+PWeb_Build_ChatInput,Build chat input for client persona,D1,Y,Verify;qoa_web_live;Build;Client,chat_ok
+PWeb_Build_Budget,Budget block for client persona,D1,Y,Verify;qoa_web_live;Build;Client,budget_ok
+PWeb_Hitl_Avatar_Switch,Dual persona switches Client to HITL,D2,Y,Verify;qoa_web_live;HITL;Persona;P2,hitl_switch_ok
+PWeb_Hitl_JoinButton,HITL join button on unified Build,D3,Y,Verify;qoa_web_live;HITL;Build,hitl_join_ok
+PWeb_Hitl_TierBanner,Senior consultant tier banner,D4,Y,Verify;qoa_web_live;HITL;Persona;P4,tier_banner_ok
+PWeb_Manual_AiLocked,Non-tech persona AI toggle locked off,D5,Y,Verify;qoa_web_live;Persona;P5;AI,ai_locked_ok
+PWeb_Power_YpadExplorer,Power client sees yPAD explorer,D7,Y,Verify;qoa_web_live;Persona;P7;yPAD,ypad_ok
+PWeb_Panel_Run,Run panel scoped to project,D1,Y,Verify;qoa_web_live;Smoke;Run,run_panel_ok
+PWeb_Panel_Analyze,Analyze panel scoped to project,D1,Y,Verify;qoa_web_live;Smoke;Analyze,analyze_panel_ok
+PWeb_Panel_Heal,Heal panel with shrink controls,D1,Y,Verify;qoa_web_live;Smoke;Heal,heal_panel_ok
+PWeb_Panel_Loop,Loop panel controls,D1,Y,Verify;qoa_web_live;Smoke;Loop,loop_panel_ok
+PWeb_Panel_Brahl,BRAHL reports panel,D1,Y,Verify;qoa_web_live;Smoke;BRAHL,brahl_panel_ok
+PWeb_Footer_Health,Footer health pill,D1,Y,Verify;qoa_web_live;Smoke;Shell,footer_ok
+PWeb_Shell_Github,Top bar GitHub download link,D1,Y,Verify;qoa_web_live;Smoke;Shell,github_ok
+PAPI_Health,GET api health,D1,Y,Verify;qoa_web_live;Smoke;API,health_ok
+PAPI_Signin,GET sign-in page,D1,Y,Verify;qoa_web_live;API;Signin,signin_api_ok
+PAPI_ProfilesJs,GET profiles.js asset,D1,Y,Verify;qoa_web_live;API;Persona,profiles_js_ok
+PAPI_Suites,GET api suites,D1,Y,Verify;qoa_web_live;API,suites_ok
+PAPI_ProjectsConsultant,GET consultant projects,D3,Y,Verify;qoa_web_live;API;HITL,projects_consultant_ok
+PPersona_P1_Journey,P1 client MVP journey Build tab,D1,Y,Verify;Persona;P1;Journey;qoa_web_live,p1_ok
+PPersona_P2_Journey,P2 dual role profile chip and avatars,D2,Y,Verify;Persona;P2;Journey;qoa_web_live,p2_ok
+PPersona_P3_Journey,P3 consultant HITL workspace,D3,Y,Verify;Persona;P3;Journey;qoa_web_live,p3_ok
+PPersona_P4_Journey,P4 senior consultant tier,D4,Y,Verify;Persona;P4;Journey;qoa_web_live,p4_ok
+PPersona_P5_Journey,P5 manual client no AI,D5,Y,Verify;Persona;P5;Journey;qoa_web_live,p5_ok
+PPersona_P6_Journey,P6 admin dual avatar access,D6,Y,Verify;Persona;P6;Journey;qoa_web_live,p6_ok
+PPersona_P7_Journey,P7 power client yPAD,D7,Y,Verify;Persona;P7;Journey;qoa_web_live,p7_ok
+PPersona_P8_Journey,P8 bug-bounty HITL join,D8,Y,Verify;Persona;P8;Journey;qoa_web_live,p8_ok
+PPersona_P9_Journey,P9 first-time user NUX empty state,D9,Y,Verify;Persona;P9;NUX;NewUser;qoa_web_live,p9_ok
+PWeb_NUX_EmptyBuild,P9 empty Build add-project prompt,D9,Y,Verify;qoa_web_live;NUX;Build,nux_empty_ok
+PWeb_Signin_CreatorPitch,Sign-in Creator Go/No-Go pitch,D1,N,qoa_web;Landing;Creator;GoNoGo,signin_creator_pitch_ok
+PWeb_Signin_HunterPitch,Sign-in QA Hunter hunt pitch,D1,N,qoa_web;Landing;QA_Hunter,signin_hunter_pitch_ok
+PWeb_Avatar_ThreeBar,Three avatars in top bar,D1,Y,Verify;qoa_web_live;Role;Navigation,avatar_three_ok
+PWeb_Nalanda_Panel,Nalanda community panel,D1,Y,Verify;qoa_web_live;Nalanda;Role,nalanda_panel_ok
+PWeb_XP_Panel,XP section on Cost tab,D1,Y,Verify;qoa_web_live;XP;Cost,xp_panel_ok
+PWeb_GoNoGo_Block,Creator Go/No-Go on BRAHL tab,D1,Y,Verify;qoa_web_live;Creator;GoNoGo;BRAHL,gonogo_block_ok
+PWeb_P1_SwitchHunter,P1 switches to QA Hunter avatar,D1,Y,Verify;Persona;P1;QA_Hunter;Role;qoa_web_live,p1_switch_hunter_ok
+PWeb_About_ArenaVision,About arena Champion vs Contender,D1,Y,Verify;qoa_web_live;About;Vision,about_arena_ok
+PWeb_About_P2PMarketplace,About P2P marketplace copy,D1,Y,Verify;qoa_web_live;About;Vision,about_p2p_ok
+PWeb_Signin_Profiles,Sign-in demo profile grid heading,D1,Y,Verify;qoa_web_live;Signin;Landing,signin_profiles_ok
+PWeb_Version_LaunchSection,Build version launch compare section,D1,Y,Verify;qoa_web_live;Creator;VersionLaunch,version_launch_ok
+PWeb_Version_BaselineBtn,Version baseline save button visible,D1,Y,Verify;qoa_web_live;Creator;VersionLaunch,version_baseline_btn_ok
+PWeb_Hunt_EvidencePanel,QA Hunter hunt evidence panel,D3,Y,Verify;qoa_web_live;QA_Hunter;Hunt,hunt_evidence_ok
+PWeb_P9_AddProjectModal,P9 opens add-challenge modal,D9,Y,Verify;qoa_web_live;NUX;Build,nux_modal_ok
+PWeb_Admin_Ecosystem,P6 Admin Panel loads (scoped admin SPA),D6,Y,Verify;qoa_web_live;Admin;Smoke,admin_ecosystem_ok
+PWeb_Build_Strategy,Build Strategy / plan section visible,D1,Y,Verify;qoa_web_live;Smoke;Build;V1,strategy_ok
+PWeb_Build_CoverageChips,Test coverage Manual chip visible,D1,Y,Verify;qoa_web_live;Smoke;Build;yPAD;V1,cov_chips_ok
+PWeb_Heal_EditYpadCta,Heal Edit yPAD on Build CTA,D1,Y,Verify;qoa_web_live;Smoke;Heal;V1,heal_edit_ok
+PWeb_Heal_RerunCta,Heal Rerun CTA,D1,Y,Verify;qoa_web_live;Smoke;Heal;V1,heal_rerun_ok
+PWeb_Loop_PrimaryButton,Loop primary button and times,D1,Y,Verify;qoa_web_live;Smoke;Loop;V1,loop_btn_ok
+PWeb_Loop_BuiltSummary,Loop Built summary from project,D1,Y,Verify;qoa_web_live;Smoke;Loop;V1,loop_built_ok
+PWeb_Analyze_FailColumns,Analyze failure table has Expected column,D1,Y,Verify;qoa_web_live;Smoke;Analyze;V1,analyze_cols_ok
+PWeb_Rebuild_BrahlDetails,Rebuild BRAHL plan details collapsed,D1,Y,Verify;qoa_web_live;Build;V1,rebuild_details_ok

@@ -4,29 +4,29 @@ const AVATAR_LABELS = {
     short: "Creator",
     letter: "C",
     tagline: "Champion — post a challenge · BRAHL it",
-    projectLabel: "My challenge",
-    projectPlaceholder: "Select challenge…",
+    projectLabel: "Projects",
+    projectPlaceholder: "Select project…",
   },
   consultant: {
     short: "QA Hunter",
     letter: "H",
     tagline: "Contender — hunt defects · save the ship",
-    projectLabel: "Open challenges",
-    projectPlaceholder: "Select challenge…",
+    projectLabel: "Projects",
+    projectPlaceholder: "Select project…",
   },
   networker: {
     short: "Nalanda",
     letter: "N",
     tagline: "Learn · teach · discuss — free knowledge community",
-    projectLabel: "Community",
-    projectPlaceholder: "Browse community…",
+    projectLabel: "Projects",
+    projectPlaceholder: "Browse projects…",
   },
 };
 
 /** Every signed-in user may switch among arena avatars (persona = profile chip only). */
 const UNIVERSAL_AVATARS = ["client", "consultant", "networker"];
 
-const ARENA_TAGLINE = "You Build, We QA — let's BRAHL! Champion vs Contender in the arena.";
+const ARENA_TAGLINE = "Your QA agent — FoXYiZ runs the tests · BRAHL decides Go/No-Go";
 
 function avatarLabel(key) {
   return AVATAR_LABELS[key] || AVATAR_LABELS.client;

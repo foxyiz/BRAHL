@@ -22,8 +22,15 @@ JWT_EXPIRE_HOURS = int(os.environ.get("JWT_EXPIRE_HOURS", "168"))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# Arena avatars (BRAHL session)
 VALID_AVATARS = frozenset({"creator", "qa_hunter", "nalanda", "promoter"})
-VALID_ROLES = frozenset({"creator", "qa_hunter", "nalanda", "promoter", "both", "admin"})
+# Soft personas (chips only in V1)
+PERSONA_ROLES = frozenset({"trainer", "student"})
+# Platform privilege roles
+PRIVILEGE_ROLES = frozenset({"admin", "super_admin"})
+# All roles allowed in roles_json
+ALL_PROFILE_ROLES = VALID_AVATARS | PERSONA_ROLES | PRIVILEGE_ROLES
+VALID_ROLES = frozenset({"creator", "qa_hunter", "nalanda", "promoter", "both", "admin", "super_admin"})
 SOCIAL_PROVIDERS = frozenset({"google", "facebook", "whatsapp", "instagram", "email"})
 
 
@@ -97,8 +104,13 @@ def demo_allowed() -> bool:
 
 def _parse_roles(raw: Any) -> list[str]:
     if isinstance(raw, list):
-        roles = [str(r).strip() for r in raw if str(r).strip() in VALID_AVATARS]
-        return roles
+        roles = [str(r).strip() for r in raw if str(r).strip() in ALL_PROFILE_ROLES]
+        # preserve order, unique
+        seen: list[str] = []
+        for r in roles:
+            if r not in seen:
+                seen.append(r)
+        return seen
     if isinstance(raw, str) and raw.strip():
         try:
             data = json.loads(raw)
@@ -106,7 +118,7 @@ def _parse_roles(raw: Any) -> list[str]:
                 return _parse_roles(data)
         except json.JSONDecodeError:
             pass
-        if raw in VALID_AVATARS:
+        if raw in ALL_PROFILE_ROLES:
             return [raw]
         if raw == "both":
             return ["creator", "qa_hunter"]
@@ -116,6 +128,10 @@ def _parse_roles(raw: Any) -> list[str]:
 def _primary_role(roles: list[str], fallback: str = "creator") -> str:
     if not roles:
         return fallback if fallback in VALID_ROLES else "creator"
+    if "super_admin" in roles:
+        return "super_admin"
+    if "admin" in roles:
+        return "admin"
     if "creator" in roles and "qa_hunter" in roles:
         return "both"
     if "qa_hunter" in roles:
@@ -126,7 +142,30 @@ def _primary_role(roles: list[str], fallback: str = "creator") -> str:
         return "promoter"
     if "creator" in roles:
         return "creator"
+    if "trainer" in roles:
+        return "trainer"
+    if "student" in roles:
+        return "student"
     return fallback
+
+
+def has_privilege(user: dict[str, Any] | None, *, level: str = "admin") -> bool:
+    """level: admin | super_admin — super_admin implies admin."""
+    if not user:
+        return False
+    roles = set(user.get("roles") or [])
+    primary = (user.get("role") or "").strip()
+    if level == "super_admin":
+        return "super_admin" in roles or primary == "super_admin"
+    return bool(roles & PRIVILEGE_ROLES) or primary in ("admin", "super_admin")
+
+
+def is_platform_admin(user: dict[str, Any] | None) -> bool:
+    return has_privilege(user, level="admin")
+
+
+def is_super_admin(user: dict[str, Any] | None) -> bool:
+    return has_privilege(user, level="super_admin")
 
 
 def _row_to_user(row: sqlite3.Row) -> dict[str, Any]:
@@ -138,8 +177,10 @@ def _row_to_user(row: sqlite3.Row) -> dict[str, Any]:
             roles = ["creator", "qa_hunter"]
         elif legacy in VALID_AVATARS:
             roles = [legacy]
+        elif legacy == "super_admin":
+            roles = ["super_admin", "creator", "qa_hunter", "nalanda"]
         elif legacy == "admin":
-            roles = ["creator", "qa_hunter", "nalanda"]
+            roles = ["admin", "creator", "qa_hunter", "nalanda"]
         else:
             roles = ["creator"]
     first = (row["first_name"] if "first_name" in keys else "") or ""
@@ -427,3 +468,40 @@ def reset_password(token: str, new_password: str) -> None:
         )
         conn.execute("UPDATE password_resets SET used = 1 WHERE token = ?", (token,))
         conn.commit()
+
+
+def list_users() -> list[dict[str, Any]]:
+    init_db()
+    with _connect() as conn:
+        rows = conn.execute("SELECT * FROM users ORDER BY created_at DESC").fetchall()
+    return [_row_to_user(r) for r in rows]
+
+
+def set_user_roles(
+    user_id: str,
+    new_roles: list[str],
+    *,
+    actor: dict[str, Any],
+) -> dict[str, Any]:
+    """Platform admin updates another user's roles_json. Only super_admin can grant/revoke super_admin."""
+    target = get_user(user_id)
+    if not target:
+        raise ValueError("User not found")
+    if not is_platform_admin(actor):
+        raise PermissionError("Platform admin required")
+    roles = _parse_roles(new_roles)
+    if not roles:
+        roles = ["creator"]
+    actor_is_super = is_super_admin(actor)
+    target_was_super = is_super_admin(target)
+    becoming_super = "super_admin" in roles
+    if becoming_super and not actor_is_super:
+        raise PermissionError("Only super admin can grant super_admin")
+    if target_was_super and not becoming_super and not actor_is_super:
+        raise PermissionError("Only super admin can revoke super_admin")
+    if "admin" in roles and not actor_is_super and not is_platform_admin(actor):
+        raise PermissionError("Cannot grant admin")
+    # Non-super admin cannot grant admin to others (plan: Super can grant Admin; Admin cannot mint Super)
+    if "admin" in roles and "admin" not in (target.get("roles") or []) and not actor_is_super:
+        raise PermissionError("Only super admin can grant admin")
+    return update_user_profile(user_id, {"roles": roles, "profile_complete": True})

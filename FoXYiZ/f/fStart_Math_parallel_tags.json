@@ -1,0 +1,8 @@
+{
+  "configs": ["y/Math/Math.json"],
+  "thread_count": 2,
+  "timeout": 6,
+  "headless": true,
+  "debug": false,
+  "tags": ["Smoke", "Math"]
+}

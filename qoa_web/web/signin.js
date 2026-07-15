@@ -26,6 +26,7 @@ function roleBadgeClass(profile) {
 
 function roleBadgeText(profile) {
   if (profile.role === "new-user") return "New user";
+  if (profile.superAdmin) return "Super Admin";
   if (profile.admin) return "Admin";
   if (profile.consultantTier === "senior") return "Senior QA Hunter";
   if (profile.consultantTier === "bounty") return "Bug bounty";

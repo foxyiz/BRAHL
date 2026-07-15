@@ -6,7 +6,7 @@ import json
 import re
 from typing import Any
 
-from ai_assist import _chat, is_ai_available
+from ai_assist import chat_metered, is_ai_available
 
 
 def _fallback_plan(requirement: str) -> dict[str, Any]:
@@ -63,7 +63,7 @@ def generate_brahl_plan(
         f"Project: {project_name}\nApp URL: {app_url or 'not set'}\nBudget: ${budget_usd:.0f}\n\n"
         f"Requirement:\n{requirement}"
     )
-    raw = _chat(system, user)
+    raw, _meta = chat_metered(system, user, role="planner", max_tokens=900)
     plan = _parse_plan_json(raw) if raw else None
     if not plan:
         plan = _fallback_plan(requirement)

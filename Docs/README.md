@@ -1,66 +1,44 @@
-# Docs — reference hub for humans and AI
+# Docs — slim reference hub
 
-**Read this when you open KK/ on a new machine, a new Cursor project, or any other AI tool.**
+**Agents:** start at [../qoa_web/MEMORY.md](../qoa_web/MEMORY.md).  
+**Session log:** [../todaysummary.md](../todaysummary.md).  
+**Engine operator guide:** [../FoXYiZ/FoXYiZ_Readme.md](../FoXYiZ/FoXYiZ_Readme.md).
 
-The goal: **start from docs + a small file slice**, not the whole repo (~90 MB with `z/` history).
-
----
-
-## Start here (5 minutes)
-
-| Order | File | Why |
-|-------|------|-----|
-| 1 | [../Summary.md](../Summary.md) | Team index — layout, commands, cloud boundary |
-| 2 | [../qoa_web/MEMORY.md](../qoa_web/MEMORY.md) | **Agents:** qoa_web scope, verify count, do-not-touch list |
-| 3 | [BRAHL.md](./BRAHL.md) | Full BRAHL lifecycle (Build → Run → Analyze → Heal → Loop → Verify) |
-| 4 | [FoXYiZ.md](./FoXYiZ.md) | yPAD contract, xReuse, heal rules |
-| 5 | [rules.md](./rules.md) | Agent rules — Playwright for explore, yPAD for automate |
-| 6 | [HANDOFF.md](./HANDOFF.md) | Minimum export bundle + first commands on a new machine |
-
-**Active app:** qoa_web @ http://127.0.0.1:8765 · **Active suite:** `y/qoa_web/` · **Verify:** **49** plans (`Run=Y`, tag **Verify**) via `f/fStart_qoa_web_verify.json`.
+Goal: **docs + a small file slice**, not the whole `z/` tree.
 
 ---
 
-## Doc map
+## Keep these (Docs/)
 
-| Doc | Audience | Contents |
-|-----|----------|----------|
-| [README.md](./README.md) | Everyone | This index |
-| [HANDOFF.md](./HANDOFF.md) | New machine / export | Slim file list, bootstrap commands |
-| [MAINTENANCE.md](./MAINTENANCE.md) | End of session (~30 min) | Cleaner, doc updates, verify hygiene |
-| [BRAHL.md](./BRAHL.md) | Deep dive | Phases, loop protocol, qoa_web, version compare |
-| [BRAHL_PROMPT.md](./BRAHL_PROMPT.md) | In-app AI | Slim BRAHL context (.md drawer in app) |
-| [FoXYiZ.md](./FoXYiZ.md) | yPAD authors | Plans, actions, designs, xReuse, heal table |
-| [rules.md](./rules.md) | Agents | Explore vs automate boundaries |
-| [test-user-data/README.md](./test-user-data/README.md) | Personas P1–P9 | Source of truth → yPAD D1–D9 |
+| Doc | Role |
+|-----|------|
+| [README.md](./README.md) | This index |
+| [HANDOFF.md](./HANDOFF.md) | New-machine / chat handoff |
+| [BRAHL_PROMPT.md](./BRAHL_PROMPT.md) | **In-app AI** (packed) — slim lifecycle |
+| [AI_GUARDRAILS.md](./AI_GUARDRAILS.md) | **In-app AI** (packed) — token rules |
+| [BRAHL_DESKTOP_BYOK.md](./BRAHL_DESKTOP_BYOK.md) | Optional OpenAI key / hosted quotas |
+| [BRAHL.md](./BRAHL.md) | Full BRAHL deep dive |
+| [FoXYiZ.md](./FoXYiZ.md) | yPAD / heal skill (viewer) |
+| [rules.md](./rules.md) | Agent boundaries |
+| [DEPLOY.md](./DEPLOY.md) | VPS / launch checklist (+ AWS later) |
+| [test-user-data/](./test-user-data/) | Personas P1–P9 (API + sync source) |
 
-### Outside Docs/ (linked on purpose)
-
-| Doc | Purpose |
-|-----|---------|
-| [../Summary.md](../Summary.md) | Root handoff index |
-| [../qoa_web/qoa_userDoc.md](../qoa_web/qoa_userDoc.md) | Users & in-app AI — avatars, phases, APIs |
-| [../qoa_web/MEMORY.md](../qoa_web/MEMORY.md) | Agent memory for qoa_web |
-| [../qoa_web/DEPLOY.md](../qoa_web/DEPLOY.md) | Demo / VPS deploy |
-| [../pyUtils/README.md](../pyUtils/README.md) | Python utilities (cleaner, yVisualizer, zDefects, zBatchDash) |
-| [../f/fStart_SCOPE.md](../f/fStart_SCOPE.md) | Which fStart configs are in scope |
+Retired (do not re-expand into active Docs): `archive/docs-retired-20260714/`  
+(Bluehost long form, AWS design, defects log, prod-site notes, old maintenance).
 
 ---
 
-## Formula (everywhere)
+## Layout (current)
 
 ```
-f(x, y) = z
+KK/
+  FoXYiZ/     f · x · y · z · pyUtils
+  qoa_web/    Arena + Admin SPA
+  Docs/       this hub
+  archive/    ignored by Cursor
 ```
 
-| Symbol | Folder | Role |
-|--------|--------|------|
-| **f** | `f/` | Engine — `fEngine2.py`, `fStart*.json` |
-| **x** | `x/` | Actions — `xActions.py`, `xCapa.csv` |
-| **y** | `y/<suite>/` | yPAD — plans, actions, designs |
-| **z** | `z/<run>/` | Results — CSV, dashboard HTML, BRAHL report (ephemeral) |
-
-**Utilities:** `pyUtils/` — cleaner, persona sync, `zBatchDash.py`. HTML reports: `pyUtils/y_visualization.html`, `pyUtils/zDefectsDashboard.html`. **Not** engine code.
+**Formula:** `f(x, y) = z` — paths are under `FoXYiZ/` (short `f/…` still works for the engine cwd).
 
 ---
 
@@ -68,33 +46,32 @@ f(x, y) = z
 
 ```powershell
 python qoa_web/run_local.py
-python f\fEngine2.py --config f\fStart_qoa_web_verify.json
-python pyUtils\sync_personas.py
-python pyUtils\cleaner.py --apply
-python pyUtils\yVisualizer.py
-python pyUtils\zDefects.py
+python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json
+python FoXYiZ\pyUtils\cleaner.py --apply
+python FoXYiZ\pyUtils\sync_personas.py
 ```
 
-See [MAINTENANCE.md](./MAINTENANCE.md) for the full session checklist.
+---
+
+## Avatars
+
+| UI | Key | Role |
+|----|-----|------|
+| Creator | client | Challenges, BRAHL, Go/No-Go |
+| QA Hunter | consultant | Hunt, evidence, payouts |
+| Nalanda | networker | Community — no BRAHL phases |
+
+Personas **P1–P9** → yPAD columns **D1–D9**. Source: [test-user-data/](./test-user-data/).
 
 ---
 
-## Avatars (qoa_web)
+## Maintenance (end of session)
 
-| UI label | Internal key | Role |
-|----------|--------------|------|
-| **Creator** | client | Post challenges, BRAHL phases, Go/No-Go |
-| **QA Hunter** | consultant | Join challenges, deliverables, hunt evidence |
-| **Nalanda** | networker | Nalanda community panel — Learn/Teach/Discuss/Invite — no BRAHL phases |
-
-Personas **P1–P9** in [test-user-data/](./test-user-data/) map to yPAD columns **D1–D9**.
+1. `python FoXYiZ\pyUtils\cleaner.py` then `--apply`
+2. Update [../todaysummary.md](../todaysummary.md) if product changed
+3. Keep **in-app AI** files short (`BRAHL_PROMPT`, `AI_GUARDRAILS`)
+4. Do not put `Docs/` or `MEMORY.md` in `.cursorignore`
 
 ---
 
-## What not to index (token efficiency)
-
-`.cursorignore` hides inactive suites (`y/qoa2/`, `y/sunshine/`, …), old `z/` runs, and large binaries. Agents should still read **Docs/** and **Summary.md** — those are the handoff layer.
-
----
-
-*Last doc pass: 2026-07-05 · Verify target: 49/49 on fStart_qoa_web_verify.json*
+*Doc pass: 2026-07-14 · lean Docs set + FoXYiZ one-folder layout*

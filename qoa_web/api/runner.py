@@ -14,11 +14,17 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-KK_ROOT = Path(__file__).resolve().parents[2]
-F_DIR = KK_ROOT / "f"
-Z_DIR = KK_ROOT / "z"
-Y_DIR = KK_ROOT / "y"
-ENGINE = F_DIR / "fEngine2.py"
+from paths import (
+    ENGINE,
+    F_DIR,
+    FOXYIZ_ROOT,
+    KK_ROOT,
+    PYUTILS_DIR,
+    Y_DIR,
+    Z_DIR,
+    repo_rel,
+    resolve_repo,
+)
 
 OUTPUT_DIR_RE = re.compile(r"Output Directory:\s*(.+)")
 
@@ -34,16 +40,24 @@ class Job:
     log_lines: list[str] = field(default_factory=list)
     started_at: float | None = None
     finished_at: float | None = None
+    batch_dashboard: str | None = None
+    run_dirs: list[str] = field(default_factory=list)
+    config_paths: list[str] = field(default_factory=list)
+    parallel: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "job_id": self.job_id,
             "config_path": self.config_path,
+            "config_paths": self.config_paths or ([self.config_path] if self.config_path else []),
             "step_label": self.step_label,
             "status": self.status,
             "return_code": self.return_code,
             "output_dir": self.output_dir,
-            "log_lines": self.log_lines[-200:],
+            "batch_dashboard": self.batch_dashboard,
+            "run_dirs": self.run_dirs,
+            "parallel": self.parallel,
+            "log_lines": self.log_lines[-400:],
             "started_at": self.started_at,
             "finished_at": self.finished_at,
         }
@@ -65,7 +79,7 @@ def list_fstart_for_suite(suite_name: str) -> list[str]:
     matches: list[str] = []
     for rel in list_fstart_configs():
         try:
-            data = json.loads((KK_ROOT / rel.replace("/", "\\")).read_text(encoding="utf-8"))
+            data = json.loads(resolve_repo(rel).read_text(encoding="utf-8"))
             configs = data.get("configs") or []
             if cfg_path in configs or any(suite_name in c for c in configs):
                 matches.append(rel)
@@ -90,7 +104,7 @@ def _validate_fstart_path(rel_path: str) -> Path:
     rel = rel_path.replace("\\", "/").strip()
     if not rel.startswith("f/fStart") or not rel.endswith(".json"):
         raise ValueError("Invalid fStart path")
-    path = KK_ROOT / rel.replace("/", "\\")
+    path = resolve_repo(rel)
     if not path.resolve().is_relative_to(F_DIR.resolve()):
         raise ValueError("Path must be under f/")
     return path
@@ -208,12 +222,12 @@ def list_z_runs(suite_suffix: str | None = None) -> list[dict[str, Any]]:
         runs.append(
             {
                 "name": path.name,
-                "path": str(path.relative_to(KK_ROOT)).replace("\\", "/"),
+                "path": repo_rel(path),
                 "passes": agg["passes"],
                 "fails": agg["fails"],
                 "total_plans": agg["total_plans"],
-                "dashboard": str(dash.relative_to(KK_ROOT)).replace("\\", "/") if dash else None,
-                "report": str((path / "brahl_report.md").relative_to(KK_ROOT)).replace("\\", "/")
+                "dashboard": repo_rel(dash) if dash else None,
+                "report": repo_rel(path / "brahl_report.md")
                 if (path / "brahl_report.md").is_file()
                 else None,
             }
@@ -265,7 +279,7 @@ def start_run(config_path: str, step_label: str = "Run") -> Job:
     def worker() -> None:
         job.status = "running"
         job.started_at = time.time()
-        cfg = KK_ROOT / config_path.replace("/", "\\") if "\\" not in config_path else KK_ROOT / config_path
+        cfg = resolve_repo(config_path)
         if not cfg.is_file():
             job.status = "failed"
             job.log_lines.append(f"Config not found: {config_path}")
@@ -273,8 +287,8 @@ def start_run(config_path: str, step_label: str = "Run") -> Job:
             return
         try:
             proc = subprocess.Popen(
-                [sys.executable, str(ENGINE), "--config", str(cfg.relative_to(KK_ROOT))],
-                cwd=str(KK_ROOT),
+                [sys.executable, str(ENGINE), "--config", str(cfg.relative_to(FOXYIZ_ROOT))],
+                cwd=str(FOXYIZ_ROOT),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
@@ -287,7 +301,88 @@ def start_run(config_path: str, step_label: str = "Run") -> Job:
                 job.log_lines.append(line.rstrip("\n"))
                 m = OUTPUT_DIR_RE.search(line)
                 if m:
-                    job.output_dir = m.group(1).strip()
+                    out = m.group(1).strip()
+                    job.output_dir = out
+                    if "zDash_batch_" in out.replace("\\", "/"):
+                        job.batch_dashboard = out.replace("\\", "/")
+                    elif out not in job.run_dirs:
+                        job.run_dirs.append(out)
+            proc.wait()
+            job.return_code = proc.returncode
+            job.status = "completed" if proc.returncode == 0 else "failed"
+        except Exception as exc:
+            job.log_lines.append(f"[ERROR] {exc}")
+            job.status = "failed"
+        finally:
+            job.finished_at = time.time()
+
+    threading.Thread(target=worker, daemon=True).start()
+    return job
+
+
+def start_batch(
+    config_paths: list[str],
+    *,
+    parallel: bool = True,
+    step_label: str = "Run parallel",
+) -> Job:
+    """Run multiple fStarts via fOrchestrate (parallel or sequential) + batch zDash."""
+    paths = [p.strip() for p in config_paths if p and str(p).strip()]
+    if not paths:
+        raise ValueError("config_paths required")
+    if len(paths) == 1 and not parallel:
+        return start_run(paths[0], step_label="Run")
+
+    job_id = uuid.uuid4().hex[:10]
+    job = Job(
+        job_id=job_id,
+        config_path=paths[0],
+        config_paths=paths,
+        step_label=step_label,
+        parallel=parallel,
+    )
+    with _lock:
+        _jobs[job_id] = job
+
+    orch = F_DIR / "fOrchestrate.py"
+
+    def worker() -> None:
+        job.status = "running"
+        job.started_at = time.time()
+        try:
+            cmd = [
+                sys.executable,
+                str(orch),
+                "--configs",
+                ",".join(paths),
+            ]
+            if not parallel:
+                cmd.append("--sequential")
+            else:
+                cmd.append("--parallel")
+            proc = subprocess.Popen(
+                cmd,
+                cwd=str(FOXYIZ_ROOT),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                bufsize=1,
+            )
+            assert proc.stdout is not None
+            for line in proc.stdout:
+                job.log_lines.append(line.rstrip("\n"))
+                m = OUTPUT_DIR_RE.search(line)
+                if m:
+                    out = m.group(1).strip().replace("\\", "/")
+                    if "zDash_batch_" in out:
+                        job.batch_dashboard = out
+                        job.output_dir = out
+                    else:
+                        job.output_dir = out
+                        if out not in job.run_dirs:
+                            job.run_dirs.append(out)
             proc.wait()
             job.return_code = proc.returncode
             job.status = "completed" if proc.returncode == 0 else "failed"
@@ -320,7 +415,7 @@ def analyze_run(run_name: str) -> dict[str, Any]:
     results = next(run_dir.glob("*_zResults.csv"), None)
     dash = next(run_dir.glob("*_zDash.html"), None)
     if dash:
-        out["dashboard"] = dash.relative_to(KK_ROOT).as_posix()
+        out["dashboard"] = repo_rel(dash)
     if not results or not results.is_file():
         return out
     agg = plan_stats_from_zresults(results)
@@ -468,7 +563,7 @@ def _load_brahl_context(context_path: str | None) -> dict[str, Any] | None:
         return None
     path = Path(context_path)
     if not path.is_file():
-        rel = KK_ROOT / context_path.replace("\\", "/")
+        rel = resolve_repo(context_path)
         path = rel if rel.is_file() else path
     if not path.is_file():
         return None
@@ -700,8 +795,8 @@ def write_brahl_report_files(
     except Exception:
         pass
     return {
-        "in_run": in_run.relative_to(KK_ROOT).as_posix(),
-        "flat": flat_path.relative_to(KK_ROOT).as_posix(),
+        "in_run": repo_rel(in_run),
+        "flat": repo_rel(flat_path),
     }
 
 
@@ -760,7 +855,7 @@ def capture_brahl_context(prompt: str, config_path: str, documents: list[dict] |
 
 
 def list_suites() -> list[dict[str, Any]]:
-    y_dir = KK_ROOT / "y"
+    y_dir = Y_DIR
     out: list[dict[str, Any]] = []
     for path in sorted(y_dir.glob("*/*.json")):
         try:
@@ -770,7 +865,7 @@ def list_suites() -> list[dict[str, Any]]:
         if not isinstance(data, dict) or "input_files" not in data:
             continue
         name = data.get("name") or path.parent.name
-        rel = path.relative_to(KK_ROOT).as_posix()
+        rel = repo_rel(path)
         entry: dict[str, Any] = {
             "path": rel,
             "name": name,
@@ -833,7 +928,7 @@ def default_fstart_for_suite(suite_name: str) -> str:
     matches: list[str] = []
     for rel in list_fstart_configs():
         try:
-            data = json.loads((KK_ROOT / rel.replace("/", "\\")).read_text(encoding="utf-8"))
+            data = json.loads(resolve_repo(rel).read_text(encoding="utf-8"))
             configs = data.get("configs") or []
             if cfg_path in configs or any(suite_name in c for c in configs):
                 matches.append(rel)
@@ -872,7 +967,7 @@ def create_ypad_suite(
     """Scaffold y/<name>/ with persona y3Designs and plan-driven or smoke plans."""
     import sys
 
-    py_utils = KK_ROOT / "pyUtils"
+    py_utils = PYUTILS_DIR
     if str(py_utils) not in sys.path:
         sys.path.insert(0, str(py_utils))
     from scaffold_app_ypad import write_app_ypad_suite
@@ -897,7 +992,7 @@ def materialize_brahl_plan_for_suite(
     """Rewrite existing suite y1/y2 from an accepted BRAHL plan."""
     import sys
 
-    py_utils = KK_ROOT / "pyUtils"
+    py_utils = PYUTILS_DIR
     if str(py_utils) not in sys.path:
         sys.path.insert(0, str(py_utils))
     from scaffold_app_ypad import materialize_brahl_plan_suite

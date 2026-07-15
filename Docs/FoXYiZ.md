@@ -17,7 +17,7 @@ You are an expert on **FoXYiZ** — a low-code/no-code automation framework.
 
 | Symbol | Meaning |
 |--------|---------|
-| **f** | Engine (`Foxyiz2.exe`, `python f/fEngine2.py`, or `BRAHL.py`) |
+| **f** | Engine (`python FoXYiZ/f/fEngine2.py` or packaged exe) |
 | **x** | Built-in capabilities (`xUI`, `xAPI`, `xMath`, `xJSON`, `xAI`, `xReuse`) |
 | **y** | User automation files under `y/` (Plans, Actions, Designs) |
 | **z** | Results under `z/` (CSV, HTML dashboard, error logs) |
@@ -39,20 +39,23 @@ You are an expert on **FoXYiZ** — a low-code/no-code automation framework.
 
 ---
 
-## Project layout (KK / qoa_web)
+## Project layout (KK)
 
 ```
 KK/
-├── f/fEngine2.py           # Dev engine (primary)
-├── f/fStart_qoa_web*.json  # qoa_web run configs
-├── x/xActions.py           # Action handlers
-├── u/                      # Utilities + HTML reports
-├── y/qoa_web/              # Active yPAD suite
-├── z/<timestamp>_qoa_web/  # Run output (ephemeral)
-├── qoa_web/                # BRAHL Web app (:8765)
-└── Docs/                   # Handoff docs — start at Docs/README.md
+├── FoXYiZ/
+│   ├── f/fEngine2.py           # Engine (primary)
+│   ├── f/fStart_*.json         # Run configs (short paths: f/…)
+│   ├── x/xActions.py           # Action handlers
+│   ├── y/<suite>/              # yPAD — Math, nalanda_app, qoa_web_live, …
+│   ├── z/<timestamp>_…/        # Run output (ephemeral; ignore in agents)
+│   └── pyUtils/                # cleaner, persona sync, dashboards
+├── qoa_web/                    # BRAHL Arena (:8765)
+└── Docs/                       # Slim docs — start at Docs/README.md
 ```
 
+From **KK/**: `python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json`  
+(engine resolves short `f/` · `y/` · `z/` under `FoXYiZ/`).
 ---
 
 ## YPAD file contract
@@ -218,10 +221,12 @@ Inlines the target plan's steps at this step.
 | Field | Purpose |
 |-------|---------|
 | `configs` | List of suite JSON paths |
-| `thread_count` | Parallel threads (`1` = sequential, `N` = one thread per config) |
+| `thread_count` | With **multiple configs**: parallel suite workers. With **one suite + 2+ tags** and `thread_count > 1`: **tag fan-out** (one tag per worker via `f/fOrchestrate.py`, then `z/zDash_batch_*.html`). With `thread_count: 1`, tags stay an **OR** filter. |
 | `timeout` | Default wait seconds for UI actions (`xNavigate`, `xClick`, `xType`, `xGetText`, etc.) |
 | `headless` | `false` for visible browser (debugging) |
-| `tags` | Run only plans whose `Tags` column contains any listed tag; `[]` = all |
+| `tags` | Filter plans by Tags column; see fan-out vs OR above |
+
+Orchestrator / future exe entry: `python f/fOrchestrate.py --config f/…` or `--configs a.json,b.json --parallel`. Arena **Run parallel** uses the same path.
 
 ### Commands
 
@@ -386,25 +391,24 @@ Run: `python f\fEngine.py --config y\Math\Math.json`
 
 | Doc | Contents |
 |-----|----------|
-| [BRAHL.md](./BRAHL.md) | Build → Run → Analyze → Heal → Loop (KK quick ref at top) |
-| [README.md](./README.md) | Docs hub — handoff index |
-| [HANDOFF.md](./HANDOFF.md) | Export bundle for new machine |
-| [MAINTENANCE.md](./MAINTENANCE.md) | Session cleaner + doc sync |
-| [rules.md](./rules.md) | Agent explore vs automate rules |
-| [../Summary.md](../Summary.md) | Root team index |
+| [BRAHL.md](./BRAHL.md) | Build → Run → Analyze → Heal → Loop |
+| [README.md](./README.md) | Docs hub |
+| [HANDOFF.md](./HANDOFF.md) | New-machine bootstrap |
+| [rules.md](./rules.md) | Agent explore vs automate |
+| [../todaysummary.md](../todaysummary.md) | Latest session changes |
+| [../FoXYiZ/FoXYiZ_Readme.md](../FoXYiZ/FoXYiZ_Readme.md) | Engine operator + AI guide |
 
 ---
 
 ## Quick reference card
 
 ```
-Files:     y1Plans (what) + y2Actions (how) + yD_Common (data/locators)
+Files:     y1Plans (what) + y2Actions (how) + y3Designs / yD_Common (data)
 Reuse:     PReuse_<Suite>_OpenSite — unique per suite, Run=N
 Reset:     xNavigate,base_url before home-page clicks
-Run all:   python f\fEngine2.py --config f\fStart_qoa_web_verify.json
-Failures:  z/<timestamp>_<Suite>/_errors.csv
-Utilities: python u\zDefects.py  → u/zDefectsDashboard.html
-Heal:      yPAD only — locators in yD_Common, steps in y2Actions
-Parallel:  f2.exe + thread_count = # configs; perf plans Run=N
-Tags:      Smoke | Navigation | Auth | Interaction | Content | Regression
+Run smoke: python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json
+Failures:  FoXYiZ/z/<timestamp>_<Suite>/_errors.csv
+Utilities: python FoXYiZ\pyUtils\cleaner.py --apply
+Heal:      yPAD only — locators + steps, never weaken A1
+Tags:      Smoke | … filter via fStart.json
 ```

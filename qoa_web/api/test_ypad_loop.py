@@ -40,7 +40,7 @@ def _run_flags(suite: str = SUITE) -> dict[str, str]:
 
 def test_shrink_restore_math_roundtrip(tmp_path: Path, monkeypatch) -> None:
     # Isolate KK_ROOT-ish artifacts: monkeypatch baseline next to Math.json via suite path
-    baseline = Path(ypad_store.KK_ROOT) / "y" / "Math" / "Math_run_y_baseline.json"
+    baseline = Path(ypad_store.resolve_repo("y/Math/Math_run_y_baseline.json"))
     if baseline.is_file():
         baseline.unlink()
 
@@ -49,7 +49,7 @@ def test_shrink_restore_math_roundtrip(tmp_path: Path, monkeypatch) -> None:
     assert ypad_store.current_run_y_ids(SUITE) == LEAN_Y
 
     run_name = "20260714_phaseb_math_loop"
-    z_dir = Path(ypad_store.KK_ROOT) / "z" / run_name
+    z_dir = Path(ypad_store.resolve_repo(f"z/{run_name}"))
     fails = {"Math_Round"}
     passes = LEAN_Y - fails
     _write_zresults(z_dir, fails, passes)

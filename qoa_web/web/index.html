@@ -10,16 +10,44 @@
   <link rel="stylesheet" href="/assets/themes.css" />
 </head>
 <body>
-  <div id="demo-banner" class="demo-banner" role="status">
+  <div id="demo-banner" class="demo-banner" hidden role="status">
     <span>Demo — fictional personas · localStorage profiles</span>
   </div>
   <header class="topbar">
     <div class="topbar-row topbar-row-head">
       <div class="brand">
         <h1 id="app-title">BRAHL Web — f(x,y)=z</h1>
-        <p class="tagline" id="app-tagline">You Build, We QA — let's BRAHL! · Champion vs Contender</p>
+        <p class="tagline" id="app-tagline">Your QA agent — FoXYiZ runs the tests · BRAHL decides Go/No-Go</p>
+      </div>
+      <div id="topbar-project" class="topbar-project" hidden>
+        <span class="topbar-project-label">Projects</span>
+        <select id="topbar-project-select" aria-label="Switch project"></select>
+        <button type="button" id="btn-topbar-add-project" class="icon-btn topbar-add-btn" title="New project">+</button>
       </div>
       <div class="topbar-right">
+        <div id="ai-toggle-wrap" class="ai-toggle-wrap" hidden>
+          <label class="ai-toggle" title="AI on: assistants guide Build and BRAHL. AI off: QA Hunters run FoXYiZ locally and upload Automation + AI reports.">
+            <input type="checkbox" id="ai-toggle" checked />
+            <span class="ai-toggle-track" aria-hidden="true"><span class="ai-toggle-thumb"></span></span>
+            <span id="ai-toggle-label">AI on</span>
+          </label>
+          <button type="button" id="btn-ai-docs" class="ai-md-btn" hidden title="AI context documents (.md) — shared across all projects">
+            <span class="ai-md-dot" aria-hidden="true"></span>.md
+          </button>
+        </div>
+        <a
+          id="topbar-github"
+          class="topbar-github"
+          href="https://github.com/foxyiz/BRAHL"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Download BRAHL / FoXYiZ from GitHub — run locally"
+        >
+          <svg class="topbar-github-icon" viewBox="0 0 16 16" width="18" height="18" aria-hidden="true">
+            <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          <span class="topbar-github-label">GitHub</span>
+        </a>
         <div class="user-menu-wrap">
           <button type="button" id="user-menu-btn" class="profile-chip user-menu-trigger" title="Account menu" aria-haspopup="true" aria-expanded="false">
             <span id="profile-chip-code" class="profile-chip-code">—</span>
@@ -33,11 +61,16 @@
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="promoter">Promoter</button>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="cost">Wallet ($)</button>
             <div class="user-menu-divider" role="separator"></div>
+            <a href="https://github.com/foxyiz/BRAHL" class="user-menu-item" role="menuitem" target="_blank" rel="noopener noreferrer">Download on GitHub</a>
+            <div class="user-menu-divider" role="separator"></div>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="theme-pro">Theme: Pro</button>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="theme-arena">Theme: Arena</button>
             <div class="user-menu-divider" role="separator"></div>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="role-creator" id="user-menu-role-creator">View as Creator</button>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="role-hunter" id="user-menu-role-hunter">View as QA Hunter</button>
+            <div class="user-menu-divider" role="separator"></div>
+            <a href="/admin" class="user-menu-item" role="menuitem" id="user-menu-admin" hidden>Admin</a>
+            <a href="/admin?scope=project" class="user-menu-item" role="menuitem" id="user-menu-project-admin" hidden>Project admin</a>
             <a href="/login" class="user-menu-item" role="menuitem" id="user-menu-login">Log in</a>
             <a href="/signup" class="user-menu-item" role="menuitem" id="user-menu-signup">Sign up</a>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="signout" id="user-menu-signout" hidden>Sign out</button>
@@ -45,7 +78,7 @@
         </div>
       </div>
     </div>
-    <div class="topbar-row topbar-row-controls">
+    <div class="topbar-row topbar-row-controls mvp-hidden" hidden>
       <nav class="avatar-bar mvp-hidden" aria-label="Choose avatar" hidden>
         <button type="button" class="avatar-btn" data-avatar="client" title="Creator — Post a challenge">
           <span class="avatar-icon">C</span>
@@ -60,21 +93,6 @@
           <span class="avatar-label">Nalanda</span>
         </button>
       </nav>
-      <div id="topbar-project" class="topbar-project" hidden>
-        <span class="topbar-project-label">My challenge</span>
-        <select id="topbar-project-select" aria-label="Switch project"></select>
-        <button type="button" id="btn-topbar-add-project" class="icon-btn topbar-add-btn" title="New project">+</button>
-      </div>
-      <div id="ai-toggle-wrap" class="ai-toggle-wrap" hidden>
-        <label class="ai-toggle" title="AI on: assistants guide Build and BRAHL. AI off: QA Hunters run FoXYiZ locally and upload Automation + AI reports.">
-          <input type="checkbox" id="ai-toggle" checked />
-          <span class="ai-toggle-track" aria-hidden="true"><span class="ai-toggle-thumb"></span></span>
-          <span id="ai-toggle-label">AI on</span>
-        </label>
-        <button type="button" id="btn-ai-docs" class="ai-md-btn" hidden title="AI context documents (.md) — shared across all projects">
-          <span class="ai-md-dot" aria-hidden="true"></span>.md
-        </button>
-      </div>
     </div>
   </header>
 
@@ -111,9 +129,9 @@
   </div>
 
   <div id="context-strip" class="context-strip">
-    <span id="status-bar" class="status-bar">Choose an avatar to start</span>
+    <span id="status-bar" class="status-bar">Choose an avatar to start the QA agent</span>
     <button type="button" id="persona-tips-reopen" class="persona-tips-reopen linkish" hidden>Persona tips</button>
-    <span id="project-banner-meta" class="project-banner-meta" hidden></span>
+    <span id="project-banner-meta" class="project-banner-meta" hidden title="Open the yPAD widget (bottom right) for plans · steps · data"></span>
     <div id="project-banner-hitl" class="project-banner-hitl" hidden></div>
   </div>
 
@@ -311,23 +329,95 @@
 
   <div id="ypad-drawer-backdrop" class="ypad-drawer-backdrop" hidden aria-hidden="true"></div>
 
+  <div class="arena-dock" id="arena-dock" hidden>
+    <button type="button" id="arena-ypad-widget" class="arena-ypad-widget" title="yPAD — Plans (what) · Actions (steps) · Designs (data). Click to edit on Build.">
+      <span class="arena-ypad-widget-label">yPAD</span>
+      <strong id="arena-ypad-title">—</strong>
+      <span class="arena-ypad-widget-rows">
+        <span><span id="arena-ypad-plans">0</span> plans</span>
+        <span><span id="arena-ypad-steps">0</span> steps</span>
+      </span>
+      <span class="arena-ypad-widget-rows">
+        <span><span id="arena-ypad-data">0</span> data</span>
+        <span><span id="arena-ypad-auto">0</span> auto</span>
+      </span>
+      <span class="arena-ypad-coverage">
+        <span class="ypad-cov-manual" id="arena-ypad-manual-chip">Manual</span>
+        <span class="ypad-cov-auto" id="arena-ypad-auto-chip">Automated</span>
+      </span>
+    </button>
+    <button type="button" id="arena-cost-widget" class="arena-cost-widget" title="Open Wallet ($)">
+      <span class="arena-cost-widget-label">Wallet</span>
+      <strong id="arena-cost-remaining">$—</strong>
+      <span class="arena-cost-widget-rows">
+        <span>AI <span id="arena-cost-ai">$0</span></span>
+        <span>Human <span id="arena-cost-human">$0</span></span>
+      </span>
+      <span class="arena-cost-bar" aria-hidden="true"><span id="arena-cost-fill" class="arena-cost-fill"></span></span>
+      <span id="arena-cost-ai-hint" class="arena-cost-ai-hint">AI scripted</span>
+    </button>
+  </div>
+
+  <div id="build-doc-modal" class="modal" hidden role="dialog" aria-labelledby="build-doc-modal-title" aria-modal="true">
+    <div class="modal-card modal-card-wide build-doc-modal-card">
+      <div class="build-doc-modal-header">
+        <div>
+          <h2 id="build-doc-modal-title">Document</h2>
+          <p id="build-doc-modal-meta" class="meta"></p>
+        </div>
+        <div class="build-doc-modal-actions">
+          <div class="build-doc-view-toggle" role="tablist" aria-label="Document view">
+            <button type="button" class="build-doc-view-btn active" data-view="synopsis" id="build-doc-view-synopsis">Synopsis</button>
+            <button type="button" class="build-doc-view-btn" data-view="full" id="build-doc-view-full">Full document</button>
+          </div>
+          <button type="button" id="build-doc-modal-close" class="secondary">Close</button>
+        </div>
+      </div>
+      <div id="build-doc-modal-synopsis" class="build-doc-modal-body build-doc-synopsis"></div>
+      <div id="build-doc-modal-full" class="build-doc-modal-body build-doc-full md-body" hidden></div>
+    </div>
+  </div>
+
   <div id="ai-docs-modal" class="modal" hidden role="dialog" aria-labelledby="ai-docs-title" aria-modal="true">
-    <div class="modal-card modal-card-wide ai-docs-modal-card">
+    <div class="modal-card ai-docs-modal-card" id="ai-docs-modal-card">
       <div class="ai-docs-header">
         <div>
           <h2 id="ai-docs-title">AI context · .md</h2>
-          <p class="blurb">Skills, rules, BRAHL, FoXYiZ, and README — <strong>shared across all projects</strong> (not per-project).</p>
+          <p class="blurb">Built-in skills stay read-only. <strong>My docs</strong> are editable and optional in the AI prompt — shared across projects.</p>
+          <p id="ai-docs-budget" class="ai-docs-budget meta" hidden></p>
         </div>
-        <button type="button" id="ai-docs-close" class="secondary">Close</button>
+        <div class="ai-docs-header-actions">
+          <button type="button" id="ai-docs-expand" class="secondary">Expand</button>
+          <button type="button" id="ai-docs-close" class="secondary">Close</button>
+        </div>
       </div>
       <div class="ai-docs-layout">
-        <ul id="ai-docs-list" class="ai-docs-list" role="list"></ul>
+        <div class="ai-docs-sidebar">
+          <div class="ai-docs-section-label">Built-in</div>
+          <ul id="ai-docs-list-builtin" class="ai-docs-list" role="list"></ul>
+          <div class="ai-docs-section-head">
+            <span class="ai-docs-section-label">My docs</span>
+            <button type="button" id="ai-docs-new" class="icon-btn" title="New markdown doc">+</button>
+          </div>
+          <ul id="ai-docs-list-user" class="ai-docs-list" role="list"></ul>
+        </div>
         <article class="ai-docs-viewer">
           <header class="ai-docs-viewer-head">
-            <h3 id="ai-docs-doc-title">Select a document</h3>
-            <span id="ai-docs-doc-meta" class="meta"></span>
+            <div>
+              <h3 id="ai-docs-doc-title">Select a document</h3>
+              <span id="ai-docs-doc-meta" class="meta"></span>
+            </div>
+            <div id="ai-docs-edit-toolbar" class="ai-docs-edit-toolbar" hidden>
+              <label class="ai-docs-in-prompt-label" title="Pack this doc into AI when a key is set (cap applied)">
+                <input type="checkbox" id="ai-docs-in-prompt" />
+                Include in AI prompt
+              </label>
+              <button type="button" id="ai-docs-save" class="primary">Save</button>
+              <button type="button" id="ai-docs-delete" class="secondary">Delete</button>
+            </div>
           </header>
-          <pre id="ai-docs-doc-body" class="ai-docs-doc-body">Choose a .md file from the list.</pre>
+          <pre id="ai-docs-doc-body" class="ai-docs-doc-body" hidden>Choose a .md file from the list.</pre>
+          <textarea id="ai-docs-doc-editor" class="ai-docs-doc-editor" hidden spellcheck="false" aria-label="Edit markdown"></textarea>
         </article>
       </div>
     </div>
@@ -341,29 +431,38 @@
     <dl id="ypad-drawer-body" class="ypad-drawer-body"></dl>
   </div>
 
-  <nav class="phase-nav" aria-label="BRAHL phases">
-    <button type="button" class="phase-btn active" data-phase="build">Build</button>
-    <button type="button" class="phase-btn" data-phase="run">Run</button>
-    <button type="button" class="phase-btn" data-phase="analyze">Analyze</button>
-    <button type="button" class="phase-btn" data-phase="heal">Heal</button>
-    <button type="button" class="phase-btn" data-phase="loop">Loop</button>
-    <button type="button" class="phase-btn phase-brahl" data-phase="brahl">BRAHL</button>
+  <nav class="phase-nav" id="phase-nav" aria-label="BRAHL QA agent phases">
+    <div class="phase-nav-track" role="presentation">
+      <div class="phase-nav-item" data-phase="build">
+        <button type="button" class="phase-btn active" data-phase="build">Build</button>
+        <span class="phase-marker" data-phase="build" title="Build — challenge &amp; yPAD ready" hidden></span>
+      </div>
+      <div class="phase-nav-item" data-phase="run">
+        <button type="button" class="phase-btn" data-phase="run">Run</button>
+        <span class="phase-marker" data-phase="run" title="Run — FoXYiZ executed tests" hidden></span>
+      </div>
+      <div class="phase-nav-item" data-phase="analyze">
+        <button type="button" class="phase-btn" data-phase="analyze">Analyze</button>
+        <span class="phase-marker" data-phase="analyze" title="Analyze — failures reviewed" hidden></span>
+      </div>
+      <div class="phase-nav-item" data-phase="heal">
+        <button type="button" class="phase-btn" data-phase="heal">Heal</button>
+        <span class="phase-marker" data-phase="heal" title="Heal — yPAD fixed" hidden></span>
+      </div>
+      <div class="phase-nav-item" data-phase="loop">
+        <button type="button" class="phase-btn" data-phase="loop">Loop</button>
+        <span class="phase-marker" data-phase="loop" title="Loop — retries / verify done" hidden></span>
+      </div>
+      <div class="phase-nav-item" data-phase="brahl">
+        <button type="button" class="phase-btn phase-brahl" data-phase="brahl">BRAHL</button>
+        <span class="phase-marker" data-phase="brahl" title="BRAHL — Go/No-Go report ready" hidden></span>
+      </div>
+    </div>
     <button type="button" class="phase-btn phase-nalanda mvp-hidden" data-phase="nalanda" hidden>Nalanda</button>
     <button type="button" class="phase-btn phase-atomic77 mvp-hidden" data-phase="atomic77" hidden>A77</button>
     <button type="button" class="phase-btn phase-promoter mvp-hidden" data-phase="promoter" hidden>Promoter</button>
     <button type="button" class="phase-btn phase-cost mvp-hidden" data-phase="cost" hidden>$</button>
   </nav>
-  <div id="phase-progress" class="phase-progress" aria-label="BRAHL cycle progress" hidden>
-    <div class="phase-progress-track" role="list">
-      <span class="phase-progress-dot" data-phase="build" role="listitem" title="Build"></span>
-      <span class="phase-progress-dot" data-phase="run" role="listitem" title="Run"></span>
-      <span class="phase-progress-dot" data-phase="analyze" role="listitem" title="Analyze"></span>
-      <span class="phase-progress-dot" data-phase="heal" role="listitem" title="Heal"></span>
-      <span class="phase-progress-dot" data-phase="loop" role="listitem" title="Loop"></span>
-      <span class="phase-progress-dot" data-phase="brahl" role="listitem" title="BRAHL"></span>
-      <span class="phase-progress-dot phase-cost-dot" data-phase="cost" role="listitem" title="Cost">$</span>
-    </div>
-  </div>
 
   <main class="content">
     <section id="panel-build" class="panel active" data-panel="build">
@@ -396,15 +495,37 @@
                 <strong>There are ships sinking. Find and kill the bugs.</strong>
                 Human (QA) + Automation + AI — record evidence, submit findings, get paid.
               </p>
-              <p class="blurb build-hero-blurb" id="build-panel-blurb">Build your test strategy — automated (FoXYiZ) and manual scenarios.</p>
               <p id="build-verify-summary" class="verify-summary" hidden></p>
             </header>
 
-            <section id="build-brahl-plan" class="build-section build-brahl-plan-section">
-              <h3 class="section-sub">BRAHL Plan</h3>
-              <p class="blurb">Paste your requirement — AI generates test strategy, user stories, and test cases (automated + manual).</p>
+            <section id="build-strategy" class="build-section build-strategy-section">
+              <h3 class="section-sub">Strategy / plan</h3>
+              <p class="blurb build-hero-blurb" id="build-panel-blurb">Open the markdown docs for this suite — then refine yPAD coverage below.</p>
+              <div id="build-docs-strip" class="build-docs-strip" aria-label="Test strategy and test plan documents">
+                <button type="button" class="build-doc-chip" data-doc="strategy" id="btn-build-doc-strategy" title="test strategy.md — purpose and approach">
+                  <span class="build-doc-chip-label">test strategy.md</span>
+                  <span class="build-doc-chip-hint" id="build-doc-strategy-hint">Synopsis on click</span>
+                </button>
+                <button type="button" class="build-doc-chip" data-doc="plan" id="btn-build-doc-plan" title="test plan.md — plans, stories, coverage">
+                  <span class="build-doc-chip-label">test plan.md</span>
+                  <span class="build-doc-chip-hint" id="build-doc-plan-hint">Synopsis on click</span>
+                </button>
+              </div>
+              <div id="build-strategy-summary" class="build-strategy-summary">
+                <p class="empty-hint" id="build-strategy-empty">No strategy yet — generate a BRAHL plan below, or edit yPAD in Test coverage.</p>
+                <div id="build-strategy-body" class="build-strategy-body" hidden></div>
+              </div>
+              <div class="phase-action-bar">
+                <button type="button" id="btn-improve-ypads" class="secondary">Improve yPADs</button>
+                <button type="button" id="btn-goto-coverage" class="secondary">Test coverage</button>
+              </div>
+            </section>
+
+            <details id="build-brahl-plan" class="build-section build-collapsible build-brahl-plan-section">
+              <summary class="section-sub">Rebuild BRAHL plan</summary>
+              <p class="blurb">Paste a requirement — generates test strategy, user stories, and automated + Manual test cases.</p>
               <textarea id="brahl-plan-requirement" class="brahl-plan-input" rows="4" placeholder="Describe what to test — MVP launch, changed build, edge cases for QA Hunters…"></textarea>
-              <div class="form-row actions">
+              <div class="phase-action-bar">
                 <button type="button" id="btn-generate-brahl-plan" class="primary">Generate BRAHL Plan</button>
                 <button type="button" id="btn-accept-brahl-plan" class="secondary" hidden>Accept plan</button>
               </div>
@@ -412,7 +533,7 @@
                 <div id="brahl-plan-stats" class="brahl-plan-stats"></div>
                 <div id="brahl-plan-body" class="brahl-plan-body"></div>
               </div>
-            </section>
+            </details>
 
             <section id="build-consultant-panel" class="build-section avatar-consultant-only" hidden>
               <p id="consultant-tier-banner" class="consultant-tier-banner" hidden></p>
@@ -427,6 +548,12 @@
                 <p id="consultant-hitl-hint" class="hint" hidden>
                   AI off — run FoXYiZ on your machine, generate the BRAHL report (Automation + AI), then upload below.
                 </p>
+
+                <section id="hunter-manual-strip" class="hunter-manual-strip">
+                  <h3 class="section-sub">Manual plans (yPAD)</h3>
+                  <p class="blurb">Plans tagged <code>Manual</code> or Run=N — cover these by hand; Creators pay for evidence.</p>
+                  <ul id="hunter-manual-list" class="hunter-manual-list"></ul>
+                </section>
 
                 <section id="hunt-evidence" class="hunt-evidence">
                   <h3 class="section-sub">Hunt evidence</h3>
@@ -521,9 +648,14 @@
                   <button type="button" class="ypad-tab" data-ypad-tab="env" role="tab">Environment example</button>
                 </div>
                 <div class="ypad-toolbar">
+                  <div id="ypad-coverage-chips" class="ypad-coverage-chips" role="group" aria-label="Coverage filter">
+                    <button type="button" class="ypad-cov-chip active" data-ypad-cov="all">All</button>
+                    <button type="button" class="ypad-cov-chip" data-ypad-cov="auto">Automated</button>
+                    <button type="button" class="ypad-cov-chip" data-ypad-cov="manual">Manual</button>
+                  </div>
                   <input type="search" id="ypad-filter" class="ypad-filter" placeholder="Filter rows…" />
                   <label class="checkbox-label ypad-plans-only" id="ypad-run-y-wrap" hidden>
-                    <input type="checkbox" id="ypad-run-y-only" checked />
+                    <input type="checkbox" id="ypad-run-y-only" />
                     Automated only (Run=Y)
                   </label>
                   <div id="ypad-designs-toolbar" class="ypad-designs-toolbar" hidden>
@@ -560,24 +692,19 @@
               </div>
             </section>
 
-            <details id="build-hitl-stories" class="build-section build-collapsible avatar-client-only">
-              <summary class="section-sub">Manual scenarios (QA Hunter)</summary>
-              <p class="blurb">Tests automation cannot cover — mobile devices, UX exploration, edge cases.</p>
-              <ul id="hitl-story-list" class="hitl-story-list"></ul>
-              <form id="hitl-story-form" class="hitl-story-form">
-                <input type="text" id="hitl-story-title" placeholder="Scenario title" required />
-                <input type="text" id="hitl-story-desc" placeholder="What should QA Hunters verify manually?" />
-                <button type="submit" class="secondary">+ Add scenario</button>
+            <!-- Manual scenarios + mid-page Hunter team removed: Manual = yPAD Manual tag; invite lives under Budget -->
+            <div id="build-hitl-stories" hidden aria-hidden="true">
+              <ul id="hitl-story-list"></ul>
+              <form id="hitl-story-form" hidden>
+                <input type="text" id="hitl-story-title" />
+                <input type="text" id="hitl-story-desc" />
               </form>
-            </details>
-
-            <details id="build-hitl-team-wrap" class="build-section build-collapsible avatar-client-only">
-              <summary class="section-sub">QA Hunter team</summary>
-              <p class="blurb">Invite QA teams to join <strong id="hitl-project-label">this project</strong>.</p>
-              <div id="hitl-roster" class="hitl-roster"></div>
-              <div id="hitl-invites" class="hitl-invites"></div>
-              <button type="button" id="btn-invite-hitl" class="primary">Invite QA Hunter</button>
-            </details>
+            </div>
+            <div id="build-hitl-team-wrap" hidden aria-hidden="true">
+              <strong id="hitl-project-label" hidden>this project</strong>
+              <div id="hitl-roster"></div>
+              <div id="hitl-invites"></div>
+            </div>
 
             <details id="build-advanced" class="build-section build-collapsible avatar-client-only">
               <summary class="section-sub">Advanced — versions &amp; change requests</summary>
@@ -636,6 +763,9 @@
                   <label>QA Hunter <span id="human-pct">50</span>%</label>
                 </div>
                 <div id="payout-preview" class="payout-preview"></div>
+                <div class="phase-action-bar" style="margin-top:0.75rem">
+                  <button type="button" id="btn-invite-hitl" class="secondary">Invite QA Hunter</button>
+                </div>
               </div>
               <div class="context-section context-section-collapsed" hidden>
                 <ul id="context-list" class="context-list"></ul>
@@ -689,28 +819,35 @@
       <div id="run-content">
         <h2>Run — FoXYiZ fEngine2</h2>
         <p id="run-project-scope" class="phase-scope"></p>
-        <p class="blurb">Executes your Tests via <strong>FoXYiZ fEngine2</strong> (<code>python f/fEngine2.py</code>) — no AI in Run (BRAHL: f + y → z).</p>
-        <div class="form-row">
-          <label>Test suite</label>
+        <p class="blurb">FoXYiZ only — no AI. Select fStarts; raise <code>thread_count</code> with multiple <code>tags</code> for parallel tag workers.</p>
+        <div class="form-row run-suite-row">
+          <label>Suite</label>
           <span id="run-suite-display" class="run-suite-readonly">—</span>
-          <span class="run-suite-hint">Switch project in the top bar.</span>
+          <span class="run-suite-hint">Switch via Projects in the top bar.</span>
         </div>
-        <div class="form-row fstart-row">
-          <label for="config-select">fStart config</label>
-          <select id="config-select" aria-label="fStart config"></select>
-          <button type="button" id="btn-fstart-edit" class="secondary fstart-action-btn">Edit</button>
-          <button type="button" id="btn-fstart-new" class="secondary fstart-action-btn">New</button>
+        <div class="fstart-toolbar">
+          <span class="fstart-toolbar-label">fStarts</span>
+          <div id="fstart-chip-row" class="fstart-chip-row" role="group" aria-label="fStart configs"></div>
+          <select id="config-select" class="fstart-select-hidden" aria-label="fStart config" hidden></select>
+          <div class="fstart-toolbar-actions">
+            <button type="button" id="btn-fstart-edit" class="secondary fstart-action-btn">Edit</button>
+            <button type="button" id="btn-fstart-new" class="secondary fstart-action-btn">New</button>
+          </div>
         </div>
-        <p id="fstart-empty-hint" class="hint" hidden>No fStart for this project — click <strong>New</strong> to create one.</p>
-        <div class="form-row actions">
-          <button type="button" id="btn-run" class="primary">Run engine</button>
+        <p class="hint fstart-chip-hint">Click to select · Ctrl/Cmd+click for 2+ chips · <strong>Run parallel</strong> also works on one fStart with tag fan-out</p>
+        <p id="fstart-fanout-hint" class="hint fstart-fanout-hint" hidden></p>
+        <p id="fstart-empty-hint" class="hint" hidden>No fStart for this project — click <strong>New</strong>.</p>
+        <div class="phase-action-bar run-actions-row">
+          <button type="button" id="btn-run" class="primary">Run</button>
+          <button type="button" id="btn-run-parallel" class="secondary" disabled title="Select 2+ fStarts or one with tag fan-out">Run parallel</button>
+          <div id="run-post-actions" class="run-post-actions" hidden>
+            <a id="run-zdash-link" href="#" target="_blank" class="secondary link-btn">View zDash</a>
+            <a id="run-batch-zdash-link" href="#" target="_blank" class="secondary link-btn" hidden>View batch zDash</a>
+            <button type="button" id="btn-goto-analyze" class="secondary">Open Analyze</button>
+          </div>
         </div>
         <div class="progress-wrap"><div id="progress-bar" class="progress-bar"></div></div>
         <pre id="run-log" class="log"></pre>
-        <div id="run-post-actions" class="run-post-actions" hidden>
-          <a id="run-zdash-link" href="#" target="_blank" class="secondary link-btn">View zDash</a>
-          <button type="button" id="btn-goto-analyze" class="secondary">Open Analyze</button>
-        </div>
       </div>
     </section>
 
@@ -725,19 +862,30 @@
       <div id="analyze-content">
         <h2>Analyze — z/</h2>
         <p id="analyze-project-scope" class="phase-scope"></p>
-        <p class="blurb">Root-cause analysis on z/ results. With <strong>AI on</strong>, classify failures as T1/T2/T3/A1 per BRAHL.md.</p>
-        <div class="form-row actions">
+        <p class="blurb">Failures from z/ results (Input · Expected · Output). AI RCA is optional when AI is on.</p>
+        <div class="phase-action-bar">
           <button type="button" id="btn-refresh-runs">Refresh runs</button>
-          <button type="button" id="btn-analyze-ai" class="primary" hidden>AI root-cause analysis</button>
+          <button type="button" id="btn-analyze-ai" class="secondary" hidden>AI root-cause</button>
         </div>
-        <div id="analyze-ai-off-hint" class="hint" hidden>AI off — review failures manually; use Heal for yPAD edits or enable AI on Build.</div>
+        <div id="analyze-ai-off-hint" class="hint" hidden>AI off — review the failure table; fix yPAD on Heal or Build.</div>
         <div id="analyze-ai-result" class="ai-panel" hidden></div>
-        <div class="split">
+        <div class="split analyze-split">
           <ul id="runs-list" class="runs-list"></ul>
-          <table class="fail-table">
-            <thead><tr><th>Plan</th><th>Step</th><th>Output</th></tr></thead>
-            <tbody id="failures-body"></tbody>
-          </table>
+          <div class="fail-table-wrap">
+            <table class="fail-table">
+              <thead>
+                <tr>
+                  <th>Plan</th>
+                  <th>Step</th>
+                  <th>Issue</th>
+                  <th>Input</th>
+                  <th>Expected</th>
+                  <th>Output</th>
+                </tr>
+              </thead>
+              <tbody id="failures-body"></tbody>
+            </table>
+          </div>
         </div>
         <div id="dash-link" class="dash-link"></div>
       </div>
@@ -752,23 +900,41 @@
         </div>
       </div>
       <div id="heal-content">
-        <h2>Heal — fix T1/T2/T3</h2>
+        <h2>Heal — fix from Analyze</h2>
         <p id="heal-project-scope" class="phase-scope"></p>
-        <p class="blurb">Edit yPAD for test defects. With <strong>AI on</strong>, get suggested CSV heals (review before applying).</p>
-        <ul class="heal-list">
-          <li><strong>1.</strong> yD_Common.csv — locators &amp; URLs</li>
-          <li><strong>2.</strong> y2Actions.csv — step order, Expected</li>
-          <li><strong>3.</strong> y1Plans.csv — Run, Tags</li>
-        </ul>
+        <p class="blurb">Change Input / Expected / steps in yPAD on Build, then Rerun. No AI required — AI auto-heal is optional.</p>
         <p id="heal-run-hint" class="hint"></p>
-        <div class="form-row actions">
-          <button type="button" id="btn-heal-ai" class="primary" hidden>AI heal suggestions</button>
-          <button type="button" id="btn-shrink-plans" class="secondary">Shrink to failures (Loop 2 prep)</button>
-          <button type="button" id="btn-restore-plans" class="secondary">Restore all Run=Y (Verify prep)</button>
+        <div class="phase-action-bar">
+          <button type="button" id="btn-heal-edit-ypad" class="primary">Edit yPAD on Build</button>
+          <button type="button" id="btn-heal-rerun" class="secondary">Rerun</button>
+          <button type="button" id="btn-heal-ai" class="secondary" hidden>AI auto-heal</button>
         </div>
-        <div id="heal-ai-off-hint" class="hint" hidden>AI off — edit yPAD manually in y/&lt;suite&gt;/ or enable AI on Build.</div>
+        <div id="heal-ai-off-hint" class="hint" hidden>AI off — edit yPAD on Build, then Rerun.</div>
+        <div class="fail-table-wrap heal-fail-wrap">
+          <table class="fail-table">
+            <thead>
+              <tr>
+                <th>Plan</th>
+                <th>Step</th>
+                <th>Issue</th>
+                <th>Input</th>
+                <th>Expected</th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody id="heal-failures-body"></tbody>
+          </table>
+        </div>
         <div id="heal-ai-result" class="ai-panel" hidden></div>
-        <pre id="heal-log" class="log"></pre>
+        <details class="phase-advanced">
+          <summary>Loop prep — shrink / restore y1Plans</summary>
+          <p class="hint">Python ops for Loop (not AI). Shrink Run=Y to last-run failures; restore before Verify.</p>
+          <div class="phase-action-bar">
+            <button type="button" id="btn-shrink-plans" class="secondary">Shrink to failures</button>
+            <button type="button" id="btn-restore-plans" class="secondary">Restore all Run=Y</button>
+          </div>
+          <pre id="heal-log" class="log"></pre>
+        </details>
       </div>
     </section>
 
@@ -781,21 +947,37 @@
         </div>
       </div>
       <div id="loop-content">
-        <h2>Loop — BRAHL cycle (FoXYiZ)</h2>
-        <p class="blurb">Step 0 captures context; Loops 1–3 and Verify run <strong>fEngine2.py</strong> (shrink/restore y1Plans between loops). AI assists Analyze &amp; Heal only.</p>
-        <p class="blurb loop-flow-hint"><strong>Loop 1</strong> full Run=Y · <strong>Loop 2/3</strong> shrink to last-run failures · <strong>Verify</strong> restore baseline then full re-run.</p>
-        <label for="cycle-prompt">Purpose (from project)</label>
-        <textarea id="cycle-prompt" rows="3" readonly></textarea>
-        <label for="cycle-docs">Context items (paths)</label>
-        <textarea id="cycle-docs" rows="2" readonly></textarea>
-        <div class="form-row actions loop-actions">
-          <button type="button" id="btn-context">Capture Step 0</button>
-          <button type="button" id="btn-loop1" class="primary">Loop 1 — full</button>
-          <button type="button" id="btn-loop2">Loop 2 — failures</button>
-          <button type="button" id="btn-loop3">Loop 3 — failures</button>
-          <button type="button" id="btn-verify">Verify — full</button>
-          <button type="button" id="btn-gen-report" class="secondary">Generate report</button>
+        <h2>Loop — BRAHL cycle</h2>
+        <p class="blurb">
+          This is your <strong>QA agent</strong> loop (FoXYiZ engine only — no AI).
+          Each time: Run → Analyze → Heal. After the last time, optionally <strong>Verify</strong> the full automated set, then open the report on <strong>BRAHL</strong>.
+        </p>
+        <div id="loop-built-summary" class="loop-built-summary">
+          <p class="loop-built-lead"><strong>Built</strong> — from your project</p>
+          <p id="loop-built-purpose" class="loop-built-purpose">—</p>
+          <p id="loop-built-meta" class="hint">—</p>
+          <button type="button" id="btn-loop-open-build" class="linkish">Open Build</button>
         </div>
+        <div class="loop-settings">
+          <fieldset class="loop-times-fieldset">
+            <legend>Loop times</legend>
+            <label class="loop-radio"><input type="radio" name="loop-times" value="1" checked /> 1</label>
+            <label class="loop-radio"><input type="radio" name="loop-times" value="2" /> 2</label>
+            <label class="loop-radio"><input type="radio" name="loop-times" value="3" /> 3</label>
+          </fieldset>
+          <label class="checkbox-label loop-verify-label">
+            <input type="checkbox" id="loop-verify-full" />
+            Verify full at end (restore Run=Y, full re-run)
+          </label>
+        </div>
+        <div class="phase-action-bar">
+          <button type="button" id="btn-loop-run" class="primary">Loop</button>
+        </div>
+        <p class="hint loop-flow-hint">
+          Time 1 runs all automated plans · times 2–3 focus on failures · Verify restores the full set and re-runs once for the launch report.
+        </p>
+        <textarea id="cycle-prompt" hidden readonly aria-hidden="true"></textarea>
+        <textarea id="cycle-docs" hidden readonly aria-hidden="true"></textarea>
         <h3 class="section-sub">Cycle history</h3>
         <ul id="cycle-history" class="cycle-history"></ul>
         <pre id="loop-log" class="log"></pre>
@@ -1166,7 +1348,7 @@
       <a href="/welcome">Invite</a>
       <a href="/signin">Switch profile</a>
       <a href="/about">About</a>
-      <a href="/admin#about-admin-title" id="footer-admin-link" class="footer-admin-link">Admin</a>
+      <a href="/admin" id="footer-admin-link" class="footer-admin-link">Admin</a>
       <a href="/api/health" target="_blank" rel="noopener">/api/health</a>
     </nav>
     <span id="health-pill" class="health-pill">checking…</span>

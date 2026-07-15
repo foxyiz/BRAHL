@@ -1,0 +1,81 @@
+{
+  "id": "p2",
+  "code": "P2",
+  "name": "Jordan Lee",
+  "title": "Creator \u00b7 sometimes QA Hunter",
+  "role": "dual",
+  "defaultAvatar": "client",
+  "aiDefault": true,
+  "aiLocked": false,
+  "dualRole": true,
+  "admin": false,
+  "techLevel": "mixed",
+  "consultantTier": null,
+  "allowedAvatars": [
+    "client",
+    "consultant"
+  ],
+  "landing": "app",
+  "accent": "dual",
+  "blurb": "Product owner who also joins as QA Hunter on other teams' projects.",
+  "journey": [
+    "Creator workspace",
+    "Switch to QA Hunter",
+    "Join project \u00b7 deliver report",
+    "$ wallet"
+  ],
+  "ypadDesignColumn": "D2",
+  "firstVisit": false,
+  "fictional": true,
+  "tasks": [
+    "Creator workspace",
+    "Switch to QA Hunter",
+    "Join project \u00b7 deliver report",
+    "$ wallet"
+  ],
+  "demo_tips": [
+    "Creator workspace",
+    "Switch to QA Hunter",
+    "Join project \u00b7 deliver report",
+    "$ wallet"
+  ],
+  "default_avatar": "client",
+  "allowed_avatars": [
+    "client",
+    "consultant"
+  ],
+  "client_tasks": [
+    {
+      "phase": "build",
+      "title": "Creator workspace",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "Switch to QA Hunter",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "Join project \u00b7 deliver report",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "$ wallet",
+      "detail": "Demo tip from persona journey."
+    }
+  ],
+  "hitl_tasks": [
+    {
+      "phase": "build",
+      "title": "Join challenge as QA Hunter",
+      "detail": "Open Build, review Creator context, submit findings."
+    },
+    {
+      "phase": "analyze",
+      "title": "Review failures",
+      "detail": "Use Analyze table Input / Expected / Output."
+    }
+  ]
+}

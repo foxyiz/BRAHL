@@ -1,0 +1,58 @@
+{
+  "personas": [
+    {
+      "id": "p1",
+      "file": "p1.json",
+      "name": "Alex Chen",
+      "code": "P1"
+    },
+    {
+      "id": "p2",
+      "file": "p2.json",
+      "name": "Jordan Lee",
+      "code": "P2"
+    },
+    {
+      "id": "p3",
+      "file": "p3.json",
+      "name": "Sam Rivera",
+      "code": "P3"
+    },
+    {
+      "id": "p4",
+      "file": "p4.json",
+      "name": "Dr. Priya Nair",
+      "code": "P4"
+    },
+    {
+      "id": "p5",
+      "file": "p5.json",
+      "name": "Chris Martinez",
+      "code": "P5"
+    },
+    {
+      "id": "p6",
+      "file": "p6.json",
+      "name": "Morgan Admin",
+      "code": "P6"
+    },
+    {
+      "id": "p7",
+      "file": "p7.json",
+      "name": "Taylor Kim",
+      "code": "P7"
+    },
+    {
+      "id": "p8",
+      "file": "p8.json",
+      "name": "Riley Okonkwo",
+      "code": "P8"
+    },
+    {
+      "id": "p9",
+      "file": "p9.json",
+      "name": "Casey Nguyen",
+      "code": "P9"
+    }
+  ]
+}

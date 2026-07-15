@@ -1,7 +1,13 @@
 ﻿# Token efficiency — exclude from Cursor index unless @-mentioned
 
-# Archives / run noise (move archive/ out of KK when done)
+# Archives (do not load into agent context)
 archive/
+**/archive/**
+
+# FoXYiZ run output — zResults / dashboards / artifacts are huge
+FoXYiZ/z/
+FoXYiZ/z/**
+z/
 z/2026*/
 z/2025*/
 z/brahl_*
@@ -10,12 +16,27 @@ z/*_zDash*
 z/_*.log
 z/_*.log.err
 z/zDash_batch_*
+**/*_zResults*
+**/*_zDash.html
+**/_errors.csv
 
-# Engine binary + bulky starts
+# Engine binary + caches
+FoXYiZ/f/Foxyiz2.exe
+FoXYiZ/f/__pycache__/
 f/Foxyiz2.exe
 f/__pycache__/
+**/__pycache__/
+.pytest_cache/
 
-# Inactive / archived suites (also under archive/not-needed-*)
+# Inactive / archived suites
+FoXYiZ/y/qoa2/
+FoXYiZ/y/sunshine/
+FoXYiZ/y/ivvu/
+FoXYiZ/y/atomic77/
+FoXYiZ/y/API_Petstore/
+FoXYiZ/y/Cogmento/
+FoXYiZ/y/Mix/
+FoXYiZ/y/qoa_web/
 y/qoa2/
 y/sunshine/
 y/ivvu/
@@ -36,9 +57,6 @@ Docs/test-user-data/
 qoa_web/data/projects.json
 qoa_web/data/users.db
 qoa_web/data/uploads/
+qoa_web/data/presence.json
 qoa_web/PRD.md
 qoa_web/RESEARCH.md
-
-# Caches
-**/__pycache__/
-.pytest_cache/

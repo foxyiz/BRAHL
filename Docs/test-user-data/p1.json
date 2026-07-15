@@ -1,0 +1,59 @@
+{
+  "id": "p1",
+  "code": "P1",
+  "name": "Alex Chen",
+  "title": "MVP Creator",
+  "role": "client-only",
+  "defaultAvatar": "client",
+  "aiDefault": true,
+  "aiLocked": false,
+  "dualRole": false,
+  "admin": false,
+  "techLevel": "business",
+  "consultantTier": null,
+  "allowedAvatars": [
+    "client"
+  ],
+  "landing": "app",
+  "accent": "client",
+  "blurb": "Ships software and owns budget. Uses AI chat for requirements, invites QA Hunter, runs BRAHL \u2014 no yPAD editing.",
+  "journey": [
+    "Build \u00b7 AI chat",
+    "Budget & QA Hunter invite",
+    "Run \u2192 Analyze \u2192 BRAHL"
+  ],
+  "ypadDesignColumn": "D1",
+  "firstVisit": false,
+  "fictional": true,
+  "tasks": [
+    "Build \u00b7 AI chat",
+    "Budget & QA Hunter invite",
+    "Run \u2192 Analyze \u2192 BRAHL"
+  ],
+  "demo_tips": [
+    "Build \u00b7 AI chat",
+    "Budget & QA Hunter invite",
+    "Run \u2192 Analyze \u2192 BRAHL"
+  ],
+  "default_avatar": "client",
+  "allowed_avatars": [
+    "client"
+  ],
+  "client_tasks": [
+    {
+      "phase": "build",
+      "title": "Build \u00b7 AI chat",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "Budget & QA Hunter invite",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "Run \u2192 Analyze \u2192 BRAHL",
+      "detail": "Demo tip from persona journey."
+    }
+  ]
+}

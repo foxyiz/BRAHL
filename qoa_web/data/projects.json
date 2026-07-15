@@ -1,22 +1,26 @@
 [
   {
-    "id": "0a5cf5e38c68",
-    "name": "Math (lean BRAHL)",
-    "app_url": "http://127.0.0.1:8765/",
-    "suite_name": "Math",
-    "suite_config": "y/Math/Math.json",
-    "purpose": "BRAHL web app \u2014 verify gate (52) + journey regression library (800 plans, tag Journey)",
-    "prompt": "BRAHL web app \u2014 verify gate (52) + journey regression library (800 plans, tag Journey)",
+    "id": "d21afcefc002",
+    "name": "qoa_web Local",
+    "app_url": "http://127.0.0.1:8765",
+    "purpose": "Validate qoa_web BRAHL UI: avatar gate, project context, AI toggle, Build chat, BRAHL reports tab",
+    "prompt": "Validate qoa_web BRAHL UI: avatar gate, project context, AI toggle, Build chat, BRAHL reports tab",
     "owner_avatar": "client",
-    "status": "open",
+    "status": "in_progress",
+    "ai_enabled": false,
+    "budget_usd": 500,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
     "documents": [],
     "context_items": [
       {
-        "id": "09864879",
+        "id": "ctx1",
         "kind": "url",
         "label": "App URL",
-        "value": "http://127.0.0.1:8765/",
-        "added_at": "2026-07-07T04:46:32+00:00"
+        "value": "http://127.0.0.1:8765",
+        "added_at": "2026-07-03T20:08:42+00:00"
       }
     ],
     "chat_messages": [
@@ -24,71 +28,413 @@
         "id": "welcome",
         "role": "assistant",
         "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
-        "at": "2026-07-07T04:46:32+00:00"
+        "at": "2026-07-03T19:28:13+00:00"
+      },
+      {
+        "id": "u1",
+        "role": "user",
+        "text": "Test qoa_web essential features: Build, Run, Analyze, Loop, BRAHL tab with project-scoped reports",
+        "at": "2026-07-03T20:08:42+00:00"
+      },
+      {
+        "id": "a1",
+        "role": "assistant",
+        "text": "Set your project budget below. We split funds between BRAHL automation (AI + FoXYiZ) and Human in the Loop consultants.",
+        "at": "2026-07-03T20:08:43+00:00"
       }
     ],
-    "budget_usd": 0.0,
-    "budget_split": {
-      "automation_pct": 50,
-      "human_pct": 50
-    },
-    "hitl_consultants": [],
-    "reports": [
-      {
-        "id": "d773f6cc",
-        "run_name": "20260706_203628_qoa_web",
-        "report_path": "z/20260706_203628_qoa_web/brahl_report.md",
-        "submitted_at": "2026-07-07T04:46:33+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "47240765",
-        "run_name": "20260706_215958_qoa2",
-        "report_path": "z/20260706_215958_qoa2/brahl_report.md",
-        "submitted_at": "2026-07-07T05:01:03+00:00",
-        "source": "automation_ai"
-      },
-      {
-        "id": "ef16d775",
-        "run_name": "20260714_091733_qoa_web",
-        "report_path": "z/20260714_091733_qoa_web/brahl_report.md",
-        "submitted_at": "2026-07-14T16:18:07+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "a41cb2b1",
-        "run_name": "20260714_091852_qoa_web",
-        "report_path": null,
-        "submitted_at": "2026-07-14T16:18:52+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "5c8e8f68",
-        "run_name": "20260714_091906_qoa_web",
-        "report_path": null,
-        "submitted_at": "2026-07-14T16:19:07+00:00",
-        "source": "automation"
-      }
-    ],
-    "ai_enabled": true,
-    "brahl_context_path": null,
-    "latest_run": "20260714_091733_qoa_web",
-    "created_at": "2026-07-07T04:46:32+00:00",
-    "updated_at": "2026-07-14T16:25:36+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
         "role": "assistant",
-        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
-        "at": "2026-07-07T04:46:32+00:00"
+        "text": "I'm the BRAHL model for qoa_web Local. Ask about the latest Verify report (26/26 pass).",
+        "at": "2026-07-03T20:08:42+00:00"
+      },
+      {
+        "id": "6ebfd6f2",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T21:47:50+00:00"
+      },
+      {
+        "id": "dd9cba4a",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T21:47:50+00:00"
+      },
+      {
+        "id": "7f2da41a",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T21:49:21+00:00"
+      },
+      {
+        "id": "bfe18f5d",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T21:49:21+00:00"
+      },
+      {
+        "id": "15517b9b",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T21:50:41+00:00"
+      },
+      {
+        "id": "24e9dec4",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T21:50:41+00:00"
+      },
+      {
+        "id": "95fb000e",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T21:53:03+00:00"
+      },
+      {
+        "id": "ceb06877",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T21:53:03+00:00"
+      },
+      {
+        "id": "d89b6cfe",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T22:01:24+00:00"
+      },
+      {
+        "id": "7edf8377",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T22:01:24+00:00"
+      },
+      {
+        "id": "16277fd9",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T22:09:49+00:00"
+      },
+      {
+        "id": "54ecdb94",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T22:09:49+00:00"
+      },
+      {
+        "id": "809f076e",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T22:10:51+00:00"
+      },
+      {
+        "id": "72e45a35",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T22:10:51+00:00"
+      },
+      {
+        "id": "bb60b272",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T22:11:45+00:00"
+      },
+      {
+        "id": "ad240c5e",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T22:11:45+00:00"
+      },
+      {
+        "id": "d98a30a4",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T22:13:43+00:00"
+      },
+      {
+        "id": "7b1f0734",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T22:13:43+00:00"
+      },
+      {
+        "id": "4c2dc51b",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T22:45:51+00:00"
+      },
+      {
+        "id": "3163e3fa",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T22:45:51+00:00"
+      },
+      {
+        "id": "4c83db72",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T22:53:59+00:00"
+      },
+      {
+        "id": "6ba1a054",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T22:53:59+00:00"
+      },
+      {
+        "id": "55769851",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T22:55:05+00:00"
+      },
+      {
+        "id": "1d535258",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T22:55:05+00:00"
+      },
+      {
+        "id": "3e43f2b8",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T23:00:14+00:00"
+      },
+      {
+        "id": "d1edbb88",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T23:00:14+00:00"
+      },
+      {
+        "id": "17cd695c",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-03T23:09:21+00:00"
+      },
+      {
+        "id": "f13910f7",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-03T23:09:21+00:00"
+      },
+      {
+        "id": "4a308733",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-04T17:18:46+00:00"
+      },
+      {
+        "id": "08db4e34",
+        "role": "assistant",
+        "text": "**qoa_web Local** \u2014 Executive summary from the latest BRAHL report:\n\nExpanded qoa_web from **5 smoke plans \u2192 26 full-feature plans** covering all BRAHL UI tabs, Run/Analyze/Loop controls, and REST API endpoints. After one T1 heal (Loop Verify button label), **Verify is 26/26 green**.\n\n---",
+        "at": "2026-07-04T17:18:46+00:00"
+      },
+      {
+        "id": "e27771b4",
+        "role": "user",
+        "text": "how long did the test take",
+        "at": "2026-07-04T17:23:56+00:00"
+      },
+      {
+        "id": "10d17223",
+        "role": "assistant",
+        "text": "No BRAHL report file yet for **qoa_web Local**. Run Loop \u2192 Verify or have a Human in the Loop consultant submit a report. Project purpose: Validate qoa_web BRAHL UI: avatar gate, project context, AI toggle, Build chat, BRAHL reports tab",
+        "at": "2026-07-04T17:23:56+00:00"
+      },
+      {
+        "id": "59440165",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-04T18:47:01+00:00"
+      },
+      {
+        "id": "0f7957c8",
+        "role": "assistant",
+        "text": "No verify results yet for **qoa_web Local**. Run Loop \u2192 Verify, then open this tab \u2014 the report is built from zResults automatically. Project purpose: Validate qoa_web BRAHL UI: avatar gate, project context, AI toggle, Build chat, BRAHL reports tab",
+        "at": "2026-07-04T18:47:01+00:00"
+      },
+      {
+        "id": "e66784fd",
+        "role": "user",
+        "text": "What is the executive summary?",
+        "at": "2026-07-04T18:48:21+00:00"
+      },
+      {
+        "id": "67b76b28",
+        "role": "assistant",
+        "text": "No verify results yet for **qoa_web Local**. Run Loop \u2192 Verify, then open this tab \u2014 the report is built from zResults automatically. Project purpose: Validate qoa_web BRAHL UI: avatar gate, project context, AI toggle, Build chat, BRAHL reports tab",
+        "at": "2026-07-04T18:48:21+00:00"
       }
     ],
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "rep1",
+        "run_name": "20260703_120842_qoa_web",
+        "report_path": "z/20260703_120842_qoa_web/brahl_report.md",
+        "submitted_at": "2026-07-03T20:08:42+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "rep2",
+        "run_name": "20260703_131703_qoa_web",
+        "report_path": null,
+        "submitted_at": "2026-07-03T20:17:03+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "56dec172",
+        "run_name": "20260703_144955_qoa_web",
+        "report_path": "z/20260703_144955_qoa_web/brahl_report.md",
+        "submitted_at": "2026-07-03T21:51:17+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "b15e1a5f",
+        "run_name": "20260703_145305_qoa_web",
+        "report_path": null,
+        "submitted_at": "2026-07-03T21:55:36+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "553a6dde",
+        "run_name": "20260703_151115_qoa_web",
+        "report_path": "z/20260703_151115_qoa_web/brahl_report.md",
+        "submitted_at": "2026-07-03T22:12:12+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "ebf1d878",
+        "run_name": "20260703_151314_qoa_web",
+        "report_path": "z/20260703_151314_qoa_web/brahl_report.md",
+        "submitted_at": "2026-07-03T22:13:59+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "b4bc20ac",
+        "run_name": "20260703_154520_qoa_web",
+        "report_path": "z/20260703_154520_qoa_web/brahl_report.md",
+        "submitted_at": "2026-07-03T22:46:14+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "f3060d16",
+        "run_name": "20260703_154553_qoa_web",
+        "report_path": null,
+        "submitted_at": "2026-07-03T22:49:52+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "4603b0dd",
+        "run_name": "20260703_155434_qoa_web",
+        "report_path": "z/20260703_155434_qoa_web/brahl_report.md",
+        "submitted_at": "2026-07-03T22:55:42+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "9e9ad683",
+        "run_name": "20260703_160016_qoa_web",
+        "report_path": null,
+        "submitted_at": "2026-07-03T23:01:02+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "570b355c",
+        "run_name": "20260703_160851_qoa_web",
+        "report_path": null,
+        "submitted_at": "2026-07-03T23:10:10+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "4d14d61a",
+        "run_name": "20260703_160924_qoa_web",
+        "report_path": null,
+        "submitted_at": "2026-07-04T16:27:48+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "a7c61bb1",
+        "run_name": "20260704_101848_qoa_web",
+        "report_path": null,
+        "submitted_at": "2026-07-04T17:19:14+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "acafb22b",
+        "run_name": "20260704_103336_ivvu",
+        "report_path": null,
+        "submitted_at": "2026-07-04T17:33:56+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "0679dea5",
+        "run_name": "20260704_114823_qoa_web",
+        "report_path": "z/20260704_114823_qoa_web/brahl_report.md",
+        "submitted_at": "2026-07-04T18:58:09+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "25f03eed",
+        "run_name": "20260704_120310_qoa_web",
+        "report_path": "z/20260704_120310_qoa_web/brahl_report.md",
+        "submitted_at": "2026-07-04T19:03:30+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "a24847ed",
+        "run_name": "20260714_122319_qoa_web",
+        "report_path": "z/20260714_122319_qoa_web/brahl_report.md",
+        "submitted_at": "2026-07-14T21:51:20+00:00",
+        "source": "automation"
+      }
+    ],
+    "brahl_context_path": "C:\\006\\FXYZ\\KK\\z\\brahl_context_20260704_114822_qoa_web.json",
+    "latest_run": "20260714_122319_qoa_web",
+    "created_at": "2026-07-03T19:28:13+00:00",
+    "updated_at": "2026-07-14T21:55:43+00:00",
+    "cycle_history": [
+      {
+        "id": "45949933",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-04T19:03:30+00:00",
+        "run_name": "20260704_120310_qoa_web"
+      },
+      {
+        "id": "68caf0cb",
+        "step": "Loop 2",
+        "detail": "completed",
+        "at": "2026-07-04T17:33:56+00:00",
+        "run_name": "20260704_103336_ivvu"
+      },
+      {
+        "id": "8bdfbee1",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-04T17:32:49+00:00",
+        "run_name": "20260704_103229_ivvu"
+      },
+      {
+        "id": "71939ed8",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-04T17:19:14+00:00",
+        "run_name": "20260704_101815_qoa_web"
+      }
+    ],
+    "suite_name": "qoa_web",
+    "suite_config": "",
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "runtime_mode": "local",
     "atomic77_chat_messages": [
       {
         "id": "a77-welcome",
         "role": "assistant",
         "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
-        "at": "2026-07-07T04:46:32+00:00"
+        "at": "2026-07-03T19:28:13+00:00"
       }
     ],
     "atomic77_usage": {
@@ -96,109 +442,48 @@
       "tokens_est": 0,
       "user_messages": 0
     },
-    "cycle_history": [
-      {
-        "id": "5eaa1b07",
-        "step": "Loop 2",
-        "detail": "completed",
-        "at": "2026-07-14T16:19:07+00:00",
-        "run_name": "20260714_091906_qoa_web",
-        "stats": {
-          "passes": 0,
-          "fails": 0,
-          "total_plans": 0,
-          "health": "unknown"
-        }
-      },
-      {
-        "id": "843de957",
-        "step": "Shrink",
-        "detail": "Loop prep \u2014 2 plans",
-        "at": "2026-07-14T16:19:04+00:00",
-        "run_name": "20260714_091733_qoa_web",
-        "stats": {
-          "passes": 1,
-          "fails": 2,
-          "total_plans": 3,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "5b242223",
-        "step": "Loop 2",
-        "detail": "completed",
-        "at": "2026-07-14T16:18:52+00:00",
-        "run_name": "20260714_091852_qoa_web",
-        "stats": {
-          "passes": 0,
-          "fails": 0,
-          "total_plans": 0,
-          "health": "unknown"
-        }
-      },
-      {
-        "id": "b0ca4c72",
-        "step": "Shrink",
-        "detail": "Loop prep \u2014 2 plans",
-        "at": "2026-07-14T16:18:50+00:00",
-        "run_name": "20260714_091733_qoa_web",
-        "stats": {
-          "passes": 1,
-          "fails": 2,
-          "total_plans": 3,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "8dfcf8ed",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-14T16:18:07+00:00",
-        "run_name": "20260714_091733_qoa_web",
-        "stats": {
-          "passes": 1,
-          "fails": 2,
-          "total_plans": 3,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "70f873c5",
-        "step": "Verify",
-        "detail": "completed",
-        "at": "2026-07-07T05:01:03+00:00",
-        "run_name": "20260706_215958_qoa2"
-      }
-    ],
-    "hitl_stories": [],
-    "hitl_invites": [],
-    "change_requests": [],
-    "runtime_mode": "local",
     "app_version": "",
     "baseline_version": "",
     "baseline_run": null,
     "owner_user_id": null,
     "brahl_plan_draft": null,
-    "notes": " [retargeted from missing y/qoa_web]"
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    }
   },
   {
-    "id": "7b3d38860642",
-    "name": "atomic77",
-    "app_url": "https://atomic77.base44.app/",
-    "suite_name": "atomic77",
-    "suite_config": "y/atomic77/atomic77.json",
-    "purpose": "Atomic 77 (atomic77.base44.app) - AI business command center, docs, build-app",
-    "prompt": "Atomic 77 (atomic77.base44.app) - AI business command center, docs, build-app",
+    "id": "nalanda_launch_001",
+    "name": "Nalanda SkillFlow AI \u2014 Launch Readiness",
+    "app_url": "https://nalanda.base44.app/",
+    "purpose": "Creator launch prompt: Nalanda SkillFlow AI is ready for launch. Run FoXYiZ smoke on core routes (Explore, Learning Path, Quiz, AI Tutor), QA Hunter manual pass on UX gaps, Nalanda community shares the learn path \u2014 then BRAHL Go/No-Go.",
+    "prompt": "Here is my web app https://nalanda.base44.app/ \u2014 Nalanda SkillFlow AI. We're ready for launch. Give me a health report and Go/No-Go: can we ship?",
     "owner_avatar": "client",
-    "status": "open",
-    "documents": [],
+    "status": "in_progress",
+    "ai_enabled": true,
+    "budget_usd": 500,
+    "budget_split": {
+      "automation_pct": 55,
+      "human_pct": 45
+    },
+    "suite_name": "nalanda_app",
+    "suite_config": "y/nalanda_app/nalanda_app.json",
+    "runtime_mode": "local",
     "context_items": [
       {
-        "id": "dedcb89a",
+        "id": "ctx-nalanda-url",
         "kind": "url",
-        "label": "App URL",
-        "value": "https://atomic77.base44.app/",
-        "added_at": "2026-07-07T04:48:13+00:00"
+        "label": "Production app",
+        "value": "https://nalanda.base44.app/",
+        "added_at": "2026-07-05T20:00:00+00:00"
+      },
+      {
+        "id": "ctx-nalanda-community",
+        "kind": "url",
+        "label": "QA on Air Nalanda panel",
+        "value": "http://127.0.0.1:8765/app?demo=1",
+        "added_at": "2026-07-05T20:00:00+00:00"
       }
     ],
     "chat_messages": [
@@ -206,159 +491,56 @@
         "id": "welcome",
         "role": "assistant",
         "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
-        "at": "2026-07-07T04:48:13+00:00"
-      }
-    ],
-    "budget_usd": 0.0,
-    "budget_split": {
-      "automation_pct": 50,
-      "human_pct": 50
-    },
-    "hitl_consultants": [],
-    "reports": [
+        "at": "2026-07-05T20:00:00+00:00"
+      },
       {
-        "id": "17d5624e",
-        "run_name": "20260707_091732_atomic77",
-        "report_path": "z/20260707_091732_atomic77/brahl_report.md",
-        "submitted_at": "2026-07-07T16:17:53+00:00",
-        "source": "automation"
-      }
-    ],
-    "ai_enabled": true,
-    "brahl_context_path": null,
-    "latest_run": "20260707_091732_atomic77",
-    "created_at": "2026-07-07T04:48:13+00:00",
-    "updated_at": "2026-07-09T07:39:18+00:00",
-    "brahl_chat_messages": [
+        "id": "creator-prompt",
+        "role": "user",
+        "text": "Here is my web app https://nalanda.base44.app/ \u2014 Nalanda SkillFlow AI. We're ready for launch. Give me a health report and Go/No-Go status.",
+        "at": "2026-07-05T20:01:00+00:00"
+      },
       {
-        "id": "brahl-welcome",
+        "id": "assistant-scope",
         "role": "assistant",
-        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
-        "at": "2026-07-07T04:48:13+00:00"
-      }
-    ],
-    "atomic77_chat_messages": [
-      {
-        "id": "a77-welcome",
-        "role": "assistant",
-        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
-        "at": "2026-07-07T04:48:13+00:00"
-      }
-    ],
-    "atomic77_usage": {
-      "messages": 0,
-      "tokens_est": 0,
-      "user_messages": 0
-    },
-    "cycle_history": [
-      {
-        "id": "7de580ef",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-07T16:17:53+00:00",
-        "run_name": "20260707_091732_atomic77"
+        "text": "Got it. I'll scope launch readiness: FoXYiZ smoke on landing + Explore + Learning Path + Quiz + AI Tutor, invite a QA Hunter for UX/accessibility on mobile, and link the Nalanda community learn path. Set budget below \u2014 suggest 55% automation / 45% human for a launch gate.",
+        "at": "2026-07-05T20:01:05+00:00"
       }
     ],
     "hitl_stories": [
       {
-        "id": "ea97fc9d",
-        "title": "test on mobile realdevice",
-        "description": "UI UX",
-        "status": "open",
-        "created_at": "2026-07-07T15:49:02+00:00"
+        "title": "Mobile learning path UX",
+        "description": "Safari iOS \u2014 Learning Path cards readable, no horizontal scroll breakage"
+      },
+      {
+        "title": "Quiz flow happy path",
+        "description": "Guest user can start a quiz without auth errors"
+      },
+      {
+        "title": "AI Tutor first message",
+        "description": "AI Tutor page loads and chat/input is usable"
       }
     ],
     "hitl_invites": [],
-    "change_requests": [],
-    "runtime_mode": "local",
-    "app_version": "",
-    "baseline_version": "",
-    "baseline_run": null,
-    "owner_user_id": null,
-    "brahl_plan_draft": null
-  },
-  {
-    "id": "5bbef113a3a0",
-    "name": "Math",
-    "app_url": "",
-    "suite_name": "Math",
-    "suite_config": "y/Math/Math.json",
-    "purpose": "",
-    "prompt": "",
-    "owner_avatar": "client",
-    "status": "open",
-    "documents": [],
-    "context_items": [],
-    "chat_messages": [
-      {
-        "id": "welcome",
-        "role": "assistant",
-        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
-        "at": "2026-07-07T04:52:32+00:00"
-      }
-    ],
-    "budget_usd": 0.0,
-    "budget_split": {
-      "automation_pct": 50,
-      "human_pct": 50
-    },
     "hitl_consultants": [],
-    "reports": [
-      {
-        "id": "87f2cb77",
-        "run_name": "20260706_113620_Math",
-        "report_path": "z/20260706_113620_Math/brahl_report.md",
-        "submitted_at": "2026-07-07T04:52:32+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "37c12243",
-        "run_name": "20260706_113344_Math",
-        "report_path": "z/20260706_113344_Math/brahl_report.md",
-        "submitted_at": "2026-07-07T04:52:35+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "111ae643",
-        "run_name": "20260706_113451_Math",
-        "report_path": "z/20260706_113451_Math/brahl_report.md",
-        "submitted_at": "2026-07-07T04:52:43+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "3a97fd8e",
-        "run_name": "20260706_215402_Math",
-        "report_path": "z/20260706_215402_Math/brahl_report.md",
-        "submitted_at": "2026-07-07T04:54:04+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "c556b9e1",
-        "run_name": "20260706_215514_Math",
-        "report_path": null,
-        "submitted_at": "2026-07-07T04:55:15+00:00",
-        "source": "automation"
-      }
-    ],
-    "ai_enabled": true,
-    "brahl_context_path": null,
-    "latest_run": "20260706_215402_Math",
-    "created_at": "2026-07-07T04:52:32+00:00",
-    "updated_at": "2026-07-07T21:48:09+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
         "role": "assistant",
-        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
-        "at": "2026-07-07T04:52:32+00:00"
+        "text": "I'm the BRAHL model for Nalanda SkillFlow AI launch. After Run \u2192 Loop, ask for Go/No-Go based on smoke + QA Hunter evidence.",
+        "at": "2026-07-05T20:00:00+00:00"
       }
     ],
+    "documents": [],
+    "change_requests": [],
+    "cycle_history": [],
+    "created_at": "2026-07-05T20:00:00+00:00",
+    "updated_at": "2026-07-05T20:00:00+00:00",
     "atomic77_chat_messages": [
       {
         "id": "a77-welcome",
         "role": "assistant",
         "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
-        "at": "2026-07-07T04:52:32+00:00"
+        "at": "2026-07-05T20:00:00+00:00"
       }
     ],
     "atomic77_usage": {
@@ -366,64 +548,36 @@
       "tokens_est": 0,
       "user_messages": 0
     },
-    "cycle_history": [
-      {
-        "id": "14a4f762",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-07T15:41:58+00:00",
-        "run_name": "20260707_084157_Math"
-      },
-      {
-        "id": "aaa29e96",
-        "step": "Loop 2",
-        "detail": "completed",
-        "at": "2026-07-07T04:55:15+00:00",
-        "run_name": "20260706_215514_Math"
-      },
-      {
-        "id": "6ba2c60d",
-        "step": "Shrink",
-        "detail": "Loop prep \u2014 3 plans",
-        "at": "2026-07-07T04:55:12+00:00",
-        "run_name": "20260706_215402_Math"
-      },
-      {
-        "id": "8c96c85b",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-07T04:54:04+00:00",
-        "run_name": "20260706_215402_Math"
-      }
-    ],
-    "hitl_stories": [],
-    "hitl_invites": [],
-    "change_requests": [],
-    "runtime_mode": "local",
     "app_version": "",
     "baseline_version": "",
     "baseline_run": null,
     "owner_user_id": null,
-    "brahl_plan_draft": null
+    "brahl_plan_draft": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    }
   },
   {
-    "id": "c5be8959c0b6",
-    "name": "qoa2",
-    "app_url": "https://qoa2.base44.app/",
-    "suite_name": "qoa2",
-    "suite_config": "y/qoa2/qoa2.json",
-    "purpose": "QAonAir2 platform (qoa2.base44.app) - functional, security, vulnerability, and performance tests",
-    "prompt": "QAonAir2 platform (qoa2.base44.app) - functional, security, vulnerability, and performance tests",
+    "id": "66ae1a926c31",
+    "name": "qoa_web_live",
+    "app_url": "http://127.0.0.1:8765/",
+    "suite_name": "qoa_web_live",
+    "suite_config": "y/qoa_web_live/qoa_web_live.json",
+    "purpose": "BRAHL Arena live gate (V1 verify) + Journey library (V2 re-BRAHL). Current /app UX.",
+    "prompt": "BRAHL Arena live gate (V1 verify) + Journey library (V2 re-BRAHL). Current /app UX.",
     "owner_avatar": "client",
+    "owner_user_id": null,
     "status": "open",
     "documents": [],
     "context_items": [
       {
-        "id": "697a9f9c",
+        "id": "d07802b2",
         "kind": "url",
         "label": "App URL",
-        "value": "https://qoa2.base44.app/",
-        "added_at": "2026-07-07T04:56:05+00:00"
+        "value": "http://127.0.0.1:8765/",
+        "added_at": "2026-07-14T21:14:07+00:00"
       }
     ],
     "chat_messages": [
@@ -431,744 +585,7 @@
         "id": "welcome",
         "role": "assistant",
         "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
-        "at": "2026-07-07T04:56:05+00:00"
-      }
-    ],
-    "budget_usd": 0.0,
-    "budget_split": {
-      "automation_pct": 50,
-      "human_pct": 50
-    },
-    "hitl_consultants": [],
-    "reports": [
-      {
-        "id": "74ca838e",
-        "run_name": "20260706_215651_qoa2",
-        "report_path": "z/20260706_215651_qoa2/brahl_report.md",
-        "submitted_at": "2026-07-07T04:57:56+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "4f3f4b1a",
-        "run_name": "20260706_215958_qoa2",
-        "report_path": "z/20260706_215958_qoa2/brahl_report.md",
-        "submitted_at": "2026-07-09T05:22:37+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "88d8f41d",
-        "run_name": "20260708_222302_qoa2",
-        "report_path": "z/20260708_222302_qoa2/brahl_report.md",
-        "submitted_at": "2026-07-09T05:24:09+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "2111c2f0",
-        "run_name": "20260708_224153_qoa2",
-        "report_path": "z/20260708_224153_qoa2/brahl_report.md",
-        "submitted_at": "2026-07-09T05:43:03+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "25ca3587",
-        "run_name": "20260708_224522_qoa2",
-        "report_path": "z/20260708_224522_qoa2/brahl_report.md",
-        "submitted_at": "2026-07-09T05:46:23+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "76c36f80",
-        "run_name": "20260711_105459_qoa2",
-        "report_path": "z/20260711_105459_qoa2/brahl_report.md",
-        "submitted_at": "2026-07-11T17:55:29+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "d9b81fd5",
-        "run_name": "20260711_105556_qoa2",
-        "report_path": "z/20260711_105556_qoa2/brahl_report.md",
-        "submitted_at": "2026-07-11T17:56:55+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "8d88507b",
-        "run_name": "20260713_222725_qoa2",
-        "report_path": "z/20260713_222725_qoa2/brahl_report.md",
-        "submitted_at": "2026-07-14T05:27:26+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "daa77aec",
-        "run_name": "20260713_222730_qoa2",
-        "report_path": "z/20260713_222730_qoa2/brahl_report.md",
-        "submitted_at": "2026-07-14T05:27:32+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "4052707d",
-        "run_name": "20260713_222741_qoa2",
-        "report_path": "z/20260713_222741_qoa2/brahl_report.md",
-        "submitted_at": "2026-07-14T05:28:44+00:00",
-        "source": "automation"
-      }
-    ],
-    "ai_enabled": true,
-    "brahl_context_path": null,
-    "latest_run": "20260713_222741_qoa2",
-    "created_at": "2026-07-07T04:56:05+00:00",
-    "updated_at": "2026-07-14T05:34:33+00:00",
-    "brahl_chat_messages": [
-      {
-        "id": "brahl-welcome",
-        "role": "assistant",
-        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
-        "at": "2026-07-07T04:56:05+00:00"
-      }
-    ],
-    "atomic77_chat_messages": [
-      {
-        "id": "a77-welcome",
-        "role": "assistant",
-        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
-        "at": "2026-07-07T04:56:05+00:00"
-      }
-    ],
-    "atomic77_usage": {
-      "messages": 0,
-      "tokens_est": 0,
-      "user_messages": 0
-    },
-    "cycle_history": [
-      {
-        "id": "edf9aa77",
-        "step": "Verify",
-        "detail": "completed",
-        "at": "2026-07-14T05:28:44+00:00",
-        "run_name": "20260713_222741_qoa2",
-        "stats": {
-          "passes": 14,
-          "fails": 1,
-          "total_plans": 15,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "f76b2210",
-        "step": "Restore",
-        "detail": "Verify prep \u2014 all Run=Y",
-        "at": "2026-07-14T05:27:39+00:00"
-      },
-      {
-        "id": "211b6d75",
-        "step": "Loop 2",
-        "detail": "completed",
-        "at": "2026-07-14T05:27:31+00:00",
-        "run_name": "20260713_222730_qoa2",
-        "stats": {
-          "passes": 0,
-          "fails": 1,
-          "total_plans": 1,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "9cad400b",
-        "step": "Shrink",
-        "detail": "Loop prep \u2014 1 plans",
-        "at": "2026-07-14T05:27:27+00:00",
-        "run_name": "20260713_222725_qoa2",
-        "stats": {
-          "passes": 0,
-          "fails": 1,
-          "total_plans": 1,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "5118085c",
-        "step": "Loop 1",
-        "detail": "completed",
-        "at": "2026-07-14T05:27:26+00:00",
-        "run_name": "20260713_222725_qoa2",
-        "stats": {
-          "passes": 0,
-          "fails": 1,
-          "total_plans": 1,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "8177357a",
-        "step": "Shrink",
-        "detail": "Loop prep \u2014 1 plans",
-        "at": "2026-07-14T05:27:20+00:00",
-        "run_name": "20260706_215958_qoa2",
-        "stats": {
-          "passes": 14,
-          "fails": 1,
-          "total_plans": 15,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "1c7ee2c4",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-11T17:56:55+00:00",
-        "run_name": "20260711_105556_qoa2",
-        "stats": {
-          "passes": 14,
-          "fails": 1,
-          "total_plans": 15,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "f14c64e4",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-11T17:55:29+00:00",
-        "run_name": "20260711_105459_qoa2",
-        "stats": {
-          "passes": 1,
-          "fails": 1,
-          "total_plans": 2,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "b483d044",
-        "step": "Verify",
-        "detail": "completed",
-        "at": "2026-07-09T05:46:22+00:00",
-        "run_name": "20260708_224522_qoa2",
-        "stats": {
-          "passes": 14,
-          "fails": 1,
-          "total_plans": 15,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "ec1687d7",
-        "step": "Restore",
-        "detail": "Verify prep \u2014 all Run=Y",
-        "at": "2026-07-09T05:45:19+00:00"
-      },
-      {
-        "id": "64195b58",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-09T05:43:02+00:00",
-        "run_name": "20260708_224153_qoa2",
-        "stats": {
-          "passes": 14,
-          "fails": 2,
-          "total_plans": 16,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "673c5cbf",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-09T05:24:06+00:00",
-        "run_name": "20260708_222302_qoa2",
-        "stats": {
-          "passes": 14,
-          "fails": 2,
-          "total_plans": 16,
-          "health": "amber"
-        }
-      },
-      {
-        "id": "c9d3e51b",
-        "step": "Restore",
-        "detail": "Verify prep \u2014 all Run=Y",
-        "at": "2026-07-07T04:59:56+00:00"
-      },
-      {
-        "id": "7f49eb70",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-07T04:57:56+00:00",
-        "run_name": "20260706_215651_qoa2"
-      }
-    ],
-    "hitl_stories": [],
-    "hitl_invites": [],
-    "change_requests": [],
-    "runtime_mode": "local",
-    "app_version": "",
-    "baseline_version": "",
-    "baseline_run": null,
-    "owner_user_id": null,
-    "brahl_plan_draft": null
-  },
-  {
-    "id": "0288c862a8ec",
-    "name": "sunshine",
-    "app_url": "https://gosunshine.base44.app/",
-    "suite_name": "sunshine",
-    "suite_config": "y/sunshine/sunshine.json",
-    "purpose": "Sunshine Indian Groceries (gosunshine.base44.app) - grocery, salon, track, admin",
-    "prompt": "Sunshine Indian Groceries (gosunshine.base44.app) - grocery, salon, track, admin",
-    "owner_avatar": "client",
-    "status": "open",
-    "documents": [],
-    "context_items": [
-      {
-        "id": "e7b73e73",
-        "kind": "url",
-        "label": "App URL",
-        "value": "https://gosunshine.base44.app/",
-        "added_at": "2026-07-07T05:10:23+00:00"
-      }
-    ],
-    "chat_messages": [
-      {
-        "id": "welcome",
-        "role": "assistant",
-        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
-        "at": "2026-07-07T05:10:23+00:00"
-      }
-    ],
-    "budget_usd": 0.0,
-    "budget_split": {
-      "automation_pct": 50,
-      "human_pct": 50
-    },
-    "hitl_consultants": [],
-    "reports": [
-      {
-        "id": "a2e0054e",
-        "run_name": "20260706_221029_sunshine",
-        "report_path": "z/20260706_221029_sunshine/brahl_report.md",
-        "submitted_at": "2026-07-07T05:10:47+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "e9f3b677",
-        "run_name": "20260712_202933_sunshine",
-        "report_path": "z/20260712_202933_sunshine/brahl_report.md",
-        "submitted_at": "2026-07-13T03:30:21+00:00",
-        "source": "automation"
-      }
-    ],
-    "ai_enabled": true,
-    "brahl_context_path": null,
-    "latest_run": "20260712_202933_sunshine",
-    "created_at": "2026-07-07T05:10:23+00:00",
-    "updated_at": "2026-07-14T05:09:17+00:00",
-    "brahl_chat_messages": [
-      {
-        "id": "brahl-welcome",
-        "role": "assistant",
-        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
-        "at": "2026-07-07T05:10:23+00:00"
-      }
-    ],
-    "atomic77_chat_messages": [
-      {
-        "id": "a77-welcome",
-        "role": "assistant",
-        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
-        "at": "2026-07-07T05:10:23+00:00"
-      }
-    ],
-    "atomic77_usage": {
-      "messages": 0,
-      "tokens_est": 0,
-      "user_messages": 0
-    },
-    "cycle_history": [
-      {
-        "id": "9ce64ea2",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-13T03:30:21+00:00",
-        "run_name": "20260712_202933_sunshine",
-        "stats": {
-          "passes": 26,
-          "fails": 0,
-          "total_plans": 26,
-          "health": "green"
-        }
-      },
-      {
-        "id": "f782bab2",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-07T05:10:47+00:00",
-        "run_name": "20260706_221029_sunshine"
-      }
-    ],
-    "hitl_stories": [],
-    "hitl_invites": [],
-    "change_requests": [],
-    "runtime_mode": "local",
-    "app_version": "",
-    "baseline_version": "",
-    "baseline_run": null,
-    "owner_user_id": null,
-    "brahl_plan_draft": null
-  },
-  {
-    "id": "b77104dece55",
-    "name": "nalanda_app",
-    "app_url": "https://nalanda.base44.app/",
-    "suite_name": "nalanda_app",
-    "suite_config": "y/nalanda_app/nalanda_app.json",
-    "purpose": "quickly test https://jusdone.base44.app/",
-    "prompt": "quickly test https://jusdone.base44.app/",
-    "owner_avatar": "client",
-    "status": "open",
-    "documents": [],
-    "context_items": [
-      {
-        "id": "4a8ea7b7",
-        "kind": "url",
-        "label": "App URL",
-        "value": "https://nalanda.base44.app/",
-        "added_at": "2026-07-07T21:49:14+00:00"
-      }
-    ],
-    "chat_messages": [
-      {
-        "id": "welcome",
-        "role": "assistant",
-        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
-        "at": "2026-07-07T21:49:14+00:00"
-      },
-      {
-        "id": "a617988d",
-        "role": "user",
-        "text": "quickly test https://jusdone.base44.app/",
-        "at": "2026-07-09T07:42:55+00:00"
-      },
-      {
-        "id": "ee1b2025",
-        "role": "assistant",
-        "text": "What is the main purpose of this BRAHL cycle? Describe what we should validate, explore, or improve.",
-        "at": "2026-07-09T07:42:55+00:00"
-      }
-    ],
-    "budget_usd": 0.0,
-    "budget_split": {
-      "automation_pct": 50,
-      "human_pct": 50
-    },
-    "hitl_consultants": [],
-    "reports": [
-      {
-        "id": "1d9dd595",
-        "run_name": "20260705_232130_nalanda_app",
-        "report_path": "z/20260705_232130_nalanda_app/brahl_report.md",
-        "submitted_at": "2026-07-07T21:49:14+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "1ea80aaa",
-        "run_name": "20260709_004501_nalanda_app",
-        "report_path": "z/20260709_004501_nalanda_app/brahl_report.md",
-        "submitted_at": "2026-07-09T07:45:15+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "5e93bc5d",
-        "run_name": "20260710_010121_nalanda_app",
-        "report_path": "z/20260710_010121_nalanda_app/brahl_report.md",
-        "submitted_at": "2026-07-10T08:01:37+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "ebf94177",
-        "run_name": "20260711_110843_nalanda_app",
-        "report_path": "z/20260711_110843_nalanda_app/brahl_report.md",
-        "submitted_at": "2026-07-11T18:08:57+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "1fb7a06a",
-        "run_name": "20260714_090840_nalanda_app",
-        "report_path": "z/20260714_090840_nalanda_app/brahl_report.md",
-        "submitted_at": "2026-07-14T16:08:57+00:00",
-        "source": "automation"
-      },
-      {
-        "id": "73c20708",
-        "run_name": "20260714_090938_nalanda_app",
-        "report_path": "z/20260714_090938_nalanda_app/brahl_report.md",
-        "submitted_at": "2026-07-14T16:09:55+00:00",
-        "source": "automation"
-      }
-    ],
-    "ai_enabled": true,
-    "brahl_context_path": "C:\\006\\FXYZ\\KK\\z\\brahl_context_20260714_090930_nalanda_app.json",
-    "latest_run": "20260714_090938_nalanda_app",
-    "created_at": "2026-07-07T21:49:14+00:00",
-    "updated_at": "2026-07-14T16:14:59+00:00",
-    "brahl_chat_messages": [
-      {
-        "id": "brahl-welcome",
-        "role": "assistant",
-        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
-        "at": "2026-07-07T21:49:14+00:00"
-      }
-    ],
-    "atomic77_chat_messages": [
-      {
-        "id": "a77-welcome",
-        "role": "assistant",
-        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
-        "at": "2026-07-07T21:49:14+00:00"
-      }
-    ],
-    "atomic77_usage": {
-      "messages": 0,
-      "tokens_est": 0,
-      "user_messages": 0
-    },
-    "cycle_history": [
-      {
-        "id": "c5aa2343",
-        "step": "Loop 1",
-        "detail": "completed",
-        "at": "2026-07-14T16:09:55+00:00",
-        "run_name": "20260714_090938_nalanda_app",
-        "stats": {
-          "passes": 6,
-          "fails": 0,
-          "total_plans": 6,
-          "health": "green"
-        }
-      },
-      {
-        "id": "60352bbe",
-        "step": "Step 0",
-        "detail": "C:\\006\\FXYZ\\KK\\z\\brahl_context_20260714_090930_nalanda_app.json",
-        "at": "2026-07-14T16:09:30+00:00"
-      },
-      {
-        "id": "2d299911",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-14T16:08:56+00:00",
-        "run_name": "20260714_090840_nalanda_app",
-        "stats": {
-          "passes": 6,
-          "fails": 0,
-          "total_plans": 6,
-          "health": "green"
-        }
-      },
-      {
-        "id": "db3a8a46",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-11T18:08:57+00:00",
-        "run_name": "20260711_110843_nalanda_app",
-        "stats": {
-          "passes": 6,
-          "fails": 0,
-          "total_plans": 6,
-          "health": "green"
-        }
-      },
-      {
-        "id": "9b5fe143",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-10T08:01:37+00:00",
-        "run_name": "20260710_010121_nalanda_app",
-        "stats": {
-          "passes": 6,
-          "fails": 0,
-          "total_plans": 6,
-          "health": "green"
-        }
-      },
-      {
-        "id": "950e1c39",
-        "step": "Run",
-        "detail": "completed",
-        "at": "2026-07-09T07:45:14+00:00",
-        "run_name": "20260709_004501_nalanda_app",
-        "stats": {
-          "passes": 6,
-          "fails": 0,
-          "total_plans": 6,
-          "health": "green"
-        }
-      }
-    ],
-    "hitl_stories": [],
-    "hitl_invites": [],
-    "change_requests": [],
-    "runtime_mode": "local",
-    "app_version": "",
-    "baseline_version": "",
-    "baseline_run": null,
-    "owner_user_id": null,
-    "brahl_plan_draft": null
-  },
-  {
-    "id": "2b13d26039b3",
-    "name": "API_Petstore",
-    "app_url": "",
-    "suite_name": "API_Petstore",
-    "suite_config": "y/API_Petstore/api_tests.json",
-    "purpose": "give me BRAHL report",
-    "prompt": "give me BRAHL report",
-    "owner_avatar": "client",
-    "status": "open",
-    "documents": [],
-    "context_items": [],
-    "chat_messages": [
-      {
-        "id": "welcome",
-        "role": "assistant",
-        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
-        "at": "2026-07-09T05:30:10+00:00"
-      },
-      {
-        "id": "09b6af8e",
-        "role": "user",
-        "text": "https://konfiga.com/ go ahead and test the basic web features for this web app.",
-        "at": "2026-07-09T05:48:38+00:00"
-      },
-      {
-        "id": "cac333b6",
-        "role": "assistant",
-        "text": "What is the main purpose of this BRAHL cycle? Describe what we should validate, explore, or improve.",
-        "at": "2026-07-09T05:48:38+00:00"
-      },
-      {
-        "id": "05a6e185",
-        "role": "user",
-        "text": "https://konfiga.com/",
-        "at": "2026-07-09T05:48:57+00:00"
-      },
-      {
-        "id": "afe8ec06",
-        "role": "assistant",
-        "text": "Any connector or source of truth? (JIRA, Linear, Confluence, GitHub, specs, API docs). Tap + to add one \u2014 or reply 'none' to skip.",
-        "at": "2026-07-09T05:48:57+00:00"
-      },
-      {
-        "id": "a3fef3ce",
-        "role": "user",
-        "text": "None.",
-        "at": "2026-07-09T05:49:06+00:00"
-      },
-      {
-        "id": "05355bb6",
-        "role": "assistant",
-        "text": "Set your project budget below. We split funds between BRAHL automation (AI + FoXYiZ) and QA Hunters who enrich reports offline.",
-        "at": "2026-07-09T05:49:06+00:00"
-      },
-      {
-        "id": "0dd8fe07",
-        "role": "user",
-        "text": "Updated budget to $150 (50% automation / 50% QA Hunter)",
-        "at": "2026-07-09T05:49:20+00:00"
-      },
-      {
-        "id": "6db10f12",
-        "role": "assistant",
-        "text": "Budget $150 saved (50% BRAHL automation / 50% QA Hunter). Invite QA Hunters when you need exploratory UX or edge-case coverage.",
-        "at": "2026-07-09T05:49:20+00:00"
-      },
-      {
-        "id": "8f2d1cc3",
-        "role": "user",
-        "text": "give me BRAHL report",
-        "at": "2026-07-09T05:49:54+00:00"
-      },
-      {
-        "id": "5ad2a00e",
-        "role": "assistant",
-        "text": "Budget $150 noted (50% automation / 50% QA Hunter). QA Hunters can join when you're ready. Use Loop to capture Step 0 context.",
-        "at": "2026-07-09T05:49:55+00:00"
-      }
-    ],
-    "budget_usd": 150.0,
-    "budget_split": {
-      "automation_pct": 50,
-      "human_pct": 50
-    },
-    "hitl_consultants": [],
-    "reports": [],
-    "ai_enabled": true,
-    "brahl_context_path": null,
-    "latest_run": "20260708_223222_api_tests",
-    "created_at": "2026-07-09T05:30:10+00:00",
-    "updated_at": "2026-07-09T05:50:11+00:00",
-    "brahl_chat_messages": [
-      {
-        "id": "brahl-welcome",
-        "role": "assistant",
-        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
-        "at": "2026-07-09T05:30:10+00:00"
-      }
-    ],
-    "atomic77_chat_messages": [
-      {
-        "id": "a77-welcome",
-        "role": "assistant",
-        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
-        "at": "2026-07-09T05:30:10+00:00"
-      }
-    ],
-    "atomic77_usage": {
-      "messages": 0,
-      "tokens_est": 0,
-      "user_messages": 0
-    },
-    "cycle_history": [
-      {
-        "id": "f4972e6a",
-        "step": "Run",
-        "detail": "failed",
-        "at": "2026-07-09T05:32:23+00:00",
-        "run_name": "20260708_223222_api_tests",
-        "stats": {
-          "passes": 0,
-          "fails": 0,
-          "total_plans": 0,
-          "health": "unknown"
-        }
-      }
-    ],
-    "hitl_stories": [],
-    "hitl_invites": [],
-    "change_requests": [],
-    "runtime_mode": "local",
-    "app_version": "",
-    "baseline_version": "",
-    "baseline_run": null,
-    "owner_user_id": null,
-    "brahl_plan_draft": null
-  },
-  {
-    "id": "d3240f1ad39b",
-    "name": "Cogmento",
-    "app_url": "",
-    "suite_name": "Cogmento",
-    "suite_config": "y/Cogmento/Cogmento.json",
-    "purpose": "",
-    "prompt": "",
-    "owner_avatar": "client",
-    "owner_user_id": null,
-    "status": "open",
-    "documents": [],
-    "context_items": [],
-    "chat_messages": [
-      {
-        "id": "welcome",
-        "role": "assistant",
-        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
-        "at": "2026-07-14T05:34:36+00:00"
+        "at": "2026-07-14T21:14:07+00:00"
       }
     ],
     "budget_usd": 0.0,
@@ -1180,15 +597,16 @@
     "reports": [],
     "ai_enabled": true,
     "brahl_context_path": null,
+    "brahl_plan_draft": null,
     "latest_run": null,
-    "created_at": "2026-07-14T05:34:36+00:00",
-    "updated_at": "2026-07-14T05:34:36+00:00",
+    "created_at": "2026-07-14T21:14:07+00:00",
+    "updated_at": "2026-07-14T21:14:07+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
         "role": "assistant",
         "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
-        "at": "2026-07-14T05:34:36+00:00"
+        "at": "2026-07-14T21:14:07+00:00"
       }
     ],
     "atomic77_chat_messages": [
@@ -1196,7 +614,7 @@
         "id": "a77-welcome",
         "role": "assistant",
         "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
-        "at": "2026-07-14T05:34:36+00:00"
+        "at": "2026-07-14T21:14:07+00:00"
       }
     ],
     "atomic77_usage": {
@@ -1212,6 +630,87 @@
     "app_version": "",
     "baseline_version": "",
     "baseline_run": null,
-    "brahl_plan_draft": null
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    }
+  },
+  {
+    "id": "15745c9b6515",
+    "name": "Math",
+    "app_url": "",
+    "suite_name": "Math",
+    "suite_config": "y/Math/Math.json",
+    "purpose": "",
+    "prompt": "",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-14T21:50:30+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "c682b62f",
+        "run_name": "20260714_140054_Math",
+        "report_path": "z/20260714_140054_Math/brahl_report.md",
+        "submitted_at": "2026-07-14T21:50:30+00:00",
+        "source": "automation"
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "brahl_plan_draft": null,
+    "latest_run": "20260714_140054_Math",
+    "created_at": "2026-07-14T21:50:30+00:00",
+    "updated_at": "2026-07-15T04:08:48+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
+        "at": "2026-07-14T21:50:30+00:00"
+      }
+    ],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-14T21:50:30+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "runtime_mode": "local",
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    }
   }
 ]

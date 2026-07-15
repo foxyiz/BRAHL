@@ -1,0 +1,71 @@
+{
+  "id": "p8",
+  "code": "P8",
+  "name": "Riley Okonkwo",
+  "title": "Bug-bounty QA Hunter",
+  "role": "consultant-bounty",
+  "defaultAvatar": "consultant",
+  "aiDefault": true,
+  "aiLocked": false,
+  "dualRole": false,
+  "admin": false,
+  "techLevel": "security",
+  "consultantTier": "bounty",
+  "allowedAvatars": [
+    "consultant"
+  ],
+  "landing": "app",
+  "accent": "bounty",
+  "blurb": "External tester via bug-bounty tag \u2014 critical issues focus.",
+  "journey": [
+    "Join via invite tag",
+    "Critical issues",
+    "Submit enriched report"
+  ],
+  "ypadDesignColumn": "D8",
+  "firstVisit": false,
+  "fictional": true,
+  "tasks": [
+    "Join via invite tag",
+    "Critical issues",
+    "Submit enriched report"
+  ],
+  "demo_tips": [
+    "Join via invite tag",
+    "Critical issues",
+    "Submit enriched report"
+  ],
+  "default_avatar": "consultant",
+  "allowed_avatars": [
+    "consultant"
+  ],
+  "client_tasks": [
+    {
+      "phase": "build",
+      "title": "Join via invite tag",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "Critical issues",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "Submit enriched report",
+      "detail": "Demo tip from persona journey."
+    }
+  ],
+  "hitl_tasks": [
+    {
+      "phase": "build",
+      "title": "Join challenge as QA Hunter",
+      "detail": "Open Build, review Creator context, submit findings."
+    },
+    {
+      "phase": "analyze",
+      "title": "Review failures",
+      "detail": "Use Analyze table Input / Expected / Output."
+    }
+  ]
+}

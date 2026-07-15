@@ -13,8 +13,7 @@ PROJECTS_FILE = DATA_DIR / "projects.json"
 UPLOADS_DIR = DATA_DIR / "uploads"
 
 HITL_CONSULTANT_ID = "local-hitl-consultant"
-KK_ROOT = Path(__file__).resolve().parents[2]
-Z_DIR = KK_ROOT / "z"
+from paths import KK_ROOT, Z_DIR, resolve_repo
 
 REPORT_SOURCE_LABELS = {
     "automation": "Automation",
@@ -60,6 +59,7 @@ def _normalize(project: dict[str, Any]) -> dict[str, Any]:
     project.setdefault("baseline_run", None)
     project.setdefault("owner_user_id", None)
     project.setdefault("brahl_plan_draft", None)
+    project.setdefault("ai_usage", {"calls": 0, "total_tokens": 0, "usd_est": 0.0})
     if not project.get("chat_messages"):
         project["chat_messages"] = [
             {
@@ -270,6 +270,7 @@ def update_project(project_id: str, patch: dict[str, Any]) -> dict[str, Any]:
             "app_version",
             "baseline_version",
             "baseline_run",
+            "owner_user_id",
         }
         for key, val in patch.items():
             if key in allowed:
@@ -331,13 +332,40 @@ def add_chat_message(project_id: str, role: str, text: str) -> dict[str, Any]:
     raise KeyError(project_id)
 
 
+def apply_project_ai_usage(project_id: str, entry: dict[str, Any]) -> None:
+    """Merge metered LLM usage into project.ai_usage."""
+    if not project_id or not entry:
+        return
+    projects = load_projects()
+    for i, p in enumerate(projects):
+        if p.get("id") != project_id:
+            continue
+        p = _normalize(p)
+        u = dict(p.get("ai_usage") or {})
+        u["calls"] = int(u.get("calls") or 0) + 1
+        u["prompt_tokens"] = int(u.get("prompt_tokens") or 0) + int(entry.get("prompt_tokens") or 0)
+        u["completion_tokens"] = int(u.get("completion_tokens") or 0) + int(entry.get("completion_tokens") or 0)
+        u["total_tokens"] = int(u.get("total_tokens") or 0) + int(entry.get("total_tokens") or 0)
+        u["usd_est"] = round(float(u.get("usd_est") or 0) + float(entry.get("usd_est") or 0), 6)
+        u["updated_at"] = _now()
+        p["ai_usage"] = u
+        p["updated_at"] = _now()
+        projects[i] = p
+        save_projects(projects)
+        return
+
+
 def assistant_reply(project: dict[str, Any], user_text: str) -> str:
     """Build assistant — OpenAI when AI on + key set, else scripted fallback."""
     if project.get("ai_enabled", True):
         try:
             import ai_assist
 
-            ai_text = ai_assist.build_assistant_reply(project, user_text)
+            ai_text = ai_assist.build_assistant_reply(
+                project,
+                user_text,
+                on_usage=lambda entry: apply_project_ai_usage(project.get("id") or "", entry),
+            )
             if ai_text:
                 return ai_text
         except Exception:
@@ -719,6 +747,9 @@ def compute_cost_meter(project: dict[str, Any], runtime_mode: str | None = None)
     a77 = project.get("atomic77_usage") or {}
     a77_user = int(a77.get("user_messages") or 0)
     a77_tokens = int(a77.get("tokens_est") or 0)
+    ai_u = project.get("ai_usage") or {}
+    ai_tokens = int(ai_u.get("total_tokens") or 0)
+    ai_usd = float(ai_u.get("usd_est") or 0)
 
     build_activity = min(1.0, (user_msgs + change_n * 2) / 8.0) if ai_on else 0.2
     atomic77_activity = min(1.0, a77_user / 6.0) if a77_user else 0.0
@@ -729,7 +760,7 @@ def compute_cost_meter(project: dict[str, Any], runtime_mode: str | None = None)
 
     if mode == "local":
         phase_template = [
-            ("build", "Build", 0.38, "ai", "AI chat · yPAD scope · change requests"),
+            ("build", "Build", 0.38, "ai", f"AI chat · yPAD · ~{ai_tokens} tok / ${ai_usd:.3f}"),
             ("atomic77", "Atomic 77", 0.08, "ai", f"Idea-to-launch assistant · ~{a77_tokens} tokens est."),
             ("run", "Run", 0.0, "local", "FoXYiZ on your desktop — no cloud charge"),
             ("analyze", "Analyze", 0.18, "ai", "AI root-cause when enabled"),
@@ -820,6 +851,11 @@ def compute_cost_meter(project: dict[str, Any], runtime_mode: str | None = None)
             "messages": int(a77.get("messages") or 0),
             "tokens_est": a77_tokens,
             "user_messages": a77_user,
+        },
+        "ai_usage": {
+            "calls": int(ai_u.get("calls") or 0),
+            "total_tokens": ai_tokens,
+            "usd_est": ai_usd,
         },
     }
 
@@ -1070,7 +1106,7 @@ def brahl_model_reply(
 
     # Prefer grounded LLM over keyword shortcuts when available
     try:
-        from ai_assist import _chat, is_ai_available
+        from ai_assist import chat_metered, is_ai_available, brahl_doc_context
 
         if is_ai_available() and (user_text or "").strip():
             stats_hint = ""
@@ -1090,16 +1126,26 @@ def brahl_model_reply(
             system = (
                 "You are the BRAHL report assistant for QAonAir. "
                 "Answer ONLY from the report markdown and stats below. "
-                "Be concise (≤150 words). Use spelling BRAHL (never brawl). "
-                "If the report lacks the answer, say so and suggest Verify or Heal next steps."
+                "Be concise (≤120 words). Use spelling BRAHL (never brawl). "
+                "If the report lacks the answer, say so and suggest Verify or Heal next steps.\n\n"
+                + brahl_doc_context(role="brahl_chat")
             )
             user = (
                 f"Project: {name}\nPurpose: {purpose[:400]}\n"
                 f"{stats_hint}\n"
-                f"--- BRAHL report (truncated) ---\n{(report_md or '')[:12000]}\n---\n"
+                f"--- BRAHL report (truncated) ---\n{(report_md or '')[:6000]}\n---\n"
                 f"User question: {user_text}"
             )
-            reply = _chat(system, user)
+            reply, meta = chat_metered(
+                system,
+                user,
+                project_id=project.get("id"),
+                project=project,
+                user_id=project.get("owner_user_id"),
+                role="brahl_chat",
+            )
+            if meta.get("denied"):
+                return meta.get("reason") or "AI quota exceeded."
             if reply:
                 return reply.strip()
     except Exception:
@@ -1298,6 +1344,14 @@ def apply_brahl_plan(
                         suite,
                         app_url=p.get("app_url") or "",
                         brahl_plan=plan,
+                    )
+                except Exception:
+                    pass
+                try:
+                    import suite_docs as suite_docs_store
+
+                    suite_docs_store.write_suite_docs_from_context(
+                        suite, project=p, brahl_plan=plan
                     )
                 except Exception:
                     pass

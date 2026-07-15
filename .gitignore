@@ -8,6 +8,11 @@ dist/
 build/
 
 # FoXYiZ run output (local runs — regenerate via verify)
+FoXYiZ/z/2026*/
+FoXYiZ/z/2025*/
+FoXYiZ/z/brahl_*
+FoXYiZ/z/*_zResults*
+FoXYiZ/z/*_zDash*
 z/2026*/
 z/2025*/
 z/brahl_*
@@ -18,6 +23,7 @@ z/*_zDash*
 archive/
 
 # Engine binary (rebuild locally; ship via release artifact for cloud)
+FoXYiZ/f/Foxyiz2.exe
 f/Foxyiz2.exe
 
 # IDE

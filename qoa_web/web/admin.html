@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel — BRAHL</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <link rel="stylesheet" href="/assets/admin.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+<body class="admin-page">
+  <header class="admin-top">
+    <div class="admin-top-inner">
+      <a href="/app" class="admin-back">← Back to Arena</a>
+      <div class="admin-brand">
+        <h1>Admin Panel</h1>
+        <p class="admin-lead">Super Admin · Admin · Client Project Admin — privacy-scoped visibility for BRAHL.</p>
+      </div>
+      <div class="admin-scope">
+        <label class="admin-scope-label">Scope</label>
+        <select id="admin-scope-mode" aria-label="Admin scope">
+          <option value="platform">Platform</option>
+          <option value="project">Project</option>
+        </select>
+        <select id="admin-project-select" aria-label="Project" hidden></select>
+      </div>
+    </div>
+  </header>
+
+  <div id="admin-gate" class="admin-gate" hidden>
+    <p>Sign in with a platform admin account, or open from localhost (dev bootstrap). Creators with projects can use <strong>Project</strong> scope.</p>
+    <a class="primary" href="/login">Log in</a>
+    <a class="secondary" href="/app">Arena</a>
+  </div>
+
+  <div id="admin-shell" class="admin-shell" hidden>
+    <nav class="admin-tabs" role="tablist" aria-label="Admin sections">
+      <button type="button" class="admin-tab active" data-tab="users" role="tab">Users</button>
+      <button type="button" class="admin-tab" data-tab="clients" role="tab" data-platform-only>Clients</button>
+      <button type="button" class="admin-tab" data-tab="projects" role="tab">Projects</button>
+      <button type="button" class="admin-tab" data-tab="consultants" role="tab">Consultants</button>
+      <button type="button" class="admin-tab" data-tab="xp" role="tab">XP &amp; Payments</button>
+      <button type="button" class="admin-tab" data-tab="live" role="tab">Live Activity</button>
+      <button type="button" class="admin-tab" data-tab="gtm" role="tab" data-platform-only>GTM</button>
+    </nav>
+
+    <div id="admin-stats" class="admin-stats"></div>
+    <div id="admin-panel-body" class="admin-panel-body"></div>
+  </div>
+
+  <footer class="admin-foot">
+    <span>BRAHL Admin · confidentiality: Super Admin cannot view project secrets unless a project member.</span>
+    <a href="/about">About</a>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="/assets/admin.js"></script>
+</body>
+</html>

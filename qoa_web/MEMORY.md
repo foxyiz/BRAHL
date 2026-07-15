@@ -1,14 +1,12 @@
-# qoa_web v1.3 — Agent memory (read this first)
+# qoa_web v1.4 — Agent memory (read this first)
 
-**Status:** v1.3 · lean workspace. Active yPAD: **`y/Math/`** (4-plan Loop/Verify) + **`y/nalanda_app/`**. Fat `y/qoa_web` stays in `archive/`. Phase B Loop proven. **Create challenge** = AI Planner chat (+ voice) → lean yPAD scaffold → optional quick BRAHL + Go/No-Go **scorecard**.
+**Status:** desktop BRAHL UI over **FoXYiZ/** (`f` `x` `y` `z` `pyUtils`). **AI:** optional BYOK. **Run/Loop:** engine only.
 
-**App:** http://127.0.0.1:8765/welcome · **Arena:** `/app`
+**App:** http://127.0.0.1:8765/welcome · **Arena:** `/app` · **Admin:** `/admin`
 
-**Auth:** `/signup` (social/email → multi-role) · `/login` · JWT · Creator/QA Hunter/Nalanda/**Promoter**. Forms: `web/forms.css`.
+**Today:** [../todaysummary.md](../todaysummary.md) · **AI cost:** `Docs/BRAHL_DESKTOP_BYOK.md` · meter: `qoa_web/data/ai_usage.json`
 
-**Homepage / menu:** Welcome feature strip — Nalanda · Atomic 77 · **Promoter** · Wallet (same order in arena user menu).
-
-**Handoff:** [Docs/HANDOFF.md](../Docs/HANDOFF.md) · [Docs/MVP_LAUNCH_CHECKLIST.md](../Docs/MVP_LAUNCH_CHECKLIST.md)
+**Handoff:** [Docs/HANDOFF.md](../Docs/HANDOFF.md) · [FoXYiZ/FoXYiZ_Readme.md](../FoXYiZ/FoXYiZ_Readme.md) · [Docs/README.md](../Docs/README.md)
 
 ---
 
@@ -16,17 +14,17 @@
 
 | Path | Purpose |
 |------|---------|
-| `qoa_web/web/` | index.html, app.js, welcome, signin, invite-gate, about |
-| `qoa_web/api/` | main.py, runner.py, projects.py, invites.py, pricing.py, ypad.py, ai_* |
-| `qoa_web/mcp/server.py` | Cursor MCP bridge |
-| `y/Math/`, `y/nalanda_app/` | Lean suites for Loop/Verify/Heal |
-| `f/fStart_Math.json`, `f/fStart_nalanda_app_smoke.json` | Primary smoke configs |
-| `pyUtils/` | cleaner, persona sync, zBatchDash (not `u/`) |
+| `qoa_web/web/` | index, app.js, admin, welcome, signin, themes |
+| `qoa_web/api/` | main, runner, paths (`FOXYIZ_ROOT`), projects, ypad, suite_docs, ai_*, admin_* |
+| `FoXYiZ/y/Math/`, `FoXYiZ/y/nalanda_app/` | Lean suites for Loop/Verify/Heal |
+| `FoXYiZ/f/fStart_Math.json`, `…nalanda…` | Primary smoke configs |
+| `FoXYiZ/pyUtils/` | cleaner, persona sync, zBatchDash |
 
-## Out of scope (do not read/edit in agent sessions)
+## Out of scope
 
-- `archive/**` (move outside KK when convenient)
-- Restored fat `y/qoa_web` / 49-plan verify
+- `archive/**` — never add to context
+- `FoXYiZ/z/**` — zResults / zDash / artifacts (huge)
+- Fat journey CSVs pasted into chat
 - `qoa_web/data/projects.json` unless seed-data work
 
 ---
@@ -38,10 +36,8 @@ cd c:\006\FXYZ\KK
 python qoa_web/run_local.py
 # Arena bypass: /app?demo=1
 
-python f\fEngine2.py --config f\fStart_Math.json
-# or: f\fStart_nalanda_app_smoke.json
-
-python pyUtils/cleaner.py --apply
+python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json
+python FoXYiZ\pyUtils\cleaner.py --apply
 ```
 
 Restart server after API/UI changes.
@@ -50,7 +46,7 @@ Restart server after API/UI changes.
 
 ## Avatars
 
-**Creator** · **QA Hunter** · **Nalanda** — see [qoa_userDoc.md](./qoa_userDoc.md). Unified top bar; Nalanda has no BRAHL phases.
+**Creator** · **QA Hunter** · **Nalanda** — [qoa_userDoc.md](./qoa_userDoc.md). Personas: [Docs/test-user-data/](../Docs/test-user-data/).
 
 ---
 
@@ -63,15 +59,13 @@ Restart server after API/UI changes.
 
 ---
 
-## Docs
+## Docs (lean)
 
 | Doc | Use |
 |-----|-----|
-| [Docs/HANDOFF.md](../Docs/HANDOFF.md) | Short session summary |
-| [qoa_userDoc.md](./qoa_userDoc.md) | Users, arena, APIs |
-| [Docs/BRAHL_DEFECTS.md](../Docs/BRAHL_DEFECTS.md) | Defect closure log |
-| [Docs/MVP_LAUNCH_CHECKLIST.md](../Docs/MVP_LAUNCH_CHECKLIST.md) | Launch smoke |
-| [Docs/Bluehost.md](../Docs/Bluehost.md) | VPS deploy |
-| [Docs/BRAHL.md](../Docs/BRAHL.md) | BRAHL loop |
-| [Docs/MAINTENANCE.md](../Docs/MAINTENANCE.md) | End-of-session cleaner |
+| [../todaysummary.md](../todaysummary.md) | Today's key changes |
+| [Docs/HANDOFF.md](../Docs/HANDOFF.md) | Bootstrap |
+| [Docs/DEPLOY.md](../Docs/DEPLOY.md) | VPS / launch checklist |
+| [Docs/BRAHL.md](../Docs/BRAHL.md) | Full BRAHL |
+| [qoa_userDoc.md](./qoa_userDoc.md) | Users & arenas |
 | [CHANGELOG.md](./CHANGELOG.md) | Version history |

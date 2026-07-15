@@ -12,8 +12,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 import projects as project_store
+from paths import KK_ROOT, Z_DIR, resolve_repo
 from runner import (
-    KK_ROOT,
     analyze_run,
     compare_verify_runs,
     capture_brahl_context,
@@ -33,6 +33,7 @@ from runner import (
     load_failures,
     read_fstart_config,
     report_stats,
+    start_batch,
     start_run,
     suite_report_context,
     write_fstart_config,
@@ -44,6 +45,9 @@ import invites as invite_store
 import nalanda as nalanda_store
 import auth as auth_store
 import brahl_plan as brahl_plan_store
+import admin_panel as admin_panel_store
+import presence as presence_store
+import suite_docs as suite_docs_store
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 APP_VERSION = "1.3.0"
@@ -126,6 +130,8 @@ def _require_project(project_id: str, request: Request) -> dict[str, Any]:
 
 class RunRequest(BaseModel):
     config_path: str = Field(default="f/fStart_Math_smoke.json")
+    config_paths: list[str] | None = None
+    parallel: bool = False
     step_label: str = Field(default="Run")
 
 
@@ -334,6 +340,223 @@ def _admin_token_ok(request: Request) -> bool:
 def _require_admin(request: Request) -> None:
     if not _admin_token_ok(request):
         raise HTTPException(403, "Admin token required (QOA_ADMIN_TOKEN)")
+
+
+def _client_ip(request: Request) -> str:
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else ""
+
+
+def _require_platform_admin(request: Request) -> tuple[dict[str, Any] | None, bool]:
+    """Return (user, token_bootstrap). Raises 403 if neither JWT platform admin nor bootstrap token."""
+    user = _auth_user(request)
+    if auth_store.is_platform_admin(user):
+        return user, False
+    if _admin_token_ok(request):
+        return user, True
+    raise HTTPException(403, "Platform admin required")
+
+
+class PresenceHeartbeatRequest(BaseModel):
+    session_key: str = ""
+    project_id: str | None = None
+    path: str = "/app"
+    avatar: str = "creator"
+    display_name: str = ""
+    lat: float | None = None
+    lng: float | None = None
+    city: str | None = None
+    country: str | None = None
+
+
+class AdminRolesPatch(BaseModel):
+    roles: list[str]
+
+
+class AdminAiPatch(BaseModel):
+    ai_enabled: bool
+
+
+@app.get("/api/admin/me")
+def api_admin_me(request: Request) -> dict[str, Any]:
+    user = _auth_user(request)
+    token_ok = _admin_token_ok(request)
+    platform_user = auth_store.is_platform_admin(user)
+    if not user and not token_ok:
+        raise HTTPException(401, "Sign in required for Admin")
+    me = admin_panel_store.admin_me(
+        user,
+        token_bootstrap=bool(token_ok and not platform_user),
+    )
+    if not me.get("can_platform") and not me.get("project_scopes"):
+        # Localhost bootstrap with no projects still allows empty platform shell
+        if token_ok:
+            me["can_platform"] = True
+            me["is_super_admin"] = True
+            me["is_platform_admin"] = True
+            me["tabs"] = ["users", "clients", "projects", "consultants", "xp", "live", "gtm"]
+        else:
+            raise HTTPException(403, "No admin scopes for this account")
+    return me
+
+
+@app.get("/api/admin/users")
+def api_admin_users(request: Request) -> dict[str, Any]:
+    _require_platform_admin(request)
+    users = admin_panel_store.list_platform_users()
+    return {
+        "users": users,
+        "total": len(users),
+        "admins": sum(1 for u in users if set(u.get("roles") or []) & {"admin", "super_admin"}),
+        "regular": sum(1 for u in users if not (set(u.get("roles") or []) & {"admin", "super_admin"})),
+    }
+
+
+@app.patch("/api/admin/users/{user_id}/roles")
+def api_admin_patch_roles(user_id: str, body: AdminRolesPatch, request: Request) -> dict[str, Any]:
+    user, bootstrap = _require_platform_admin(request)
+    actor = user or {"id": "token", "roles": ["super_admin"], "role": "super_admin"}
+    if bootstrap and not user:
+        actor = {"id": "token", "roles": ["super_admin"], "role": "super_admin"}
+    try:
+        updated = auth_store.set_user_roles(user_id, body.roles, actor=actor)
+    except PermissionError as exc:
+        raise HTTPException(403, str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(404, str(exc)) from exc
+    return {"user": updated}
+
+
+@app.get("/api/admin/clients")
+def api_admin_clients(request: Request) -> dict[str, Any]:
+    _require_platform_admin(request)
+    return admin_panel_store.list_clients_summary()
+
+
+@app.get("/api/admin/projects")
+def api_admin_projects(request: Request) -> dict[str, Any]:
+    user = _auth_user(request)
+    token_ok = _admin_token_ok(request)
+    platform = auth_store.is_platform_admin(user) or token_ok
+    if not platform and not user:
+        raise HTTPException(401, "Sign in required")
+    projects = admin_panel_store.list_projects_for_admin(user, platform=platform)
+    return {
+        "projects": projects,
+        "total": len(projects),
+        "active": sum(1 for p in projects if p.get("status") in ("open", "in_progress")),
+        "paused": sum(1 for p in projects if p.get("status") == "paused"),
+        "completed": sum(1 for p in projects if p.get("status") == "completed"),
+    }
+
+
+@app.get("/api/admin/projects/{project_id}/overview")
+def api_admin_project_overview(project_id: str, request: Request) -> dict[str, Any]:
+    user = _auth_user(request)
+    token_ok = _admin_token_ok(request)
+    platform = auth_store.is_platform_admin(user) or token_ok
+    try:
+        return admin_panel_store.project_overview(project_id, user, platform=platform)
+    except KeyError:
+        raise HTTPException(404, "Project not found") from None
+    except PermissionError as exc:
+        raise HTTPException(403, str(exc)) from exc
+
+
+@app.patch("/api/admin/projects/{project_id}/ai")
+def api_admin_project_ai(project_id: str, body: AdminAiPatch, request: Request) -> dict[str, Any]:
+    user = _auth_user(request)
+    token_ok = _admin_token_ok(request)
+    try:
+        project = admin_panel_store.set_project_ai(
+            project_id,
+            body.ai_enabled,
+            user,
+            platform_bootstrap=bool(token_ok and not auth_store.is_platform_admin(user)),
+        )
+    except KeyError:
+        raise HTTPException(404, "Project not found") from None
+    except PermissionError as exc:
+        raise HTTPException(403, str(exc)) from exc
+    return {"project": project, "ai_enabled": project.get("ai_enabled", True)}
+
+
+@app.get("/api/admin/consultants")
+def api_admin_consultants(request: Request, project_id: str | None = None) -> dict[str, Any]:
+    user = _auth_user(request)
+    token_ok = _admin_token_ok(request)
+    platform = auth_store.is_platform_admin(user) or token_ok
+    if not platform and not project_id:
+        raise HTTPException(400, "project_id required for project admin")
+    if project_id and not platform:
+        p = project_store.get_project(project_id)
+        if not p or not admin_panel_store.can_project_admin(p, user):
+            raise HTTPException(403, "Project admin required")
+    return admin_panel_store.list_consultants_for_scope(user, platform=platform, project_id=project_id)
+
+
+@app.get("/api/admin/live")
+def api_admin_live(
+    request: Request,
+    scope: str = "platform",
+    project_id: str | None = None,
+) -> dict[str, Any]:
+    user = _auth_user(request)
+    token_ok = _admin_token_ok(request)
+    platform = auth_store.is_platform_admin(user) or token_ok
+    if scope == "project":
+        if not project_id:
+            raise HTTPException(400, "project_id required")
+        p = project_store.get_project(project_id)
+        if not p:
+            raise HTTPException(404, "Project not found")
+        member = admin_panel_store.can_project_admin(p, user) or admin_panel_store.is_project_member(p, user)
+        if not member and not platform:
+            raise HTTPException(403, "Not allowed")
+        redact = platform and not member
+        return presence_store.list_live(project_id=project_id, redact=redact)
+    if not platform:
+        raise HTTPException(403, "Platform admin required for global live view")
+    return presence_store.list_live(project_id=None, redact=True)
+
+
+@app.post("/api/presence/heartbeat")
+def api_presence_heartbeat(body: PresenceHeartbeatRequest, request: Request) -> dict[str, Any]:
+    user = _auth_user(request)
+    ip = _client_ip(request)
+    session_key = (body.session_key or "").strip() or (
+        f"u:{(user or {}).get('id') or 'anon'}:{(body.project_id or 'none')}"
+    )
+    display = body.display_name or (user or {}).get("name") or (user or {}).get("email") or "Guest"
+    entry = presence_store.record_heartbeat(
+        session_key=session_key,
+        user_id=(user or {}).get("id"),
+        display_name=display,
+        email=(user or {}).get("email") or "",
+        project_id=body.project_id,
+        path=body.path,
+        avatar=body.avatar,
+        ip=ip,
+        roles=(user or {}).get("roles") or [],
+        client_lat=body.lat,
+        client_lng=body.lng,
+        client_city=body.city,
+        client_country=body.country,
+    )
+    return {"ok": True, "location_label": entry.get("location_label"), "session": entry}
+
+
+@app.get("/admin")
+def admin_page():
+    admin_path = WEB_DIR / "admin.html"
+    if admin_path.is_file():
+        return FileResponse(admin_path)
+    about_path = WEB_DIR / "about.html"
+    if not about_path.is_file():
+        raise HTTPException(404, "Admin page not found")
+    return FileResponse(about_path, headers={"X-Admin-Section": "about-admin-title"})
 
 
 @app.get("/api/version")
@@ -567,18 +790,37 @@ def config_delete(path: str) -> dict[str, str]:
 
 
 @app.get("/api/ai/status")
-def ai_status() -> dict[str, Any]:
+def ai_status(request: Request, project_id: str | None = None) -> dict[str, Any]:
     import ai_assist
     import ai_docs
 
     docs = ai_docs.list_ai_docs()
     in_prompt = [d for d in docs if d.get("in_prompt")]
+    auth_user = auth_store.user_from_request(request.headers.get("Authorization"))
+    user_id = auth_user.get("id") if auth_user else None
+    project = project_store.get_project(project_id) if project_id else None
+    snap = ai_assist.get_usage_snapshot(user_id, project_id)
+    gate = ai_assist.check_ai_quota(user_id=user_id, project_id=project_id, project=project)
     return {
         "available": ai_assist.is_ai_available(),
+        "byok": ai_assist.is_byok_mode(),
+        "hosted": not ai_assist.is_byok_mode(),
         "model": os.environ.get("OPENAI_MODEL", "gpt-4o-mini") if ai_assist.is_ai_available() else None,
+        "note": (
+            "Shared across all projects — not per-project. "
+            "Only AI guardrails + BRAHL prompt (plus your opted-in My docs) pack into AI when a key is set."
+        ),
         "docs_loaded": bool(ai_assist.brahl_doc_context(100)),
         "context_doc_count": len(in_prompt),
         "reference_doc_count": len(docs),
+        "usage": snap,
+        "quota_ok": gate.get("ok"),
+        "quota_reason": gate.get("reason") or "",
+        "quota_code": gate.get("code") or "",
+        "setup_hint": (
+            "Desktop BYOK: set OPENAI_API_KEY in f/.env. "
+            "Hosted: set QOA_AI_HOSTED=1 and enforce wallet caps (QOA_AI_USER_MONTHLY_TOKENS)."
+        ),
     }
 
 
@@ -588,8 +830,80 @@ def ai_docs_list() -> dict[str, Any]:
 
     return {
         "docs": ai_docs.list_ai_docs(),
-        "note": "Shared across all projects — not per-project. BRAHL + FoXYiZ are loaded into AI prompts when AI is on.",
+        "budget": ai_docs.user_prompt_budget(),
+        "note": (
+            "Shared across all projects — not per-project. "
+            "Only AI guardrails + BRAHL prompt (plus your opted-in My docs) pack into AI when a key is set."
+        ),
     }
+
+
+@app.post("/api/ai/docs/user")
+def ai_docs_user_create(body: dict[str, Any]) -> dict[str, Any]:
+    import ai_docs
+
+    try:
+        doc = ai_docs.create_user_doc(
+            str(body.get("title") or "My notes"),
+            str(body.get("content") or ""),
+            in_prompt=bool(body.get("in_prompt")),
+            subtitle=str(body.get("subtitle") or ""),
+        )
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    return {"doc": doc, "budget": ai_docs.user_prompt_budget()}
+
+
+@app.put("/api/ai/docs/user/{doc_id}")
+def ai_docs_user_put(doc_id: str, body: dict[str, Any]) -> dict[str, Any]:
+    import ai_docs
+
+    try:
+        doc = ai_docs.update_user_doc(
+            doc_id,
+            title=body.get("title"),
+            content=body.get("content"),
+            in_prompt=body.get("in_prompt"),
+            subtitle=body.get("subtitle"),
+        )
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    return {"doc": doc, "budget": ai_docs.user_prompt_budget()}
+
+
+@app.patch("/api/ai/docs/user/{doc_id}")
+def ai_docs_user_patch(doc_id: str, body: dict[str, Any]) -> dict[str, Any]:
+    import ai_docs
+
+    kwargs: dict[str, Any] = {}
+    if "title" in body:
+        kwargs["title"] = body.get("title")
+    if "subtitle" in body:
+        kwargs["subtitle"] = body.get("subtitle")
+    if "in_prompt" in body:
+        kwargs["in_prompt"] = body.get("in_prompt")
+    if "content" in body:
+        kwargs["content"] = body.get("content")
+    try:
+        doc = ai_docs.update_user_doc(doc_id, **kwargs)
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    return {"doc": doc, "budget": ai_docs.user_prompt_budget()}
+
+
+@app.delete("/api/ai/docs/user/{doc_id}")
+def ai_docs_user_delete(doc_id: str) -> dict[str, Any]:
+    import ai_docs
+
+    try:
+        ai_docs.delete_user_doc(doc_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+    return {"ok": True, "budget": ai_docs.user_prompt_budget()}
 
 
 @app.get("/api/ai/docs/{doc_id}")
@@ -599,7 +913,7 @@ def ai_doc_content(doc_id: str) -> dict[str, Any]:
     doc = ai_docs.get_ai_doc(doc_id)
     if not doc:
         raise HTTPException(404, f"Document not found: {doc_id}")
-    return {"doc": doc}
+    return {"doc": doc, "budget": ai_docs.user_prompt_budget()}
 
 
 @app.get("/api/test-users")
@@ -676,6 +990,44 @@ def _suite_config_for_name(suite_name: str) -> str:
     if not detail:
         raise HTTPException(404, f"Suite not found: {suite_name}")
     return detail.get("path") or f"y/{suite_name}/{suite_name}.json"
+
+
+@app.get("/api/suites/{suite_name}/docs")
+def list_suite_markdown_docs(suite_name: str, request: Request) -> dict[str, Any]:
+    """test strategy.md + test plan.md for Build (synopsis strip)."""
+    if not get_suite_detail(suite_name):
+        raise HTTPException(404, f"Suite not found: {suite_name}")
+    project = None
+    project_id = (request.query_params.get("project_id") or "").strip()
+    if project_id:
+        project = project_store.get_project(project_id)
+    try:
+        docs = suite_docs_store.list_suite_docs(suite_name, project=project)
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+    return {"suite": suite_name, "docs": docs}
+
+
+@app.get("/api/suites/{suite_name}/docs/{doc_id}")
+def get_suite_markdown_doc(suite_name: str, doc_id: str, request: Request) -> dict[str, Any]:
+    """Full test strategy.md or test plan.md (synthesize if missing on disk)."""
+    doc_id = (doc_id or "").strip().lower()
+    if doc_id not in suite_docs_store.DOC_IDS:
+        raise HTTPException(400, "doc_id must be strategy or plan")
+    if not get_suite_detail(suite_name):
+        raise HTTPException(404, f"Suite not found: {suite_name}")
+    project = None
+    project_id = (request.query_params.get("project_id") or "").strip()
+    if project_id:
+        project = project_store.get_project(project_id)
+    persist = (request.query_params.get("persist") or "").strip() in ("1", "true", "yes")
+    try:
+        doc = suite_docs_store.build_suite_doc(
+            suite_name, doc_id, project=project, persist_if_missing=persist
+        )
+    except (FileNotFoundError, KeyError) as exc:
+        raise HTTPException(404, str(exc)) from exc
+    return {"suite": suite_name, "doc": doc}
 
 
 @app.get("/api/suites/{suite_name}/ypad/{sheet}")
@@ -840,7 +1192,7 @@ def runs(suite: str | None = None) -> dict[str, Any]:
 
 @app.get("/api/runs/{run_name}/stats")
 def run_stats(run_name: str) -> dict[str, Any]:
-    run_dir = KK_ROOT / "z" / run_name
+    run_dir = Z_DIR / run_name
     if not run_dir.is_dir():
         raise HTTPException(404, f"Run not found: {run_name}")
     stats = analyze_run(run_name)
@@ -852,7 +1204,7 @@ def run_stats(run_name: str) -> dict[str, Any]:
 
 @app.get("/api/runs/{run_name}/failures")
 def run_failures(run_name: str) -> dict[str, Any]:
-    run_dir = KK_ROOT / "z" / run_name
+    run_dir = Z_DIR / run_name
     if not run_dir.is_dir():
         raise HTTPException(404, f"Run not found: {run_name}")
     return {"run": run_name, "failures": load_failures(run_dir)}
@@ -867,7 +1219,7 @@ def analyze_run_ai(project_id: str, run_name: str) -> dict[str, Any]:
         raise HTTPException(404, "Project not found")
     if not project.get("ai_enabled", True):
         raise HTTPException(400, "AI is off for this project — enable AI toggle on Build")
-    run_dir = KK_ROOT / "z" / run_name
+    run_dir = Z_DIR / run_name
     if not run_dir.is_dir():
         raise HTTPException(404, f"Run not found: {run_name}")
     failures = load_failures(run_dir)
@@ -897,7 +1249,7 @@ def heal_suggest_ai(project_id: str, run_name: str, body: dict[str, str] | None 
         raise HTTPException(404, "Project not found")
     if not project.get("ai_enabled", True):
         raise HTTPException(400, "AI is off for this project")
-    run_dir = KK_ROOT / "z" / run_name
+    run_dir = Z_DIR / run_name
     if not run_dir.is_dir():
         raise HTTPException(404, f"Run not found: {run_name}")
     failures = load_failures(run_dir)
@@ -1003,7 +1355,18 @@ def get_cycle_history(project_id: str) -> dict[str, Any]:
 
 @app.post("/api/jobs")
 def create_job(body: RunRequest) -> dict[str, Any]:
-    """Start FoXYiZ fEngine2.py — Run/Loop execution path (no AI)."""
+    """Start FoXYiZ fEngine2 / orchestrator — Run/Loop execution path (no AI)."""
+    paths = [p for p in (body.config_paths or []) if p]
+    if len(paths) > 1 or (len(paths) == 1 and body.parallel):
+        try:
+            job = start_batch(
+                paths or [body.config_path],
+                parallel=body.parallel if len(paths) > 1 else True,
+                step_label=body.step_label or "Run parallel",
+            )
+        except ValueError as exc:
+            raise HTTPException(400, str(exc)) from exc
+        return job.to_dict()
     job = start_run(body.config_path, body.step_label)
     return job.to_dict()
 
@@ -1500,7 +1863,17 @@ def atomic77_platform_chat(body: Atomic77PlatformChat) -> dict[str, Any]:
 
 @app.get("/api/files/z/{run_name}/{filename:path}")
 def z_artifact(run_name: str, filename: str):
-    path = KK_ROOT / "z" / run_name / filename
+    path = Z_DIR / run_name / filename
+    if not path.is_file():
+        raise HTTPException(404, "File not found")
+    return FileResponse(path)
+
+
+@app.get("/api/files/z-root/{filename}")
+def z_root_file(filename: str):
+    """Serve batch dashboards and other files directly under z/."""
+    safe = Path(filename).name
+    path = Z_DIR / safe
     if not path.is_file():
         raise HTTPException(404, "File not found")
     return FileResponse(path)
@@ -1688,14 +2061,6 @@ def nalanda_profile_invite(profile_id: str, author_name: str = "") -> dict[str, 
 @app.get("/api/nalanda/stats")
 def nalanda_stats() -> dict[str, Any]:
     return nalanda_store.community_stats()
-
-
-@app.get("/admin")
-def admin_page():
-    about_path = WEB_DIR / "about.html"
-    if not about_path.is_file():
-        raise HTTPException(404, "Admin page not found")
-    return FileResponse(about_path, headers={"X-Admin-Section": "about-admin-title"})
 
 
 @app.get("/about")

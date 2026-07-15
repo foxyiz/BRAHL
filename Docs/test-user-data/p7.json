@@ -1,0 +1,59 @@
+{
+  "id": "p7",
+  "code": "P7",
+  "name": "Taylor Kim",
+  "title": "Power Creator",
+  "role": "client-power",
+  "defaultAvatar": "client",
+  "aiDefault": true,
+  "aiLocked": false,
+  "dualRole": false,
+  "admin": false,
+  "techLevel": "engineer",
+  "consultantTier": null,
+  "allowedAvatars": [
+    "client"
+  ],
+  "landing": "app",
+  "accent": "power",
+  "blurb": "Engineer who edits yPAD CSVs, fStart configs, AI docs, shrink/restore.",
+  "journey": [
+    "yPAD explorer",
+    "fStart editor",
+    ".md AI context \u00b7 cost meter"
+  ],
+  "ypadDesignColumn": "D7",
+  "firstVisit": false,
+  "fictional": true,
+  "tasks": [
+    "yPAD explorer",
+    "fStart editor",
+    ".md AI context \u00b7 cost meter"
+  ],
+  "demo_tips": [
+    "yPAD explorer",
+    "fStart editor",
+    ".md AI context \u00b7 cost meter"
+  ],
+  "default_avatar": "client",
+  "allowed_avatars": [
+    "client"
+  ],
+  "client_tasks": [
+    {
+      "phase": "build",
+      "title": "yPAD explorer",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "fStart editor",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": ".md AI context \u00b7 cost meter",
+      "detail": "Demo tip from persona journey."
+    }
+  ]
+}

@@ -97,6 +97,7 @@ const ypadState = {
   insights: null,
   designColumnMode: "all",
   designGroupFilter: "",
+  coverageFilter: "all",
 };
 
 async function api(path, opts = {}) {
@@ -146,6 +147,8 @@ function applyAvatarModeNav() {
     } else if (brahlPhases.includes(ph)) {
       btn.hidden = isNetworker();
     }
+    const item = btn.closest(".phase-nav-item");
+    if (item) item.hidden = !!btn.hidden;
   });
   // Don't yank users off Promoter / A77 / Wallet / menu-opened Nalanda
   if (utilityPhases.has(state.phase)) return;
@@ -168,6 +171,8 @@ function showPhase(name) {
   if (name === "cost") loadCostPanel();
   if (name === "nalanda") window.QoaNalanda?.loadPanel?.();
   if (name === "promoter") loadPromoterPanel();
+  if (name === "heal") refreshHealFailures();
+  if (name === "loop") refreshLoopBuiltSummary();
   if (name === "analyze" && selectedRun && isAiOn()) {
     /* user can click AI analyze or we leave prior result visible */
   }
@@ -178,8 +183,13 @@ function showPhase(name) {
       /* ignore */
     }
   }
-  const activePanel = $(`.panel.active`);
-  activePanel?.scrollIntoView?.({ block: "start", behavior: "smooth" });
+  // Keep phase nav stable: never scrollIntoView the panel (jumps header / consultant locks).
+  // Land at page top so each phase starts under the same menu position.
+  try {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  } catch {
+    window.scrollTo(0, 0);
+  }
   renderPhaseProgress();
   updateVisualRewardRail();
 }
@@ -242,8 +252,8 @@ async function setAvatar(avatar) {
 
 function updateTopbarProjectLabel() {
   const labelEl = $(".topbar-project-label");
-  if (!labelEl || !state.avatar) return;
-  labelEl.textContent = avatarLabel(state.avatar).projectLabel;
+  if (!labelEl) return;
+  labelEl.textContent = "Projects";
 }
 
 function syncAvatarButtons(profile, activeAvatar) {
@@ -435,7 +445,28 @@ function applyProfileUI() {
     }
   }
   const adminLink = $("#footer-admin-link");
-  if (adminLink) adminLink.classList.toggle("footer-admin-link-active", !!profile?.admin);
+  const adminMenu = $("#user-menu-admin");
+  const projAdminMenu = $("#user-menu-project-admin");
+  const isPlatformAdmin = !!(profile?.admin || profile?.superAdmin);
+  const isCreatorView =
+    state.avatar === "client" ||
+    profile?.defaultAvatar === "client" ||
+    !!profile?.dualRole ||
+    (authUser && ["creator", "both", "admin", "super_admin"].includes(authUser.role));
+  if (adminLink) {
+    adminLink.href = "/admin";
+    adminLink.classList.toggle("footer-admin-link-active", isPlatformAdmin || isCreatorView);
+  }
+  if (adminMenu) {
+    adminMenu.hidden = !isPlatformAdmin;
+    adminMenu.href = "/admin";
+  }
+  if (projAdminMenu) {
+    projAdminMenu.hidden = !(isCreatorView || isPlatformAdmin);
+    projAdminMenu.href = state.projectId
+      ? `/admin?project=${encodeURIComponent(state.projectId)}`
+      : "/admin?scope=project";
+  }
 
   $$(".avatar-btn").forEach((b) => {
     syncAvatarButtons(profile, state.avatar);
@@ -460,18 +491,72 @@ function applyProfileUI() {
   }
 
   const demoBanner = $("#demo-banner");
-  if (demoBanner && window.QoaInviteGate?.isInviteTrialValid?.()) {
-    const days = window.QoaInviteGate.inviteTrialDaysLeft();
-    const trial = window.QoaInviteGate.getInviteTrial();
-    const batch = trial?.batch_label ? ` · ${trial.batch_label}` : "";
-    const span = demoBanner.querySelector("span");
-    if (span) span.textContent = `GTM trial — ${days} day(s) left${batch} · earn XP · BRAHL small projects`;
-  }
+  if (demoBanner) demoBanner.hidden = true;
 
-  document.body.classList.toggle("profile-admin", !!profile?.admin);
+  document.body.classList.toggle("profile-admin", !!profile?.admin || !!profile?.superAdmin);
   document.body.classList.toggle("profile-ai-locked", !!profile?.aiLocked);
   document.body.classList.toggle("profile-power-client", profile?.techLevel === "engineer");
   loadPersonaTasks();
+}
+
+const PRESENCE_SESSION_KEY = "qoa_presence_session";
+let presenceGeoConsent = undefined; // undefined=not asked, false=denied, object={lat,lng}
+
+function presenceSessionKey() {
+  let k = sessionStorage.getItem(PRESENCE_SESSION_KEY);
+  if (!k) {
+    k = `s:${Date.now()}:${Math.random().toString(36).slice(2, 10)}`;
+    sessionStorage.setItem(PRESENCE_SESSION_KEY, k);
+  }
+  return k;
+}
+
+function askPresenceGeoOnce() {
+  if (presenceGeoConsent !== undefined) return;
+  if (!navigator.geolocation) {
+    presenceGeoConsent = false;
+    return;
+  }
+  presenceGeoConsent = null; // in flight
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      presenceGeoConsent = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    },
+    () => {
+      presenceGeoConsent = false;
+    },
+    { maximumAge: 600_000, timeout: 5000 }
+  );
+}
+
+async function sendPresenceHeartbeat() {
+  try {
+    const authUser = getAuthUser();
+    const profile = state.profile || getActiveProfile();
+    const body = {
+      session_key: presenceSessionKey(),
+      project_id: state.projectId || null,
+      path: `${location.pathname}${location.hash || ""}`,
+      avatar: state.avatar === "consultant" ? "qa_hunter" : "creator",
+      display_name: authUser?.name || profile?.name || "Arena guest",
+    };
+    if (presenceGeoConsent && presenceGeoConsent.lat != null) {
+      body.lat = presenceGeoConsent.lat;
+      body.lng = presenceGeoConsent.lng;
+    }
+    await api("/api/presence/heartbeat", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  } catch {
+    /* soft-fail — presence is best-effort */
+  }
+}
+
+function initPresenceHeartbeat() {
+  askPresenceGeoOnce();
+  sendPresenceHeartbeat();
+  setInterval(sendPresenceHeartbeat, 15000);
 }
 
 async function enforceProfileAiPolicy() {
@@ -526,6 +611,12 @@ async function selectYpadProject(suiteName) {
     state.projectId = activeProject?.id || null;
     if (state.projectId) localStorage.setItem(STORAGE_PROJECT, state.projectId);
     else localStorage.removeItem(STORAGE_PROJECT);
+    const projAdminMenu = $("#user-menu-project-admin");
+    if (projAdminMenu && !projAdminMenu.hidden) {
+      projAdminMenu.href = state.projectId
+        ? `/admin?project=${encodeURIComponent(state.projectId)}`
+        : "/admin?scope=project";
+    }
     updateProjectBanner(data.payout_preview);
   } catch {
     activeProject = null;
@@ -550,6 +641,8 @@ async function selectYpadProject(suiteName) {
   await enforceProfileAiPolicy();
   applyAiMode();
   await loadRuns();
+  await loadYpadInsights();
+  loadBuildDocs();
   if ($("#panel-brahl")?.classList.contains("active")) await loadBrahlPanel();
 }
 
@@ -574,11 +667,13 @@ async function refreshActiveProject() {
     renderPhaseProgress();
     updateHealHint();
     updateVisualRewardRail();
+    refreshArenaCostWidget();
   } catch {
     state.projectId = null;
     localStorage.removeItem(STORAGE_PROJECT);
     activeProject = null;
     updateProjectBanner();
+    refreshArenaCostWidget();
   }
 }
 
@@ -773,46 +868,54 @@ function syncProjectStatus() {
   const profile = state.profile;
   if (!state.avatar) {
     strip?.classList.remove("has-project");
-    setStatus(profile ? `${profileLabel(profile)} — choose avatar` : "Choose an avatar to start");
+    setStatus(
+      profile
+        ? `${profileLabel(profile)} — choose avatar to start the QA agent`
+        : "Choose an avatar to start the QA agent"
+    );
     return;
   }
   if (!hasScope()) {
     strip?.classList.remove("has-project");
     setStatus(
-      !state.suites.length ? "Add your first project" : "Select a project in the top bar"
+      !state.suites.length
+        ? "Add your first project — the QA agent needs a yPAD suite"
+        : "Select a project in the top bar"
     );
     return;
   }
   strip?.classList.add("has-project");
   const phaseHints = {
-    build: "Build = product & requirements · budget · context (AI chat when on)",
-    run: "FoXYiZ fEngine2 — Run yPAD (no AI)",
-    analyze: isAiOn() ? "Refresh runs · AI root-cause or manual RCA" : "Refresh runs · classify T1/T2/T3/A1 manually",
-    heal: isAiOn() ? "AI heal suggestions · shrink/restore y1Plans" : "Edit yPAD · shrink/restore for Loop",
-    loop: "Step 0 context · Loop 1–3 + Verify via fEngine2",
-    brahl: "BRAHL = launch-readiness report (Go/No-Go, recovery) — not a duplicate of Build",
+    build: "QA agent · Build — set challenge, edit yPAD (plans · steps · data)",
+    run: "QA agent · Run — FoXYiZ executes automated plans (no AI)",
+    analyze: isAiOn()
+      ? "QA agent · Analyze — failures from z/ · optional AI root-cause"
+      : "QA agent · Analyze — failures from z/ (Input · Expected · Output)",
+    heal: isAiOn()
+      ? "QA agent · Heal — fix yPAD · Rerun · optional AI auto-heal"
+      : "QA agent · Heal — fix yPAD · Rerun (no AI required)",
+    loop: "QA agent · Loop — retry fails up to 3× · optional full Verify · then BRAHL Go/No-Go",
+    brahl: "QA agent · BRAHL — Go/No-Go report from your latest runs",
     cost: state.avatar === "consultant" ? "QA Hunter wallet · earnings by project" : "Budget meter · AI vs QA Hunter vs local/cloud",
     nalanda: "Learn · teach · discuss · invite — free knowledge community",
     promoter: "Grow the arena — share invites · earn XP & wallet credits",
     atomic77: "Atomic 77 — idea-to-launch assistant",
   };
-  setStatus(phaseHints[state.phase] || "Project active");
+  setStatus(phaseHints[state.phase] || "QA agent ready");
 }
 
 function renderPhaseProgress() {
-  const bar = $("#phase-progress");
-  if (!bar) return;
-  if (!state.suiteName || !activeProject) {
-    bar.hidden = true;
-    return;
-  }
-  bar.hidden = false;
-  const userMsgs = (activeProject.chat_messages || []).filter((m) => m.role === "user");
+  const nav = $("#phase-nav");
+  const markers = $$(".phase-marker");
+  if (!markers.length) return;
+  const show = !!(state.suiteName && activeProject);
+  nav?.classList.toggle("has-markers", show);
+  const userMsgs = (activeProject?.chat_messages || []).filter((m) => m.role === "user");
   const hasPurpose =
-    !!(activeProject.purpose || activeProject.prompt || "").trim() || userMsgs.length > 0;
-  const hasRun = !!(activeProject.latest_run || "").trim();
-  const hasContext = !!(activeProject.brahl_context_path || "").trim();
-  const hasReports = !!(activeProject.reports || []).length;
+    !!(activeProject?.purpose || activeProject?.prompt || "").trim() || userMsgs.length > 0;
+  const hasRun = !!(activeProject?.latest_run || "").trim();
+  const hasContext = !!(activeProject?.brahl_context_path || "").trim();
+  const hasReports = !!(activeProject?.reports || []).length;
   const done = {
     build: hasPurpose,
     run: hasRun,
@@ -820,12 +923,12 @@ function renderPhaseProgress() {
     heal: hasRun,
     loop: hasContext || hasRun,
     brahl: hasReports,
-    cost: (Number(activeProject.budget_usd) || 0) > 0,
   };
-  $$(".phase-progress-dot").forEach((el) => {
+  markers.forEach((el) => {
     const ph = el.dataset.phase;
-    el.classList.toggle("done", !!done[ph]);
-    el.classList.toggle("current", ph === state.phase);
+    el.hidden = !show;
+    el.classList.toggle("done", !!(show && done[ph]));
+    el.classList.toggle("current", show && ph === state.phase);
   });
 }
 
@@ -886,28 +989,192 @@ function zDashHref(dashboardRelPath) {
   return null;
 }
 
-async function showRunPostActions(runName) {
+async function showRunPostActions(runName, batchDashboard) {
   const wrap = $("#run-post-actions");
-  if (!wrap || !runName) {
-    if (wrap) wrap.hidden = true;
+  if (!wrap) return;
+  const hasBatch = Boolean(batchDashboard);
+  const hasRun = Boolean(runName) && !String(runName).includes("zDash_batch_");
+  if (!hasBatch && !hasRun) {
+    wrap.hidden = true;
     return;
   }
   wrap.hidden = false;
   const link = $("#run-zdash-link");
-  if (!link) return;
-  let href = null;
+  const batchLink = $("#run-batch-zdash-link");
+  if (batchLink) {
+    if (hasBatch) {
+      const path = String(batchDashboard).replace(/\\/g, "/");
+      const name = path.split("/").pop();
+      batchLink.href = `/api/files/z-root/${encodeURIComponent(name)}`;
+      batchLink.hidden = false;
+    } else {
+      batchLink.hidden = true;
+    }
+  }
+  if (link) {
+    if (hasRun) {
+      let href = null;
+      try {
+        const stats = await api(`/api/runs/${encodeURIComponent(runName)}/stats`);
+        href = zDashHref(stats.dashboard);
+      } catch {
+        /* stats not ready */
+      }
+      if (href) {
+        link.href = href;
+        link.hidden = false;
+      } else {
+        link.hidden = true;
+      }
+    } else {
+      link.hidden = true;
+    }
+  }
+}
+
+let fstartSelected = new Set();
+let fstartPrimary = null;
+const fstartMetaCache = {};
+
+function fstartChipLabel(path) {
+  return (path || "").replace(/^f\//, "").replace(/\.json$/i, "");
+}
+
+function selectedFstartPaths() {
+  return [...fstartSelected];
+}
+
+function syncConfigSelectFromChips() {
+  const sel = $("#config-select");
+  if (!sel) return;
+  const primary = fstartPrimary || selectedFstartPaths()[0] || "";
+  if (primary && [...sel.options].some((o) => o.value === primary)) {
+    sel.value = primary;
+  }
+  updateRunParallelEnabled();
+  const runBtn = $("#btn-run");
+  if (runBtn) runBtn.disabled = selectedFstartPaths().length < 1;
+}
+
+function fstartContentAllowsFanout(content) {
+  if (!content) return false;
+  const tags = Array.isArray(content.tags) ? content.tags.filter(Boolean) : [];
+  const threads = Number(content.thread_count) || 1;
+  return threads > 1 && tags.length >= 2;
+}
+
+async function updateRunParallelEnabled() {
+  const para = $("#btn-run-parallel");
+  if (!para) return;
+  const paths = selectedFstartPaths();
+  if (paths.length >= 2) {
+    para.disabled = false;
+    para.title = "Run selected fStarts in parallel";
+    return;
+  }
+  if (paths.length === 1) {
+    const path = paths[0];
+    try {
+      let content = fstartMetaCache[path];
+      if (!content) {
+        const data = await api(`/api/configs/content?path=${encodeURIComponent(path)}`);
+        content = data.content || {};
+        fstartMetaCache[path] = content;
+      }
+      if (fstartContentAllowsFanout(content)) {
+        para.disabled = false;
+        para.title = "Tag fan-out: thread_count + multiple tags";
+        return;
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+  para.disabled = true;
+  para.title = "Select 2+ fStarts or one with tag fan-out (thread_count>1 + 2+ tags)";
+}
+
+async function refreshFstartFanoutHint() {
+  const hint = $("#fstart-fanout-hint");
+  if (!hint) return;
+  const path = fstartPrimary || selectedFstartPaths()[0];
+  if (!path) {
+    hint.hidden = true;
+    return;
+  }
   try {
-    const stats = await api(`/api/runs/${encodeURIComponent(runName)}/stats`);
-    href = zDashHref(stats.dashboard);
+    let content = fstartMetaCache[path];
+    if (!content) {
+      const data = await api(`/api/configs/content?path=${encodeURIComponent(path)}`);
+      content = data.content || {};
+      fstartMetaCache[path] = content;
+    }
+    const tags = Array.isArray(content.tags) ? content.tags.filter(Boolean) : [];
+    const threads = Number(content.thread_count) || 1;
+    if (threads > 1 && tags.length >= 2) {
+      const workers = Math.min(threads, tags.length);
+      hint.textContent = `${threads} threads · ${tags.length} tags → ${tags.length} jobs, ${workers} at a time`;
+      hint.hidden = false;
+    } else if (tags.length) {
+      hint.textContent = `thread_count ${threads} · tags: ${tags.join(", ")} (OR filter when threads=1)`;
+      hint.hidden = false;
+    } else {
+      hint.textContent = `thread_count ${threads} · no tag filter`;
+      hint.hidden = false;
+    }
   } catch {
-    /* stats not ready */
+    hint.hidden = true;
   }
-  if (href) {
-    link.href = href;
-    link.hidden = false;
-  } else {
-    link.hidden = true;
-  }
+  updateRunParallelEnabled();
+}
+
+function renderFstartChips(configs, preferred) {
+  const row = $("#fstart-chip-row");
+  if (!row) return;
+  const prev = new Set(fstartSelected);
+  fstartSelected = new Set();
+  row.innerHTML = (configs || [])
+    .map((c) => {
+      const short = escapeHtml(fstartChipLabel(c));
+      return `<button type="button" class="fstart-chip" data-path="${escapeHtml(c)}" title="${escapeHtml(c)}">${short}</button>`;
+    })
+    .join("");
+  row.querySelectorAll(".fstart-chip").forEach((btn) => {
+    const path = btn.dataset.path;
+    btn.addEventListener("click", (ev) => {
+      if (ev.shiftKey || ev.ctrlKey || ev.metaKey) {
+        if (fstartSelected.has(path)) {
+          if (fstartSelected.size > 1) fstartSelected.delete(path);
+        } else {
+          fstartSelected.add(path);
+        }
+        fstartPrimary = path;
+      } else {
+        fstartSelected = new Set([path]);
+        fstartPrimary = path;
+      }
+      if (!fstartSelected.has(fstartPrimary)) {
+        fstartPrimary = selectedFstartPaths()[0] || null;
+      }
+      row.querySelectorAll(".fstart-chip").forEach((b) => {
+        b.classList.toggle("selected", fstartSelected.has(b.dataset.path));
+        b.classList.toggle("active-primary", b.dataset.path === fstartPrimary);
+      });
+      syncConfigSelectFromChips();
+      refreshFstartFanoutHint();
+    });
+    if (prev.has(path) || path === preferred || (!preferred && prev.size === 0 && path === configs[0])) {
+      fstartSelected.add(path);
+    }
+  });
+  if (!fstartSelected.size && configs?.length) fstartSelected.add(preferred && configs.includes(preferred) ? preferred : configs[0]);
+  fstartPrimary = preferred && fstartSelected.has(preferred) ? preferred : selectedFstartPaths()[0] || null;
+  row.querySelectorAll(".fstart-chip").forEach((b) => {
+    b.classList.toggle("selected", fstartSelected.has(b.dataset.path));
+    b.classList.toggle("active-primary", b.dataset.path === fstartPrimary);
+  });
+  syncConfigSelectFromChips();
+  refreshFstartFanoutHint();
 }
 
 async function loadAppVersion() {
@@ -944,7 +1211,7 @@ function renderCycleHistory() {
           );
         })
         .join("")
-    : '<li class="empty-hint">No cycle steps yet — Capture Step 0 or Run Loop 1.</li>';
+    : '<li class="empty-hint">No cycle steps yet — run Loop from this tab.</li>';
 }
 
 function updateHealHint() {
@@ -971,6 +1238,29 @@ async function recordCycleEvent(step, detail, runName) {
   }
 }
 
+function refreshProjectBannerMeta() {
+  const meta = $("#project-banner-meta");
+  if (!meta) return;
+  const suite = state.suites.find((s) => s.name === state.suiteName);
+  if (!activeProject && !suite) {
+    meta.hidden = true;
+    return;
+  }
+  meta.hidden = false;
+  const name = suite?.name || activeProject?.name || state.suiteName || "—";
+  const ins = ypadState.insights;
+  const auto = ins?.automated ?? suite?.plan_run_y ?? "—";
+  const total = ins?.totalPlans ?? suite?.plan_total ?? "—";
+  const aiLabel = isAiOn() ? "AI on" : "AI off";
+  const parts = [`yPAD ${name}`, `${total} plans`];
+  if (ins?.actionSteps != null) parts.push(`${ins.actionSteps} steps`);
+  if (ins?.designRows != null) parts.push(`${ins.designRows} data`);
+  parts.push(`${auto} automated`, aiLabel);
+  meta.textContent = parts.join(" · ");
+  meta.title =
+    "yPAD = Plans (what) · Actions (steps) · Designs (data). Automated = Run=Y. Open the yPAD widget (above Wallet) for details.";
+}
+
 function updateProjectBanner(payoutPreview) {
   applyAiMode();
   updateInviteButtonState();
@@ -985,23 +1275,7 @@ function updateProjectBanner(payoutPreview) {
     return;
   }
   strip?.classList.add("has-project");
-  if (meta) {
-    meta.hidden = false;
-    if (activeProject) {
-      const aiLabel = isAiOn() ? "AI on" : "AI off";
-      const budget = Number(activeProject.budget_usd) || 0;
-      const split = activeProject.budget_split || { automation_pct: 50, human_pct: 50 };
-      const parts = [activeProject.name, aiLabel];
-      if (suite) parts.push(`y/${suite.name}`);
-      if (suite?.plan_run_y != null) parts.push(`${suite.plan_run_y} Run=Y`);
-      if (budget > 0) parts.push(`$${budget}`, `${split.automation_pct}% auto`);
-      meta.textContent = parts.join(" · ");
-    } else if (suite) {
-      meta.textContent = [suite.name, suite.url, suite.plan_run_y != null ? `${suite.plan_run_y} Run=Y` : ""]
-        .filter(Boolean)
-        .join(" · ");
-    }
-  }
+  refreshProjectBannerMeta();
   const hitlEl = $("#project-banner-hitl");
   const hitlCount = activeProject ? (activeProject.hitl_consultants || []).length : 0;
   if (activeProject && hitlCount > 0 && payoutPreview?.length) {
@@ -1022,10 +1296,13 @@ function updateProjectBanner(payoutPreview) {
 function syncProjectToUI() {
   if (!activeProject) return;
   const purpose = activeProject.purpose || activeProject.prompt || "";
-  $("#cycle-prompt").value = purpose;
+  const cyclePrompt = $("#cycle-prompt");
+  if (cyclePrompt) cyclePrompt.value = purpose;
   const paths = (activeProject.context_items || []).map((c) => c.value).filter(Boolean);
   (activeProject.documents || []).forEach((d) => paths.push(d.path));
-  $("#cycle-docs").value = [...new Set(paths)].join("\n");
+  const cycleDocs = $("#cycle-docs");
+  if (cycleDocs) cycleDocs.value = [...new Set(paths)].join("\n");
+  refreshLoopBuiltSummary();
   const scope = `Scoped to: ${activeProject.name}`;
   const runScope = $("#run-project-scope");
   const analyzeScope = $("#analyze-project-scope");
@@ -1041,9 +1318,32 @@ function renderMarkdown(md) {
   html = html.replace(/^## (.+)$/gm, "<h3>$1</h3>");
   html = html.replace(/^# (.+)$/gm, "<h2>$1</h2>");
   html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
   html = html.replace(/^- (.+)$/gm, "<li>$1</li>");
   html = html.replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");
   html = html.replace(/\n/g, "<br>");
+  // Simple GFM tables (after newlines → <br>)
+  html = html.replace(/(?:^|<br>)(\|.+\|(?:<br>\|.+\|)+)/g, (block) => {
+    const rows = block
+      .replace(/^<br>/, "")
+      .split("<br>")
+      .map((r) => r.trim())
+      .filter((r) => r.startsWith("|"));
+    if (rows.length < 2) return block;
+    const parse = (row) =>
+      row
+        .replace(/^\|/, "")
+        .replace(/\|$/, "")
+        .split("|")
+        .map((c) => c.trim());
+    const head = parse(rows[0]);
+    const bodyRows = rows.slice(1).filter((r) => !/^\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?$/.test(r));
+    let out = "<table><thead><tr>" + head.map((c) => `<th>${c}</th>`).join("") + "</tr></thead><tbody>";
+    bodyRows.forEach((r) => {
+      out += "<tr>" + parse(r).map((c) => `<td>${c}</td>`).join("") + "</tr>";
+    });
+    return out + "</tbody></table>";
+  });
   return html;
 }
 
@@ -2075,6 +2375,8 @@ async function loadYpadInsights() {
     ypadState.insights = null;
   }
   renderYpadInsights();
+  refreshArenaYpadWidget();
+  refreshProjectBannerMeta();
 }
 
 function renderYpadInsights() {
@@ -2393,9 +2695,117 @@ function initPromoterPanel() {
   $("#btn-promoter-wallet")?.addEventListener("click", () => showPhase("cost"));
 }
 
+let costWidgetTimer = null;
+
+function refreshArenaYpadWidget() {
+  const dock = $("#arena-dock");
+  const el = $("#arena-ypad-widget");
+  if (!dock || !el) return;
+  if (!state.suiteName) {
+    dock.hidden = !state.projectId;
+    el.hidden = true;
+    return;
+  }
+  dock.hidden = false;
+  el.hidden = false;
+  const suite = state.suites.find((s) => s.name === state.suiteName);
+  const ins = ypadState.insights;
+  const auto = ins?.automated ?? suite?.plan_run_y ?? 0;
+  const total = ins?.totalPlans ?? suite?.plan_total ?? 0;
+  const steps = ins?.actionSteps ?? "—";
+  const dataRows = ins?.designRows ?? "—";
+  const manual = Math.max(0, Number(total) - Number(auto) || 0);
+  const title = $("#arena-ypad-title");
+  const plansEl = $("#arena-ypad-plans");
+  const autoEl = $("#arena-ypad-auto");
+  const stepsEl = $("#arena-ypad-steps");
+  const dataEl = $("#arena-ypad-data");
+  const manualChip = $("#arena-ypad-manual-chip");
+  const autoChip = $("#arena-ypad-auto-chip");
+  if (title) title.textContent = suite?.name || state.suiteName;
+  if (plansEl) plansEl.textContent = String(total);
+  if (autoEl) autoEl.textContent = String(auto);
+  if (stepsEl) stepsEl.textContent = String(steps);
+  if (dataEl) dataEl.textContent = String(dataRows);
+  if (manualChip) {
+    manualChip.classList.toggle("has-coverage", manual > 0 || Number(total) === 0);
+    manualChip.title = `${manual} plan(s) not marked automated (Run=N / manual)`;
+  }
+  if (autoChip) {
+    autoChip.classList.toggle("has-coverage", Number(auto) > 0);
+    autoChip.title = `${auto} automated plan(s) (Run=Y)`;
+  }
+}
+
+async function refreshArenaCostWidget() {
+  const dock = $("#arena-dock");
+  const el = $("#arena-cost-widget");
+  if (!el) return;
+  if (!state.projectId) {
+    if (dock && !state.suiteName) dock.hidden = true;
+    el.hidden = true;
+    refreshArenaYpadWidget();
+    return;
+  }
+  if (dock) dock.hidden = false;
+  el.hidden = false;
+  refreshArenaYpadWidget();
+  try {
+    const [{ cost_meter: m }, status] = await Promise.all([
+      api(`/api/projects/${state.projectId}/cost-meter`),
+      api(`/api/ai/status?project_id=${encodeURIComponent(state.projectId)}`).catch(() => null),
+    ]);
+    const budget = Number(m.budget_usd) || 0;
+    const remaining = Number(m.remaining_usd) || 0;
+    const spentAi = Number(m.spent_automation_usd) || 0;
+    const spentHuman = Number(m.spent_human_usd) || 0;
+    const aiUsd = Number(m.ai_usage?.usd_est) || 0;
+    const autoPool = Number(m.automation_pool_usd) || 0;
+    const usedPct = Math.min(100, Math.max(0, Number(m.budget_used_pct) || 0));
+    const remEl = $("#arena-cost-remaining");
+    const aiEl = $("#arena-cost-ai");
+    const humanEl = $("#arena-cost-human");
+    const fill = $("#arena-cost-fill");
+    const hint = $("#arena-cost-ai-hint");
+    if (remEl) remEl.textContent = budget ? `$${remaining.toFixed(0)}` : "No budget";
+    if (aiEl) {
+      aiEl.textContent = autoPool
+        ? `$${spentAi.toFixed(0)}/$${autoPool.toFixed(0)}`
+        : `$${aiUsd.toFixed(2)}`;
+    }
+    if (humanEl) {
+      const humanPool = Number(m.human_pool_usd) || 0;
+      humanEl.textContent = humanPool
+        ? `$${spentHuman.toFixed(0)}/$${humanPool.toFixed(0)}`
+        : `$${spentHuman.toFixed(0)}`;
+    }
+    if (fill) fill.style.width = `${usedPct}%`;
+    if (hint) {
+      const available = Boolean(status?.available);
+      hint.textContent = available
+        ? `AI metered · ${(m.ai_usage?.total_tokens || 0).toLocaleString()} tok`
+        : "AI scripted / no key";
+    }
+  } catch {
+    const remEl = $("#arena-cost-remaining");
+    if (remEl) remEl.textContent = "—";
+    const hint = $("#arena-cost-ai-hint");
+    if (hint) hint.textContent = "Cost unavailable";
+  }
+}
+
+function startArenaCostWidgetPoll() {
+  if (costWidgetTimer) clearInterval(costWidgetTimer);
+  costWidgetTimer = setInterval(() => {
+    refreshArenaCostWidget();
+  }, 60000);
+  refreshArenaCostWidget();
+}
+
 async function renderBuildCostRail() {
   const rail = $("#build-cost-rail");
   const body = $("#build-cost-rail-body");
+  refreshArenaCostWidget();
   if (!rail || !body) return;
   if (!state.projectId || state.avatar === "consultant") {
     rail.hidden = true;
@@ -2989,12 +3399,23 @@ function getYpadDisplayRows() {
   const data = ypadState.data;
   if (!data) return [];
   let rows = data.rows || [];
-  if (ypadState.tab === "plans" && $("#ypad-run-y-only")?.checked) {
-    rows = rows.filter((r) => {
-      const pid = (r.PlanId || "").trim();
-      if (pid.startsWith("PReuse_")) return false;
-      return (r.Run || "").trim().toUpperCase() === "Y";
-    });
+  if (ypadState.tab === "plans") {
+    const cov = ypadState.coverageFilter || "all";
+    if (cov === "auto" || $("#ypad-run-y-only")?.checked) {
+      rows = rows.filter((r) => {
+        const pid = (r.PlanId || "").trim();
+        if (pid.startsWith("PReuse_")) return false;
+        return (r.Run || "").trim().toUpperCase() === "Y";
+      });
+    } else if (cov === "manual") {
+      rows = rows.filter((r) => {
+        const pid = (r.PlanId || "").trim();
+        if (pid.startsWith("PReuse_")) return false;
+        const tags = (r.Tags || "").toLowerCase();
+        const run = (r.Run || "").trim().toUpperCase();
+        return tags.split(/[;,\s]+/).includes("manual") || run === "N";
+      });
+    }
   }
   if (ypadState.tab === "designs" && ypadState.designGroupFilter) {
     rows = rows.filter((r) => ypadDesignGroupMatch(r.DataName, ypadState.designGroupFilter));
@@ -3017,7 +3438,9 @@ function renderYpadExplorer() {
   $("#ypad-table-wrap").hidden = isEnv || ypadState.editMode;
   $("#ypad-env-panel").hidden = !isEnv || ypadState.editMode;
   $("#ypad-csv-editor").hidden = !ypadState.editMode || isEnv;
-  $("#ypad-run-y-wrap").hidden = tab !== "plans" || ypadState.editMode;
+  $("#ypad-run-y-wrap").hidden = true;
+  const covChips = $("#ypad-coverage-chips");
+  if (covChips) covChips.hidden = tab !== "plans" || ypadState.editMode;
   const designsToolbar = $("#ypad-designs-toolbar");
   if (designsToolbar) designsToolbar.hidden = tab !== "designs" || ypadState.editMode;
   $("#ypad-toggle-edit").hidden = isEnv;
@@ -3175,6 +3598,10 @@ function renderBuildBoard(data) {
   if (brahlReq && !brahlReq.value.trim()) {
     brahlReq.value = data.requirement || activeProject?.purpose || "";
   }
+  renderBuildStrategySummary(data);
+  loadBuildDocs();
+  renderHunterManualList(data);
+  refreshLoopBuiltSummary();
   const verifyEl = $("#build-verify-summary");
   if (verifyEl) {
     const st = data.report_stats;
@@ -3202,7 +3629,7 @@ function renderBuildBoard(data) {
               `</li>`
           )
           .join("")
-      : `<li class="empty-hint">No manual user stories yet — add scenarios for QA Hunters below.</li>`;
+      : "";
   }
   const invitesEl = $("#hitl-invites");
   if (invitesEl) {
@@ -3239,6 +3666,153 @@ function renderBuildBoard(data) {
     renderHitlRoster(data.project);
   }
   renderVersionLaunchPanel(data);
+}
+
+function renderBuildStrategySummary(data) {
+  const empty = $("#build-strategy-empty");
+  const body = $("#build-strategy-body");
+  if (!body) return;
+  const draft = activeProject?.brahl_plan_draft || data?.brahl_plan_draft;
+  const purpose = (data?.requirement || activeProject?.purpose || activeProject?.prompt || "").trim();
+  if (!draft && !purpose) {
+    if (empty) empty.hidden = false;
+    body.hidden = true;
+    body.innerHTML = "";
+    return;
+  }
+  if (empty) empty.hidden = true;
+  body.hidden = false;
+  const stories = draft?.user_stories || [];
+  const cases = draft?.test_cases || [];
+  const auto = draft?.automated_count ?? cases.filter((c) => c.automated !== false).length;
+  const manual = draft?.manual_count ?? cases.filter((c) => c.automated === false).length;
+  const summary = (draft?.summary || purpose || "").trim();
+  const bullets = (draft?.strategy_bullets || draft?.strategy || [])
+    .slice(0, 6)
+    .map((b) => (typeof b === "string" ? b : b?.text || b?.title || ""))
+    .filter(Boolean);
+  body.innerHTML =
+    (summary ? `<p class="build-strategy-purpose">${escapeHtml(summary)}</p>` : "") +
+    `<p class="meta">${stories.length} stories · ${auto} automated · ${manual} manual</p>` +
+    (bullets.length
+      ? `<ul class="build-strategy-bullets">${bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}</ul>`
+      : "");
+}
+
+let buildDocsCache = { suite: "", docs: [] };
+let buildDocModalState = { docId: null, view: "synopsis", doc: null };
+
+async function loadBuildDocs() {
+  const strip = $("#build-docs-strip");
+  if (!strip) return;
+  if (!state.suiteName) {
+    strip.hidden = true;
+    buildDocsCache = { suite: "", docs: [] };
+    return;
+  }
+  strip.hidden = false;
+  try {
+    const q = state.projectId ? `?project_id=${encodeURIComponent(state.projectId)}` : "";
+    const data = await api(`/api/suites/${encodeURIComponent(state.suiteName)}/docs${q}`);
+    buildDocsCache = { suite: state.suiteName, docs: data.docs || [] };
+  } catch {
+    buildDocsCache = { suite: state.suiteName, docs: [] };
+  }
+  const byId = Object.fromEntries((buildDocsCache.docs || []).map((d) => [d.id, d]));
+  for (const id of ["strategy", "plan"]) {
+    const hint = $(`#build-doc-${id}-hint`);
+    const doc = byId[id];
+    if (!hint) continue;
+    if (!doc) {
+      hint.textContent = "Open synopsis";
+      continue;
+    }
+    const oneLine = (doc.synopsis || doc.blurb || "").replace(/\s+/g, " ").trim();
+    hint.textContent = oneLine ? oneLine.slice(0, 72) + (oneLine.length > 72 ? "…" : "") : doc.blurb || "Open synopsis";
+    hint.title = doc.synopsis || doc.blurb || "";
+  }
+}
+
+function setBuildDocModalView(view) {
+  buildDocModalState.view = view === "full" ? "full" : "synopsis";
+  const syn = $("#build-doc-modal-synopsis");
+  const full = $("#build-doc-modal-full");
+  const btnSyn = $("#build-doc-view-synopsis");
+  const btnFull = $("#build-doc-view-full");
+  if (syn) syn.hidden = buildDocModalState.view !== "synopsis";
+  if (full) full.hidden = buildDocModalState.view !== "full";
+  btnSyn?.classList.toggle("active", buildDocModalState.view === "synopsis");
+  btnFull?.classList.toggle("active", buildDocModalState.view === "full");
+}
+
+function closeBuildDocModal() {
+  const modal = $("#build-doc-modal");
+  if (modal) modal.hidden = true;
+  buildDocModalState = { docId: null, view: "synopsis", doc: null };
+}
+
+async function openBuildDoc(docId, view = "synopsis") {
+  if (!state.suiteName || !docId) return;
+  const modal = $("#build-doc-modal");
+  if (!modal) return;
+  modal.hidden = false;
+  setBuildDocModalView(view);
+  const title = $("#build-doc-modal-title");
+  const meta = $("#build-doc-modal-meta");
+  const syn = $("#build-doc-modal-synopsis");
+  const full = $("#build-doc-modal-full");
+  if (title) title.textContent = docId === "plan" ? "test plan.md" : "test strategy.md";
+  if (meta) meta.textContent = "Loading…";
+  if (syn) syn.innerHTML = `<p class="meta">Loading…</p>`;
+  if (full) full.innerHTML = "";
+  try {
+    const q = state.projectId ? `?project_id=${encodeURIComponent(state.projectId)}` : "";
+    const data = await api(
+      `/api/suites/${encodeURIComponent(state.suiteName)}/docs/${encodeURIComponent(docId)}${q}`
+    );
+    const doc = data.doc || {};
+    buildDocModalState = { docId, view: buildDocModalState.view, doc };
+    if (title) title.textContent = doc.label || title.textContent;
+    if (meta) {
+      meta.textContent =
+        `${doc.path || ""} · ${doc.source === "file" ? "on disk" : "generated from yPAD / purpose"}` +
+        (doc.blurb ? ` — ${doc.blurb}` : "");
+    }
+    if (syn) {
+      const synText = doc.synopsis || "No synopsis available.";
+      syn.innerHTML =
+        `<p>${escapeHtml(synText).replace(/\n/g, "<br>")}</p>` +
+        `<p class="meta"><button type="button" class="linkish" id="build-doc-open-full-inline">Open full document →</button></p>`;
+      $("#build-doc-open-full-inline")?.addEventListener("click", () => setBuildDocModalView("full"));
+    }
+    if (full) full.innerHTML = renderMarkdown(doc.markdown || "_Empty document._");
+  } catch (e) {
+    if (meta) meta.textContent = e.message || "Failed to load document";
+    if (syn) syn.innerHTML = `<p class="empty-hint">${escapeHtml(e.message || "Failed to load")}</p>`;
+  }
+}
+
+function renderHunterManualList(data) {
+  const list = $("#hunter-manual-list");
+  if (!list) return;
+  const fromDraft = (activeProject?.brahl_plan_draft?.test_cases || []).filter((c) => c.automated === false);
+  const fromStories = (data?.hitl_stories || activeProject?.hitl_stories || []).map((s) => ({
+    title: s.title,
+    id: s.id,
+  }));
+  const rows = fromDraft.length
+    ? fromDraft.map((c) => ({ title: c.title || c.id, id: c.id }))
+    : fromStories;
+  list.innerHTML = rows.length
+    ? rows
+        .map(
+          (r) =>
+            `<li><strong>${escapeHtml(r.title || "Manual case")}</strong>` +
+            (r.id ? ` <span class="meta">${escapeHtml(r.id)}</span>` : "") +
+            `</li>`
+        )
+        .join("")
+    : `<li class="empty-hint">No Manual cases yet — accept a BRAHL plan with manual tests, or filter Manual in Test coverage.</li>`;
 }
 
 function renderVersionLaunchPanel(data) {
@@ -3484,61 +4058,228 @@ async function loadBuildAiStatus() {
 }
 
 let aiDocsCache = null;
+let aiDocsBudget = null;
+let aiDocsSelectedId = null;
+let aiDocsExpanded = false;
+
+function updateAiDocsBudget(budget) {
+  aiDocsBudget = budget || null;
+  const el = $("#ai-docs-budget");
+  if (!el) return;
+  if (!budget) {
+    el.hidden = true;
+    return;
+  }
+  el.hidden = false;
+  el.classList.toggle("warn", Boolean(budget.over_budget));
+  el.textContent =
+    `My docs in prompt: ${budget.used_chars}/${budget.max_chars} chars · ` +
+    `${budget.doc_count}/${budget.max_docs} files · max ${Math.round(budget.max_file_bytes / 1024)}KB each`;
+}
 
 async function openAiDocsModal() {
   const modal = $("#ai-docs-modal");
   if (!modal) return;
   modal.hidden = false;
+  setAiDocsExpanded(true);
   try {
     const data = await api("/api/ai/docs");
     aiDocsCache = data.docs || [];
+    updateAiDocsBudget(data.budget);
     renderAiDocsList();
-    const firstPrompt = aiDocsCache.find((d) => d.in_prompt) || aiDocsCache[0];
+    const firstPrompt =
+      aiDocsCache.find((d) => d.in_prompt && d.source !== "user") ||
+      aiDocsCache.find((d) => d.in_prompt) ||
+      aiDocsCache[0];
     if (firstPrompt) await selectAiDoc(firstPrompt.id);
   } catch {
-    $("#ai-docs-list").innerHTML = `<li class="empty-hint">Could not load AI docs.</li>`;
+    const builtin = $("#ai-docs-list-builtin");
+    if (builtin) builtin.innerHTML = `<li class="empty-hint">Could not load AI docs.</li>`;
   }
 }
 
 function closeAiDocsModal() {
   const modal = $("#ai-docs-modal");
   if (modal) modal.hidden = true;
+  setAiDocsExpanded(false);
+  document.body.classList.remove("ai-docs-open");
+}
+
+function setAiDocsExpanded(on) {
+  aiDocsExpanded = Boolean(on);
+  const modal = $("#ai-docs-modal");
+  const card = $("#ai-docs-modal-card");
+  const btn = $("#ai-docs-expand");
+  if (modal) modal.classList.toggle("is-expanded", aiDocsExpanded);
+  if (card) card.classList.toggle("expanded", aiDocsExpanded);
+  if (btn) btn.textContent = aiDocsExpanded ? "Collapse" : "Expand";
+  document.body.classList.toggle("ai-docs-open", !modal?.hidden);
+}
+
+function toggleAiDocsExpand() {
+  setAiDocsExpanded(!aiDocsExpanded);
 }
 
 function renderAiDocsList(selectedId) {
-  const list = $("#ai-docs-list");
-  if (!list) return;
-  list.innerHTML = (aiDocsCache || [])
-    .map(
-      (d) =>
-        `<li class="ai-docs-list-item${d.id === selectedId ? " active" : ""}">` +
-        `<button type="button" data-doc-id="${escapeHtml(d.id)}">` +
-        `<strong>${escapeHtml(d.title)}</strong>` +
-        (d.in_prompt ? ` <span class="ai-docs-prompt-badge">in AI prompt</span>` : "") +
-        `<span class="doc-sub">${escapeHtml(d.subtitle || d.path)}</span>` +
-        `</button></li>`
-    )
-    .join("");
-  list.querySelectorAll("button[data-doc-id]").forEach((btn) => {
-    btn.addEventListener("click", () => selectAiDoc(btn.dataset.docId));
-  });
+  const selected = selectedId ?? aiDocsSelectedId;
+  const builtins = (aiDocsCache || []).filter((d) => d.source !== "user");
+  const users = (aiDocsCache || []).filter((d) => d.source === "user");
+  const fill = (listEl, docs) => {
+    if (!listEl) return;
+    if (!docs.length) {
+      listEl.innerHTML = `<li class="empty-hint" style="padding:0.5rem 0.75rem;font-size:0.75rem;color:var(--muted)">None yet</li>`;
+      return;
+    }
+    listEl.innerHTML = docs
+      .map(
+        (d) =>
+          `<li class="ai-docs-list-item${d.id === selected ? " active" : ""}">` +
+          `<button type="button" data-doc-id="${escapeHtml(d.id)}">` +
+          `<strong>${escapeHtml(d.title)}</strong>` +
+          (d.in_prompt ? ` <span class="ai-docs-prompt-badge">in AI prompt</span>` : "") +
+          `<span class="doc-sub">${escapeHtml(d.subtitle || d.path)}</span>` +
+          `</button></li>`
+      )
+      .join("");
+    listEl.querySelectorAll("button[data-doc-id]").forEach((btn) => {
+      btn.addEventListener("click", () => selectAiDoc(btn.dataset.docId));
+    });
+  };
+  fill($("#ai-docs-list-builtin"), builtins);
+  fill($("#ai-docs-list-user"), users);
 }
 
 async function selectAiDoc(docId) {
+  aiDocsSelectedId = docId;
   renderAiDocsList(docId);
   const title = $("#ai-docs-doc-title");
   const meta = $("#ai-docs-doc-meta");
   const body = $("#ai-docs-doc-body");
-  if (body) body.textContent = "Loading…";
+  const editor = $("#ai-docs-doc-editor");
+  const toolbar = $("#ai-docs-edit-toolbar");
+  const inPrompt = $("#ai-docs-in-prompt");
+  if (body) {
+    body.hidden = false;
+    body.textContent = "Loading…";
+  }
+  if (editor) editor.hidden = true;
+  if (toolbar) toolbar.hidden = true;
   try {
-    const { doc } = await api(`/api/ai/docs/${encodeURIComponent(docId)}`);
+    const data = await api(`/api/ai/docs/${encodeURIComponent(docId)}`);
+    const doc = data.doc;
+    updateAiDocsBudget(data.budget);
     if (title) title.textContent = doc.title;
+    const editable = Boolean(doc.editable || doc.source === "user");
     if (meta) {
-      meta.textContent = `${doc.path}${doc.in_prompt ? " · loaded into AI when AI is on" : " · reference"}`;
+      meta.textContent = editable
+        ? `${doc.path}${doc.in_prompt ? " · in AI prompt (capped)" : " · not in prompt"}`
+        : `${doc.path}${doc.in_prompt ? " · loaded into AI when a key is set" : " · reference (not packed)"}`;
     }
-    if (body) body.textContent = doc.content || "(empty)";
+    if (editable) {
+      if (body) body.hidden = true;
+      if (editor) {
+        editor.hidden = false;
+        editor.value = doc.content || "";
+      }
+      if (toolbar) toolbar.hidden = false;
+      if (inPrompt) inPrompt.checked = Boolean(doc.in_prompt);
+    } else {
+      if (editor) editor.hidden = true;
+      if (body) {
+        body.hidden = false;
+        body.textContent = doc.content || "(empty)";
+      }
+      if (toolbar) toolbar.hidden = true;
+    }
   } catch {
-    if (body) body.textContent = "Failed to load document.";
+    if (body) {
+      body.hidden = false;
+      body.textContent = "Failed to load document.";
+    }
+  }
+}
+
+async function createUserAiDoc() {
+  const title = window.prompt("Title for your markdown doc", "My notes");
+  if (title == null) return;
+  try {
+    const data = await api("/api/ai/docs/user", {
+      method: "POST",
+      body: JSON.stringify({
+        title: title.trim() || "My notes",
+        content: `# ${title.trim() || "My notes"}\n\n`,
+        in_prompt: false,
+      }),
+    });
+    const list = await api("/api/ai/docs");
+    aiDocsCache = list.docs || [];
+    updateAiDocsBudget(data.budget || list.budget);
+    renderAiDocsList();
+    if (data.doc?.id) await selectAiDoc(data.doc.id);
+    setStatus("Created My doc");
+  } catch (e) {
+    setStatus(`Create doc failed: ${e.message}`);
+  }
+}
+
+async function saveUserAiDoc() {
+  if (!aiDocsSelectedId) return;
+  const meta = (aiDocsCache || []).find((d) => d.id === aiDocsSelectedId);
+  if (!meta || meta.source !== "user") return;
+  const editor = $("#ai-docs-doc-editor");
+  const inPrompt = $("#ai-docs-in-prompt");
+  try {
+    const data = await api(`/api/ai/docs/user/${encodeURIComponent(aiDocsSelectedId)}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        content: editor?.value ?? "",
+        in_prompt: Boolean(inPrompt?.checked),
+        title: meta.title,
+      }),
+    });
+    const list = await api("/api/ai/docs");
+    aiDocsCache = list.docs || [];
+    updateAiDocsBudget(data.budget || list.budget);
+    renderAiDocsList(aiDocsSelectedId);
+    if (data.doc && $("#ai-docs-doc-meta")) {
+      $("#ai-docs-doc-meta").textContent =
+        `${data.doc.path}${data.doc.in_prompt ? " · in AI prompt (capped)" : " · not in prompt"}`;
+    }
+    setStatus("Saved My doc");
+  } catch (e) {
+    setStatus(`Save failed: ${e.message}`);
+  }
+}
+
+async function deleteUserAiDoc() {
+  if (!aiDocsSelectedId) return;
+  const meta = (aiDocsCache || []).find((d) => d.id === aiDocsSelectedId);
+  if (!meta || meta.source !== "user") return;
+  if (!window.confirm(`Delete “${meta.title}”?`)) return;
+  try {
+    await api(`/api/ai/docs/user/${encodeURIComponent(aiDocsSelectedId)}`, { method: "DELETE" });
+    const list = await api("/api/ai/docs");
+    aiDocsCache = list.docs || [];
+    updateAiDocsBudget(list.budget);
+    aiDocsSelectedId = null;
+    renderAiDocsList();
+    const title = $("#ai-docs-doc-title");
+    const body = $("#ai-docs-doc-body");
+    const editor = $("#ai-docs-doc-editor");
+    const toolbar = $("#ai-docs-edit-toolbar");
+    if (title) title.textContent = "Select a document";
+    if (editor) {
+      editor.hidden = true;
+      editor.value = "";
+    }
+    if (toolbar) toolbar.hidden = true;
+    if (body) {
+      body.hidden = false;
+      body.textContent = "Choose a .md file from the list.";
+    }
+    setStatus("Deleted My doc");
+  } catch (e) {
+    setStatus(`Delete failed: ${e.message}`);
   }
 }
 
@@ -4311,7 +5052,8 @@ async function generateReport() {
         project_id: state.projectId,
       }),
     });
-    $("#loop-log").textContent = `[Report] Written: ${res.report_path}\n`;
+    const logEl = $("#loop-log");
+    if (logEl) logEl.textContent = `[Report] Written: ${res.report_path}\n`;
     if (state.projectId) {
       await api(`/api/projects/${state.projectId}/brahl/reports`, {
         method: "POST",
@@ -4321,7 +5063,83 @@ async function generateReport() {
       if ($("#panel-brahl")?.classList.contains("active")) await loadBrahlPanel();
     }
   } catch (e) {
-    $("#loop-log").textContent = `[Report] Error: ${e.message}\n`;
+    const logEl = $("#loop-log");
+    if (logEl) logEl.textContent = `[Report] Error: ${e.message}\n`;
+  }
+}
+
+function failureIssueLabel(f) {
+  const info = (f.stepInfo || "").trim();
+  const action = (f.actionName || "").trim();
+  if (info && action && info.toLowerCase() !== action.toLowerCase()) return `${info} · ${action}`;
+  return info || action || "—";
+}
+
+function failureRowsHtml(failures) {
+  if (!failures.length) {
+    return `<tr><td colspan="6">No failures</td></tr>`;
+  }
+  return failures
+    .map(
+      (f) =>
+        `<tr>` +
+        `<td>${escapeHtml(f.planId || "")}</td>` +
+        `<td>${escapeHtml(f.stepId || "")}</td>` +
+        `<td>${escapeHtml(failureIssueLabel(f))}</td>` +
+        `<td class="fail-cell">${escapeHtml(f.input || "")}</td>` +
+        `<td class="fail-cell">${escapeHtml(f.expected || "")}</td>` +
+        `<td class="fail-cell">${escapeHtml(f.output || "")}</td>` +
+        `</tr>`
+    )
+    .join("");
+}
+
+async function fetchRunFailures(runName) {
+  if (!runName) return [];
+  const { failures } = await api(`/api/runs/${encodeURIComponent(runName)}/failures`);
+  return failures || [];
+}
+
+async function refreshHealFailures() {
+  const tbody = $("#heal-failures-body");
+  if (!tbody) return;
+  const runName = selectedRun || activeProject?.latest_run;
+  updateHealHint();
+  if (!runName) {
+    tbody.innerHTML = `<tr><td colspan="6">Select a run in Analyze first.</td></tr>`;
+    return;
+  }
+  try {
+    const failures = await fetchRunFailures(runName);
+    tbody.innerHTML = failureRowsHtml(failures);
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="6">${escapeHtml(e.message)}</td></tr>`;
+  }
+}
+
+function refreshLoopBuiltSummary() {
+  const purposeEl = $("#loop-built-purpose");
+  const metaEl = $("#loop-built-meta");
+  if (!purposeEl) return;
+  const purpose =
+    (activeProject?.purpose || activeProject?.prompt || "").trim() ||
+    ($("#brahl-plan-requirement")?.value || "").trim() ||
+    "No purpose yet — set it on Build.";
+  purposeEl.textContent = purpose;
+  const suite = state.suiteName || activeProject?.suite_name || "—";
+  const draft = activeProject?.brahl_plan_draft;
+  const auto = draft?.automated_count ?? draft?.test_cases?.filter?.((c) => c.automated !== false)?.length;
+  const manual = draft?.manual_count ?? draft?.test_cases?.filter?.((c) => c.automated === false)?.length;
+  const parts = [`yPAD ${suite}`];
+  if (activeProject?.latest_run) parts.push(`last run ${activeProject.latest_run}`);
+  if (auto != null || manual != null) parts.push(`${auto ?? "—"} automated · ${manual ?? "—"} manual`);
+  if (metaEl) metaEl.textContent = parts.join(" · ");
+  const promptEl = $("#cycle-prompt");
+  const docsEl = $("#cycle-docs");
+  if (promptEl) promptEl.value = purpose;
+  if (docsEl) {
+    const paths = (activeProject?.context_items || []).map((c) => c.value).filter(Boolean);
+    docsEl.value = [...new Set(paths)].join("\n");
   }
 }
 
@@ -4329,7 +5147,7 @@ async function runLoopStep(stepLabel, options = {}) {
   const logEl = $("#loop-log");
   if (!state.projectId) {
     alert("Select a project on Build first.");
-    return;
+    return null;
   }
   if (options.restoreFirst) {
     try {
@@ -4337,18 +5155,18 @@ async function runLoopStep(stepLabel, options = {}) {
         method: "POST",
         body: JSON.stringify({ suite_config: suiteConfigPath() }),
       });
-      logEl.textContent = `[${stepLabel}] Restored Run=Y on ${res.run_y} plan(s).\n`;
+      if (logEl) logEl.textContent += `[${stepLabel}] Restored Run=Y on ${res.run_y} plan(s).\n`;
       await recordCycleEvent("Restore", "Verify prep — all Run=Y");
     } catch (e) {
-      logEl.textContent = `[${stepLabel}] Restore error: ${e.message}\n`;
-      return;
+      if (logEl) logEl.textContent += `[${stepLabel}] Restore error: ${e.message}\n`;
+      return null;
     }
   }
   if (options.shrinkFirst) {
     const runName = selectedRun || activeProject?.latest_run;
     if (!runName) {
-      logEl.textContent += `[${stepLabel}] Select a run in Analyze for shrink.\n`;
-      return;
+      if (logEl) logEl.textContent += `[${stepLabel}] Need a prior run to shrink to failures.\n`;
+      return null;
     }
     try {
       const res = await api("/api/ypad/shrink", {
@@ -4356,24 +5174,21 @@ async function runLoopStep(stepLabel, options = {}) {
         body: JSON.stringify({ run_name: runName, suite_config: suiteConfigPath() }),
       });
       if (res.ok) {
-        logEl.textContent += `[${stepLabel}] Shrunk to ${res.run_y} failure(s).\n`;
+        if (logEl) logEl.textContent += `[${stepLabel}] Shrunk to ${res.run_y} failure(s).\n`;
         await recordCycleEvent("Shrink", `Loop prep — ${res.run_y} plans`, runName);
-      } else {
+      } else if (logEl) {
         logEl.textContent += `[${stepLabel}] ${res.error || "Shrink skipped"}\n`;
       }
     } catch (e) {
-      logEl.textContent += `[${stepLabel}] Shrink error: ${e.message}\n`;
-      return;
+      if (logEl) logEl.textContent += `[${stepLabel}] Shrink error: ${e.message}\n`;
+      return null;
     }
   }
-  await startRun(stepLabel);
+  return startRun(stepLabel);
 }
 
-async function captureContext() {
-  if (!state.projectId || !activeProject) {
-    alert("Select a project first.");
-    return;
-  }
+async function captureContextSilent() {
+  if (!state.projectId || !activeProject) return null;
   const prompt =
     (activeProject.purpose || activeProject.prompt || "").trim() ||
     ($("#brahl-plan-requirement")?.value || "").trim() ||
@@ -4382,17 +5197,59 @@ async function captureContext() {
     .filter((c) => c.kind === "document" || c.kind === "connector")
     .map((c) => ({ name: c.label, path: c.value }));
   const config_path = $("#config-select")?.value || "";
-  const logEl = $("#loop-log");
   try {
     const res = await api("/api/context", {
       method: "POST",
       body: JSON.stringify({ prompt, config_path, documents, project_id: state.projectId }),
     });
-    if (logEl) logEl.textContent = `[Step 0] Context saved: ${res.context_path}\n`;
-    await recordCycleEvent("Step 0", res.context_path);
+    await recordCycleEvent("Context", res.context_path);
     await refreshActiveProject();
+    return res;
+  } catch {
+    return null;
+  }
+}
+
+async function runBrahlCycle() {
+  if (!state.projectId) {
+    alert("Select a project on Build first.");
+    return;
+  }
+  const times = Number($('input[name="loop-times"]:checked')?.value || 1);
+  const verify = !!$("#loop-verify-full")?.checked;
+  const logEl = $("#loop-log");
+  const btn = $("#btn-loop-run");
+  if (btn) btn.disabled = true;
+  if (logEl) logEl.textContent = `Loop ×${times}${verify ? " + Verify full" : ""}…\n`;
+  try {
+    await captureContextSilent();
+    if (logEl) logEl.textContent += `[Context] Snapshot from Build purpose.\n`;
+    for (let i = 1; i <= times; i++) {
+      const label = `Loop ${i}`;
+      const job = await runLoopStep(label, i === 1 ? {} : { shrinkFirst: true });
+      if (!job || job.status === "failed") {
+        if (logEl) logEl.textContent += `[${label}] Stopped (${job?.status || "error"}).\n`;
+        setStatus(`${label} failed — see log`);
+        return;
+      }
+    }
+    if (verify) {
+      const job = await runLoopStep("Verify", { restoreFirst: true });
+      if (!job || job.status === "failed") {
+        setStatus("Verify failed — see log");
+        return;
+      }
+    }
+    const runName = selectedRun || activeProject?.latest_run;
+    if (runName) await autoEnsureBrahlReport(runName, verify ? "Verify" : `Loop ${times}`);
+    setStatus("Loop complete — opening BRAHL");
+    showPhase("brahl");
+    await loadBrahlPanel();
   } catch (e) {
-    if (logEl) logEl.textContent = `[Step 0] Error: ${e.message}\n`;
+    if (logEl) logEl.textContent += `Error: ${e.message}\n`;
+    setStatus(`Loop error: ${e.message}`);
+  } finally {
+    if (btn) btn.disabled = false;
   }
 }
 
@@ -4418,16 +5275,16 @@ async function selectRun(name, li, run) {
   renderAiMarkdown($("#heal-ai-result"), "");
   $$("#runs-list li").forEach((el) => el.classList.remove("selected"));
   if (li) li.classList.add("selected");
-  const { failures } = await api(`/api/runs/${encodeURIComponent(name)}/failures`);
-  const tbody = $("#failures-body");
-  tbody.innerHTML = failures.length
-    ? failures
-        .map(
-          (f) =>
-            `<tr><td>${escapeHtml(f.planId)}</td><td>${escapeHtml(f.stepId)}</td><td>${escapeHtml(f.output)}</td></tr>`
-        )
-        .join("")
-    : "<tr><td colspan='3'>No failures</td></tr>";
+  try {
+    const failures = await fetchRunFailures(name);
+    const tbody = $("#failures-body");
+    if (tbody) tbody.innerHTML = failureRowsHtml(failures);
+    const healBody = $("#heal-failures-body");
+    if (healBody) healBody.innerHTML = failureRowsHtml(failures);
+  } catch (e) {
+    const tbody = $("#failures-body");
+    if (tbody) tbody.innerHTML = `<tr><td colspan="6">${escapeHtml(e.message)}</td></tr>`;
+  }
   const dashHref = zDashHref(run?.dashboard);
   $("#dash-link").innerHTML = dashHref
     ? `<a href="${dashHref}" target="_blank">Open zDash</a>`
@@ -4447,66 +5304,106 @@ async function selectRun(name, li, run) {
         }),
       });
     } catch {
-      /* report file may not exist yet */
+      /* optional link */
     }
   }
 }
 
-async function startRun(stepLabel) {
+async function startRun(stepLabel, { parallel = false } = {}) {
   if (!state.projectId) {
     alert("Select a project on Build first.");
-    return;
+    return null;
   }
-  const configPath = $("#config-select")?.value;
+  const paths = selectedFstartPaths();
+  const configPath = paths[0] || $("#config-select")?.value;
   if (!configPath) {
     alert("No fStart config for this project — click New to create one.");
-    return;
+    return null;
   }
-  const logEl = stepLabel.startsWith("Loop") || stepLabel === "Verify" ? $("#loop-log") : $("#run-log");
-  if (stepLabel === "Run") {
-    logEl.textContent = "";
+  const useParallel = parallel && paths.length > 1;
+  const isCycle = stepLabel.startsWith("Loop") || stepLabel === "Verify";
+  const logEl = isCycle ? $("#loop-log") : $("#run-log");
+  if (stepLabel === "Run" || stepLabel === "Run parallel") {
+    if (logEl) logEl.textContent = "";
     const post = $("#run-post-actions");
     if (post) post.hidden = true;
   }
-  $("#btn-run").disabled = true;
-  $("#progress-bar").style.width = "10%";
+  const runBtn = $("#btn-run");
+  const paraBtn = $("#btn-run-parallel");
+  if (runBtn) runBtn.disabled = true;
+  if (paraBtn) paraBtn.disabled = true;
+  const progress = $("#progress-bar");
+  if (progress) progress.style.width = "10%";
+  const body = useParallel
+    ? { config_paths: paths, parallel: true, step_label: stepLabel || "Run parallel" }
+    : { config_path: configPath, step_label: stepLabel };
   const job = await api("/api/jobs", {
     method: "POST",
-    body: JSON.stringify({ config_path: configPath, step_label: stepLabel }),
+    body: JSON.stringify(body),
   });
   if (pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(async () => {
-    const j = await api(`/api/jobs/${job.job_id}`);
-    logEl.textContent = j.log_lines.join("\n");
-    if (j.status === "completed" || j.status === "failed") {
-      clearInterval(pollTimer);
-      $("#btn-run").disabled = false;
-      $("#progress-bar").style.width = j.status === "completed" ? "100%" : "60%";
-      if (j.output_dir && state.projectId) {
-        const runName = j.output_dir.replace(/\\/g, "/").split("/").pop();
-        await api(`/api/projects/${state.projectId}`, {
-          method: "PATCH",
-          body: JSON.stringify({ latest_run: runName }),
-        });
-        await recordCycleEvent(stepLabel, j.status === "completed" ? "completed" : "failed", runName);
-        selectedRun = runName;
-      }
-      loadRuns();
-      await refreshActiveProject();
-      if (stepLabel === "Run" && j.status === "completed" && j.output_dir) {
-        const runName = j.output_dir.replace(/\\/g, "/").split("/").pop();
-        showRunPostActions(runName);
-        setStatus(`Run complete — review in Analyze or open zDash`);
-      }
-      if (j.status === "completed" && j.output_dir) {
-        const runName = j.output_dir.replace(/\\/g, "/").split("/").pop();
-        if (stepLabel === "Verify" || stepLabel.startsWith("Loop")) {
-          await autoEnsureBrahlReport(runName, stepLabel);
-          if ($("#panel-brahl")?.classList.contains("active")) await loadBrahlPanel();
+  return new Promise((resolve) => {
+    pollTimer = setInterval(async () => {
+      try {
+        const j = await api(`/api/jobs/${job.job_id}`);
+        if (logEl) {
+          const engineLog = (j.log_lines || []).join("\n");
+          if (isCycle) {
+            const marker = `\n—— ${stepLabel} ——\n`;
+            const prior = logEl.textContent.includes(marker)
+              ? logEl.textContent.split(marker)[0] + marker
+              : `${logEl.textContent}${marker}`;
+            logEl.textContent = prior + engineLog;
+          } else {
+            logEl.textContent = engineLog;
+          }
         }
+        if (j.status === "completed" || j.status === "failed") {
+          clearInterval(pollTimer);
+          pollTimer = null;
+          if (runBtn) runBtn.disabled = false;
+          syncConfigSelectFromChips();
+          if (progress) progress.style.width = j.status === "completed" ? "100%" : "60%";
+          const batchDash =
+            j.batch_dashboard || (String(j.output_dir || "").includes("zDash_batch_") ? j.output_dir : null);
+          let runName = null;
+          if (j.output_dir && !String(j.output_dir).includes("zDash_batch_")) {
+            runName = j.output_dir.replace(/\\/g, "/").split("/").pop();
+          } else if (j.run_dirs?.length) {
+            runName = String(j.run_dirs[0]).replace(/\\/g, "/").split("/").pop();
+          }
+          if (runName && state.projectId) {
+            await api(`/api/projects/${state.projectId}`, {
+              method: "PATCH",
+              body: JSON.stringify({ latest_run: runName }),
+            });
+            await recordCycleEvent(stepLabel, j.status === "completed" ? "completed" : "failed", runName);
+            selectedRun = runName;
+          }
+          loadRuns();
+          await refreshActiveProject();
+          if ((stepLabel === "Run" || stepLabel === "Run parallel") && j.status === "completed") {
+            await showRunPostActions(runName, batchDash);
+            setStatus(batchDash ? "Batch complete — open batch zDash" : "Run complete — review in Analyze or open zDash");
+          }
+          if (j.status === "completed" && runName) {
+            if (stepLabel === "Verify" || stepLabel.startsWith("Loop")) {
+              await autoEnsureBrahlReport(runName, stepLabel);
+              if ($("#panel-brahl")?.classList.contains("active")) await loadBrahlPanel();
+            }
+          }
+          resolve(j);
+        }
+      } catch (e) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+        if (runBtn) runBtn.disabled = false;
+        syncConfigSelectFromChips();
+        if (logEl) logEl.textContent += `\n[poll error] ${e.message}`;
+        resolve({ status: "failed", error: e.message });
       }
-    }
-  }, 800);
+    }, 800);
+  });
 }
 
 async function checkHealth() {
@@ -4657,13 +5554,20 @@ async function loadConfigsForSuite() {
     const configs = data.configs || [];
     if (configs.length) {
       sel.innerHTML = configs.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-      sel.value = data.default && configs.includes(data.default) ? data.default : configs[0];
+      const preferred = data.default && configs.includes(data.default) ? data.default : configs[0];
+      sel.value = preferred;
+      renderFstartChips(configs, preferred);
       if (hint) hint.hidden = true;
       if (runBtn) runBtn.disabled = false;
     } else {
       sel.innerHTML = '<option value="">— none —</option>';
+      renderFstartChips([]);
+      fstartSelected = new Set();
+      fstartPrimary = null;
       if (hint) hint.hidden = false;
       if (runBtn) runBtn.disabled = true;
+      const para = $("#btn-run-parallel");
+      if (para) para.disabled = true;
     }
   } catch {
     sel.innerHTML = '<option value="">— error —</option>';
@@ -4747,6 +5651,47 @@ $("#ai-toggle")?.addEventListener("change", toggleAiMode);
 $("#btn-ai-docs")?.addEventListener("click", openAiDocsModal);
 $("#build-open-ai-docs")?.addEventListener("click", openAiDocsModal);
 $("#ai-docs-close")?.addEventListener("click", closeAiDocsModal);
+$("#ai-docs-expand")?.addEventListener("click", toggleAiDocsExpand);
+$("#ai-docs-new")?.addEventListener("click", createUserAiDoc);
+$("#ai-docs-save")?.addEventListener("click", saveUserAiDoc);
+$("#ai-docs-delete")?.addEventListener("click", deleteUserAiDoc);
+$("#ai-docs-in-prompt")?.addEventListener("change", async () => {
+  if (!aiDocsSelectedId) return;
+  const meta = (aiDocsCache || []).find((d) => d.id === aiDocsSelectedId);
+  if (!meta || meta.source !== "user") return;
+  const inPrompt = $("#ai-docs-in-prompt");
+  try {
+    const data = await api(`/api/ai/docs/user/${encodeURIComponent(aiDocsSelectedId)}`, {
+      method: "PATCH",
+      body: JSON.stringify({ in_prompt: Boolean(inPrompt?.checked) }),
+    });
+    const list = await api("/api/ai/docs");
+    aiDocsCache = list.docs || [];
+    updateAiDocsBudget(data.budget || list.budget);
+    renderAiDocsList(aiDocsSelectedId);
+    setStatus(inPrompt?.checked ? "Doc included in AI prompt" : "Doc removed from AI prompt");
+  } catch (e) {
+    if (inPrompt) inPrompt.checked = !inPrompt.checked;
+    setStatus(`Prompt toggle failed: ${e.message}`);
+  }
+});
+$("#arena-cost-widget")?.addEventListener("click", () => showPhase("cost"));
+$("#arena-ypad-widget")?.addEventListener("click", () => {
+  showPhase("build");
+  requestAnimationFrame(() => {
+    $("#build-automation")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
+$$(".build-doc-chip").forEach((btn) => {
+  btn.addEventListener("click", () => openBuildDoc(btn.dataset.doc || "strategy", "synopsis"));
+});
+$("#build-doc-modal-close")?.addEventListener("click", closeBuildDocModal);
+$("#build-doc-modal")?.addEventListener("click", (e) => {
+  if (e.target?.id === "build-doc-modal") closeBuildDocModal();
+});
+$("#build-doc-view-synopsis")?.addEventListener("click", () => setBuildDocModalView("synopsis"));
+$("#build-doc-view-full")?.addEventListener("click", () => setBuildDocModalView("full"));
+startArenaCostWidgetPoll();
 $("#ai-docs-modal")?.addEventListener("click", (e) => {
   if (e.target.id === "ai-docs-modal") closeAiDocsModal();
 });
@@ -4771,6 +5716,15 @@ $("#ypad-filter")?.addEventListener("input", (e) => {
   renderYpadExplorer();
 });
 $("#ypad-run-y-only")?.addEventListener("change", renderYpadExplorer);
+$$(".ypad-cov-chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    ypadState.coverageFilter = chip.dataset.ypadCov || "all";
+    $$(".ypad-cov-chip").forEach((c) => c.classList.toggle("active", c === chip));
+    const runY = $("#ypad-run-y-only");
+    if (runY) runY.checked = ypadState.coverageFilter === "auto";
+    renderYpadExplorer();
+  });
+});
 $("#ypad-design-col-mode")?.addEventListener("change", (e) => {
   ypadState.designColumnMode = e.target.value;
   renderYpadExplorer();
@@ -4804,15 +5758,28 @@ $("#hunt-screenshot-file")?.addEventListener("change", (e) => {
   if (f) attachHuntScreenshot(f);
   e.target.value = "";
 });
+$("#btn-improve-ypads")?.addEventListener("click", () => {
+  showPhase("build");
+  const cov = $("#build-automation");
+  cov?.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (!ypadState.editMode) toggleYpadEdit();
+});
+$("#btn-goto-coverage")?.addEventListener("click", () => {
+  $("#build-automation")?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+$("#btn-heal-edit-ypad")?.addEventListener("click", () => {
+  showPhase("build");
+  const cov = $("#build-automation");
+  cov?.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (!ypadState.editMode) toggleYpadEdit();
+});
+$("#btn-heal-rerun")?.addEventListener("click", () => showPhase("run"));
+$("#btn-loop-open-build")?.addEventListener("click", () => showPhase("build"));
+$("#btn-loop-run")?.addEventListener("click", runBrahlCycle);
 $("#btn-run")?.addEventListener("click", () => startRun("Run"));
-$("#btn-loop1")?.addEventListener("click", () => runLoopStep("Loop 1"));
-$("#btn-loop2")?.addEventListener("click", () => runLoopStep("Loop 2", { shrinkFirst: true }));
-$("#btn-loop3")?.addEventListener("click", () => runLoopStep("Loop 3", { shrinkFirst: true }));
-$("#btn-verify")?.addEventListener("click", () => runLoopStep("Verify", { restoreFirst: true }));
-$("#btn-gen-report")?.addEventListener("click", generateReport);
+$("#btn-run-parallel")?.addEventListener("click", () => startRun("Run parallel", { parallel: true }));
 $("#btn-shrink-plans")?.addEventListener("click", shrinkPlans);
 $("#btn-restore-plans")?.addEventListener("click", restorePlans);
-$("#btn-context")?.addEventListener("click", captureContext);
 $("#btn-refresh-runs")?.addEventListener("click", loadRuns);
 $("#btn-analyze-ai")?.addEventListener("click", runAnalyzeAi);
 $("#btn-heal-ai")?.addEventListener("click", runHealAi);
@@ -4825,12 +5792,13 @@ $("#btn-link-run-report")?.addEventListener("click", linkRunReport);
 $("#link-report-form")?.addEventListener("submit", submitLinkReportForm);
 $("#link-report-cancel")?.addEventListener("click", closeLinkReportModal);
 $("#btn-goto-analyze")?.addEventListener("click", () => showPhase("analyze"));
-$$(".phase-progress-dot").forEach((dot) => {
+$$(".phase-marker").forEach((dot) => {
   dot.addEventListener("click", () => showPhase(dot.dataset.phase));
 });
 
 initAvatarGate();
 initUserMenu();
+initPresenceHeartbeat();
 initPromoterPanel();
 restoreDraftRequirementIfNeeded();
 (function initAuthRole() {

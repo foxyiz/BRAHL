@@ -1,0 +1,59 @@
+{
+  "id": "p5",
+  "code": "P5",
+  "name": "Chris Martinez",
+  "title": "Non-technical user",
+  "role": "client-manual",
+  "defaultAvatar": "client",
+  "aiDefault": false,
+  "aiLocked": true,
+  "dualRole": false,
+  "admin": false,
+  "techLevel": "none",
+  "consultantTier": null,
+  "allowedAvatars": [
+    "client"
+  ],
+  "landing": "app",
+  "accent": "manual",
+  "blurb": "No automation or AI comfort. Manual Build only \u2014 invite humans to run FoXYiZ.",
+  "journey": [
+    "AI locked off",
+    "Manual purpose",
+    "Invite QA Hunter"
+  ],
+  "ypadDesignColumn": "D5",
+  "firstVisit": false,
+  "fictional": true,
+  "tasks": [
+    "AI locked off",
+    "Manual purpose",
+    "Invite QA Hunter"
+  ],
+  "demo_tips": [
+    "AI locked off",
+    "Manual purpose",
+    "Invite QA Hunter"
+  ],
+  "default_avatar": "client",
+  "allowed_avatars": [
+    "client"
+  ],
+  "client_tasks": [
+    {
+      "phase": "build",
+      "title": "AI locked off",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "Manual purpose",
+      "detail": "Demo tip from persona journey."
+    },
+    {
+      "phase": "build",
+      "title": "Invite QA Hunter",
+      "detail": "Demo tip from persona journey."
+    }
+  ]
+}

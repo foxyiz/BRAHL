@@ -7,12 +7,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-KK_ROOT = Path(__file__).resolve().parents[2]
+from paths import KK_ROOT, F_DIR, Z_DIR, repo_rel, resolve_repo
 DEFAULT_SUITE = "y/Math/Math.json"
 
 
 def _resolve_cfg_path(suite_config: str) -> Path:
-    cfg_path = KK_ROOT / suite_config.replace("/", "\\")
+    cfg_path = resolve_repo(suite_config)
     if not cfg_path.is_file():
         raise FileNotFoundError(
             f"Suite config not found: {suite_config}. "
@@ -66,7 +66,7 @@ def _resolve_y1_paths(suite_config: str = DEFAULT_SUITE) -> list[Path]:
     data = json.loads(cfg_path.read_text(encoding="utf-8"))
     paths: list[Path] = []
     for rel in data.get("input_files", {}).get("yPlans", []):
-        p = KK_ROOT / rel.replace("/", "\\")
+        p = resolve_repo(rel)
         if p.is_file():
             paths.append(p)
     if not paths:
@@ -75,7 +75,7 @@ def _resolve_y1_paths(suite_config: str = DEFAULT_SUITE) -> list[Path]:
 
 
 def failed_plan_ids(run_name: str) -> set[str]:
-    run_dir = KK_ROOT / "z" / run_name
+    run_dir = Z_DIR / run_name
     results = next(run_dir.glob("*_zResults.csv"), None) if run_dir.is_dir() else None
     if not results:
         return set()
@@ -111,7 +111,7 @@ def plan_stats(suite_config: str = DEFAULT_SUITE) -> dict[str, Any]:
     total = run_y = run_n = reuse = 0
     ypaths: list[str] = []
     for plans_path in _resolve_y1_paths(suite_config):
-        ypaths.append(plans_path.relative_to(KK_ROOT).as_posix())
+        ypaths.append(repo_rel(plans_path))
         with plans_path.open(encoding="utf-8-sig", newline="") as f:
             for row in csv.DictReader(f):
                 pid = (row.get("PlanId") or "").strip()
@@ -277,7 +277,7 @@ def _resolve_sheet_paths(suite_config: str, sheet: str) -> list[Path]:
     key = _SHEET_KEYS[sheet]
     paths: list[Path] = []
     for rel in data.get("input_files", {}).get(key, []):
-        p = KK_ROOT / rel.replace("/", "\\")
+        p = resolve_repo(rel)
         if p.is_file():
             paths.append(p)
     if not paths:
@@ -300,7 +300,7 @@ def read_ypad_sheet(suite_config: str, sheet: str) -> dict[str, Any]:
     all_rows: list[dict[str, str]] = []
     rel_paths: list[str] = []
     for p in paths:
-        rel_paths.append(p.relative_to(KK_ROOT).as_posix())
+        rel_paths.append(repo_rel(p))
         headers, rows = _read_csv_file(p)
         if not all_headers:
             all_headers = headers
@@ -330,7 +330,7 @@ def read_env_example(suite_config: str = DEFAULT_SUITE) -> dict[str, Any]:
     """ENV tab: credential/env rows from y3 + FoXYiZ .env.example."""
     designs = read_ypad_sheet(suite_config, "designs")
     env_rows = [r for r in designs["rows"] if _is_env_design_row(r)]
-    example_path = KK_ROOT / "f" / ".env.example"
+    example_path = F_DIR / ".env.example"
     example_text = ""
     if example_path.is_file():
         example_text = example_path.read_text(encoding="utf-8")
@@ -378,5 +378,5 @@ def write_ypad_sheet(
         writer = csv.DictWriter(f, fieldnames=headers, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
-    rel = target.relative_to(KK_ROOT).as_posix()
+    rel = repo_rel(target)
     return {"ok": True, "path": rel, "row_count": len(rows)}

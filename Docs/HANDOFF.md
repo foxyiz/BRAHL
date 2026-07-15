@@ -1,53 +1,37 @@
-# Handoff — short session summary (2026-07-14)
+# Handoff — current KK
 
-Use this instead of the long chat transcript. Read `qoa_web/MEMORY.md` first.
+**Read first:** [../qoa_web/MEMORY.md](../qoa_web/MEMORY.md) · **Today's log:** [../todaysummary.md](../todaysummary.md)
 
 ## Product
 
-- **KK/** = FoXYiZ engine + **qoa_web** (BRAHL arena) at http://127.0.0.1:8765
-- Naming: always **BRAHL**; spelling **FoXYiZ**
+| Piece | Role |
+|-------|------|
+| `FoXYiZ/` | Engine `f(x,y)=z` — f · x · y · z · pyUtils |
+| `qoa_web/` | BRAHL Arena UI + API · http://127.0.0.1:8765 |
+| `Docs/` | Slim reference (this hub's README) |
+| `archive/` | Retired noise — never load into agent context |
 
-## Done recently
+Naming: always **BRAHL** · **FoXYiZ**.
 
-- Defect closure notes: `Docs/BRAHL_DEFECTS.md`
-- Plan-level stats API + zDash path fix + Loop recovery UI bits
-- Auth (signup/login/JWT), project ownership, MVP checklist, Bluehost notes
-- Build BRAHL Plan generate/accept path
+## Bootstrap (new machine)
 
-## Lean KK cleanup (this session)
+```powershell
+cd c:\006\FXYZ\KK
+pip install -r qoa_web/api/requirements.txt
+# optional AI: set OPENAI_API_KEY in FoXYiZ/f/.env
+python qoa_web/run_local.py
+# Arena: /app?demo=1
+python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json
+```
 
-Moved noise into **`archive/`** so you can relocate the whole folder out of KK:
-
-| Bucket | What |
-|--------|------|
-| `archive/cleanup/<ts>/` | Ephemeral `z/` runs + brahl reports (`cleaner.py --apply`) |
-| `archive/not-needed-20260714/` | Unused `y/*` (qoa2, ivvu, …), unused `fStart_*`, Issues.docx/pdf/extracts, Summary.md, BRAHL.py, test-user-data |
-
-**Still in KK:** `qoa_web/`, `f/` (engine + Math/nalanda/qoa_web smoke-verify starts), `x/`, `y/Math`, `y/nalanda_app`, `pyUtils/`, slim `Docs/*.md`.
-
-`f/Foxyiz2.exe` (~69MB) stays for local runs; already gitignored.
-
-## Active next plan (lean roadmap)
-
-1. **A** — hygiene done ✔
-2. **B** — Loop 1/2/3 + Verify on **Math** ✔ (4-plan smoke; shrink/restore baseline; P-prefix PlanId fix)
-3. **C** — Heal **Apply** beyond AI markdown
-4. **D** — Classical BRAHL report Go/No-Go UI
-5. **E** — zDash check, uninvite, nav flake, Tests CSS, mobile
-6. **F** — GitHub + Bluehost (`QOA_ALLOW_DEMO=0`)
-7. **G later** — Career Assistant, voice CS, screenshots, deep Nalanda, waitlist
-
-### Phase B proof (Math)
-
-- Suite: `y/Math/` — 4 Run=Y plans (Addition, Multiplication, Modulo, Round)
-- fStart: `f/fStart_Math_smoke.json` / `f/fStart_Math_verify.json`
-- Shrink saves `y/Math/Math_run_y_baseline.json`; restore reapplies that set
-- Unit: `qoa_web/api/test_ypad_loop.py`
-
-## AI bootstrap (@-mention only these)
+## AI bootstrap (@-mention only)
 
 1. `qoa_web/MEMORY.md`
-2. `Docs/HANDOFF.md` (this file)
-3. `Docs/BRAHL.md` / `Docs/MVP_LAUNCH_CHECKLIST.md` as needed
+2. `todaysummary.md` (latest session)
+3. `Docs/BRAHL_PROMPT.md` / `Docs/AI_GUARDRAILS.md` for in-app AI behavior
 
-After work: `python pyUtils/cleaner.py --apply`. Safe to delete or move `archive/` anytime.
+Deep dives: `Docs/BRAHL.md`, `Docs/FoXYiZ.md`, `FoXYiZ/FoXYiZ_Readme.md`.
+
+## Docs that stay in KK/Docs
+
+See [README.md](./README.md). Retired → `archive/docs-retired-20260714/`.

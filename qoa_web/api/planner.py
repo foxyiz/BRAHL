@@ -6,7 +6,7 @@ import re
 from typing import Any
 from urllib.parse import urlparse
 
-from ai_assist import _chat, is_ai_available
+from ai_assist import chat_metered, is_ai_available, brahl_doc_context
 from brahl_plan import generate_brahl_plan
 from runner import create_ypad_suite, default_fstart_for_suite, slug_suite_name
 import projects as project_store
@@ -95,14 +95,15 @@ def planner_turn(
             "project name (folder slug), app URL, and purpose/requirements. "
             "Then explain you will build lean yPAD white pads (plans, steps, test data) and a BRAHL strategy. "
             "Be concise (≤120 words). Always use the spelling BRAHL (never brawl). "
-            "When draft is ready, tell them to click Create & quick BRAHL."
+            "When draft is ready, tell them to click Create & quick BRAHL.\n\n"
+            + brahl_doc_context(role="planner")
         )
         user = (
             f"Current draft JSON: {merged}\n\n"
             f"User message: {message}\n\n"
             "Reply in plain text (no JSON)."
         )
-        reply = _chat(system, user, history)
+        reply, _meta = chat_metered(system, user, history, role="planner")
     if not reply:
         reply = _fallback_reply(merged, message)
 
