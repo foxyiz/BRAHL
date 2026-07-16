@@ -571,6 +571,19 @@
     "change_requests": [],
     "cycle_history": [
       {
+        "id": "2bdb1b59",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-16T06:45:49+00:00",
+        "run_name": "20260715_234536_nalanda_app",
+        "stats": {
+          "passes": 7,
+          "fails": 0,
+          "total_plans": 7,
+          "health": "green"
+        }
+      },
+      {
         "id": "dfb14b98",
         "step": "Run",
         "detail": "completed",
@@ -624,7 +637,7 @@
       }
     ],
     "created_at": "2026-07-05T20:00:00+00:00",
-    "updated_at": "2026-07-16T05:17:03+00:00",
+    "updated_at": "2026-07-16T06:48:40+00:00",
     "atomic77_chat_messages": [
       {
         "id": "a77-welcome",
@@ -743,7 +756,7 @@
       "usd_est": 0.0
     },
     "brahl_context_path": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260714_211518_nalanda_app.json",
-    "latest_run": "20260715_212215_nalanda_app",
+    "latest_run": "20260715_234536_nalanda_app",
     "reports": [
       {
         "id": "ef48086c",
@@ -772,9 +785,16 @@
         "report_path": "z/20260715_212215_nalanda_app/brahl_report.md",
         "submitted_at": "2026-07-16T04:22:30+00:00",
         "source": "automation"
+      },
+      {
+        "id": "0c0ffc46",
+        "run_name": "20260715_234536_nalanda_app",
+        "report_path": "z/20260715_234536_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-16T06:45:49+00:00",
+        "source": "automation"
       }
     ],
-    "ai_journey_updated_at": "2026-07-16T05:17:03+00:00",
+    "ai_journey_updated_at": "2026-07-16T06:48:40+00:00",
     "team_messages": [
       {
         "id": "33c4a830",
@@ -860,12 +880,12 @@
     },
     "hitl_consultants": [],
     "reports": [],
-    "ai_enabled": false,
+    "ai_enabled": true,
     "brahl_context_path": null,
     "brahl_plan_draft": null,
-    "latest_run": "20260715_112908_qoa_web_verify_gate",
+    "latest_run": "20260715_233517_qoa_web_verify_gate",
     "created_at": "2026-07-14T21:14:07+00:00",
-    "updated_at": "2026-07-16T04:20:33+00:00",
+    "updated_at": "2026-07-16T06:44:29+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -888,6 +908,19 @@
       "user_messages": 0
     },
     "cycle_history": [
+      {
+        "id": "65ac0e5f",
+        "step": "Run parallel",
+        "detail": "completed",
+        "at": "2026-07-16T06:36:33+00:00",
+        "run_name": "20260715_233517_qoa_web_verify_gate",
+        "stats": {
+          "passes": 23,
+          "fails": 1,
+          "total_plans": 24,
+          "health": "amber"
+        }
+      },
       {
         "id": "133226ca",
         "step": "Run parallel",
@@ -917,9 +950,10 @@
       "completion_tokens": 19,
       "updated_at": "2026-07-15T19:56:46+00:00"
     },
-    "ai_journey_updated_at": "2026-07-16T04:20:33+00:00",
+    "ai_journey_updated_at": "2026-07-16T06:44:29+00:00",
     "team_messages": [],
-    "team_tasks": []
+    "team_tasks": [],
+    "current_phase": "Run parallel"
   },
   {
     "id": "15745c9b6515",
@@ -990,14 +1024,77 @@
         "report_path": "z/20260715_224910_Math/brahl_report.md",
         "submitted_at": "2026-07-16T06:03:47+00:00",
         "source": "automation"
+      },
+      {
+        "id": "c02c0399",
+        "run_name": "20260715_232317_Math",
+        "report_path": "z/20260715_232317_Math/brahl_report.md",
+        "submitted_at": "2026-07-16T06:23:18+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "f837ec19",
+        "run_name": "20260715_232804_Math",
+        "report_path": "z/20260715_232804_Math/brahl_report.md",
+        "submitted_at": "2026-07-16T06:28:05+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "e093472e",
+        "run_name": "20260715_232807_Math",
+        "report_path": "z/20260715_232807_Math/brahl_report.md",
+        "submitted_at": "2026-07-16T06:28:08+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "c6fc38c6",
+        "run_name": "20260715_232811_Math",
+        "report_path": "z/20260715_232811_Math/brahl_report.md",
+        "submitted_at": "2026-07-16T06:28:12+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "4e96cf0c",
+        "run_name": "20260715_232815_Math",
+        "report_path": "z/20260715_232815_Math/brahl_report.md",
+        "submitted_at": "2026-07-16T06:28:16+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "66b98b11",
+        "run_name": "20260715_232916_Math",
+        "report_path": "z/20260715_232916_Math/brahl_report.md",
+        "submitted_at": "2026-07-16T06:29:17+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "224322c4",
+        "run_name": "20260715_232920_Math",
+        "report_path": "z/20260715_232920_Math/brahl_report.md",
+        "submitted_at": "2026-07-16T06:29:20+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "6b4ad798",
+        "run_name": "20260715_232923_Math",
+        "report_path": "z/20260715_232923_Math/brahl_report.md",
+        "submitted_at": "2026-07-16T06:29:24+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "5450ff4d",
+        "run_name": "20260715_232926_Math",
+        "report_path": "z/20260715_232926_Math/brahl_report.md",
+        "submitted_at": "2026-07-16T06:29:27+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
-    "brahl_context_path": null,
+    "brahl_context_path": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260715_232913_Math.json",
     "brahl_plan_draft": null,
-    "latest_run": "20260715_224910_Math",
+    "latest_run": "20260715_232926_Math",
     "created_at": "2026-07-14T21:50:30+00:00",
-    "updated_at": "2026-07-16T06:03:47+00:00",
+    "updated_at": "2026-07-16T06:48:43+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -1020,6 +1117,173 @@
       "user_messages": 0
     },
     "cycle_history": [
+      {
+        "id": "d3c6f882",
+        "step": "Verify",
+        "detail": "completed",
+        "at": "2026-07-16T06:29:27+00:00",
+        "run_name": "20260715_232926_Math",
+        "stats": {
+          "passes": 2,
+          "fails": 2,
+          "total_plans": 4,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "bb5540d6",
+        "step": "Restore",
+        "detail": "Verify prep \u2014 all Run=Y",
+        "at": "2026-07-16T06:29:24+00:00"
+      },
+      {
+        "id": "41ffe28c",
+        "step": "Loop 3",
+        "detail": "completed",
+        "at": "2026-07-16T06:29:23+00:00",
+        "run_name": "20260715_232923_Math",
+        "stats": {
+          "passes": 0,
+          "fails": 2,
+          "total_plans": 2,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "937b4fe4",
+        "step": "Shrink",
+        "detail": "Loop prep \u2014 2 plans",
+        "at": "2026-07-16T06:29:20+00:00",
+        "run_name": "20260715_232920_Math",
+        "stats": {
+          "passes": 0,
+          "fails": 2,
+          "total_plans": 2,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "e64655ee",
+        "step": "Loop 2",
+        "detail": "completed",
+        "at": "2026-07-16T06:29:20+00:00",
+        "run_name": "20260715_232920_Math",
+        "stats": {
+          "passes": 0,
+          "fails": 2,
+          "total_plans": 2,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "91fb979b",
+        "step": "Shrink",
+        "detail": "Loop prep \u2014 2 plans",
+        "at": "2026-07-16T06:29:17+00:00",
+        "run_name": "20260715_232916_Math",
+        "stats": {
+          "passes": 2,
+          "fails": 2,
+          "total_plans": 4,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "f2dec495",
+        "step": "Loop 1",
+        "detail": "completed",
+        "at": "2026-07-16T06:29:17+00:00",
+        "run_name": "20260715_232916_Math",
+        "stats": {
+          "passes": 2,
+          "fails": 2,
+          "total_plans": 4,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "f0b7b1d7",
+        "step": "Context",
+        "detail": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260715_232913_Math.json",
+        "at": "2026-07-16T06:29:13+00:00"
+      },
+      {
+        "id": "8889c8ff",
+        "step": "Verify",
+        "detail": "completed",
+        "at": "2026-07-16T06:28:16+00:00",
+        "run_name": "20260715_232815_Math",
+        "stats": {
+          "passes": 4,
+          "fails": 0,
+          "total_plans": 4,
+          "health": "green"
+        }
+      },
+      {
+        "id": "66dbf82a",
+        "step": "Restore",
+        "detail": "Verify prep \u2014 all Run=Y",
+        "at": "2026-07-16T06:28:12+00:00"
+      },
+      {
+        "id": "c6f051b7",
+        "step": "Loop 3",
+        "detail": "completed",
+        "at": "2026-07-16T06:28:11+00:00",
+        "run_name": "20260715_232811_Math",
+        "stats": {
+          "passes": 2,
+          "fails": 0,
+          "total_plans": 2,
+          "health": "green"
+        }
+      },
+      {
+        "id": "844de18c",
+        "step": "Loop 2",
+        "detail": "completed",
+        "at": "2026-07-16T06:28:08+00:00",
+        "run_name": "20260715_232807_Math",
+        "stats": {
+          "passes": 2,
+          "fails": 0,
+          "total_plans": 2,
+          "health": "green"
+        }
+      },
+      {
+        "id": "4457cea5",
+        "step": "Loop 1",
+        "detail": "completed",
+        "at": "2026-07-16T06:28:04+00:00",
+        "run_name": "20260715_232804_Math",
+        "stats": {
+          "passes": 2,
+          "fails": 0,
+          "total_plans": 2,
+          "health": "green"
+        }
+      },
+      {
+        "id": "a5242c30",
+        "step": "Context",
+        "detail": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260715_232801_Math.json",
+        "at": "2026-07-16T06:28:01+00:00"
+      },
+      {
+        "id": "abc21020",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-16T06:23:18+00:00",
+        "run_name": "20260715_232317_Math",
+        "stats": {
+          "passes": 2,
+          "fails": 0,
+          "total_plans": 2,
+          "health": "green"
+        }
+      },
       {
         "id": "c9dfaedc",
         "step": "Run",
@@ -1085,8 +1349,8 @@
       "total_tokens": 0,
       "usd_est": 0.0
     },
-    "ai_journey_updated_at": "2026-07-16T06:03:47+00:00",
-    "current_phase": "Run",
+    "ai_journey_updated_at": "2026-07-16T06:48:43+00:00",
+    "current_phase": "Verify",
     "team_messages": [],
     "team_tasks": []
   },

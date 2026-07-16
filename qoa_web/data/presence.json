@@ -1,24 +1,5 @@
 {
   "sessions": {
-    "s:1784088527993:sb52oz7b": {
-      "session_key": "s:1784088527993:sb52oz7b",
-      "user_id": null,
-      "display_name": "Jordan Lee",
-      "email": "",
-      "project_id": "15745c9b6515",
-      "path": "/app#atomic77",
-      "avatar": "creator",
-      "roles": [],
-      "ts": 1784096435.768663,
-      "started_at": 1784088528.028733,
-      "ip_hash": "12ca17b49af22894",
-      "city": "Approx",
-      "country": "",
-      "lat": 34.18723179958235,
-      "lng": -118.60745865142277,
-      "location_label": "Approx",
-      "geo_source": "browser"
-    },
     "s:1784139963662:g98xmh2t": {
       "session_key": "s:1784139963662:g98xmh2t",
       "user_id": null,
@@ -360,6 +341,63 @@
       "lng": -118.60746224077953,
       "location_label": "Approx",
       "geo_source": "browser"
+    },
+    "s:1784182971044:qkhjshbw": {
+      "session_key": "s:1784182971044:qkhjshbw",
+      "user_id": null,
+      "display_name": "Arena guest",
+      "email": "",
+      "project_id": "15745c9b6515",
+      "path": "/app",
+      "avatar": "qa_hunter",
+      "roles": [],
+      "ts": 1784184685.911901,
+      "started_at": 1784182971.0712,
+      "ip_hash": "12ca17b49af22894",
+      "city": "Approx",
+      "country": "",
+      "lat": 34.187218265392204,
+      "lng": -118.60744943962148,
+      "location_label": "Approx",
+      "geo_source": "browser"
+    },
+    "s:1784183722425:8p2ifmw8": {
+      "session_key": "s:1784183722425:8p2ifmw8",
+      "user_id": null,
+      "display_name": "Alex Chen",
+      "email": "",
+      "project_id": null,
+      "path": "/app",
+      "avatar": "creator",
+      "roles": [],
+      "ts": 1784183732.7854946,
+      "started_at": 1784183722.4399426,
+      "ip_hash": "12ca17b49af22894",
+      "city": "Local",
+      "country": "Local",
+      "lat": 37.77,
+      "lng": -122.42,
+      "location_label": "Local, Local",
+      "geo_source": "local"
+    },
+    "s:1784183722474:hfxw5den": {
+      "session_key": "s:1784183722474:hfxw5den",
+      "user_id": null,
+      "display_name": "Alex Chen",
+      "email": "",
+      "project_id": "66ae1a926c31",
+      "path": "/app",
+      "avatar": "creator",
+      "roles": [],
+      "ts": 1784183780.998701,
+      "started_at": 1784183724.155444,
+      "ip_hash": "12ca17b49af22894",
+      "city": "Approx",
+      "country": "",
+      "lat": 34.18721756608281,
+      "lng": -118.60744929687426,
+      "location_label": "Approx",
+      "geo_source": "browser"
     }
   },
   "time_spent": {
@@ -404,6 +442,10 @@
     "s:1784175359788:nbnscaym:66ae1a926c31": 75.01857256889343,
     "s:1784175578739:6nck4yv6:66ae1a926c31": 51.07887387275696,
     "s:1784175645829:ohfhpc0m:nalanda_launch_001": 3588.1361956596375,
-    "s:1784175650763:7oh1nejn:nalanda_launch_001": 3583.2080013751984
+    "s:1784175650763:7oh1nejn:nalanda_launch_001": 3583.2080013751984,
+    "s:1784182971044:qkhjshbw:15745c9b6515": 499.3864049911499,
+    "s:1784182971044:qkhjshbw:66ae1a926c31": 998.8268055915833,
+    "s:1784183722474:hfxw5den:66ae1a926c31": 55.721285581588745,
+    "s:1784182971044:qkhjshbw:nalanda_launch_001": 89.97965383529663
   }
 }
