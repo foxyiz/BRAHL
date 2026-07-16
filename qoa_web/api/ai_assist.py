@@ -33,13 +33,14 @@ def invalidate_doc_cache() -> None:
 
 # Role → (doc_chars, history_turns, max_completion_tokens)
 AI_ROLE_BUDGETS: dict[str, tuple[int, int, int]] = {
-    "planner": (2500, 4, 600),
-    "build": (3500, 6, 800),
-    "brahl_chat": (3500, 6, 800),
-    "analyze": (4000, 0, 1000),
-    "heal": (4000, 0, 1000),
-    "atomic77": (2000, 4, 500),
-    "default": (3500, 4, 800),
+    # (doc_chars, history_turns, max_completion_tokens)
+    "planner": (2800, 4, 600),
+    "build": (4200, 6, 800),
+    "brahl_chat": (4200, 6, 800),
+    "analyze": (4500, 0, 1000),
+    "heal": (4500, 0, 1000),
+    "atomic77": (2600, 4, 500),
+    "default": (4200, 4, 800),
 }
 
 GUARDRAIL_PREAMBLE = (
@@ -253,36 +254,69 @@ def record_ai_usage(
     return entry
 
 
-def brahl_doc_context(max_chars: int = 3500, role: str = "default") -> str:
-    """Pack only slim in_prompt docs — role budget from AI_ROLE_BUDGETS."""
+def brahl_doc_context(
+    max_chars: int = 3500,
+    role: str = "default",
+    project: dict[str, Any] | None = None,
+) -> str:
+    """Pack Journey (this project) + Master (everyone) + opted-in My docs within role budget."""
     budget = AI_ROLE_BUDGETS.get(role, AI_ROLE_BUDGETS["default"])[0]
     max_chars = min(max_chars, budget)
-    cache_key = f"{role}:{max_chars}"
-    if cache_key in _DOC_CACHE:
+    pid = (project or {}).get("id") or ""
+    cache_key = f"{role}:{max_chars}:{pid}:{bool(project)}"
+    if not project and cache_key in _DOC_CACHE:
         return _DOC_CACHE[cache_key]
 
     chunks: list[str] = []
+    remaining = max_chars
     try:
         import ai_docs
 
-        for spec in ai_docs.prompt_doc_specs():
-            path = resolve_repo(spec["path"])
-            if not path.is_file():
-                continue
-            raw = path.read_text(encoding="utf-8")
-            cap = int(spec.get("prompt_chars") or max_chars)
-            chunks.append(f"# {path.name}\n{raw[:cap]}")
+        for spec in ai_docs.prompt_doc_specs(project=project):
+            if remaining <= 80:
+                break
+            cap = min(int(spec.get("prompt_chars") or remaining), remaining)
+            inline = spec.get("content")
+            if inline:
+                text = str(inline)[:cap]
+                # Journey markdown already includes its own H1
+                if spec.get("source") == "journey" or text.lstrip().startswith("#"):
+                    block = text
+                else:
+                    title = spec.get("title") or spec.get("id") or "doc.md"
+                    block = f"# {title}\n{text}"
+            else:
+                path = resolve_repo(spec["path"]) if spec.get("path") else None
+                if not path or not path.is_file():
+                    continue
+                raw = path.read_text(encoding="utf-8")
+                block = f"# {path.name}\n{raw[:cap]}"
+            chunks.append(block)
+            remaining -= len(block) + 8
     except Exception:
         for name in ("AI_GUARDRAILS.md", "BRAHL_PROMPT.md"):
+            if remaining <= 80:
+                break
             path = DOCS_DIR / name
             if path.is_file():
-                chunks.append(f"# {name}\n{path.read_text(encoding='utf-8')[:max_chars]}")
+                block = f"# {name}\n{path.read_text(encoding='utf-8')[:remaining]}"
+                chunks.append(block)
+                remaining -= len(block) + 8
+        if project:
+            try:
+                import ai_docs
+
+                j = f"# journey.md\n{ai_docs.build_project_journey_md(project)[:1600]}"
+                chunks.insert(0, j[: max_chars])
+            except Exception:
+                pass
 
     text = "\n\n---\n\n".join(chunks) if chunks else (
         "BRAHL: Build yPAD → Run FoXYiZ → Analyze z/ → Heal y/ → Loop. Spell BRAHL/FoXYiZ."
     )
     packed = text[:max_chars]
-    _DOC_CACHE[cache_key] = packed
+    if not project:
+        _DOC_CACHE[cache_key] = packed
     return packed
 
 
@@ -399,7 +433,7 @@ def build_assistant_reply(
         "(yPAD tabs, QA Hunter stories, connectors, Run/Loop/Verify, BRAHL tab for reports).\n"
         "Run and Loop use fEngine2.py only (no AI during execution). Analyze and Heal can use AI when opted in.\n"
         "Be concise, actionable, reference y/ folder and tags when relevant.\n\n"
-        + brahl_doc_context(role="build")
+        + brahl_doc_context(role="build", project=project)
     )
     user = (
         f"Project: {project.get('name')} (y/{suite}/)\n"
@@ -455,7 +489,7 @@ def analyze_run_rca(
         "Output markdown with:\n"
         "## Summary\n## Classification table (PlanId | Step | Class | Root cause | Recommended action)\n"
         "## Next steps (Heal vs app bug)\n\n"
-        + brahl_doc_context(role="analyze")
+        + brahl_doc_context(role="analyze", project=project)
     )
     user = (
         f"Suite: y/{suite}/\nRun: z/{run_name}/\n"
@@ -483,7 +517,10 @@ def heal_suggestions(
     rca_markdown: str = "",
     suite_config: str = "",
 ) -> str | None:
-    """AI heal suggestions — yPAD edits only for T1/T2/T3; document A1."""
+    """AI heal suggestions — yPAD edits only for T1/T2/T3; document A1.
+
+    Returns markdown that MUST end with a ```json patches block when CSV edits are safe.
+    """
     if not failures:
         return None
     suite = project.get("suite_name") or "unknown"
@@ -495,8 +532,17 @@ def heal_suggestions(
         "You are a FoXYiZ/BRAHL Heal assistant. Suggest minimal yPAD fixes for T1/T2/T3 only.\n"
         "Priority: yD_Common/yD_Secure locators → y2Actions steps → y1Plans Run/Tags → y3Designs.\n"
         "Never weaken A1 tests. Prefer xNavigate to reset session; no xWaitFor.\n"
-        "Output markdown: ## Heal plan | per-failure file + exact CSV change | ## Verify after heal\n\n"
-        + brahl_doc_context(role="heal")
+        "Output markdown with ## Heal plan and ## Verify after heal.\n"
+        "ALWAYS end with a fenced JSON block the Arena can Apply:\n"
+        "```json\n"
+        '{"patches":[{"sheet":"y2Actions","match":{"PlanId":"P1","StepId":"2"},'
+        '"set":{"Expected":"..."},"class":"T1","note":"why"}]}\n'
+        "```\n"
+        "sheet must be one of: y1Plans, y2Actions, y3Designs (or plans/actions/designs).\n"
+        "Only set safe CSV fields: Input, Expected, StepInfo, Run, Tags, D1–D5.\n"
+        "Omit A1 defects from patches (empty array if nothing safe).\n"
+        "Never invent PlanId/StepId — only use ids from the failure list.\n\n"
+        + brahl_doc_context(role="heal", project=project)
     )
     user = (
         f"Suite: {suite_config or f'y/{suite}/'}\nRun: {run_name}\n\n"
@@ -510,6 +556,7 @@ def heal_suggestions(
         project=project,
         user_id=project.get("owner_user_id"),
         role="heal",
+        max_tokens=1200,
     )
     if meta.get("denied"):
         return f"## AI quota\n\n{meta.get('reason')}"
@@ -580,7 +627,7 @@ def atomic77_assistant_reply(
         "and the path to Go/No-Go launch. QA Hunters: hunting and evidence. Networkers: sharing and XP.\n"
         "Never pretend to run FoXYiZ — direct them to Run/Loop tabs. Be concise, warm, actionable.\n"
         "Reference: idea → Build → BRAHL → launch. Community rewards effort via $ and XP.\n\n"
-        + brahl_doc_context(role="atomic77")
+        + brahl_doc_context(role="atomic77", project=project)
     )
     user = (
         f"Avatar: {avatar_label}\n"

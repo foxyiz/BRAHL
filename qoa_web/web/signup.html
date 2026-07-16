@@ -6,43 +6,61 @@
   <title>Sign up — QAonAir BRAHL</title>
   <link rel="stylesheet" href="/assets/styles.css" />
   <link rel="stylesheet" href="/assets/forms.css" />
+  <link rel="stylesheet" href="/assets/site-chrome.css" />
   <link rel="stylesheet" href="/assets/signin.css" />
 </head>
 <body class="tc-page">
+  <header class="site-top">
+    <a class="site-brand" href="/" aria-label="QA on Air home">
+      <span class="site-brand-mark" aria-hidden="true">QA</span>
+      <span class="site-brand-text">
+        <span class="site-brand-name">QA on Air</span>
+        <span class="site-brand-sub">BRAHL</span>
+      </span>
+    </a>
+    <nav class="site-top-nav" aria-label="Site">
+      <a href="/pricing">Pricing</a>
+      <a href="/about">About</a>
+      <a href="/login">Sign in</a>
+      <a class="site-top-cta" href="/app?demo=1" id="nav-guest-start">Start</a>
+    </nav>
+  </header>
   <header class="tc-page-header">
     <div>
-      <p class="tc-kicker">QAonAir · BRAHL</p>
+      <p class="tc-kicker">QA on Air · BRAHL</p>
       <h1>Sign up</h1>
-      <p class="tc-lead">Start with social or email, then complete your profile. Multiple avatars are supported.</p>
+      <p class="tc-lead">Account first, then a short profile — then continue to BRAHL.</p>
     </div>
-    <a href="/app" class="tc-btn tc-btn-ghost">Arena</a>
   </header>
 
-  <main class="tc-shell">
+  <main class="tc-shell tc-shell-signup">
+    <section id="guest-continue" class="tc-panel" hidden>
+      <h2 class="tc-panel-title">Testing mode</h2>
+      <p class="tc-hint">Skip signup for now — open BRAHL as a guest while Google auth is being wired.</p>
+      <button type="button" class="tc-btn tc-btn-primary tc-btn-block" id="btn-guest-continue">
+        Continue to BRAHL without account →
+      </button>
+      <div class="tc-divider">or create an account</div>
+    </section>
     <ol class="tc-steps" aria-label="Signup progress">
       <li id="step-indicator-1" class="active">1 · Account</li>
       <li id="step-indicator-2">2 · Profile</li>
     </ol>
 
-    <section id="signup-step-1" class="tc-form">
+    <section id="signup-step-1" class="tc-panel">
       <h2 class="tc-panel-title">Continue with</h2>
-      <div class="tc-social">
-        <button type="button" class="tc-social-btn tc-social-google" data-provider="google"><span class="tc-social-mark">G</span> Google</button>
-        <button type="button" class="tc-social-btn tc-social-facebook" data-provider="facebook"><span class="tc-social-mark">f</span> Facebook</button>
-        <button type="button" class="tc-social-btn tc-social-whatsapp" data-provider="whatsapp"><span class="tc-social-mark">W</span> WhatsApp</button>
-        <button type="button" class="tc-social-btn tc-social-instagram" data-provider="instagram"><span class="tc-social-mark">Ig</span> Instagram</button>
+      <div class="tc-social tc-social-stack">
+        <button type="button" class="tc-social-btn tc-social-google" id="btn-google" data-provider="google">
+          <span class="tc-social-mark">G</span> Continue with Google
+        </button>
+        <button type="button" class="tc-social-btn tc-social-facebook" data-provider="facebook" disabled title="Coming soon">
+          <span class="tc-social-mark">f</span> Facebook <span class="tc-soon">Soon</span>
+        </button>
+        <button type="button" class="tc-social-btn tc-social-instagram" data-provider="instagram" disabled title="Coming soon">
+          <span class="tc-social-mark">Ig</span> Instagram <span class="tc-soon">Soon</span>
+        </button>
       </div>
-      <div id="social-email-panel" class="tc-conditional" hidden>
-        <div class="tc-field">
-          <label for="social-email">Email for <span id="social-provider-label">provider</span></label>
-          <input type="email" id="social-email" class="tc-input" autocomplete="email" placeholder="you@company.com" />
-        </div>
-        <div class="tc-field">
-          <label for="social-name">Display name <span class="tc-optional">(optional)</span></label>
-          <input type="text" id="social-name" class="tc-input" autocomplete="name" />
-        </div>
-        <button type="button" id="social-continue" class="tc-btn tc-btn-primary tc-btn-block">Continue</button>
-      </div>
+      <p id="signup-error-1" class="tc-error" hidden></p>
       <div class="tc-divider">or email</div>
       <form id="signup-email-form" class="tc-form">
         <div class="tc-field">
@@ -53,14 +71,13 @@
           <label for="signup-password">Password (8+ chars)</label>
           <input type="password" id="signup-password" required minlength="8" autocomplete="new-password" />
         </div>
-        <p id="signup-error-1" class="tc-error" hidden></p>
         <button type="submit" class="tc-btn tc-btn-primary tc-btn-block">Continue to profile</button>
       </form>
     </section>
 
-    <section id="signup-step-2" class="tc-form" hidden>
+    <section id="signup-step-2" class="tc-panel" hidden>
       <h2 class="tc-panel-title">Your profile</h2>
-      <p class="tc-hint">Some fields are optional — you can refine them later. Choose every avatar you use.</p>
+      <p class="tc-hint">Optional fields can wait — pick every role you use.</p>
       <form id="signup-profile-form" class="tc-form">
         <div class="tc-row">
           <div class="tc-field">
@@ -72,46 +89,50 @@
             <input type="text" id="signup-last" required autocomplete="family-name" />
           </div>
         </div>
-        <div class="tc-row">
+        <div class="tc-row tc-row-3">
           <div class="tc-field">
-            <label for="signup-country">Country <span class="tc-optional">(optional)</span></label>
-            <input type="text" id="signup-country" autocomplete="country-name" placeholder="United States" />
+            <label for="signup-country">Country <span class="tc-optional">(opt.)</span></label>
+            <input type="text" id="signup-country" autocomplete="country-name" placeholder="US" />
           </div>
           <div class="tc-field">
-            <label for="signup-phone">Phone <span class="tc-optional">(optional)</span></label>
-            <input type="tel" id="signup-phone" autocomplete="tel" placeholder="+1 …" />
+            <label for="signup-city">City <span class="tc-optional">(opt.)</span></label>
+            <input type="text" id="signup-city" autocomplete="address-level2" placeholder="City" />
+          </div>
+          <div class="tc-field">
+            <label for="signup-phone">Phone <span class="tc-optional">(opt.)</span></label>
+            <input type="tel" id="signup-phone" autocomplete="tel" placeholder="+1…" />
           </div>
         </div>
 
         <fieldset class="tc-field">
-          <legend class="tc-label">Roles / avatars</legend>
+          <legend class="tc-label">Roles</legend>
           <div class="tc-check-grid">
             <label class="tc-check">
               <input type="checkbox" name="roles" value="creator" checked />
               <div>
                 <strong>Creator</strong>
-                <span>Own challenges, Build → BRAHL, Go/No-Go launch calls.</span>
+                <span>Own challenges, Build → BRAHL, Go/No-Go.</span>
               </div>
             </label>
             <label class="tc-check">
               <input type="checkbox" name="roles" value="qa_hunter" id="role-hunter" />
               <div>
                 <strong>QA Hunter</strong>
-                <span>Join hunts, deliver evidence, consultant workflows.</span>
+                <span>Join hunts, deliver evidence.</span>
               </div>
             </label>
             <label class="tc-check">
               <input type="checkbox" name="roles" value="nalanda" />
               <div>
                 <strong>Nalanda</strong>
-                <span>Learn / Teach / Discuss network surface.</span>
+                <span>Learn / teach / discuss.</span>
               </div>
             </label>
             <label class="tc-check">
               <input type="checkbox" name="roles" value="promoter" id="role-promoter" />
               <div>
                 <strong>Promoter</strong>
-                <span>Grow the arena — invites, XP, and wallet credits.</span>
+                <span>Grow BRAHL — invites, XP, wallet credits.</span>
               </div>
             </label>
           </div>
@@ -119,15 +140,15 @@
 
         <div id="creator-extra" class="tc-conditional">
           <div class="tc-field">
-            <label for="signup-app-url">Main application URL <span class="tc-optional">(private, optional)</span></label>
+            <label for="signup-app-url">Main app URL <span class="tc-optional">(private, opt.)</span></label>
             <input type="url" id="signup-app-url" placeholder="https://your-app.example.com" autocomplete="url" />
-            <p class="tc-hint">Not shared publicly — used to prefill your BRAHL challenges.</p>
+            <p class="tc-hint">Not public — prefills your BRAHL challenges.</p>
           </div>
         </div>
 
         <div id="hunter-extra" class="tc-conditional" hidden>
           <div class="tc-field">
-            <label for="signup-profile-file">Upload profile / résumé <span class="tc-optional">(optional)</span></label>
+            <label for="signup-profile-file">Résumé / profile <span class="tc-optional">(opt.)</span></label>
             <input type="file" id="signup-profile-file" accept=".pdf,.doc,.docx,.txt,image/*" />
           </div>
         </div>
@@ -135,13 +156,17 @@
         <p id="signup-error-2" class="tc-error" hidden></p>
         <div class="tc-actions">
           <button type="button" id="signup-back" class="tc-btn tc-btn-ghost">Back</button>
-          <button type="submit" class="tc-btn tc-btn-primary" style="flex:1">Finish &amp; enter arena</button>
+          <button type="submit" class="tc-btn tc-btn-primary" style="flex:1">Finish &amp; continue to BRAHL</button>
         </div>
       </form>
     </section>
 
-    <p class="tc-footer-links">Have an account? <a href="/login">Log in</a> · <a href="/signin">Demo profiles</a></p>
+    <p class="tc-footer-links">
+      Have an account? <a href="/login">Log in</a>
+      · <a href="/app?demo=1" id="footer-guest">Guest → BRAHL</a>
+    </p>
   </main>
+  <script src="/assets/invite-gate.js"></script>
   <script src="/assets/signup.js"></script>
 </body>
 </html>

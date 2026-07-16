@@ -6,7 +6,7 @@ Suite for testing **current** BRAHL Arena (`/app`) with FoXYiZ.
 
 | Version | What | Status |
 |---------|------|--------|
-| **V1 (now)** | Verify gate refreshed for Strategy / Manual chips / Heal CTAs / Loop button / Analyze Expected column · suite name `qoa_web_live` | Active |
+| **V1 (now)** | Verify gate + AI .md / Build doc chips / Heal Apply CTA · suite `qoa_web_live` · version **1.4.0-v1** | Active |
 | **V2 (later)** | Re-BRAHL Journey library (~800) via `python pyUtils/gen_journey_ypad.py --target 800` pointed at this suite | Not run yet |
 
 Yes: **V1 gate first, re-BRAHL Journey later** is the right cadence.
@@ -24,8 +24,12 @@ Yes: **V1 gate first, re-BRAHL Journey later** is the right cadence.
 ## Run
 
 ```powershell
-# From KK/ — V1 verify gate
-python f\fEngine2.py --config f\fStart_qoa_web_live_verify.json
+# From KK/ — V1 verify gate (headless smoke)
+cd FoXYiZ
+python f\fEngine2.py --config f\fStart_qoa_web_live_smoke_headless.json
+
+# V1.4 AI / Build-doc slice
+python f\fEngine2.py --config f\fStart_qoa_web_live_ai_smoke.json
 
 # Re-apply V1 patches after UI edits (idempotent-ish)
 python pyUtils\patch_qoa_web_live_v1.py

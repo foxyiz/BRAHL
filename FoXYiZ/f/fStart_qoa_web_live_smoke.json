@@ -4,7 +4,7 @@
   ],
   "thread_count": 1,
   "timeout": 8,
-  "headless": true,
+  "headless": false,
   "debug": false,
   "tags": [
     "Smoke"

@@ -3,10 +3,10 @@
     "y/qoa_web_live/qoa_web_verify_gate.json"
   ],
   "thread_count": 1,
-  "timeout": 5,
-  "headless": false,
+  "timeout": 8,
+  "headless": true,
   "debug": false,
   "tags": [
-    "Verify"
+    "V1"
   ]
 }

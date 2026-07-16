@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import re
 import subprocess
 import sys
@@ -27,6 +28,54 @@ from paths import (
 )
 
 OUTPUT_DIR_RE = re.compile(r"Output Directory:\s*(.+)")
+
+
+def _engine_subprocess_env() -> dict[str, str]:
+    """Force line-oriented stdout so Arena can stream the Run console live."""
+    env = os.environ.copy()
+    env["PYTHONUNBUFFERED"] = "1"
+    env.setdefault("PYTHONIOENCODING", "utf-8")
+    return env
+
+
+def _popen_engine(cmd: list[str]) -> subprocess.Popen[str]:
+    """Start FoXYiZ with unbuffered, line-readable stdout (stderr merged)."""
+    # -u duplicates PYTHONUNBUFFERED for the child interpreter on Windows pipes.
+    exe = [cmd[0], "-u", *cmd[1:]] if cmd and cmd[0] == sys.executable else list(cmd)
+    return subprocess.Popen(
+        exe,
+        cwd=str(FOXYIZ_ROOT),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        bufsize=1,
+        env=_engine_subprocess_env(),
+    )
+
+
+def _drain_stdout(proc: subprocess.Popen[str], job: Job) -> None:
+    """Read engine stdout line-by-line into the job log (live polling in Arena)."""
+    assert proc.stdout is not None
+    while True:
+        line = proc.stdout.readline()
+        if line == "" and proc.poll() is not None:
+            break
+        if not line:
+            if proc.poll() is not None:
+                break
+            time.sleep(0.05)
+            continue
+        job.log_lines.append(line.rstrip("\n"))
+        m = OUTPUT_DIR_RE.search(line)
+        if m:
+            out = m.group(1).strip().replace("\\", "/")
+            job.output_dir = out
+            if "zDash_batch_" in out:
+                job.batch_dashboard = out
+            elif out not in job.run_dirs:
+                job.run_dirs.append(out)
 
 
 @dataclass
@@ -286,27 +335,10 @@ def start_run(config_path: str, step_label: str = "Run") -> Job:
             job.finished_at = time.time()
             return
         try:
-            proc = subprocess.Popen(
-                [sys.executable, str(ENGINE), "--config", str(cfg.relative_to(FOXYIZ_ROOT))],
-                cwd=str(FOXYIZ_ROOT),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
-                bufsize=1,
+            proc = _popen_engine(
+                [sys.executable, str(ENGINE), "--config", str(cfg.relative_to(FOXYIZ_ROOT))]
             )
-            assert proc.stdout is not None
-            for line in proc.stdout:
-                job.log_lines.append(line.rstrip("\n"))
-                m = OUTPUT_DIR_RE.search(line)
-                if m:
-                    out = m.group(1).strip()
-                    job.output_dir = out
-                    if "zDash_batch_" in out.replace("\\", "/"):
-                        job.batch_dashboard = out.replace("\\", "/")
-                    elif out not in job.run_dirs:
-                        job.run_dirs.append(out)
+            _drain_stdout(proc, job)
             proc.wait()
             job.return_code = proc.returncode
             job.status = "completed" if proc.returncode == 0 else "failed"
@@ -360,29 +392,8 @@ def start_batch(
                 cmd.append("--sequential")
             else:
                 cmd.append("--parallel")
-            proc = subprocess.Popen(
-                cmd,
-                cwd=str(FOXYIZ_ROOT),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
-                bufsize=1,
-            )
-            assert proc.stdout is not None
-            for line in proc.stdout:
-                job.log_lines.append(line.rstrip("\n"))
-                m = OUTPUT_DIR_RE.search(line)
-                if m:
-                    out = m.group(1).strip().replace("\\", "/")
-                    if "zDash_batch_" in out:
-                        job.batch_dashboard = out
-                        job.output_dir = out
-                    else:
-                        job.output_dir = out
-                        if out not in job.run_dirs:
-                            job.run_dirs.append(out)
+            proc = _popen_engine(cmd)
+            _drain_stdout(proc, job)
             proc.wait()
             job.return_code = proc.returncode
             job.status = "completed" if proc.returncode == 0 else "failed"

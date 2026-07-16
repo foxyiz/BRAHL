@@ -55,16 +55,11 @@ maybeApplyProfileFromQuery();
   }
 })();
 
-(function redirectIfNoProfile() {
+(function redirectIfNoAccess() {
   const path = location.pathname.replace(/\/$/, "") || "/";
   if (path !== "/app" && path !== "/index.html") return;
   if (window.QoaInviteGate && !window.QoaInviteGate.isInviteTrialValid()) {
     location.replace("/welcome");
-    return;
-  }
-  const params = new URLSearchParams(location.search);
-  if (!localStorage.getItem(STORAGE_PROFILE) && !params.get("profile")) {
-    location.replace("/signin");
   }
 })();
 
@@ -74,6 +69,8 @@ let selectedBrahlRun = null;
 let selectedBrahlReportId = null;
 let activeProject = null;
 let lastAnalyzeMarkdown = "";
+let lastHealPatches = [];
+let lastHealMarkdown = "";
 
 const state = {
   profile: typeof getActiveProfile === "function" ? getActiveProfile() : null,
@@ -182,6 +179,12 @@ function showPhase(name) {
     } catch {
       /* ignore */
     }
+  } else if (/^#(nalanda|atomic77|promoter|cost)$/i.test(location.hash || "")) {
+    try {
+      history.replaceState(null, "", `${location.pathname}${location.search}`);
+    } catch {
+      /* ignore */
+    }
   }
   // Keep phase nav stable: never scrollIntoView the panel (jumps header / consultant locks).
   // Land at page top so each phase starts under the same menu position.
@@ -192,6 +195,8 @@ function showPhase(name) {
   }
   renderPhaseProgress();
   updateVisualRewardRail();
+  syncTopbarRoleSelect();
+  if (name === "promoter") setStatus("Promoter — share invites · earn XP & wallet credits");
 }
 
 function updateLockedPhaseActions() {
@@ -248,12 +253,70 @@ async function setAvatar(avatar) {
   setStatus(`Viewing as ${avatarLabel(avatar).short}`);
   syncProjectStatus();
   updateVisualRewardRail();
+  syncTopbarRoleSelect();
 }
 
 function updateTopbarProjectLabel() {
   const labelEl = $(".topbar-project-label");
   if (!labelEl) return;
   labelEl.textContent = "Projects";
+}
+
+function syncTopbarRoleSelect() {
+  const wrap = $("#topbar-role");
+  const sel = $("#topbar-role-select");
+  if (!wrap || !sel) return;
+  if (!state.avatar) {
+    wrap.hidden = true;
+    return;
+  }
+  wrap.hidden = false;
+  const profile = state.profile || (typeof getActiveProfile === "function" ? getActiveProfile() : null);
+  const hunterOpt = sel.querySelector('option[value="consultant"]');
+  if (hunterOpt) {
+    const allowed = !profile || profileAllowsAvatar(profile, "consultant");
+    hunterOpt.disabled = !allowed;
+    hunterOpt.title = allowed
+      ? "QA Hunter — join open challenges"
+      : "QA Hunter — switch profile at Sign-in for dual-role access";
+  }
+  const creatorOpt = sel.querySelector('option[value="client"]');
+  if (creatorOpt) {
+    const allowed = !profile || profileAllowsAvatar(profile, "client");
+    creatorOpt.disabled = !allowed;
+  }
+  const value = state.phase === "promoter" ? "promoter" : state.avatar === "consultant" ? "consultant" : "client";
+  // networker maps to Creator slot visually unless on Promoter phase
+  if (state.phase !== "promoter" && state.avatar === "networker") {
+    sel.value = "client";
+  } else if ([...sel.options].some((o) => o.value === value && !o.disabled)) {
+    sel.value = value;
+  } else if (state.avatar && [...sel.options].some((o) => o.value === state.avatar && !o.disabled)) {
+    sel.value = state.avatar;
+  }
+}
+
+function bindTopbarRoleSelect() {
+  const sel = $("#topbar-role-select");
+  if (!sel || sel.dataset.bound) return;
+  sel.dataset.bound = "1";
+  sel.addEventListener("change", async () => {
+    const v = sel.value;
+    if (v === "promoter") {
+      showPhase("promoter");
+      return;
+    }
+    if (v === "client" || v === "consultant") {
+      const leavingUtility = ["promoter", "nalanda", "atomic77", "cost"].includes(state.phase);
+      if (leavingUtility) showPhase("build");
+      await setAvatar(v);
+      if (state.avatar !== v) {
+        syncTopbarRoleSelect();
+        return;
+      }
+      syncTopbarRoleSelect();
+    }
+  });
 }
 
 function syncAvatarButtons(profile, activeAvatar) {
@@ -267,6 +330,7 @@ function syncAvatarButtons(profile, activeAvatar) {
       b.title = `${avatarLabel(b.dataset.avatar).short} — switch profile at Sign-in for dual-role access`;
     }
   });
+  syncTopbarRoleSelect();
 }
 
 function bindAvatarControls() {
@@ -420,7 +484,7 @@ function bindPersonaBadge() {
 }
 
 function applyProfileUI() {
-  const profile = state.profile || getActiveProfile();
+  const profile = state.profile || (typeof getActiveProfile === "function" ? getActiveProfile() : null);
   state.profile = profile;
   const chip = $("#user-menu-btn");
   const codeEl = $("#profile-chip-code");
@@ -429,74 +493,71 @@ function applyProfileUI() {
   if (chip) {
     chip.hidden = false;
     if (authUser) {
-      if (codeEl) codeEl.textContent = authUser.email.split("@")[0];
-      if (nameEl) nameEl.textContent = authUser.name || authUser.email;
-      chip.title = `${authUser.email} — account menu`;
+      if (codeEl) codeEl.textContent = (authUser.role || "user").replace(/_/g, " ").slice(0, 12);
+      if (nameEl) nameEl.textContent = authUser.name || authUser.email?.split("@")[0] || "Account";
+      chip.title = `${authUser.email || "Account"} — menu`;
       const so = $("#user-menu-signout");
       const li = $("#user-menu-login");
       const su = $("#user-menu-signup");
       if (so) so.hidden = false;
       if (li) li.hidden = true;
       if (su) su.hidden = true;
-    } else if (profile) {
-      if (codeEl) codeEl.textContent = profile.code;
-      if (nameEl) nameEl.textContent = profile.name;
-      chip.title = `${profile.code} · ${profile.title} — account menu`;
+    } else {
+      if (codeEl) codeEl.textContent = "Guest";
+      if (nameEl) nameEl.textContent = "Sign in";
+      chip.title = "Account menu";
+      const so = $("#user-menu-signout");
+      const li = $("#user-menu-login");
+      const su = $("#user-menu-signup");
+      if (so) so.hidden = true;
+      if (li) li.hidden = false;
+      if (su) su.hidden = false;
     }
   }
+
+  const role = (authUser?.role || "").toLowerCase();
+  const isPlatformAdmin = role === "admin" || role === "super_admin" || !!authUser?.is_super_admin;
+  const isProjectAdmin =
+    isPlatformAdmin ||
+    (!!authUser &&
+      state.avatar === "client" &&
+      !!state.projectId &&
+      ["creator", "both", "admin", "super_admin"].includes(role));
+
   const adminLink = $("#footer-admin-link");
   const adminMenu = $("#user-menu-admin");
   const projAdminMenu = $("#user-menu-project-admin");
-  const isPlatformAdmin = !!(profile?.admin || profile?.superAdmin);
-  const isCreatorView =
-    state.avatar === "client" ||
-    profile?.defaultAvatar === "client" ||
-    !!profile?.dualRole ||
-    (authUser && ["creator", "both", "admin", "super_admin"].includes(authUser.role));
   if (adminLink) {
     adminLink.href = "/admin";
-    adminLink.classList.toggle("footer-admin-link-active", isPlatformAdmin || isCreatorView);
+    adminLink.hidden = !isPlatformAdmin && !isProjectAdmin;
+    adminLink.classList.toggle("footer-admin-link-active", isPlatformAdmin || isProjectAdmin);
   }
   if (adminMenu) {
     adminMenu.hidden = !isPlatformAdmin;
     adminMenu.href = "/admin";
   }
   if (projAdminMenu) {
-    projAdminMenu.hidden = !(isCreatorView || isPlatformAdmin);
+    projAdminMenu.hidden = !isProjectAdmin;
     projAdminMenu.href = state.projectId
       ? `/admin?project=${encodeURIComponent(state.projectId)}`
       : "/admin?scope=project";
   }
 
-  $$(".avatar-btn").forEach((b) => {
-    syncAvatarButtons(profile, state.avatar);
+  $$(".avatar-btn").forEach(() => {
+    syncAvatarButtons(null, state.avatar);
   });
 
   const tierBanner = $("#consultant-tier-banner");
   if (tierBanner) {
-    if (profile?.consultantTier === "senior") {
-      tierBanner.hidden = false;
-      tierBanner.textContent =
-        "Senior QA Hunter — mentor-level deliverables, hybrid Automation + AI reports, yPAD shrink/restore guidance.";
-      tierBanner.className = "consultant-tier-banner consultant-tier-senior";
-    } else if (profile?.consultantTier === "bounty") {
-      tierBanner.hidden = false;
-      tierBanner.textContent =
-        "Bug-bounty QA Hunter — focus on critical issues, tagged invites, enriched report uploads.";
-      tierBanner.className = "consultant-tier-banner consultant-tier-bounty";
-    } else {
-      tierBanner.hidden = true;
-      tierBanner.textContent = "";
-    }
+    tierBanner.hidden = true;
+    tierBanner.textContent = "";
   }
 
   const demoBanner = $("#demo-banner");
   if (demoBanner) demoBanner.hidden = true;
 
-  document.body.classList.toggle("profile-admin", !!profile?.admin || !!profile?.superAdmin);
-  document.body.classList.toggle("profile-ai-locked", !!profile?.aiLocked);
-  document.body.classList.toggle("profile-power-client", profile?.techLevel === "engineer");
-  loadPersonaTasks();
+  document.body.classList.toggle("profile-admin", isPlatformAdmin);
+  document.body.classList.remove("profile-ai-locked", "profile-power-client");
 }
 
 const PRESENCE_SESSION_KEY = "qoa_presence_session";
@@ -1360,6 +1421,263 @@ function renderBrahlChat() {
   el.scrollTop = el.scrollHeight;
 }
 
+function teamAuthorMeta() {
+  const profile = state.profile;
+  const isHunter = state.avatar === "consultant";
+  const name =
+    profile?.name ||
+    (isHunter ? "QA Hunter" : state.avatar === "client" ? "Creator" : "Teammate");
+  return {
+    author: name,
+    author_role: isHunter ? "hunter" : "creator",
+    created_by: name,
+  };
+}
+
+function renderBrahlTeamRoster(project) {
+  const el = $("#brahl-team-roster");
+  if (!el) return;
+  const owner = project?.name ? `Creator · ${project.name}` : "Creator";
+  const team = project?.hitl_consultants || [];
+  const pending = (project?.hitl_invites || []).filter((i) => (i.status || "pending") === "pending");
+  const rows = [
+    `<div class="brahl-team-member"><strong>Creator</strong> — project owner</div>`,
+    ...team.map((c) => {
+      const d = c.deliverables || {};
+      return `<div class="brahl-team-member"><strong>${escapeHtml(c.name || "QA Hunter")}</strong> — ${d.critical_issues || 0} critical · ${d.reports_submitted || 0} reports</div>`;
+    }),
+  ];
+  if (pending.length) {
+    rows.push(
+      ...pending.map(
+        (i) =>
+          `<div class="brahl-team-member"><em>Pending invite</em> — ${escapeHtml(i.consultant_name || i.email || "QA Hunter")}</div>`
+      )
+    );
+  }
+  if (!team.length && !pending.length) {
+    rows.push(`<p class="empty-hint">No QA Hunters yet — invite from here or Build.</p>`);
+  }
+  el.innerHTML = rows.join("");
+  void owner;
+}
+
+function renderBrahlTeamChat(messages) {
+  const el = $("#brahl-team-chat-thread");
+  if (!el) return;
+  const msgs = messages || [];
+  if (!msgs.length) {
+    el.innerHTML =
+      '<p class="empty-hint">Start the conversation — scope, bugs, and next BRAHL loops live here.</p>';
+    return;
+  }
+  el.innerHTML = msgs
+    .map((m) => {
+      const roleLabel =
+        m.author_role === "hunter" ? "QA Hunter" : m.author_role === "system" ? "System" : "Creator";
+      return `<div class="chat-msg chat-user"><span class="chat-role">${escapeHtml(m.author || roleLabel)} · ${roleLabel}</span>${escapeHtml(m.text || "")}</div>`;
+    })
+    .join("");
+  el.scrollTop = el.scrollHeight;
+}
+
+function renderBrahlTeamTasks(tasks) {
+  const el = $("#brahl-team-tasks");
+  if (!el) return;
+  const list = tasks || [];
+  if (!list.length) {
+    el.innerHTML = '<li class="empty-hint">No tasks yet — Creator can assign work for payouts later.</li>';
+    return;
+  }
+  el.innerHTML = list
+    .map((t) => {
+      const done = t.status === "done";
+      return `<li class="brahl-team-task${done ? " done" : ""}" data-task-id="${escapeHtml(t.id)}">
+        <strong>${escapeHtml(t.title || "")}</strong>
+        ${t.assignee ? ` · ${escapeHtml(t.assignee)}` : ""}
+        <button type="button" class="secondary brahl-task-toggle" data-task-id="${escapeHtml(t.id)}" data-next="${done ? "open" : "done"}">${done ? "Reopen" : "Done"}</button>
+      </li>`;
+    })
+    .join("");
+}
+
+function renderBrahlTeamLibrary(project) {
+  const el = $("#brahl-team-library");
+  if (!el) return;
+  const items = [...(project?.context_items || [])];
+  const docs = project?.documents || [];
+  docs.forEach((d) => {
+    if (!items.some((i) => i.value === d.path || i.label === d.filename)) {
+      items.push({ kind: "document", label: d.filename || "Upload", value: d.path || d.filename || "" });
+    }
+  });
+  if (!items.length) {
+    el.innerHTML = '<li class="empty-hint">Add links or upload docs the team can reference while BRAHLing.</li>';
+    return;
+  }
+  el.innerHTML = items
+    .slice()
+    .reverse()
+    .slice(0, 40)
+    .map((i) => {
+      const kind = CONTEXT_KIND_LABELS[i.kind] || i.kind || "Item";
+      const val = i.value || "";
+      const isUrl = /^https?:\/\//i.test(val);
+      const body = isUrl
+        ? `<a href="${escapeHtml(val)}" target="_blank" rel="noopener noreferrer">${escapeHtml(i.label || val)}</a>`
+        : escapeHtml(i.label || val);
+      return `<li class="brahl-team-lib-item"><span class="meta">${escapeHtml(kind)}</span> — ${body}</li>`;
+    })
+    .join("");
+}
+
+async function loadBrahlTeamWorkspace() {
+  if (!state.projectId) return;
+  let project = activeProject;
+  try {
+    const data = await api(`/api/projects/${state.projectId}/team`);
+    if (activeProject) {
+      activeProject.team_messages = data.team_messages || [];
+      activeProject.team_tasks = data.team_tasks || [];
+      activeProject.hitl_consultants = data.hitl_consultants || activeProject.hitl_consultants;
+      activeProject.hitl_invites = data.hitl_invites || activeProject.hitl_invites;
+      activeProject.context_items = data.context_items || activeProject.context_items;
+      activeProject.documents = data.documents || activeProject.documents;
+      project = activeProject;
+    } else {
+      project = {
+        hitl_consultants: data.hitl_consultants,
+        hitl_invites: data.hitl_invites,
+        team_messages: data.team_messages,
+        team_tasks: data.team_tasks,
+        context_items: data.context_items,
+        documents: data.documents,
+      };
+    }
+  } catch {
+    /* keep local project snapshot */
+  }
+  if (!project) return;
+  renderBrahlTeamRoster(project);
+  renderBrahlTeamChat(project.team_messages || []);
+  renderBrahlTeamTasks(project.team_tasks || []);
+  renderBrahlTeamLibrary(project);
+}
+
+async function sendBrahlTeamChat(ev) {
+  ev.preventDefault();
+  if (!state.projectId) return;
+  const input = $("#brahl-team-chat-input");
+  const text = input?.value?.trim();
+  if (!text) return;
+  input.value = "";
+  const meta = teamAuthorMeta();
+  try {
+    const data = await api(`/api/projects/${state.projectId}/team/chat`, {
+      method: "POST",
+      body: JSON.stringify({ text, author: meta.author, author_role: meta.author_role }),
+    });
+    if (data.project) activeProject = data.project;
+    renderBrahlTeamChat(data.team_messages || activeProject?.team_messages || []);
+    setStatus("Team message sent");
+  } catch (err) {
+    input.value = text;
+    setStatus(`Team chat failed: ${err.message}`);
+  }
+}
+
+async function addBrahlTeamTask(ev) {
+  ev.preventDefault();
+  if (!state.projectId) return;
+  const input = $("#brahl-team-task-title");
+  const title = input?.value?.trim();
+  if (!title) return;
+  input.value = "";
+  const meta = teamAuthorMeta();
+  try {
+    const data = await api(`/api/projects/${state.projectId}/team/tasks`, {
+      method: "POST",
+      body: JSON.stringify({ title, created_by: meta.created_by }),
+    });
+    if (data.project) activeProject = data.project;
+    renderBrahlTeamTasks(data.team_tasks || []);
+    setStatus("Task added");
+  } catch (err) {
+    input.value = title;
+    setStatus(`Task failed: ${err.message}`);
+  }
+}
+
+async function toggleBrahlTeamTask(taskId, nextStatus) {
+  if (!state.projectId || !taskId) return;
+  try {
+    const data = await api(`/api/projects/${state.projectId}/team/tasks/${encodeURIComponent(taskId)}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status: nextStatus }),
+    });
+    if (data.project) activeProject = data.project;
+    renderBrahlTeamTasks(data.team_tasks || []);
+  } catch (err) {
+    setStatus(`Task update failed: ${err.message}`);
+  }
+}
+
+async function addBrahlTeamLibraryLink(ev) {
+  ev.preventDefault();
+  if (!state.projectId) return;
+  const label = $("#brahl-team-lib-label")?.value?.trim() || "";
+  const value = $("#brahl-team-lib-url")?.value?.trim() || "";
+  if (!value) return;
+  try {
+    const data = await api(`/api/projects/${state.projectId}/context`, {
+      method: "POST",
+      body: JSON.stringify({ kind: "url", label: label || "Link", value }),
+    });
+    activeProject = data.project;
+    if ($("#brahl-team-lib-label")) $("#brahl-team-lib-label").value = "";
+    if ($("#brahl-team-lib-url")) $("#brahl-team-lib-url").value = "";
+    renderBrahlTeamLibrary(activeProject);
+    setStatus("Library link added");
+  } catch (err) {
+    setStatus(`Library failed: ${err.message}`);
+  }
+}
+
+async function uploadBrahlTeamFile(ev) {
+  const file = ev.target?.files?.[0];
+  if (!file || !state.projectId) return;
+  const fd = new FormData();
+  fd.append("file", file);
+  try {
+    const res = await fetch(`/api/projects/${state.projectId}/documents`, { method: "POST", body: fd });
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    if (data.project) activeProject = data.project;
+    else await refreshActiveProject();
+    renderBrahlTeamLibrary(activeProject);
+    setStatus(`Uploaded ${file.name}`);
+  } catch (err) {
+    setStatus(`Upload failed: ${err.message}`);
+  } finally {
+    ev.target.value = "";
+  }
+}
+
+function bindBrahlTeamWorkspace() {
+  if (bindBrahlTeamWorkspace._bound) return;
+  bindBrahlTeamWorkspace._bound = true;
+  $("#brahl-team-chat-form")?.addEventListener("submit", sendBrahlTeamChat);
+  $("#brahl-team-task-form")?.addEventListener("submit", addBrahlTeamTask);
+  $("#brahl-team-library-form")?.addEventListener("submit", addBrahlTeamLibraryLink);
+  $("#brahl-team-file")?.addEventListener("change", uploadBrahlTeamFile);
+  $("#brahl-team-invite")?.addEventListener("click", () => openInviteHitlModal());
+  $("#brahl-team-tasks")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".brahl-task-toggle");
+    if (!btn) return;
+    toggleBrahlTeamTask(btn.dataset.taskId, btn.dataset.next);
+  });
+}
+
 function loadAtomic77LocalMessages() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_A77_LOCAL) || "[]");
@@ -1483,6 +1801,8 @@ async function sendAtomic77Chat(ev, faqKey) {
 
 async function loadBrahlPanel() {
   if (!state.projectId || !state.suiteName) return;
+  bindBrahlTeamWorkspace();
+  await loadBrahlTeamWorkspace();
   const list = $("#brahl-report-list");
   list.innerHTML = "";
 
@@ -1863,11 +2183,14 @@ function projectOptionsHtml(includePlaceholder = false) {
 
 function renderProjectSelectors() {
   const topbarWrap = $("#topbar-project");
+  const roleWrap = $("#topbar-role");
   if (!state.avatar) {
     if (topbarWrap) topbarWrap.hidden = true;
+    if (roleWrap) roleWrap.hidden = true;
     return;
   }
   renderTopbarProjectSelect();
+  syncTopbarRoleSelect();
 }
 
 function renderBuildChecklist() {
@@ -2169,9 +2492,7 @@ function renderBuildWorkspace() {
     renderBuildChecklist();
     return;
   }
-  const suite = state.suites.find((s) => s.name === state.suiteName);
   const title = $("#build-panel-title");
-  const blurb = $("#build-panel-blurb");
   const label = state.suiteName || activeProject.name;
   if (title) {
     if (state.avatar === "consultant") {
@@ -2182,10 +2503,6 @@ function renderBuildWorkspace() {
   }
   const hunterTag = $("#hunter-hero-tagline");
   if (hunterTag) hunterTag.hidden = state.avatar !== "consultant";
-  if (blurb && suite) {
-    blurb.textContent =
-      `${suite.description || "FoXYiZ + BRAHL cycle."} · ${suite.plan_run_y ?? "—"} automated plans in y/${suite.name}/`;
-  }
   const hitlLabel = $("#hitl-project-label");
   if (hitlLabel) hitlLabel.textContent = state.suiteName || activeProject.name || "this project";
   renderBuildChecklist();
@@ -2248,8 +2565,7 @@ function ypadDisplayColumnsForTab(tab, data) {
   }
   let dCols = ypadDesignColumns(headers);
   if (ypadState.designColumnMode === "active") {
-    const profileCol = typeof getActiveProfile === "function" ? getActiveProfile()?.ypadDesignColumn : null;
-    if (profileCol && dCols.includes(profileCol)) dCols = [profileCol];
+    /* persona design columns retired — show all */
   }
   const labels = ypadDesignColumnLabels(data);
   const cols = [...base, ...dCols];
@@ -2456,25 +2772,18 @@ function initUserMenu() {
       e.stopPropagation();
       menu.hidden = true;
       const action = el.dataset.userAction;
-      if (action === "nalanda") showPhase("nalanda");
-      else if (action === "atomic77") showPhase("atomic77");
-      else if (action === "promoter") showPhase("promoter");
+      if (action === "upcoming") {
+        setStatus("Coming soon — Nalanda & Atomic 77 are on the roadmap");
+        return;
+      }
+      if (action === "promoter") showPhase("promoter");
       else if (action === "cost") showPhase("cost");
       else if (action === "theme-pro") window.QoaTheme?.setTheme?.("pro");
-      else if (action === "theme-arena") window.QoaTheme?.setTheme?.("arena");
-      else if (action === "role-creator") await setAvatar("client");
-      else if (action === "role-hunter") await setAvatar("consultant");
       else if (action === "signout") {
         localStorage.removeItem(STORAGE_AUTH_TOKEN);
         localStorage.removeItem(STORAGE_AUTH_USER);
         location.href = "/login";
       }
-    });
-  });
-  const themeBtns = document.querySelectorAll("[data-theme-btn]");
-  themeBtns.forEach((b) => {
-    b.addEventListener("click", () => {
-      window.QoaTheme?.setTheme?.(b.dataset.themeBtn);
     });
   });
 }
@@ -2803,32 +3112,8 @@ function startArenaCostWidgetPoll() {
 }
 
 async function renderBuildCostRail() {
-  const rail = $("#build-cost-rail");
-  const body = $("#build-cost-rail-body");
+  /* Cost rail removed — Wallet dock + Budget & AI cover project cost. */
   refreshArenaCostWidget();
-  if (!rail || !body) return;
-  if (!state.projectId || state.avatar === "consultant") {
-    rail.hidden = true;
-    return;
-  }
-  rail.hidden = false;
-  try {
-    const { cost_meter: m } = await api(`/api/projects/${state.projectId}/cost-meter`);
-    const budget = Number(m.budget_usd) || 0;
-    const spentAi = Number(m.spent_automation_usd) || 0;
-    const spentHuman = Number(m.spent_human_usd) || 0;
-    const remaining = Number(m.remaining_usd) || 0;
-    if (!budget) {
-      body.innerHTML = `<span class="empty-hint">Set budget in optional section below.</span>`;
-      return;
-    }
-    body.innerHTML =
-      `<div><strong>Budget</strong> $${budget}</div>` +
-      `<div>AI $${spentAi.toFixed(0)} · QA Hunters $${spentHuman.toFixed(0)}</div>` +
-      `<div><strong>Remaining</strong> $${remaining.toFixed(0)}</div>`;
-  } catch {
-    body.innerHTML = `<span class="empty-hint">Cost data unavailable.</span>`;
-  }
 }
 
 
@@ -4045,15 +4330,17 @@ async function loadBuildAiStatus() {
     return;
   }
   try {
-    const st = await api("/api/ai/status");
+    const q = state.projectId ? `?project_id=${encodeURIComponent(state.projectId)}` : "";
+    const st = await api(`/api/ai/status${q}`);
+    const journeyHint = st.journey_in_prompt ? " · journey ON" : "";
     const docHint = st.reference_doc_count
-      ? ` · ${st.context_doc_count} in prompt · click .md in top bar for all docs`
+      ? ` · ${st.context_doc_count} in prompt${journeyHint} · click .md for Master + Journey`
       : "";
     el.textContent = st.available
       ? `BRAHL AI active (${st.model || "OpenAI"})${docHint}`
-      : `AI on — guided replies (OPENAI_API_KEY in f/.env)${docHint}`;
+      : `AI on — guided replies (OPENAI_API_KEY in FoXYiZ/f/.env)${docHint}`;
   } catch {
-    el.textContent = "BRAHL AI — describe changes in chat below · .md for context docs";
+    el.textContent = "BRAHL AI — describe changes in chat below · .md for Master + Journey context";
   }
 }
 
@@ -4077,24 +4364,29 @@ function updateAiDocsBudget(budget) {
     `${budget.doc_count}/${budget.max_docs} files · max ${Math.round(budget.max_file_bytes / 1024)}KB each`;
 }
 
+function aiDocsProjectQuery() {
+  return state.projectId ? `?project_id=${encodeURIComponent(state.projectId)}` : "";
+}
+
 async function openAiDocsModal() {
   const modal = $("#ai-docs-modal");
   if (!modal) return;
   modal.hidden = false;
   setAiDocsExpanded(true);
   try {
-    const data = await api("/api/ai/docs");
+    const data = await api(`/api/ai/docs${aiDocsProjectQuery()}`);
     aiDocsCache = data.docs || [];
     updateAiDocsBudget(data.budget);
     renderAiDocsList();
     const firstPrompt =
-      aiDocsCache.find((d) => d.in_prompt && d.source !== "user") ||
+      aiDocsCache.find((d) => d.source === "journey") ||
+      aiDocsCache.find((d) => d.in_prompt && d.master) ||
       aiDocsCache.find((d) => d.in_prompt) ||
       aiDocsCache[0];
     if (firstPrompt) await selectAiDoc(firstPrompt.id);
   } catch {
-    const builtin = $("#ai-docs-list-builtin");
-    if (builtin) builtin.innerHTML = `<li class="empty-hint">Could not load AI docs.</li>`;
+    const promptList = $("#ai-docs-list-prompt");
+    if (promptList) promptList.innerHTML = `<li class="empty-hint">Could not load AI docs.</li>`;
   }
 }
 
@@ -4122,7 +4414,13 @@ function toggleAiDocsExpand() {
 
 function renderAiDocsList(selectedId) {
   const selected = selectedId ?? aiDocsSelectedId;
-  const builtins = (aiDocsCache || []).filter((d) => d.source !== "user");
+  const promptDocs = (aiDocsCache || []).filter(
+    (d) => d.source === "journey" || d.master || (d.in_prompt && d.source !== "user")
+  );
+  const promptIds = new Set(promptDocs.map((d) => d.id));
+  const builtins = (aiDocsCache || []).filter(
+    (d) => d.source === "builtin" && !promptIds.has(d.id)
+  );
   const users = (aiDocsCache || []).filter((d) => d.source === "user");
   const fill = (listEl, docs) => {
     if (!listEl) return;
@@ -4145,6 +4443,7 @@ function renderAiDocsList(selectedId) {
       btn.addEventListener("click", () => selectAiDoc(btn.dataset.docId));
     });
   };
+  fill($("#ai-docs-list-prompt"), promptDocs);
   fill($("#ai-docs-list-builtin"), builtins);
   fill($("#ai-docs-list-user"), users);
 }
@@ -4165,7 +4464,7 @@ async function selectAiDoc(docId) {
   if (editor) editor.hidden = true;
   if (toolbar) toolbar.hidden = true;
   try {
-    const data = await api(`/api/ai/docs/${encodeURIComponent(docId)}`);
+    const data = await api(`/api/ai/docs/${encodeURIComponent(docId)}${aiDocsProjectQuery()}`);
     const doc = data.doc;
     updateAiDocsBudget(data.budget);
     if (title) title.textContent = doc.title;
@@ -4980,6 +5279,14 @@ async function runAnalyzeAi() {
 async function runHealAi() {
   if (!state.projectId || !selectedRun || !isAiOn()) return;
   const el = $("#heal-ai-result");
+  const applyBtn = $("#btn-heal-apply");
+  const applyHint = $("#heal-apply-hint");
+  lastHealPatches = [];
+  if (applyBtn) applyBtn.hidden = true;
+  if (applyHint) {
+    applyHint.hidden = true;
+    applyHint.textContent = "";
+  }
   if (el) {
     el.hidden = false;
     el.classList.add("ai-loading");
@@ -4993,10 +5300,101 @@ async function runHealAi() {
         body: JSON.stringify({ rca_markdown: lastAnalyzeMarkdown }),
       }
     );
-    renderAiMarkdown(el, data.markdown || "");
-    setStatus(data.ai ? "Heal: AI suggestions ready — review before editing CSVs" : "Heal: manual guide (no API key)");
+    lastHealMarkdown = data.markdown || "";
+    lastHealPatches = Array.isArray(data.patches) ? data.patches : [];
+    renderAiMarkdown(el, lastHealMarkdown);
+    if (lastHealPatches.length && applyBtn) {
+      applyBtn.hidden = false;
+      applyBtn.textContent = `Apply to yPAD (${lastHealPatches.length})`;
+      if (applyHint) {
+        applyHint.hidden = false;
+        applyHint.textContent =
+          `${lastHealPatches.length} structured patch(es) ready — review the heal plan, then Apply to write CSV changes.`;
+      }
+      setStatus(`Heal: ${lastHealPatches.length} patch(es) ready to Apply`);
+    } else {
+      setStatus(
+        data.ai
+          ? "Heal: AI suggestions ready — no auto-apply patches parsed"
+          : "Heal: manual guide (no API key)"
+      );
+    }
   } catch (e) {
     renderAiMarkdown(el, `Error: ${e.message}`);
+  }
+}
+
+async function applyHealPatches() {
+  if (!state.projectId || !lastHealPatches.length) {
+    alert("Run AI auto-heal first so there are patches to apply.");
+    return;
+  }
+  const logEl = $("#heal-log");
+  const applyHint = $("#heal-apply-hint");
+  const applyBtn = $("#btn-heal-apply");
+  if (applyBtn) applyBtn.disabled = true;
+  try {
+    const preview = await api(`/api/projects/${state.projectId}/heal-apply`, {
+      method: "POST",
+      body: JSON.stringify({
+        patches: lastHealPatches,
+        suite_config: suiteConfigPath(),
+        dry_run: true,
+      }),
+    });
+    const n = preview.applied || 0;
+    if (!n) {
+      if (logEl) {
+        logEl.textContent = `Dry-run: nothing to apply.\n${JSON.stringify(preview.changes || [], null, 2)}`;
+      }
+      setStatus("Heal Apply: no matching CSV rows");
+      return;
+    }
+    const ok = confirm(
+      `Apply ${n} yPAD field change(s) from AI heal?\n\nThis updates suite CSV files on disk. A1 defects are skipped.`
+    );
+    if (!ok) return;
+    const res = await api(`/api/projects/${state.projectId}/heal-apply`, {
+      method: "POST",
+      body: JSON.stringify({
+        patches: lastHealPatches,
+        suite_config: suiteConfigPath(),
+        dry_run: false,
+      }),
+    });
+    const lines = [
+      res.ok
+        ? `Applied ${res.applied} change(s); skipped ${res.skipped}.`
+        : `Apply failed: ${res.error || "unknown"}`,
+      res.written?.length ? `Wrote: ${res.written.join(", ")}` : "",
+      "",
+      ...(res.changes || []).slice(0, 20).map(
+        (c) =>
+          `[${c.status}] ${c.sheet || ""} ${JSON.stringify(c.match || {})} → ${JSON.stringify(c.after || {})}`
+      ),
+    ];
+    if (logEl) logEl.textContent = lines.filter(Boolean).join("\n");
+    if (applyHint) {
+      applyHint.hidden = false;
+      applyHint.textContent = res.ok
+        ? `Applied ${res.applied} change(s). Open Build → yPAD to review, then Rerun.`
+        : res.error || "Apply failed";
+    }
+    if (res.ok) {
+      lastHealPatches = [];
+      if (applyBtn) applyBtn.hidden = true;
+      setStatus("Heal Apply complete — review yPAD, then Rerun");
+      await recordCycleEvent("Heal", `Applied ${res.applied} CSV patch(es)`, selectedRun);
+      try {
+        await loadYpadSheet(ypadState.tab || "actions");
+      } catch {
+        /* optional refresh */
+      }
+    }
+  } catch (e) {
+    if (logEl) logEl.textContent = `Apply error: ${e.message}`;
+  } finally {
+    if (applyBtn) applyBtn.disabled = false;
   }
 }
 
@@ -5357,6 +5755,8 @@ async function startRun(stepLabel, { parallel = false } = {}) {
           } else {
             logEl.textContent = engineLog;
           }
+          // Keep console pinned to latest lines while the run streams
+          logEl.scrollTop = logEl.scrollHeight;
         }
         if (j.status === "completed" || j.status === "failed") {
           clearInterval(pollTimer);
@@ -5402,7 +5802,7 @@ async function startRun(stepLabel, { parallel = false } = {}) {
         if (logEl) logEl.textContent += `\n[poll error] ${e.message}`;
         resolve({ status: "failed", error: e.message });
       }
-    }, 800);
+    }, 400);
   });
 }
 
@@ -5576,20 +5976,19 @@ async function loadConfigsForSuite() {
 }
 
 function initAvatarGate() {
-  state.profile = getActiveProfile();
+  state.profile = typeof getActiveProfile === "function" ? getActiveProfile() : null;
   applyProfileUI();
   bindAvatarControls();
-  const profile = state.profile;
+  bindTopbarRoleSelect();
   let avatar = state.avatar;
-  if (profile) {
-    if (!avatar || !profileAllowsAvatar(profile, avatar)) {
-      avatar = profile.defaultAvatar;
-    }
-    setAvatar(avatar);
+  const authUser = getAuthUser();
+  if (!avatar && authUser?.role === "qa_hunter") avatar = "consultant";
+  if (!avatar && authUser) avatar = "client";
+  if (!avatar) {
+    $("#avatar-gate").hidden = false;
     return;
   }
-  if (!avatar) $("#avatar-gate").hidden = false;
-  else setAvatar(avatar);
+  setAvatar(avatar);
 }
 
 $$(".phase-btn").forEach((btn) => {
@@ -5740,7 +6139,6 @@ $("#ypad-save")?.addEventListener("click", saveYpadSheet);
 $("#ypad-drawer-close")?.addEventListener("click", () => closeYpadDrawer());
 $("#ypad-drawer-backdrop")?.addEventListener("click", () => closeYpadDrawer());
 $("#ypad-goto-brahl")?.addEventListener("click", () => showPhase("brahl"));
-$("#build-goto-cost")?.addEventListener("click", () => showPhase("cost"));
 $("#cost-runtime-local")?.addEventListener("change", () => saveCostRuntimeMode("local"));
 $("#cost-runtime-cloud")?.addEventListener("change", () => saveCostRuntimeMode("cloud"));
 document.addEventListener("keydown", (e) => {
@@ -5783,6 +6181,7 @@ $("#btn-restore-plans")?.addEventListener("click", restorePlans);
 $("#btn-refresh-runs")?.addEventListener("click", loadRuns);
 $("#btn-analyze-ai")?.addEventListener("click", runAnalyzeAi);
 $("#btn-heal-ai")?.addEventListener("click", runHealAi);
+$("#btn-heal-apply")?.addEventListener("click", applyHealPatches);
 $("#brahl-chat-form")?.addEventListener("submit", sendBrahlChat);
 $("#atomic77-chat-form")?.addEventListener("submit", (ev) => sendAtomic77Chat(ev));
 $$(".atomic77-faq-chip").forEach((chip) => {
@@ -5791,7 +6190,6 @@ $$(".atomic77-faq-chip").forEach((chip) => {
 $("#btn-link-run-report")?.addEventListener("click", linkRunReport);
 $("#link-report-form")?.addEventListener("submit", submitLinkReportForm);
 $("#link-report-cancel")?.addEventListener("click", closeLinkReportModal);
-$("#btn-goto-analyze")?.addEventListener("click", () => showPhase("analyze"));
 $$(".phase-marker").forEach((dot) => {
   dot.addEventListener("click", () => showPhase(dot.dataset.phase));
 });
@@ -5807,16 +6205,12 @@ restoreDraftRequirementIfNeeded();
   if (u.role === "qa_hunter") setAvatar("consultant");
   else setAvatar("client");
 })();
-bindPersonaBadge();
 window.QoaTheme?.initTheme?.();
-window.addEventListener("qoa-theme-change", (ev) => {
+window.addEventListener("qoa-theme-change", () => {
   updateVisualRewardRail();
   if (state.phase === "cost") loadCostPanel();
   const title = $("#app-title");
-  if (title) {
-    title.textContent =
-      ev.detail?.theme === "arena" && state.avatar ? "BRAHL Arena" : "BRAHL Web — f(x,y)=z";
-  }
+  if (title) title.textContent = "BRAHL Web — f(x,y)=z";
 });
 applyAvatarLabelsToDom();
 applyAvatarModeNav();

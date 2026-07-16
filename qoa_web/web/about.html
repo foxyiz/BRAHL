@@ -5,10 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>About us — QA on Air · BRAHL</title>
   <link rel="stylesheet" href="/assets/styles.css" />
+  <link rel="stylesheet" href="/assets/site-chrome.css" />
   <link rel="stylesheet" href="/assets/about.css" />
   <link rel="stylesheet" href="/assets/themes.css" />
 </head>
 <body class="about-page">
+  <header class="site-top">
+    <a class="site-brand" href="/" aria-label="QA on Air home">
+      <span class="site-brand-mark" aria-hidden="true">QA</span>
+      <span class="site-brand-text">
+        <span class="site-brand-name">QA on Air</span>
+        <span class="site-brand-sub">BRAHL</span>
+      </span>
+    </a>
+    <nav class="site-top-nav" aria-label="Site">
+      <a href="/pricing">Pricing</a>
+      <a href="/about" aria-current="page">About</a>
+      <a href="/login">Sign in</a>
+      <a class="site-top-cta" href="/app?demo=1">Start</a>
+    </nav>
+  </header>
   <header class="about-header">
     <div class="about-header-inner">
       <div>
@@ -19,13 +35,7 @@
           and <strong>admins</strong> who keep the ecosystem modestly happy — and very satisfied.
         </p>
       </div>
-      <div class="about-header-actions">
-        <div class="theme-switch" role="group" aria-label="Visual theme">
-          <button type="button" class="theme-switch-btn active" data-theme-btn="pro" aria-pressed="true">Pro</button>
-          <button type="button" class="theme-switch-btn" data-theme-btn="arena" aria-pressed="false">Arena</button>
-        </div>
-        <a href="/app" class="secondary about-back">← Back to arena</a>
-      </div>
+    </div>
     <nav class="about-nav" aria-label="On this page">
       <a href="#about-qoa">QA on Air</a>
       <a href="#about-foxyiz">FoXYiZ</a>
@@ -43,9 +53,10 @@
   <section id="about-gtm" class="about-waitlist-cta" aria-labelledby="about-gtm-title">
     <div class="about-waitlist-inner">
       <h2 id="about-gtm-title">Get started — invite trial</h2>
-      <p class="blurb">Enter with an invite code for a 7-day trial, then pick a demo profile and walk the arena.</p>
+      <p class="blurb">Enter with an invite code for a 7-day trial, then create an account and walk the arena.</p>
       <a href="/welcome" class="primary">Invite landing · 7-day trial</a>
-      <a href="/signin" class="secondary">Try demo profiles</a>
+      <a href="/pricing" class="secondary">Pricing</a>
+      <a href="/login" class="secondary">Log in</a>
     </div>
   </section>
 
@@ -457,7 +468,7 @@
         </blockquote>
         <p class="about-cta-line">
           <a href="/welcome" class="primary">Landing · invite trial</a>
-          <a href="/app" class="secondary">Open arena →</a>
+          <a href="/app" class="secondary">Open BRAHL →</a>
           <span class="meta">Champion · Contender · Nalanda · BRAHL it</span>
         </p>
       </div>
@@ -465,7 +476,7 @@
   </main>
 
   <footer class="footer about-footer">
-    <span>QA on Air · BRAHL Web · <a href="/welcome">Landing</a> · <a href="/app">Arena</a> · <a href="/admin">Admin Panel</a> · <a href="/api/about/ecosystem" target="_blank">Ecosystem API</a></span>
+    <span>QA on Air · BRAHL Web · <a href="/welcome">Landing</a> · <a href="/pricing">Pricing</a> · <a href="/app">BRAHL</a> · <a href="/admin">Admin Panel</a> · <a href="/api/about/ecosystem" target="_blank">Ecosystem API</a></span>
     <span id="about-updated" class="meta"></span>
   </footer>
 

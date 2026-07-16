@@ -4,19 +4,27 @@ from __future__ import annotations
 
 from typing import Any
 
-MEMBERSHIP_USD_PER_MONTH = 5.0
+# Free: anyone. Hunter AI plans: $5 / $20 / $50. Creator wallet: $50+.
+MEMBERSHIP_USD_PER_MONTH = 5.0  # default Hunter AI tier (compat)
+HUNTER_AI_TIERS_USD = (5.0, 20.0, 50.0)
 CREATOR_WALLET_MIN_USD = 50.0
 PLATFORM_FEE_PCT = 5
 ADMIN_OPS_PCT = 10
+PROMOTER_SHARE_PCT = 5  # from Creator deposits and from Hunter earnings
 PAYOUT_THRESHOLD_USD = 100.0
 
 
 def split_deposit(budget_usd: float, automation_pct: int = 50, human_pct: int = 50) -> dict[str, Any]:
-    """Split a Creator QA wallet deposit after platform + ops fees."""
+    """Split a Creator QA wallet deposit after platform, ops, and promoter shares.
+
+    Order: platform → ops → promoter (Creator side) → remaining net pool
+    (Creator chooses AI vs Hunter split of the net pool on Build).
+    """
     budget = max(0.0, float(budget_usd))
     platform_usd = round(budget * PLATFORM_FEE_PCT / 100, 2)
     admin_ops_usd = round(budget * ADMIN_OPS_PCT / 100, 2)
-    net_usd = round(max(0.0, budget - platform_usd - admin_ops_usd), 2)
+    promoter_usd = round(budget * PROMOTER_SHARE_PCT / 100, 2)
+    net_usd = round(max(0.0, budget - platform_usd - admin_ops_usd - promoter_usd), 2)
     auto_pct = int(automation_pct)
     human_pct = int(human_pct)
     if auto_pct + human_pct <= 0:
@@ -24,12 +32,20 @@ def split_deposit(budget_usd: float, automation_pct: int = 50, human_pct: int = 
     total_split = auto_pct + human_pct
     ai_usd = round(net_usd * auto_pct / total_split, 2)
     human_usd = round(net_usd * human_pct / total_split, 2)
+    # Promoter also takes 5% of Hunter (human) pool earnings — illustrated for transparency
+    promoter_from_human_usd = round(human_usd * PROMOTER_SHARE_PCT / 100, 2)
+    hunter_net_usd = round(max(0.0, human_usd - promoter_from_human_usd), 2)
     return {
         "budget_usd": budget,
         "platform_fee_pct": PLATFORM_FEE_PCT,
         "platform_fee_usd": platform_usd,
         "admin_ops_pct": ADMIN_OPS_PCT,
         "admin_ops_usd": admin_ops_usd,
+        "promoter_pct": PROMOTER_SHARE_PCT,
+        "promoter_usd": promoter_usd,
+        "promoter_from_hunter_earnings_pct": PROMOTER_SHARE_PCT,
+        "promoter_from_human_usd": promoter_from_human_usd,
+        "hunter_net_usd": hunter_net_usd,
         "net_pool_usd": net_usd,
         "automation_pct": auto_pct,
         "human_pct": human_pct,
@@ -49,15 +65,50 @@ def get_pricing_rules(
     balance = max(0.0, float(wallet_balance_usd))
     return {
         "membership_usd_per_month": MEMBERSHIP_USD_PER_MONTH,
+        "hunter_ai_tiers_usd": list(HUNTER_AI_TIERS_USD),
         "creator_wallet_min_usd": CREATOR_WALLET_MIN_USD,
         "platform_fee_pct": PLATFORM_FEE_PCT,
         "admin_ops_pct": ADMIN_OPS_PCT,
+        "promoter_share_pct": PROMOTER_SHARE_PCT,
+        "promoter_from_hunter_earnings_pct": PROMOTER_SHARE_PCT,
         "payout_threshold_usd": PAYOUT_THRESHOLD_USD,
         "wallet_balance_usd": round(balance, 2),
         "payout_eligible": balance >= PAYOUT_THRESHOLD_USD,
         "payout_remaining_usd": round(max(0.0, PAYOUT_THRESHOLD_USD - balance), 2),
         "example_deposit_split": example,
         "project_deposit_split": project_split,
+        "plans": {
+            "free": {
+                "id": "free",
+                "name": "Free",
+                "price_usd": 0,
+                "unit": "",
+                "blurb": "Anyone can start BRAHL — limited hosted AI, or bring your own OpenAI key.",
+            },
+            "hunter_ai": {
+                "id": "hunter_ai",
+                "name": "QA Hunter AI",
+                "tiers_usd": list(HUNTER_AI_TIERS_USD),
+                "unit": "/mo",
+                "blurb": "Hosted AI and tools across multiple projects — upgrade as you use more AI.",
+            },
+            "creator_wallet": {
+                "id": "creator_wallet",
+                "name": "Creator wallet",
+                "min_usd": CREATOR_WALLET_MIN_USD,
+                "unit": "+",
+                "blurb": "Fund your challenge. You choose how the net pool splits between AI and QA Hunters.",
+            },
+            "promoter": {
+                "id": "promoter",
+                "name": "Promoter",
+                "share_pct": PROMOTER_SHARE_PCT,
+                "blurb": (
+                    f"{PROMOTER_SHARE_PCT}% of referred Creator deposits and "
+                    f"{PROMOTER_SHARE_PCT}% of referred QA Hunter earnings."
+                ),
+            },
+        },
         "earn_tasks": [
             {
                 "id": "qa_hunt",
@@ -67,16 +118,51 @@ def get_pricing_rules(
             {
                 "id": "promote",
                 "title": "Promoting",
-                "description": "Share challenges and grow the arena — XP and wallet credits for user acquisition.",
+                "description": "Invite Creators and Hunters — earn a 5% share from both sides.",
             },
         ],
         "payout_options": [
-            "Cash out when your wallet reaches $100 equivalent.",
-            "Apply balance toward QA Hunting your own creations instead of withdrawing.",
+            {
+                "title": "Cash out at $100",
+                "detail": (
+                    f"When your wallet balance reaches ${PAYOUT_THRESHOLD_USD:.0f} equivalent, "
+                    "you can request a cash-out (Stripe payouts when enabled on the host)."
+                ),
+            },
+            {
+                "title": "Spend on your own QA",
+                "detail": (
+                    "Apply wallet balance toward Creator QA for your own apps instead of withdrawing — "
+                    "hunt your builds or fund automation without a cash transfer."
+                ),
+            },
+            {
+                "title": "QA Hunter earnings path",
+                "detail": (
+                    "Deliverables credit the human pool → your wallet. From there: hold to threshold, "
+                    "cash out, or spend on your own Creator challenges."
+                ),
+            },
+            {
+                "title": "Promoter share accrual",
+                "detail": (
+                    f"Referrers earn {PROMOTER_SHARE_PCT}% of Creator wallet top-ups they brought in, "
+                    f"plus {PROMOTER_SHARE_PCT}% of QA Hunter earnings from hunters they invited. "
+                    "Credits land in the Promoter wallet toward the same payout rules."
+                ),
+            },
+            {
+                "title": "Timing",
+                "detail": (
+                    "Live payouts require Stripe Connect (or similar) on the host. Until then, balances "
+                    "are tracked in BRAHL; checkout and cash-out stay scaffolded."
+                ),
+            },
         ],
         "summary": (
-            f"Every member ~${MEMBERSHIP_USD_PER_MONTH:.0f}/mo · Creators fund QA wallets from "
-            f"${CREATOR_WALLET_MIN_USD:.0f}+ · QAonAIR retains {PLATFORM_FEE_PCT}% · "
-            f"payouts at ${PAYOUT_THRESHOLD_USD:.0f}+ or spend on QA for your apps."
+            f"Free to start · Hunter AI ${HUNTER_AI_TIERS_USD[0]:.0f}/"
+            f"${HUNTER_AI_TIERS_USD[1]:.0f}/${HUNTER_AI_TIERS_USD[2]:.0f} · "
+            f"Creator wallets from ${CREATOR_WALLET_MIN_USD:.0f} · "
+            f"Promoters {PROMOTER_SHARE_PCT}% both sides."
         ),
     }

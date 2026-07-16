@@ -1,49 +1,90 @@
-# Deploy — Bluehost / VPS (+ future AWS)
+# Deploy — brahl.qaonair.com
 
-Ship **qoa_web** (FastAPI + static web) with optional **FoXYiZ** for server-side Run/Verify.  
-Deep host notes retired to `archive/docs-retired-20260714/Bluehost.md` and `aws.md`.
+Primary ship path is **GitHub → [brahl.qaonair.com](https://brahl.qaonair.com)** every ~6 hours.  
+FoXYiZ cloud execution runs on **team AWS EC2**. Docker / DIY VPS is optional only.
 
-## Bundle (slim)
+## Pipeline
 
-| Include | Skip |
-|---------|------|
-| `qoa_web/` (api, web, data writable) | `archive/`, `FoXYiZ/z/` history |
-| `FoXYiZ/f|x|y` (lean suites: Math, nalanda_app, gate suites as needed) | Fat journey CSVs unless you need them |
-| `FoXYiZ/f/.env` secrets on the server only | Real keys in git |
+| Piece | Where |
+|-------|--------|
+| Source | [github.com/foxyiz/BRAHL](https://github.com/foxyiz/BRAHL) · branch **`main`** (mirrors KK: `FoXYiZ/`, `qoa_web/`, `Docs/`) |
+| Web / Arena | Auto-sync → **https://brahl.qaonair.com** (~6h) |
+| FoXYiZ engine (cloud) | **AWS EC2** worker — Arena `runtime_mode: cloud` (wire-up still in progress) |
+| FoXYiZ engine (desktop) | Creator machine — `runtime_mode: desktop` / local Run |
+| Docker | Optional alternate host only — not required for qaonair |
 
-Also see [qoa_web/DEPLOY.md](../qoa_web/DEPLOY.md) · Docker: `qoa_web/docker-compose.yml`.
-
-## Bluehost / VPS
-
-- **Shared PHP hosting:** no — need always-on Python + writable `data/`.
-- **VPS / Cloud:** yes — Python 3.11+, nginx reverse-proxy to uvicorn `:8765`, HTTPS.
-- Engine on server: `FOXYIZ_HEADLESS=true`.
-- **Admin while testing:** leave `QOA_ADMIN_OPEN` unset or `1` (default) so `/admin` needs no login. When user accounts are linked, set `QOA_ADMIN_OPEN=0`.
-
-```powershell
-# From KK/ on the VPS
-pip install -r qoa_web/api/requirements.txt
-# production later:
-#   QOA_ALLOW_DEMO=0
-#   QOA_ADMIN_OPEN=0
-python qoa_web/run_local.py
+```text
+KK/ → push main → GitHub BRAHL → (~6h) → brahl.qaonair.com Arena
+                                              └─ Run cloud → EC2 FoXYiZ
+                                              └─ Run local → desktop FoXYiZ
 ```
 
-## Launch smoke checklist
+## Repo layout (do not flatten)
+
+| Path | Role |
+|------|------|
+| `qoa_web/` | Arena UI + FastAPI |
+| `FoXYiZ/f|x|y|z|pyUtils` | Engine — **not** root-level `f/` anymore |
+| `FoXYiZ/f/.env` | Secrets on host only (`OPENAI_API_KEY`, …) — never git |
+| `Docs/` | Slim reference |
+
+## Host env (web box)
+
+| Variable | Purpose |
+|----------|---------|
+| `APP_BASE_URL` | `https://brahl.qaonair.com` |
+| `JWT_SECRET` | Auth signing |
+| `QOA_ADMIN_OPEN` | `1` while testing Admin without login; `0` when accounts linked |
+| `QOA_ALLOW_DEMO` | As agreed for `/app?demo=1` |
+| `OPENAI_API_KEY` | Optional AI — prefer `FoXYiZ/f/.env` or host secret |
+| `QOA_AI_HOSTED` | Optional platform-key mode |
+| `STRIPE_SECRET_KEY` | Optional — enables `/pricing` Checkout (`sk_…`) |
+| `STRIPE_WEBHOOK_SECRET` | Optional — verifies `/api/billing/webhook` |
+| `STRIPE_PRICE_MEMBERSHIP` | Optional Stripe Price id for ~$5/mo membership |
+| `FOXYIZ_HEADLESS` | `true` on servers / EC2 |
+
+## After each sync — smoke
 
 | Check | Pass |
 |-------|------|
-| `/api/health` → 200 | |
-| `QOA_ALLOW_DEMO=0` → `/api/config` `allow_demo: false` | |
-| Testing: `/admin` opens without login (`admin_open: true`) | |
-| Later: `QOA_ADMIN_OPEN=0` → Admin requires platform admin JWT | |
-| Signup / login / JWT → `/app` | |
-| Project ownership: User A cannot read User B's owned project | |
-| Build: BRAHL Plan generate + accept; Tests / Steps / Test data | |
-| yPAD dock + Wallet dock visible with a project | |
-| Run mentions FoXYiZ only; spelling **BRAHL** / **FoXYiZ** | |
-| Optional: `pytest qoa_web/api/test_runner_stats.py qoa_web/api/test_auth.py -q` | |
+| `https://brahl.qaonair.com/api/health` → 200 | |
+| `/admin` opens (testing: `admin_open: true`) | |
+| Signup / JWT → `/app` | |
+| Build: purpose, BRAHL Plan, yPAD dock | |
+| Run console streams while FoXYiZ runs (desktop) | |
+| Spelling **BRAHL** / **FoXYiZ** | |
 
-## AWS (later)
+Patch suite base URLs when verifying against the live host:
 
-Same engine layout on EC2/ECS with headless Chrome; Arena already has `runtime_mode: local|cloud` metering hooks. Full design: `archive/docs-retired-20260714/aws.md`.
+```powershell
+$env:APP_BASE_URL = "https://brahl.qaonair.com"
+# use team patch script if present, e.g. u/patch_ypad_urls.py
+```
+
+## EC2 contract (cloud Run)
+
+Arena should start/poll FoXYiZ jobs on EC2 (not only desktop). Document the real team hook here as it lands:
+
+| Concern | Decision (fill in) |
+|---------|-------------------|
+| How Arena starts a job | queue URL / SSM / SSH / HTTP worker API |
+| Auth between web ↔ EC2 | |
+| Config + suite sync on EC2 | same `main` tree; lean suites: `Math`, `nalanda_app`, `qoa_web_live` |
+| Headless | `FOXYIZ_HEADLESS=true` |
+| Result path | `FoXYiZ/z/<run>/` visible to API or copied back |
+
+Until wired: use **desktop** Run on Creator machines; web UI still deploys via GitHub sync.
+
+## Optional: Docker / Bluehost VPS
+
+Not the primary path. If needed: `qoa_web/docker-compose.yml`, [qoa_web/DEPLOY.md](../qoa_web/DEPLOY.md). Shared PHP hosting will not work (need always-on Python + writable `data/`).
+
+## Local
+
+```powershell
+cd KK
+pip install -r qoa_web/api/requirements.txt
+# optional: OPENAI_API_KEY in FoXYiZ/f/.env
+python qoa_web/run_local.py
+# Arena: http://127.0.0.1:8765/app?demo=1
+```

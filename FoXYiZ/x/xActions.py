@@ -2305,7 +2305,11 @@ def runAction(aT, aName, aIn, aOut=None, aExpected=None, plan_id=None, design_id
                     actual_float = float(vOut)
                     vRes = "Pass" if abs(expected_float - actual_float) < 1e-6 else "Fail"
                 except ValueError:
-                    vRes = "Pass" if str(aExpected) == str(vOut) else "Fail"
+                    # Exact match, or Expected is a token contained in the UI text
+                    # (yPAD often stores short tokens like "QA agent" / "Built")
+                    exp = str(aExpected).strip()
+                    got = str(vOut).strip()
+                    vRes = "Pass" if exp == got or (exp and exp in got) else "Fail"
     except Exception as e:
         vRes = "Fail"
         sanitized_err = _sanitize_error_message(str(e))

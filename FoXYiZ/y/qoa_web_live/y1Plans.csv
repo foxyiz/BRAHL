@@ -54,8 +54,8 @@ PWeb_Version_LaunchSection,Build version launch compare section,D1,Y,Verify;qoa_
 PWeb_Version_BaselineBtn,Version baseline save button visible,D1,Y,Verify;qoa_web_live;Creator;VersionLaunch,version_baseline_btn_ok
 PWeb_Hunt_EvidencePanel,QA Hunter hunt evidence panel,D3,Y,Verify;qoa_web_live;QA_Hunter;Hunt,hunt_evidence_ok
 PWeb_P9_AddProjectModal,P9 opens add-challenge modal,D9,Y,Verify;qoa_web_live;NUX;Build,nux_modal_ok
-PWeb_Admin_Ecosystem,P6 Admin Panel loads (scoped admin SPA),D6,Y,Verify;qoa_web_live;Admin;Smoke,admin_ecosystem_ok
-PWeb_Build_Strategy,Build Strategy / plan section visible,D1,Y,Verify;qoa_web_live;Smoke;Build;V1,strategy_ok
+PWeb_Admin_Ecosystem,Admin Panel loads (scoped admin SPA),D1,Y,Verify;qoa_web_live;Admin;Smoke,admin_ecosystem_ok
+PWeb_Build_Strategy,Build strategy/plan doc chips visible,D1,Y,Verify;qoa_web_live;Smoke;Build;V1,strategy_ok
 PWeb_Build_CoverageChips,Test coverage Manual chip visible,D1,Y,Verify;qoa_web_live;Smoke;Build;yPAD;V1,cov_chips_ok
 PWeb_Heal_EditYpadCta,Heal Edit yPAD on Build CTA,D1,Y,Verify;qoa_web_live;Smoke;Heal;V1,heal_edit_ok
 PWeb_Heal_RerunCta,Heal Rerun CTA,D1,Y,Verify;qoa_web_live;Smoke;Heal;V1,heal_rerun_ok
@@ -63,3 +63,8 @@ PWeb_Loop_PrimaryButton,Loop primary button and times,D1,Y,Verify;qoa_web_live;S
 PWeb_Loop_BuiltSummary,Loop Built summary from project,D1,Y,Verify;qoa_web_live;Smoke;Loop;V1,loop_built_ok
 PWeb_Analyze_FailColumns,Analyze failure table has Expected column,D1,Y,Verify;qoa_web_live;Smoke;Analyze;V1,analyze_cols_ok
 PWeb_Rebuild_BrahlDetails,Rebuild BRAHL plan details collapsed,D1,Y,Verify;qoa_web_live;Build;V1,rebuild_details_ok
+PWeb_Tagline_QaAgent,Top tagline mentions QA agent,D1,Y,Verify;qoa_web_live;Smoke;Shell;V1,tagline_ok
+PWeb_AiDocs_MdBtn,AI .md context button visible,D1,Y,Verify;qoa_web_live;Smoke;AI;V1,ai_md_ok
+PWeb_AiDocs_Modal,AI .md modal opens Master+Journey list,D1,N,Verify;qoa_web_live;AI;V1;Manual,ai_md_modal_ok
+PWeb_Build_DocChips,Build test strategy/plan.md chips,D1,Y,Verify;qoa_web_live;Smoke;Build;V1,doc_chips_ok
+PWeb_Heal_AiBtn,Heal AI auto-heal button when AI on,D1,Y,Verify;qoa_web_live;Smoke;Heal;AI;V1,heal_ai_ok

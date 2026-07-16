@@ -2,9 +2,16 @@
 
 from __future__ import annotations
 
+import base64
+import hashlib
+import hmac
 import json
 import os
 import sqlite3
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
 import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -16,6 +23,31 @@ from passlib.context import CryptContext
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 DB_PATH = DATA_DIR / "users.db"
 UPLOADS_DIR = DATA_DIR / "uploads" / "profiles"
+KK_ROOT = Path(__file__).resolve().parent.parent.parent
+FOXYIZ_F = KK_ROOT / "FoXYiZ" / "f"
+
+
+def _load_env_files() -> None:
+    """Load KK/.env then FoXYiZ/f/.env (do not override existing process env)."""
+    for env_path in (KK_ROOT / ".env", FOXYIZ_F / ".env"):
+        if not env_path.is_file():
+            continue
+        try:
+            for line in env_path.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, _, val = line.partition("=")
+                key = key.strip()
+                val = val.strip().strip('"').strip("'")
+                if key and key not in os.environ:
+                    os.environ[key] = val
+        except OSError:
+            pass
+
+
+_load_env_files()
+
 JWT_SECRET = os.environ.get("JWT_SECRET", "qoa-dev-change-me-in-production")
 JWT_ALG = "HS256"
 JWT_EXPIRE_HOURS = int(os.environ.get("JWT_EXPIRE_HOURS", "168"))
@@ -31,7 +63,137 @@ PRIVILEGE_ROLES = frozenset({"admin", "super_admin"})
 # All roles allowed in roles_json
 ALL_PROFILE_ROLES = VALID_AVATARS | PERSONA_ROLES | PRIVILEGE_ROLES
 VALID_ROLES = frozenset({"creator", "qa_hunter", "nalanda", "promoter", "both", "admin", "super_admin"})
-SOCIAL_PROVIDERS = frozenset({"google", "facebook", "whatsapp", "instagram", "email"})
+SOCIAL_PROVIDERS = frozenset({"google", "facebook", "instagram", "email"})
+
+GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
+GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
+
+
+def _google_client_id() -> str:
+    return os.environ.get("GOOGLE_CLIENT_ID", "").strip()
+
+
+def _google_client_secret() -> str:
+    return os.environ.get("GOOGLE_CLIENT_SECRET", "").strip()
+
+
+def _app_base_url() -> str:
+    return os.environ.get("APP_BASE_URL", "http://127.0.0.1:8765").rstrip("/")
+
+
+def google_oauth_configured() -> bool:
+    return bool(_google_client_id() and _google_client_secret())
+
+
+def auth_providers() -> dict[str, Any]:
+    return {
+        "google": google_oauth_configured(),
+        "facebook": False,
+        "instagram": False,
+        "email": True,
+    }
+
+
+def google_redirect_uri() -> str:
+    return f"{_app_base_url()}/api/auth/google/callback"
+
+
+def make_oauth_state(next_path: str = "/signup") -> str:
+    """Signed CSRF state: timestamp:next:sig (no server session store)."""
+    next_path = next_path if next_path.startswith("/") else "/signup"
+    if next_path not in ("/signup", "/login", "/app"):
+        next_path = "/signup"
+    payload = f"{int(time.time())}:{next_path}"
+    sig = hmac.new(JWT_SECRET.encode(), payload.encode(), hashlib.sha256).hexdigest()[:20]
+    raw = f"{payload}:{sig}"
+    return base64.urlsafe_b64encode(raw.encode()).decode().rstrip("=")
+
+
+def parse_oauth_state(state: str, *, max_age_sec: int = 600) -> str:
+    try:
+        pad = "=" * (-len(state) % 4)
+        raw = base64.urlsafe_b64decode(state + pad).decode()
+        ts_s, next_path, sig = raw.split(":", 2)
+        payload = f"{ts_s}:{next_path}"
+        expect = hmac.new(JWT_SECRET.encode(), payload.encode(), hashlib.sha256).hexdigest()[:20]
+        if not hmac.compare_digest(sig, expect):
+            raise ValueError("Invalid OAuth state")
+        if abs(time.time() - int(ts_s)) > max_age_sec:
+            raise ValueError("OAuth state expired")
+        if next_path not in ("/signup", "/login", "/app"):
+            return "/signup"
+        return next_path
+    except Exception as exc:
+        raise ValueError("Invalid OAuth state") from exc
+
+
+def google_authorize_url(state: str) -> str:
+    if not google_oauth_configured():
+        raise ValueError("Google OAuth is not configured")
+    q = urllib.parse.urlencode(
+        {
+            "client_id": _google_client_id(),
+            "redirect_uri": google_redirect_uri(),
+            "response_type": "code",
+            "scope": "openid email profile",
+            "access_type": "online",
+            "prompt": "select_account",
+            "state": state,
+        }
+    )
+    return f"{GOOGLE_AUTH_URL}?{q}"
+
+
+def _http_json(method: str, url: str, *, data: dict[str, str] | None = None, headers: dict[str, str] | None = None) -> dict[str, Any]:
+    body = urllib.parse.urlencode(data).encode() if data else None
+    req = urllib.request.Request(url, data=body, method=method)
+    req.add_header("Accept", "application/json")
+    if body is not None:
+        req.add_header("Content-Type", "application/x-www-form-urlencoded")
+    for k, v in (headers or {}).items():
+        req.add_header(k, v)
+    try:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            return json.loads(resp.read().decode())
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode(errors="replace")[:300]
+        raise ValueError(f"Google OAuth failed ({exc.code}): {detail}") from exc
+
+
+def exchange_google_code(code: str) -> dict[str, Any]:
+    """Exchange auth code → userinfo {email, name, given_name, family_name, sub}."""
+    if not google_oauth_configured():
+        raise ValueError("Google OAuth is not configured")
+    token = _http_json(
+        "POST",
+        GOOGLE_TOKEN_URL,
+        data={
+            "code": code,
+            "client_id": _google_client_id(),
+            "client_secret": _google_client_secret(),
+            "redirect_uri": google_redirect_uri(),
+            "grant_type": "authorization_code",
+        },
+    )
+    access = token.get("access_token")
+    if not access:
+        raise ValueError("Google did not return an access token")
+    info = _http_json(
+        "GET",
+        GOOGLE_USERINFO_URL,
+        headers={"Authorization": f"Bearer {access}"},
+    )
+    email = (info.get("email") or "").strip().lower()
+    if not email:
+        raise ValueError("Google account has no email")
+    return {
+        "email": email,
+        "name": (info.get("name") or "").strip(),
+        "given_name": (info.get("given_name") or "").strip(),
+        "family_name": (info.get("family_name") or "").strip(),
+        "sub": str(info.get("sub") or ""),
+    }
 
 
 def _now() -> str:
@@ -69,6 +231,7 @@ def init_db() -> None:
             ("first_name", "TEXT DEFAULT ''"),
             ("last_name", "TEXT DEFAULT ''"),
             ("country", "TEXT DEFAULT ''"),
+            ("city", "TEXT DEFAULT ''"),
             ("phone", "TEXT DEFAULT ''"),
             ("roles_json", "TEXT DEFAULT '[]'"),
             ("app_url", "TEXT DEFAULT ''"),
@@ -195,6 +358,7 @@ def _row_to_user(row: sqlite3.Row) -> dict[str, Any]:
         "first_name": first,
         "last_name": last,
         "country": (row["country"] if "country" in keys else "") or "",
+        "city": (row["city"] if "city" in keys else "") or "",
         "phone": (row["phone"] if "phone" in keys else "") or "",
         "role": row["role"] if "role" in keys else "creator",
         "roles": roles,
@@ -215,6 +379,7 @@ def register_user(
     first_name: str = "",
     last_name: str = "",
     country: str = "",
+    city: str = "",
     phone: str = "",
     roles: list[str] | None = None,
     app_url: str = "",
@@ -250,9 +415,9 @@ def register_user(
                 """
                 INSERT INTO users (
                     id, email, password_hash, name, role, created_at,
-                    first_name, last_name, country, phone, roles_json,
+                    first_name, last_name, country, city, phone, roles_json,
                     app_url, social_provider, social_id, profile_complete
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     uid,
@@ -264,6 +429,7 @@ def register_user(
                     first_name.strip(),
                     last_name.strip(),
                     country.strip(),
+                    city.strip(),
                     phone.strip(),
                     json.dumps(role_list),
                     app_url.strip(),
@@ -294,8 +460,16 @@ def authenticate_user(email: str, password: str) -> dict[str, Any] | None:
     return _row_to_user(row)
 
 
-def social_login_or_register(provider: str, email: str, name: str = "") -> dict[str, Any]:
-    """Local/dev social stub — real OAuth tokens can replace this later."""
+def social_login_or_register(
+    provider: str,
+    email: str,
+    name: str = "",
+    *,
+    social_id: str = "",
+    first_name: str = "",
+    last_name: str = "",
+) -> dict[str, Any]:
+    """Register or sign in via an OAuth provider (Google) or legacy email stub."""
     provider = (provider or "").strip().lower()
     if provider not in SOCIAL_PROVIDERS or provider == "email":
         raise ValueError("Unsupported social provider")
@@ -303,12 +477,13 @@ def social_login_or_register(provider: str, email: str, name: str = "") -> dict[
     if not email or "@" not in email:
         raise ValueError("Email required for social sign-in")
     init_db()
+    sid = (social_id or f"{provider}:{email}").strip()
     existing = get_user_by_email(email)
     if existing:
         with _connect() as conn:
             conn.execute(
                 "UPDATE users SET social_provider = ?, social_id = COALESCE(NULLIF(social_id,''), ?) WHERE id = ?",
-                (provider, f"{provider}:{email}", existing["id"]),
+                (provider, sid, existing["id"]),
             )
             conn.commit()
         user = get_user(existing["id"])
@@ -320,12 +495,23 @@ def social_login_or_register(provider: str, email: str, name: str = "") -> dict[
         email=email,
         password=None,
         name=name.strip(),
-        first_name=parts[0] if parts else "",
-        last_name=parts[1] if len(parts) > 1 else "",
+        first_name=first_name or (parts[0] if parts else ""),
+        last_name=last_name or (parts[1] if len(parts) > 1 else ""),
         social_provider=provider,
-        social_id=f"{provider}:{email}",
+        social_id=sid,
         profile_complete=False,
         roles=["creator"],
+    )
+
+
+def login_with_google_profile(info: dict[str, Any]) -> dict[str, Any]:
+    return social_login_or_register(
+        "google",
+        info["email"],
+        info.get("name") or "",
+        social_id=f"google:{info.get('sub') or info['email']}",
+        first_name=info.get("given_name") or "",
+        last_name=info.get("family_name") or "",
     )
 
 
@@ -337,6 +523,7 @@ def update_user_profile(user_id: str, patch: dict[str, Any]) -> dict[str, Any]:
     first_name = str(patch.get("first_name", user.get("first_name") or "")).strip()
     last_name = str(patch.get("last_name", user.get("last_name") or "")).strip()
     country = str(patch.get("country", user.get("country") or "")).strip()
+    city = str(patch.get("city", user.get("city") or "")).strip()
     phone = str(patch.get("phone", user.get("phone") or "")).strip()
     app_url = str(patch.get("app_url", user.get("app_url") or "")).strip()
     roles = _parse_roles(patch.get("roles", user.get("roles")))
@@ -352,7 +539,7 @@ def update_user_profile(user_id: str, patch: dict[str, Any]) -> dict[str, Any]:
         conn.execute(
             """
             UPDATE users SET
-                name = ?, first_name = ?, last_name = ?, country = ?, phone = ?,
+                name = ?, first_name = ?, last_name = ?, country = ?, city = ?, phone = ?,
                 roles_json = ?, role = ?, app_url = ?, profile_path = ?, profile_complete = ?
             WHERE id = ?
             """,
@@ -361,6 +548,7 @@ def update_user_profile(user_id: str, patch: dict[str, Any]) -> dict[str, Any]:
                 first_name,
                 last_name,
                 country,
+                city,
                 phone,
                 json.dumps(roles),
                 primary,

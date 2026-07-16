@@ -58,8 +58,8 @@ def main() -> None:
     upsert("loop_built_summary_locator", "css=#loop-built-summary")
     upsert("loop_times_fieldset_locator", "css=.loop-times-fieldset")
     upsert("build_strategy_locator", "css=#build-strategy")
-    upsert("build_strategy_sub_locator", "css=#build-strategy .section-sub")
-    upsert("build_strategy_expected", "Strategy / plan")
+    upsert("build_strategy_sub_locator", "css=#btn-build-doc-strategy .build-doc-chip-label")
+    upsert("build_strategy_expected", "test strategy.md")
     upsert("ypad_cov_chips_locator", "css=#ypad-coverage-chips")
     upsert("ypad_cov_manual_locator", "css=.ypad-cov-chip[data-ypad-cov='manual']")
     upsert("ypad_cov_manual_expected", "Manual")
@@ -70,6 +70,28 @@ def main() -> None:
     upsert("budget_block_locator", "css=.budget-block")
     upsert("budget_block_expected", "QA wallet")
     upsert("api_runs_endpoint", "/api/runs?suite=qoa_web_live")
+    # V1.1 — AI context .md + Build doc chips + Heal Apply (July 2026)
+    upsert("tagline_expected", "Your QA agent")
+    upsert("ai_docs_btn_locator", "css=#btn-ai-docs")
+    upsert("ai_docs_btn_expected", ".md")
+    upsert("ai_docs_modal_title_locator", "css=#ai-docs-title")
+    upsert("ai_docs_modal_title_expected", "AI context")
+    upsert("ai_docs_close_locator", "css=#ai-docs-close")
+    upsert("ai_docs_list_prompt_locator", "css=#ai-docs-list-prompt")
+    upsert("build_doc_strategy_locator", "css=#btn-build-doc-strategy .build-doc-chip-label")
+    upsert("build_doc_strategy_expected", "test strategy.md")
+    upsert("build_doc_plan_locator", "css=#btn-build-doc-plan .build-doc-chip-label")
+    upsert("build_doc_plan_expected", "test plan.md")
+    upsert("heal_ai_btn_locator", "css=#btn-heal-ai")
+    upsert("heal_ai_btn_expected", "AI auto-heal")
+    upsert("heal_apply_btn_locator", "css=#btn-heal-apply")
+    upsert("heal_apply_btn_expected", "Apply to yPAD")
+    upsert("run_log_locator", "css=#run-log")
+    upsert("ai_toggle_locator", "css=#ai-toggle")
+    upsert("analyze_fail_thead_expected", "Plan Step Issue Input Expected Output")
+    upsert("loop_built_summary_expected", "Built")
+    upsert("build_panel_title_expected", "Build")
+    # Prefer contains-friendly short exact tokens where UI text drifts with · / emdash
 
     with designs_path.open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["Type", "DataName"] + DCOLS)
@@ -83,7 +105,7 @@ def main() -> None:
     existing = {p["PlanId"] for p in plans}
 
     new_plans = [
-        ("PWeb_Build_Strategy", "Build Strategy / plan section visible", "D1", "Y", "Verify;qoa_web_live;Smoke;Build;V1", "strategy_ok"),
+        ("PWeb_Build_Strategy", "Build strategy/plan doc chips visible", "D1", "Y", "Verify;qoa_web_live;Smoke;Build;V1", "strategy_ok"),
         ("PWeb_Build_CoverageChips", "Test coverage Manual chip visible", "D1", "Y", "Verify;qoa_web_live;Smoke;Build;yPAD;V1", "cov_chips_ok"),
         ("PWeb_Heal_EditYpadCta", "Heal Edit yPAD on Build CTA", "D1", "Y", "Verify;qoa_web_live;Smoke;Heal;V1", "heal_edit_ok"),
         ("PWeb_Heal_RerunCta", "Heal Rerun CTA", "D1", "Y", "Verify;qoa_web_live;Smoke;Heal;V1", "heal_rerun_ok"),
@@ -91,6 +113,11 @@ def main() -> None:
         ("PWeb_Loop_BuiltSummary", "Loop Built summary from project", "D1", "Y", "Verify;qoa_web_live;Smoke;Loop;V1", "loop_built_ok"),
         ("PWeb_Analyze_FailColumns", "Analyze failure table has Expected column", "D1", "Y", "Verify;qoa_web_live;Smoke;Analyze;V1", "analyze_cols_ok"),
         ("PWeb_Rebuild_BrahlDetails", "Rebuild BRAHL plan details collapsed", "D1", "Y", "Verify;qoa_web_live;Build;V1", "rebuild_details_ok"),
+        ("PWeb_Tagline_QaAgent", "Top tagline mentions QA agent", "D1", "Y", "Verify;qoa_web_live;Smoke;Shell;V1", "tagline_ok"),
+        ("PWeb_AiDocs_MdBtn", "AI .md context button visible", "D1", "Y", "Verify;qoa_web_live;Smoke;AI;V1", "ai_md_ok"),
+        ("PWeb_AiDocs_Modal", "AI .md modal opens Master+Journey list", "D1", "N", "Verify;qoa_web_live;AI;V1;Manual", "ai_md_modal_ok"),
+        ("PWeb_Build_DocChips", "Build test strategy/plan.md chips", "D1", "Y", "Verify;qoa_web_live;Smoke;Build;V1", "doc_chips_ok"),
+        ("PWeb_Heal_AiBtn", "Heal AI auto-heal button when AI on", "D1", "Y", "Verify;qoa_web_live;Smoke;Heal;AI;V1", "heal_ai_ok"),
     ]
     for row in new_plans:
         if row[0] not in existing:
@@ -119,6 +146,15 @@ def main() -> None:
             if t not in seen:
                 seen.append(t)
         p["Tags"] = ";".join(seen)
+        # Modal list is API-async in headless — keep as Manual until JS wait improves
+        if p.get("PlanId") == "PWeb_AiDocs_Modal":
+            p["Run"] = "N"
+            p["Tags"] = "Verify;qoa_web_live;AI;V1;Manual"
+        if p.get("PlanId") == "PWeb_Build_Strategy":
+            p["PlanName"] = "Build strategy/plan doc chips visible"
+        if p.get("PlanId") == "PWeb_Admin_Ecosystem":
+            p["PlanName"] = "Admin Panel loads (scoped admin SPA)"
+            p["DesignId"] = "D1"
 
     with plans_path.open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["PlanId", "PlanName", "DesignId", "Run", "Tags", "Output"])
@@ -143,6 +179,13 @@ def main() -> None:
             a["Expected"] = "budget_block_expected"
         if a["PlanId"] == "PWeb_Panel_Loop" and a["StepInfo"] == "Verify Loop heading":
             a["Expected"] = "loop_heading_expected"
+        if a["PlanId"] == "PWeb_Admin_Ecosystem" and a["StepInfo"] in ("P6 ready", "Client ready"):
+            a["StepInfo"] = "Client ready"
+            a["ActionName"] = "PReuse_qoa_web_ClientReady"
+            a["ActionType"] = "xReuse"
+            a["Input"] = ""
+            a["Expected"] = ""
+            a["Output"] = ""
 
     cols = [
         "PlanId",
@@ -158,7 +201,7 @@ def main() -> None:
     new_actions = [
         ("PWeb_Build_Strategy", 1, "Client ready", "xReuse", "PReuse_qoa_web_ClientReady", "", "", "", "y"),
         ("PWeb_Build_Strategy", 2, "Click Build", "xUI", "xClick", "nav_build_btn", "", "", "y"),
-        ("PWeb_Build_Strategy", 3, "Verify Strategy heading", "xUI", "xGetText", "build_strategy_sub_locator", "", "build_strategy_expected", "y"),
+        ("PWeb_Build_Strategy", 3, "Verify strategy chip", "xUI", "xGetText", "build_strategy_sub_locator", "", "build_strategy_expected", "y"),
         ("PWeb_Build_CoverageChips", 1, "Client ready", "xReuse", "PReuse_qoa_web_ClientReady", "", "", "", "y"),
         ("PWeb_Build_CoverageChips", 2, "Click Build", "xUI", "xClick", "nav_build_btn", "", "", "y"),
         ("PWeb_Build_CoverageChips", 3, "Verify Manual chip", "xUI", "xGetText", "ypad_cov_manual_locator", "", "ypad_cov_manual_expected", "y"),
@@ -186,6 +229,27 @@ def main() -> None:
         ("PWeb_Rebuild_BrahlDetails", 1, "Client ready", "xReuse", "PReuse_qoa_web_ClientReady", "", "", "", "y"),
         ("PWeb_Rebuild_BrahlDetails", 2, "Click Build", "xUI", "xClick", "nav_build_btn", "", "", "y"),
         ("PWeb_Rebuild_BrahlDetails", 3, "Verify Rebuild details", "xUI", "xGetText", "rebuild_brahl_summary_locator", "", "rebuild_brahl_expected", "y"),
+        ("PWeb_Tagline_QaAgent", 1, "Client ready", "xReuse", "PReuse_qoa_web_ClientReady", "", "", "", "y"),
+        ("PWeb_Tagline_QaAgent", 2, "Verify QA agent tagline", "xUI", "xGetText", "tagline_locator", "", "tagline_expected", "y"),
+        ("PWeb_AiDocs_MdBtn", 1, "Client ready", "xReuse", "PReuse_qoa_web_ClientReady", "", "", "", "y"),
+        ("PWeb_AiDocs_MdBtn", 2, "Wait topbar", "xTime", "xTimeWait", "2", "", "", "y"),
+        ("PWeb_AiDocs_MdBtn", 3, "Verify .md button", "xUI", "xGetText", "ai_docs_btn_locator", "", "ai_docs_btn_expected", "y"),
+        ("PWeb_AiDocs_Modal", 1, "Client ready", "xReuse", "PReuse_qoa_web_ClientReady", "", "", "", "y"),
+        ("PWeb_AiDocs_Modal", 2, "Wait", "xTime", "xTimeWait", "1", "", "", "y"),
+        ("PWeb_AiDocs_Modal", 3, "Open .md modal", "xUI", "xClick", "ai_docs_btn_locator", "", "", "y"),
+        ("PWeb_AiDocs_Modal", 4, "Wait modal", "xTime", "xTimeWait", "2", "", "", "y"),
+        ("PWeb_AiDocs_Modal", 5, "Verify prompt docs list", "xUI", "xGetText", "ai_docs_list_prompt_locator", "", "Journey", "y"),
+        ("PWeb_AiDocs_Modal", 6, "Close modal", "xUI", "xClick", "ai_docs_close_locator", "", "", "n"),
+        ("PWeb_Build_DocChips", 1, "Client ready", "xReuse", "PReuse_qoa_web_ClientReady", "", "", "", "y"),
+        ("PWeb_Build_DocChips", 2, "Click Build", "xUI", "xClick", "nav_build_btn", "", "", "y"),
+        ("PWeb_Build_DocChips", 3, "Verify strategy chip", "xUI", "xGetText", "build_doc_strategy_locator", "", "build_doc_strategy_expected", "y"),
+        ("PWeb_Build_DocChips", 4, "Verify plan chip", "xUI", "xGetText", "build_doc_plan_locator", "", "build_doc_plan_expected", "y"),
+        ("PWeb_Heal_AiBtn", 1, "Client ready", "xReuse", "PReuse_qoa_web_ClientReady", "", "", "", "y"),
+        ("PWeb_Heal_AiBtn", 2, "Click AI toggle label", "xUI", "xClick", "ai_toggle_label_locator", "", "", "n"),
+        ("PWeb_Heal_AiBtn", 3, "Wait AI", "xTime", "xTimeWait", "1", "", "", "n"),
+        ("PWeb_Heal_AiBtn", 4, "Click Heal", "xUI", "xClick", "nav_heal_btn", "", "", "y"),
+        ("PWeb_Heal_AiBtn", 5, "Wait", "xTime", "xTimeWait", "2", "", "", "y"),
+        ("PWeb_Heal_AiBtn", 6, "Verify AI auto-heal CTA", "xUI", "xGetText", "heal_ai_btn_locator", "", "heal_ai_btn_expected", "y"),
     ]
     for t in new_actions:
         actions.append(dict(zip(cols, t)))
@@ -209,8 +273,8 @@ def main() -> None:
             "yDesigns": ["y/qoa_web_live/y3Designs.csv"],
         },
         "name": "qoa_web_live",
-        "description": "BRAHL Arena live gate (V1 verify) + Journey library (V2 re-BRAHL). Current /app UX.",
-        "version": "1.3.0-v1",
+        "description": "BRAHL Arena live gate (V1.4 verify + AI context) + Journey library (V2). Current /app UX.",
+        "version": "1.4.0-v1",
         "url": "http://127.0.0.1:8765/",
         "journey_plans": 800,
         "brahl_version": "v1",
@@ -223,8 +287,8 @@ def main() -> None:
             "yDesigns": ["y/qoa_web_live/y3Designs.csv"],
         },
         "name": "qoa_web_live",
-        "description": "BRAHL live verify gate V1 only (no journey) — Analyze/Heal/Loop/Build current UX",
-        "version": "1.3.0-v1",
+        "description": "BRAHL live verify gate V1 (+ AI .md / Build doc chips) — no journey",
+        "version": "1.4.0-v1",
         "url": "http://127.0.0.1:8765/",
     }
     (ROOT / "qoa_web_verify_gate.json").write_text(json.dumps(gate, indent=2) + "\n", encoding="utf-8")

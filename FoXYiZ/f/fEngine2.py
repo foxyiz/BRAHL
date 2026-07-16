@@ -48,9 +48,9 @@ logging.getLogger('requests').setLevel(logging.ERROR)
 # User-friendly output functions
 def print_header(title):
     """Print a formatted header for sections."""
-    print(f"\n{'='*60}")
-    print(f"  {title}")
-    print(f"{'='*60}")
+    print(f"\n{'='*60}", flush=True)
+    print(f"  {title}", flush=True)
+    print(f"{'='*60}", flush=True)
 
 def print_progress(current, total, item_name="items"):
     """Print progress information."""
@@ -63,22 +63,22 @@ def print_progress(current, total, item_name="items"):
         if hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
             print(f"\r{progress_text}", end='', flush=True)
         else:
-            print(progress_text)
+            print(progress_text, flush=True)
     except UnicodeEncodeError:
         _safe_console_print(progress_text)
 
 def _safe_console_print(text):
     """Print to console; fall back to ASCII-safe text on Windows cp1252."""
     try:
-        print(text)
+        print(text, flush=True)
     except UnicodeEncodeError:
         safe = text
         for src, dst in (('\u2713', '[OK]'), ('\u2717', '[X]'), ('\u2192', '->')):
             safe = safe.replace(src, dst)
-        print(safe.encode('ascii', errors='replace').decode('ascii'))
+        print(safe.encode('ascii', errors='replace').decode('ascii'), flush=True)
 
 def print_status(message, status="INFO"):
-    """Print status messages with formatting."""
+    """Print status messages with formatting (always flush for Arena live console)."""
     status_symbols = {
         "INFO": "ℹ️",
         "SUCCESS": "✅", 
@@ -96,7 +96,7 @@ def print_status(message, status="INFO"):
     symbol = status_symbols.get(status, "•")
     line = f"{symbol} {message}"
     try:
-        print(line)
+        print(line, flush=True)
     except UnicodeEncodeError:
         _safe_console_print(f"{ascii_symbols.get(status, '*')} {message}")
 
@@ -109,7 +109,7 @@ def print_summary(stats):
     _safe_console_print(f"⏱️  Total Time: {stats['total_time']:.2f} seconds")
     _safe_console_print(f"📁 Results saved to: {stats['output_dir']}")
     _safe_console_print(f"🌐 Dashboard: {stats['dashboard_path']}")
-    print(f"{'='*60}\n")
+    print(f"{'='*60}\n", flush=True)
 
 def cleanup_empty_directories(directory):
     """Remove empty directories recursively, but keep the root directory."""

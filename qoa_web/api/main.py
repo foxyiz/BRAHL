@@ -5,9 +5,10 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote as urllib_quote
 
-from fastapi import FastAPI, File, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -68,6 +69,7 @@ class AuthRegisterRequest(BaseModel):
     first_name: str = ""
     last_name: str = ""
     country: str = ""
+    city: str = ""
     phone: str = ""
     roles: list[str] | None = None
     app_url: str = ""
@@ -89,6 +91,7 @@ class AuthProfileUpdate(BaseModel):
     first_name: str = ""
     last_name: str = ""
     country: str = ""
+    city: str = ""
     phone: str = ""
     roles: list[str] | None = None
     app_url: str = ""
@@ -247,6 +250,24 @@ class BrahlReportRegister(BaseModel):
 class BrahlChatMessage(BaseModel):
     text: str
     run_name: str | None = None
+
+
+class TeamChatMessage(BaseModel):
+    text: str
+    author: str = "You"
+    author_role: str = "creator"  # creator | hunter | system
+
+
+class TeamTaskCreate(BaseModel):
+    title: str
+    assignee: str = ""
+    created_by: str = "Creator"
+
+
+class TeamTaskPatch(BaseModel):
+    status: str | None = None
+    assignee: str | None = None
+    title: str | None = None
 
 
 class Atomic77ChatMessage(BaseModel):
@@ -567,15 +588,21 @@ def api_presence_heartbeat(body: PresenceHeartbeatRequest, request: Request) -> 
     return {"ok": True, "location_label": entry.get("location_label"), "session": entry}
 
 
+def _html_page(path: Path, **extra_headers: str) -> FileResponse:
+    headers = {"Cache-Control": "no-store, max-age=0"}
+    headers.update(extra_headers)
+    return FileResponse(path, headers=headers)
+
+
 @app.get("/admin")
 def admin_page():
     admin_path = WEB_DIR / "admin.html"
     if admin_path.is_file():
-        return FileResponse(admin_path)
+        return _html_page(admin_path)
     about_path = WEB_DIR / "about.html"
     if not about_path.is_file():
         raise HTTPException(404, "Admin page not found")
-    return FileResponse(about_path, headers={"X-Admin-Section": "about-admin-title"})
+    return _html_page(about_path, **{"X-Admin-Section": "about-admin-title"})
 
 
 @app.get("/api/version")
@@ -599,6 +626,7 @@ def auth_register(body: AuthRegisterRequest) -> dict[str, Any]:
             first_name=body.first_name,
             last_name=body.last_name,
             country=body.country,
+            city=body.city,
             phone=body.phone,
             roles=body.roles,
             app_url=body.app_url,
@@ -619,9 +647,58 @@ def auth_login(body: AuthLoginRequest) -> dict[str, Any]:
     return {"user": user, "token": token}
 
 
+@app.get("/api/auth/providers")
+def auth_providers() -> dict[str, Any]:
+    return {"providers": auth_store.auth_providers()}
+
+
+@app.get("/api/auth/google/start")
+def auth_google_start(next: str = Query("/signup")) -> RedirectResponse:
+    """Redirect the browser to Google account picker."""
+    if not auth_store.google_oauth_configured():
+        raise HTTPException(
+            503,
+            "Google sign-in is not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.",
+        )
+    try:
+        state = auth_store.make_oauth_state(next)
+        url = auth_store.google_authorize_url(state)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    return RedirectResponse(url, status_code=302)
+
+
+@app.get("/api/auth/google/callback")
+def auth_google_callback(
+    code: str | None = None,
+    state: str | None = None,
+    error: str | None = None,
+) -> RedirectResponse:
+    """Google OAuth redirect — issue JWT and send user to profile or BRAHL."""
+    if error:
+        return RedirectResponse(f"/login?oauth_error={urllib_quote(error)}", status_code=302)
+    if not code or not state:
+        return RedirectResponse("/login?oauth_error=missing_code", status_code=302)
+    try:
+        next_path = auth_store.parse_oauth_state(state)
+        info = auth_store.exchange_google_code(code)
+        user = auth_store.login_with_google_profile(info)
+    except ValueError as exc:
+        return RedirectResponse(f"/login?oauth_error={urllib_quote(str(exc))}", status_code=302)
+    token = auth_store.create_token(user)
+    dest = "/signup" if not user.get("profile_complete") else (next_path if next_path != "/login" else "/app")
+    sep = "&" if "?" in dest else "?"
+    return RedirectResponse(f"{dest}{sep}auth_token={urllib_quote(token)}", status_code=302)
+
+
 @app.post("/api/auth/social")
 def auth_social(body: AuthSocialRequest) -> dict[str, Any]:
-    """Social sign-in stub (wire real OAuth later). Continues to profile step when incomplete."""
+    """Legacy stub for non-Google providers — prefer /api/auth/google/start."""
+    if body.provider.strip().lower() == "google":
+        raise HTTPException(
+            400,
+            "Use Continue with Google — it opens your Google account (not a manual email form).",
+        )
     try:
         user = auth_store.social_login_or_register(body.provider, body.email, body.name)
     except ValueError as exc:
@@ -650,6 +727,7 @@ async def auth_me_update(request: Request, body: AuthProfileUpdate) -> dict[str,
                 "first_name": body.first_name,
                 "last_name": body.last_name,
                 "country": body.country,
+                "city": body.city,
                 "phone": body.phone,
                 "roles": body.roles,
                 "app_url": body.app_url,
@@ -680,10 +758,18 @@ async def auth_profile_upload(request: Request, file: UploadFile = File(...)) ->
 
 @app.get("/api/config")
 def public_config() -> dict[str, Any]:
+    auth_required = os.environ.get("QOA_AUTH_REQUIRED", "0").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+        "on",
+    )
     return {
         "allow_demo": auth_store.demo_allowed(),
         "admin_open": _admin_open_mode(),
+        "auth_required": auth_required,
         "auth_enabled": True,
+        "google_oauth": auth_store.google_oauth_configured(),
         "version": APP_VERSION,
     }
 
@@ -814,23 +900,25 @@ def ai_status(request: Request, project_id: str | None = None) -> dict[str, Any]
     import ai_assist
     import ai_docs
 
-    docs = ai_docs.list_ai_docs()
-    in_prompt = [d for d in docs if d.get("in_prompt")]
     auth_user = auth_store.user_from_request(request.headers.get("Authorization"))
     user_id = auth_user.get("id") if auth_user else None
     project = project_store.get_project(project_id) if project_id else None
+    docs = ai_docs.list_ai_docs(project=project)
+    in_prompt = [d for d in docs if d.get("in_prompt")]
     snap = ai_assist.get_usage_snapshot(user_id, project_id)
     gate = ai_assist.check_ai_quota(user_id=user_id, project_id=project_id, project=project)
+    packed = ai_assist.brahl_doc_context(200, project=project)
     return {
         "available": ai_assist.is_ai_available(),
         "byok": ai_assist.is_byok_mode(),
         "hosted": not ai_assist.is_byok_mode(),
         "model": os.environ.get("OPENAI_MODEL", "gpt-4o-mini") if ai_assist.is_ai_available() else None,
         "note": (
-            "Shared across all projects — not per-project. "
-            "Only AI guardrails + BRAHL prompt (plus your opted-in My docs) pack into AI when a key is set."
+            "Master docs (everyone) + living Journey (this project) pack into AI. "
+            "Open .md in the top bar to inspect what the assistant sees."
         ),
-        "docs_loaded": bool(ai_assist.brahl_doc_context(100)),
+        "docs_loaded": bool(packed),
+        "journey_in_prompt": bool(project),
         "context_doc_count": len(in_prompt),
         "reference_doc_count": len(docs),
         "usage": snap,
@@ -838,22 +926,25 @@ def ai_status(request: Request, project_id: str | None = None) -> dict[str, Any]
         "quota_reason": gate.get("reason") or "",
         "quota_code": gate.get("code") or "",
         "setup_hint": (
-            "Desktop BYOK: set OPENAI_API_KEY in f/.env. "
+            "Desktop BYOK: set OPENAI_API_KEY in FoXYiZ/f/.env. "
             "Hosted: set QOA_AI_HOSTED=1 and enforce wallet caps (QOA_AI_USER_MONTHLY_TOKENS)."
         ),
     }
 
 
 @app.get("/api/ai/docs")
-def ai_docs_list() -> dict[str, Any]:
+def ai_docs_list(project_id: str | None = None) -> dict[str, Any]:
     import ai_docs
 
+    project = project_store.get_project(project_id) if project_id else None
     return {
-        "docs": ai_docs.list_ai_docs(),
+        "docs": ai_docs.list_ai_docs(project=project),
         "budget": ai_docs.user_prompt_budget(),
+        "project_id": (project or {}).get("id"),
         "note": (
-            "Shared across all projects — not per-project. "
-            "Only AI guardrails + BRAHL prompt (plus your opted-in My docs) pack into AI when a key is set."
+            "Journey (this project) auto-updates from purpose, yPAD, and BRAHL cycle history. "
+            "Master · AI guardrails + Master · BRAHL prompt are shared for everyone. "
+            "My docs are optional extras you can opt into the prompt."
         ),
     }
 
@@ -927,10 +1018,11 @@ def ai_docs_user_delete(doc_id: str) -> dict[str, Any]:
 
 
 @app.get("/api/ai/docs/{doc_id}")
-def ai_doc_content(doc_id: str) -> dict[str, Any]:
+def ai_doc_content(doc_id: str, project_id: str | None = None) -> dict[str, Any]:
     import ai_docs
 
-    doc = ai_docs.get_ai_doc(doc_id)
+    project = project_store.get_project(project_id) if project_id else None
+    doc = ai_docs.get_ai_doc(doc_id, project=project)
     if not doc:
         raise HTTPException(404, f"Document not found: {doc_id}")
     return {"doc": doc, "budget": ai_docs.user_prompt_budget()}
@@ -1263,6 +1355,7 @@ def analyze_run_ai(project_id: str, run_name: str) -> dict[str, Any]:
 @app.post("/api/projects/{project_id}/runs/{run_name}/heal-suggest")
 def heal_suggest_ai(project_id: str, run_name: str, body: dict[str, str] | None = None) -> dict[str, Any]:
     import ai_assist
+    import heal_apply
 
     project = project_store.get_project(project_id)
     if not project:
@@ -1276,16 +1369,61 @@ def heal_suggest_ai(project_id: str, run_name: str, body: dict[str, str] | None 
     rca = (body or {}).get("rca_markdown", "")
     suite_config = project.get("suite_config") or f"y/{project.get('suite_name', 'qoa_web')}/{project.get('suite_name', 'qoa_web')}.json"
     if not ai_assist.is_ai_available():
+        md = _fallback_heal_markdown(failures, suite_config)
         return {
             "ai": False,
-            "markdown": _fallback_heal_markdown(failures, suite_config),
+            "markdown": md,
             "failures": failures,
+            "patches": [],
+            "patch_count": 0,
         }
     md = ai_assist.heal_suggestions(project, run_name, failures, rca, suite_config)
     if not md:
         md = _fallback_heal_markdown(failures, suite_config)
-        return {"ai": False, "markdown": md, "failures": failures}
-    return {"ai": True, "markdown": md, "failures": failures}
+        return {"ai": False, "markdown": md, "failures": failures, "patches": [], "patch_count": 0}
+    patches = heal_apply.extract_patches_from_markdown(md)
+    return {
+        "ai": True,
+        "markdown": md,
+        "failures": failures,
+        "patches": patches,
+        "patch_count": len(patches),
+    }
+
+
+@app.post("/api/projects/{project_id}/heal-apply")
+def heal_apply_patches(project_id: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Apply structured Heal patches to the project's yPAD CSVs."""
+    import heal_apply
+
+    project = project_store.get_project(project_id)
+    if not project:
+        raise HTTPException(404, "Project not found")
+    suite_config = (
+        body.get("suite_config")
+        or project.get("suite_config")
+        or f"y/{project.get('suite_name', 'qoa_web')}/{project.get('suite_name', 'qoa_web')}.json"
+    )
+    patches = body.get("patches")
+    if not isinstance(patches, list):
+        raise HTTPException(400, "body.patches must be a list")
+    dry_run = bool(body.get("dry_run"))
+    try:
+        result = heal_apply.apply_heal_patches(suite_config, patches, dry_run=dry_run)
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    if result.get("ok") and not dry_run and result.get("applied"):
+        try:
+            project_store.append_cycle_event(
+                project_id,
+                "heal",
+                f"Applied {result['applied']} yPAD patch(es)",
+            )
+        except Exception:
+            pass
+    return result
 
 
 def _fallback_analyze_markdown(failures: list, errors: str, stats: dict) -> str:
@@ -1464,6 +1602,50 @@ def pricing_rules(
             wallet_balance_usd=wallet_balance_usd,
         )
     }
+
+
+class CheckoutRequest(BaseModel):
+    kind: str = Field(..., description="membership | wallet")
+    amount_usd: float | None = None
+    customer_email: str | None = None
+
+
+@app.get("/api/billing/status")
+def billing_status() -> dict[str, Any]:
+    import billing
+
+    return billing.billing_status()
+
+
+@app.post("/api/billing/checkout")
+def billing_checkout(body: CheckoutRequest) -> dict[str, Any]:
+    import billing
+
+    try:
+        return billing.create_checkout_session(
+            body.kind,
+            amount_usd=body.amount_usd,
+            customer_email=body.customer_email,
+        )
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(503, str(exc)) from exc
+
+
+@app.post("/api/billing/webhook")
+async def billing_webhook(request: Request) -> dict[str, Any]:
+    """Stripe webhook scaffold — verifies signature when STRIPE_WEBHOOK_SECRET is set."""
+    import billing
+
+    payload = await request.body()
+    sig = request.headers.get("stripe-signature")
+    try:
+        return billing.handle_webhook(payload, sig)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(503, str(exc)) from exc
 
 
 @app.get("/api/projects/{project_id}")
@@ -1810,6 +1992,69 @@ def brahl_chat(project_id: str, body: BrahlChatMessage) -> dict[str, Any]:
     return {"user_message": user_msg, "assistant_message": assistant_msg, "project": project, "run_name": run_name}
 
 
+@app.get("/api/projects/{project_id}/team")
+def get_project_team(project_id: str) -> dict[str, Any]:
+    project = project_store.get_project(project_id)
+    if not project:
+        raise HTTPException(404, "Project not found")
+    return {
+        "project_id": project_id,
+        "hitl_consultants": project.get("hitl_consultants") or [],
+        "hitl_invites": project.get("hitl_invites") or [],
+        "team_messages": project.get("team_messages") or [],
+        "team_tasks": project.get("team_tasks") or [],
+        "context_items": project.get("context_items") or [],
+        "documents": project.get("documents") or [],
+    }
+
+
+@app.post("/api/projects/{project_id}/team/chat")
+def post_team_chat(project_id: str, body: TeamChatMessage) -> dict[str, Any]:
+    if not body.text.strip():
+        raise HTTPException(400, "text required")
+    try:
+        msg = project_store.add_team_message(
+            project_id,
+            body.text,
+            author=body.author,
+            author_role=body.author_role,
+        )
+    except KeyError:
+        raise HTTPException(404, "Project not found") from None
+    project = project_store.get_project(project_id)
+    return {"message": msg, "project": project, "team_messages": (project or {}).get("team_messages") or []}
+
+
+@app.post("/api/projects/{project_id}/team/tasks")
+def post_team_task(project_id: str, body: TeamTaskCreate) -> dict[str, Any]:
+    if not body.title.strip():
+        raise HTTPException(400, "title required")
+    try:
+        task = project_store.add_team_task(
+            project_id,
+            body.title,
+            assignee=body.assignee,
+            created_by=body.created_by,
+        )
+    except KeyError:
+        raise HTTPException(404, "Project not found") from None
+    project = project_store.get_project(project_id)
+    return {"task": task, "project": project, "team_tasks": (project or {}).get("team_tasks") or []}
+
+
+@app.patch("/api/projects/{project_id}/team/tasks/{task_id}")
+def patch_team_task(project_id: str, task_id: str, body: TeamTaskPatch) -> dict[str, Any]:
+    patch = body.model_dump(exclude_none=True)
+    if not patch:
+        raise HTTPException(400, "nothing to update")
+    try:
+        task = project_store.update_team_task(project_id, task_id, patch)
+    except KeyError as exc:
+        raise HTTPException(404, "Project or task not found") from exc
+    project = project_store.get_project(project_id)
+    return {"task": task, "project": project, "team_tasks": (project or {}).get("team_tasks") or []}
+
+
 @app.post("/api/projects/{project_id}/atomic77/chat")
 def atomic77_project_chat(project_id: str, body: Atomic77ChatMessage) -> dict[str, Any]:
     project = project_store.get_project(project_id)
@@ -2088,7 +2333,7 @@ def about_page():
     about_path = WEB_DIR / "about.html"
     if not about_path.is_file():
         raise HTTPException(404, "About page not found")
-    return FileResponse(about_path)
+    return _html_page(about_path)
 
 
 @app.get("/welcome")
@@ -2096,7 +2341,15 @@ def welcome_page():
     welcome_path = WEB_DIR / "welcome.html"
     if not welcome_path.is_file():
         raise HTTPException(404, "Welcome page not found")
-    return FileResponse(welcome_path)
+    return _html_page(welcome_path)
+
+
+@app.get("/pricing")
+def pricing_page():
+    pricing_path = WEB_DIR / "pricing.html"
+    if not pricing_path.is_file():
+        raise HTTPException(404, "Pricing page not found")
+    return _html_page(pricing_path)
 
 
 @app.get("/signin")
@@ -2104,7 +2357,7 @@ def signin_page():
     signin_path = WEB_DIR / "signin.html"
     if not signin_path.is_file():
         raise HTTPException(404, "Sign-in page not found")
-    return FileResponse(signin_path)
+    return _html_page(signin_path)
 
 
 @app.get("/login")
@@ -2112,7 +2365,7 @@ def login_page():
     login_path = WEB_DIR / "login.html"
     if not login_path.is_file():
         raise HTTPException(404, "Login page not found")
-    return FileResponse(login_path)
+    return _html_page(login_path)
 
 
 @app.get("/signup")
@@ -2120,7 +2373,7 @@ def signup_page():
     signup_path = WEB_DIR / "signup.html"
     if not signup_path.is_file():
         raise HTTPException(404, "Signup page not found")
-    return FileResponse(signup_path)
+    return _html_page(signup_path)
 
 
 @app.get("/forgot-password")
@@ -2128,7 +2381,7 @@ def forgot_password_page():
     path = WEB_DIR / "forgot-password.html"
     if not path.is_file():
         raise HTTPException(404, "Forgot-password page not found")
-    return FileResponse(path)
+    return _html_page(path)
 
 
 @app.get("/app")
@@ -2136,15 +2389,15 @@ def app_page():
     index_path = WEB_DIR / "index.html"
     if not index_path.is_file():
         raise HTTPException(404, "Frontend not built")
-    return FileResponse(index_path)
+    return _html_page(index_path)
 
 
 @app.get("/")
 def index():
     welcome_path = WEB_DIR / "welcome.html"
     if welcome_path.is_file():
-        return FileResponse(welcome_path)
+        return _html_page(welcome_path)
     index_path = WEB_DIR / "index.html"
     if not index_path.is_file():
         raise HTTPException(404, "Frontend not built")
-    return FileResponse(index_path)
+    return _html_page(index_path)

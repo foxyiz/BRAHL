@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="QA on Air pricing — Free, QA Hunter AI, Creator wallets, Promoter 5%. BRAHL · FoXYiZ." />
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <title>Pricing — QA on Air · BRAHL</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <link rel="stylesheet" href="/assets/forms.css" />
+  <link rel="stylesheet" href="/assets/site-chrome.css" />
+  <link rel="stylesheet" href="/assets/pricing.css" />
+</head>
+<body class="pricing-page">
+  <header class="site-top">
+    <a class="site-brand" href="/" aria-label="QA on Air home">
+      <span class="site-brand-mark" aria-hidden="true">QA</span>
+      <span class="site-brand-text">
+        <span class="site-brand-name">QA on Air</span>
+        <span class="site-brand-sub">BRAHL</span>
+      </span>
+    </a>
+    <nav class="site-top-nav" aria-label="Site">
+      <a href="/pricing" aria-current="page">Pricing</a>
+      <a href="/about">About</a>
+      <a href="/login">Sign in</a>
+      <a class="site-top-cta" href="/app?demo=1">Start</a>
+    </nav>
+  </header>
+
+  <section class="pricing-hero" aria-labelledby="pricing-hero-title">
+    <p class="pricing-kicker">BRAHL · FoXYiZ</p>
+    <h1 id="pricing-hero-title">Pricing</h1>
+    <p class="pricing-lead" id="pricing-summary">Free to start · Hunter AI plans · Creator wallets from $50.</p>
+  </section>
+
+  <main class="pricing-main">
+    <p id="pricing-billing-note" class="pricing-billing-note" hidden></p>
+
+    <section class="pricing-tiers" aria-label="Plans">
+      <article class="pricing-tier" data-tier="free">
+        <p class="pricing-tier-label">Anyone</p>
+        <h2>Free</h2>
+        <p class="pricing-tier-price">$0</p>
+        <p class="pricing-tier-blurb" id="plan-free-blurb">
+          Start BRAHL with limited hosted AI — or bring your own OpenAI key (BYOK).
+        </p>
+        <ul class="pricing-tier-list">
+          <li>All roles · BRAHL phases</li>
+          <li>BYOK desktop AI via <code>f/.env</code></li>
+          <li>Invite trial path</li>
+        </ul>
+        <a class="tc-btn tc-btn-primary" href="/">Start free</a>
+      </article>
+
+      <article class="pricing-tier pricing-tier-accent" data-tier="hunter">
+        <p class="pricing-tier-label">QA Hunter</p>
+        <h2>Hunter AI</h2>
+        <p class="pricing-tier-price">
+          <span id="tier-hunter-price">$5</span><span class="pricing-tier-unit">/mo</span>
+        </p>
+        <p class="pricing-tier-blurb" id="plan-hunter-blurb">
+          Hosted AI and tools across multiple projects — upgrade as you use more.
+        </p>
+        <div class="pricing-tier-chips" role="group" aria-label="Hunter AI plan">
+          <button type="button" class="pricing-tier-chip active" data-tier-usd="5">$5</button>
+          <button type="button" class="pricing-tier-chip" data-tier-usd="20">$20</button>
+          <button type="button" class="pricing-tier-chip" data-tier-usd="50">$50</button>
+        </div>
+        <ul class="pricing-tier-list">
+          <li>Hosted AI quotas for hunts</li>
+          <li>Work across multiple Creator projects</li>
+          <li>Upgrade $5 → $20 → $50 by usage</li>
+        </ul>
+        <button type="button" class="tc-btn tc-btn-primary pricing-checkout-btn" data-kind="membership" id="btn-checkout-membership">
+          Subscribe with Stripe
+        </button>
+      </article>
+
+      <article class="pricing-tier" data-tier="wallet">
+        <p class="pricing-tier-label">Creator</p>
+        <h2>QA wallet</h2>
+        <p class="pricing-tier-price">
+          <span id="tier-wallet-min">$50</span><span class="pricing-tier-unit">+</span>
+        </p>
+        <p class="pricing-tier-blurb" id="plan-creator-blurb">
+          Fund your challenge. You choose how the net pool splits between AI and QA Hunters on Build.
+        </p>
+        <ul class="pricing-tier-list">
+          <li>Minimum top-up <strong id="tier-wallet-min-copy">$50</strong></li>
+          <li>Platform + ops fees · Promoter share · then your split</li>
+          <li>AI vs Hunter pool set on Build</li>
+        </ul>
+        <label class="pricing-wallet-amount">
+          <span>Top-up amount (USD)</span>
+          <input type="number" id="wallet-amount" min="50" step="10" value="50" />
+        </label>
+        <button type="button" class="tc-btn tc-btn-primary pricing-checkout-btn" data-kind="wallet" id="btn-checkout-wallet">
+          Top up with Stripe
+        </button>
+        <p class="pricing-tier-alt"><a href="/app#cost">Wallet meter in BRAHL</a></p>
+      </article>
+
+      <article class="pricing-tier" data-tier="promoter">
+        <p class="pricing-tier-label">Promoter</p>
+        <h2>Earn <span id="tier-promoter-pct">5</span>%</h2>
+        <p class="pricing-tier-price pricing-tier-price-sm">Both sides</p>
+        <p class="pricing-tier-blurb" id="plan-promoter-blurb">
+          5% of referred Creator deposits and 5% of referred QA Hunter earnings.
+        </p>
+        <ul class="pricing-tier-list">
+          <li>Share from Creator wallet top-ups</li>
+          <li>Share from Hunter payouts you invited</li>
+          <li>Credits → same payout rules</li>
+        </ul>
+        <a class="tc-btn tc-btn-primary" href="/signup">Join as Promoter</a>
+      </article>
+    </section>
+
+    <section class="pricing-example" aria-labelledby="pricing-example-title">
+      <h2 id="pricing-example-title">Example · $50 Creator deposit</h2>
+      <p class="pricing-example-blurb" id="pricing-example-blurb">
+        After platform, ops, and promoter shares, you decide the AI vs Hunter split of the net pool.
+      </p>
+      <div class="pricing-split" id="pricing-split-bar" hidden>
+        <div class="pricing-split-seg pricing-split-platform" id="split-platform" style="flex:5" title="Platform"></div>
+        <div class="pricing-split-seg pricing-split-ops" id="split-ops" style="flex:10" title="Ops"></div>
+        <div class="pricing-split-seg pricing-split-promoter" id="split-promoter" style="flex:5" title="Promoter"></div>
+        <div class="pricing-split-seg pricing-split-ai" id="split-ai" style="flex:40" title="AI"></div>
+        <div class="pricing-split-seg pricing-split-human" id="split-human" style="flex:40" title="Human"></div>
+      </div>
+      <ul class="pricing-split-legend" id="pricing-split-legend"></ul>
+    </section>
+
+    <section class="pricing-payout" aria-labelledby="pricing-payout-title">
+      <h2 id="pricing-payout-title">Payout options</h2>
+      <ul id="pricing-payout-list" class="pricing-payout-list"></ul>
+    </section>
+  </main>
+
+  <footer class="pricing-foot">
+    <p>
+      Spelling: <strong>BRAHL</strong> · <strong>FoXYiZ</strong>
+      · <a href="/welcome">Welcome</a>
+      · <a href="/about">About</a>
+      · <a href="/app">BRAHL</a>
+    </p>
+    <p id="pricing-status" class="pricing-status" aria-live="polite"></p>
+  </footer>
+
+  <script src="/assets/pricing.js" defer></script>
+</body>
+</html>

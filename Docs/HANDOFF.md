@@ -1,6 +1,6 @@
 # Handoff — current KK
 
-**Read first:** [../qoa_web/MEMORY.md](../qoa_web/MEMORY.md) · **Today's log:** [../todaysummary.md](../todaysummary.md)
+**Read first:** [../qoa_web/MEMORY.md](../qoa_web/MEMORY.md) · **Today's log:** [../todaysummary.md](../todaysummary.md) · **Backlog:** [../todo.md](../todo.md)
 
 ## Product
 

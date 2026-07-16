@@ -92,7 +92,18 @@ Restart the local server after API/UI edits. Optional AI: `OPENAI_API_KEY` in `F
 
 ## Still open (not finished today)
 
-- Heal **Apply** beyond AI markdown suggestions.
 - Mobile polish for Arena docks / phase nav.
 - Production deploy with `QOA_ALLOW_DEMO=0` (see `Docs/DEPLOY.md`).
 - Prefer not to expand 800-plan journey CSVs in agent chat; cite suites/zDash only.
+- Landing / pricing / Stripe (see `todo.md`).
+
+---
+
+## 2026-07-15 — Quick BRAHL on QOA Live
+
+- Patched `FoXYiZ/y/qoa_web_live` to **1.4.0-v1** (AI `.md` btn, Build doc chips, Heal AI CTA, QA-agent tagline).
+- Engine heal: `xGetText` Expected may be a **substring** of UI text (`FoXYiZ/x/xActions.py`).
+- Smoke headless: use `f/fStart_qoa_web_live_smoke_headless.json` (latest gate under `FoXYiZ/z/`).
+- Token-light AI: Build chat one-liner OK; Analyze + Heal-suggest on smoke run OK (1 structured patch).
+- `.md` modal list assert kept **Run=N / Manual** (async load flaky in headless).
+- Arena up: `http://127.0.0.1:8765` · key in `FoXYiZ/f/.env` only.

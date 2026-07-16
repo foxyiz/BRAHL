@@ -44,6 +44,9 @@ def _normalize(project: dict[str, Any]) -> dict[str, Any]:
     project.setdefault("budget_split", {"automation_pct": 50, "human_pct": 50})
     project.setdefault("hitl_consultants", [])
     project.setdefault("brahl_chat_messages", [])
+    project.setdefault("team_messages", [])
+    project.setdefault("team_tasks", [])
+    project.setdefault("documents", [])
     project.setdefault("atomic77_chat_messages", [])
     project.setdefault("atomic77_usage", {"messages": 0, "tokens_est": 0, "user_messages": 0})
     project.setdefault("ai_enabled", True)
@@ -271,13 +274,30 @@ def update_project(project_id: str, patch: dict[str, Any]) -> dict[str, Any]:
             "baseline_version",
             "baseline_run",
             "owner_user_id",
+            "ai_journey_notes",
+            "ypad_summary",
+            "current_phase",
+            "brahl_decision",
         }
         for key, val in patch.items():
             if key in allowed:
                 p[key] = val
         if "purpose" in patch:
             p["prompt"] = p.get("purpose") or ""
+            # Living AI journey: note purpose changes in cycle trail
+            hist = list(p.get("cycle_history") or [])
+            hist.insert(
+                0,
+                {
+                    "id": uuid.uuid4().hex[:8],
+                    "step": "build",
+                    "detail": "Purpose updated",
+                    "at": _now(),
+                },
+            )
+            p["cycle_history"] = hist[:50]
         p["updated_at"] = _now()
+        p["ai_journey_updated_at"] = p["updated_at"]
         projects[i] = p
         save_projects(projects)
         return p
@@ -305,7 +325,9 @@ def append_cycle_event(project_id: str, step: str, detail: str = "", run_name: s
         history = list(p.get("cycle_history") or [])
         history.insert(0, entry)
         p["cycle_history"] = history[:50]
+        p["current_phase"] = step
         p["updated_at"] = _now()
+        p["ai_journey_updated_at"] = p["updated_at"]
         projects[i] = p
         save_projects(projects)
         return entry
@@ -1047,6 +1069,96 @@ def add_brahl_chat_message(project_id: str, role: str, text: str) -> dict[str, A
     raise KeyError(project_id)
 
 
+def add_team_message(
+    project_id: str,
+    text: str,
+    *,
+    author: str = "You",
+    author_role: str = "creator",
+) -> dict[str, Any]:
+    """Human team thread (Creator + QA Hunters) — not AI Build/BRAHL chat."""
+    projects = load_projects()
+    for i, p in enumerate(projects):
+        if p.get("id") != project_id:
+            continue
+        p = _normalize(p)
+        entry = {
+            "id": uuid.uuid4().hex[:8],
+            "author": (author or "You").strip() or "You",
+            "author_role": author_role if author_role in ("creator", "hunter", "system") else "creator",
+            "text": text.strip(),
+            "at": _now(),
+        }
+        msgs = list(p.get("team_messages") or [])
+        msgs.append(entry)
+        # Keep last 200 messages
+        p["team_messages"] = msgs[-200:]
+        p["updated_at"] = _now()
+        projects[i] = p
+        save_projects(projects)
+        return entry
+    raise KeyError(project_id)
+
+
+def add_team_task(
+    project_id: str,
+    title: str,
+    *,
+    assignee: str = "",
+    created_by: str = "Creator",
+) -> dict[str, Any]:
+    projects = load_projects()
+    for i, p in enumerate(projects):
+        if p.get("id") != project_id:
+            continue
+        p = _normalize(p)
+        entry = {
+            "id": uuid.uuid4().hex[:8],
+            "title": title.strip(),
+            "assignee": (assignee or "").strip(),
+            "status": "open",
+            "created_by": (created_by or "Creator").strip() or "Creator",
+            "at": _now(),
+        }
+        tasks = list(p.get("team_tasks") or [])
+        tasks.append(entry)
+        p["team_tasks"] = tasks
+        p["updated_at"] = _now()
+        projects[i] = p
+        save_projects(projects)
+        return entry
+    raise KeyError(project_id)
+
+
+def update_team_task(project_id: str, task_id: str, patch: dict[str, Any]) -> dict[str, Any]:
+    projects = load_projects()
+    for i, p in enumerate(projects):
+        if p.get("id") != project_id:
+            continue
+        p = _normalize(p)
+        tasks = list(p.get("team_tasks") or [])
+        found = None
+        for t in tasks:
+            if t.get("id") == task_id:
+                if "status" in patch and patch["status"] in ("open", "done"):
+                    t["status"] = patch["status"]
+                if "assignee" in patch:
+                    t["assignee"] = str(patch.get("assignee") or "").strip()
+                if "title" in patch and str(patch.get("title") or "").strip():
+                    t["title"] = str(patch["title"]).strip()
+                t["updated_at"] = _now()
+                found = t
+                break
+        if not found:
+            raise KeyError(task_id)
+        p["team_tasks"] = tasks
+        p["updated_at"] = _now()
+        projects[i] = p
+        save_projects(projects)
+        return found
+    raise KeyError(project_id)
+
+
 def add_atomic77_chat_message(project_id: str, role: str, text: str) -> dict[str, Any]:
     projects = load_projects()
     for i, p in enumerate(projects):
@@ -1128,7 +1240,7 @@ def brahl_model_reply(
                 "Answer ONLY from the report markdown and stats below. "
                 "Be concise (≤120 words). Use spelling BRAHL (never brawl). "
                 "If the report lacks the answer, say so and suggest Verify or Heal next steps.\n\n"
-                + brahl_doc_context(role="brahl_chat")
+                + brahl_doc_context(role="brahl_chat", project=project)
             )
             user = (
                 f"Project: {name}\nPurpose: {purpose[:400]}\n"

@@ -3,58 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Log in — QAonAir BRAHL</title>
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <title>Log in — QA on Air · BRAHL</title>
   <link rel="stylesheet" href="/assets/styles.css" />
   <link rel="stylesheet" href="/assets/forms.css" />
+  <link rel="stylesheet" href="/assets/site-chrome.css" />
   <link rel="stylesheet" href="/assets/signin.css" />
 </head>
 <body class="tc-page">
+  <header class="site-top">
+    <a class="site-brand" href="/" aria-label="QA on Air home">
+      <span class="site-brand-mark" aria-hidden="true">QA</span>
+      <span class="site-brand-text">
+        <span class="site-brand-name">QA on Air</span>
+        <span class="site-brand-sub">BRAHL</span>
+      </span>
+    </a>
+    <nav class="site-top-nav" aria-label="Site">
+      <a href="/pricing">Pricing</a>
+      <a href="/about">About</a>
+      <a href="/login" aria-current="page">Sign in</a>
+      <a class="site-top-cta" href="/app?demo=1" id="nav-guest-start">Start</a>
+    </nav>
+  </header>
+
   <header class="tc-page-header">
     <div>
-      <p class="tc-kicker">QAonAir · BRAHL</p>
+      <p class="tc-kicker">QA on Air · BRAHL</p>
       <h1>Log in</h1>
-      <p class="tc-lead">Access your projects and BRAHL plans.</p>
+      <p class="tc-lead">Continue with Google or email — then open BRAHL.</p>
     </div>
-    <a href="/app" class="tc-btn tc-btn-ghost">Arena</a>
   </header>
-  <main class="tc-shell">
+
+  <main class="tc-shell tc-shell-signup">
+    <section id="guest-continue" class="tc-panel" hidden>
+      <h2 class="tc-panel-title">Testing mode</h2>
+      <p class="tc-hint">Google sign-in is not required yet. Open BRAHL as a guest to try Build → Run → Loop.</p>
+      <button type="button" class="tc-btn tc-btn-primary tc-btn-block" id="btn-guest-continue">
+        Continue to BRAHL without account →
+      </button>
+      <div class="tc-divider">or sign in when ready</div>
+    </section>
     <h2 class="tc-panel-title">Continue with</h2>
-    <div class="tc-social">
-      <button type="button" class="tc-social-btn tc-social-google" data-provider="google"><span class="tc-social-mark">G</span> Google</button>
-      <button type="button" class="tc-social-btn tc-social-facebook" data-provider="facebook"><span class="tc-social-mark">f</span> Facebook</button>
-      <button type="button" class="tc-social-btn tc-social-whatsapp" data-provider="whatsapp"><span class="tc-social-mark">W</span> WhatsApp</button>
-      <button type="button" class="tc-social-btn tc-social-instagram" data-provider="instagram"><span class="tc-social-mark">Ig</span> Instagram</button>
+    <div class="tc-social tc-social-stack">
+      <button type="button" class="tc-social-btn tc-social-google" id="btn-google-primary">
+        <span class="tc-social-mark">G</span> Continue with Google
+      </button>
+      <button type="button" class="tc-social-btn tc-social-facebook" disabled title="Coming soon">
+        <span class="tc-social-mark">f</span> Facebook <span class="tc-soon">Soon</span>
+      </button>
+      <button type="button" class="tc-social-btn tc-social-instagram" disabled title="Coming soon">
+        <span class="tc-social-mark">Ig</span> Instagram <span class="tc-soon">Soon</span>
+      </button>
     </div>
-    <div id="social-email-panel" class="tc-conditional" hidden>
-      <div class="tc-field">
-        <label for="social-email">Email for <span id="social-provider-label">provider</span></label>
-        <input type="email" id="social-email" class="tc-input" autocomplete="email" />
-      </div>
-      <button type="button" id="social-continue" class="tc-btn tc-btn-primary tc-btn-block">Continue</button>
-    </div>
+    <p id="login-error" class="tc-error" hidden></p>
     <div class="tc-divider">or email</div>
     <form id="login-form" class="tc-form">
       <div class="tc-field">
         <label for="login-email">Email</label>
-        <input type="email" id="login-email" required autocomplete="email" />
+        <input type="email" id="login-email" required autocomplete="email" placeholder="you@example.com" />
       </div>
       <div class="tc-field">
         <label for="login-password">Password</label>
-        <input type="password" id="login-password" required autocomplete="current-password" />
+        <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••" />
       </div>
-      <p id="login-error" class="tc-error" hidden></p>
-      <button type="submit" class="tc-btn tc-btn-primary tc-btn-block">Log in</button>
+      <button type="submit" class="tc-btn tc-btn-primary tc-btn-block">Continue to BRAHL</button>
     </form>
-    <p class="tc-footer-links"><a href="/forgot-password">Forgot password?</a> · No account? <a href="/signup">Sign up</a> · <a href="/signin">Demo profiles</a></p>
+    <p class="tc-footer-links">
+      <a href="/forgot-password">Forgot password?</a>
+      · <a href="/signup">Sign up</a>
+      · <a href="/app?demo=1" id="footer-guest">Guest → BRAHL</a>
+    </p>
   </main>
+  <script src="/assets/invite-gate.js"></script>
   <script>
     const $ = (s) => document.querySelector(s);
-    const $$ = (s) => Array.from(document.querySelectorAll(s));
-    let provider = "";
+    let googleReady = false;
+    let authRequired = false;
     function showErr(msg) {
       const el = $("#login-error");
       el.hidden = !msg;
       el.textContent = msg || "";
+    }
+    function enterGuest() {
+      window.QoaInviteGate?.enableDemoBypass?.();
+      const draft = sessionStorage.getItem("qoa_draft_requirement");
+      location.href = draft ? "/app?demo=1&restore_draft=1" : "/app?demo=1";
     }
     function store(user, token) {
       localStorage.setItem("qoa_auth_token", token);
@@ -66,48 +100,91 @@
       }
       location.href = draft ? "/app?restore_draft=1" : "/app";
     }
-    $$("[data-provider]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        provider = btn.dataset.provider;
-        $("#social-provider-label").textContent = provider;
-        $("#social-email-panel").hidden = false;
-        $("#social-email").focus();
-      });
-    });
-    $("#social-continue")?.addEventListener("click", async () => {
-      showErr("");
-      try {
-        const res = await fetch("/api/auth/social", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ provider, email: $("#social-email").value.trim() }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.detail || res.statusText);
-        store(data.user, data.token);
-      } catch (e) {
-        showErr(e.message);
+    function takeAuthTokenFromUrl() {
+      const u = new URL(location.href);
+      const token = u.searchParams.get("auth_token");
+      const oauthErr = u.searchParams.get("oauth_error");
+      if (oauthErr) {
+        showErr(decodeURIComponent(oauthErr));
+        u.searchParams.delete("oauth_error");
+        history.replaceState({}, "", u.pathname + u.search + u.hash);
       }
+      if (!token) return null;
+      u.searchParams.delete("auth_token");
+      history.replaceState({}, "", u.pathname + u.search + u.hash);
+      return token;
+    }
+    async function tryLogin() {
+      showErr("");
+      const email = $("#login-email").value.trim();
+      const password = $("#login-password").value;
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        store(data.user, data.token);
+        return;
+      }
+      if (res.status === 401 || res.status === 404) {
+        try { sessionStorage.setItem("qoa_signup_email", email); } catch { /* ignore */ }
+        location.href = "/signup";
+        return;
+      }
+      throw new Error(typeof data.detail === "string" ? data.detail : res.statusText);
+    }
+    function syncGuestUi() {
+      const showGuest = !authRequired;
+      const panel = $("#guest-continue");
+      if (panel) panel.hidden = !showGuest;
+      $("#nav-guest-start")?.addEventListener("click", (e) => {
+        if (!showGuest) return;
+        e.preventDefault();
+        enterGuest();
+      });
+      $("#footer-guest")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        enterGuest();
+      });
+    }
+    $("#btn-guest-continue")?.addEventListener("click", enterGuest);
+    $("#btn-google-primary")?.addEventListener("click", () => {
+      showErr("");
+      if (!googleReady) {
+        showErr("Google sign-in is not configured yet. Use Continue to BRAHL without account above, or email if you already registered.");
+        return;
+      }
+      location.href = "/api/auth/google/start?next=/login";
     });
     $("#login-form").addEventListener("submit", async (ev) => {
       ev.preventDefault();
-      showErr("");
+      try { await tryLogin(); } catch (e) { showErr(e.message); }
+    });
+    (async function boot() {
       try {
-        const res = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: $("#login-email").value.trim(),
-            password: $("#login-password").value,
-          }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.detail || res.statusText);
-        store(data.user, data.token);
+        const [provRes, cfgRes] = await Promise.all([
+          fetch("/api/auth/providers"),
+          fetch("/api/config"),
+        ]);
+        const data = await provRes.json().catch(() => ({}));
+        const cfg = await cfgRes.json().catch(() => ({}));
+        googleReady = !!data.providers?.google;
+        authRequired = !!cfg.auth_required;
+      } catch { /* ignore */ }
+      syncGuestUi();
+      const token = takeAuthTokenFromUrl();
+      if (!token) return;
+      try {
+        const res = await fetch("/api/auth/me", { headers: { Authorization: `Bearer ${token}` } });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Sign-in failed");
+        store(data.user, token);
       } catch (e) {
         showErr(e.message);
       }
-    });
+    })();
   </script>
 </body>
 </html>

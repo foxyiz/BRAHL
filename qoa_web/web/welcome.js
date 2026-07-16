@@ -1,12 +1,91 @@
 const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => [...document.querySelectorAll(sel)];
+
+const STORAGE_AVATAR = "qoa_web_avatar";
+
+const ROLE_META = {
+  client: {
+    label: "Creator",
+    blurb: "Scope with AI, fund a QA wallet, invite hunters, and ship a Go/No-Go with BRAHL.",
+    avatar: "client",
+    path: "/app?demo=1",
+  },
+  consultant: {
+    label: "QA Hunter",
+    blurb: "Join open challenges, hunt defects, enrich reports, and earn toward payout.",
+    avatar: "consultant",
+    path: "/app?demo=1",
+  },
+  promoter: {
+    label: "Promoter",
+    blurb: "Share invites, grow the arena, and earn XP & wallet credits.",
+    avatar: "client",
+    path: "/app?demo=1#promoter",
+  },
+  networker: {
+    label: "Nalanda",
+    blurb: "Learn, teach, and discuss — coming soon in the Arena menu.",
+    avatar: "client",
+    path: "/app?demo=1",
+  },
+};
+
+function selectedRole() {
+  const btn = $(".welcome-avatar-btn.active");
+  return btn?.dataset.role || "client";
+}
+
+function unlockArena() {
+  window.QoaInviteGate?.enableDemoBypass?.();
+}
+
+function applyRoleToStorage(roleKey) {
+  const meta = ROLE_META[roleKey] || ROLE_META.client;
+  if (meta.avatar) localStorage.setItem(STORAGE_AVATAR, meta.avatar);
+  try {
+    localStorage.removeItem("qoa_web_profile");
+  } catch {
+    /* ignore */
+  }
+  return meta;
+}
+
+function enterArena(roleKey = selectedRole()) {
+  unlockArena();
+  const meta = applyRoleToStorage(roleKey);
+  location.href = meta.path;
+}
+
+function syncRoleUi() {
+  const key = selectedRole();
+  const meta = ROLE_META[key] || ROLE_META.client;
+  const blurb = $("#welcome-role-blurb");
+  if (blurb) blurb.textContent = meta.blurb;
+  const enterBtn = $("#welcome-enter-role");
+  if (enterBtn) enterBtn.textContent = `Enter as ${meta.label} →`;
+}
+
+function bindAvatars() {
+  $$(".welcome-avatar-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      $$(".welcome-avatar-btn").forEach((b) => {
+        b.classList.toggle("active", b === btn);
+        b.setAttribute("aria-checked", b === btn ? "true" : "false");
+      });
+      syncRoleUi();
+    });
+  });
+  syncRoleUi();
+}
 
 function prefillCodeFromUrl() {
   const params = new URLSearchParams(location.search);
   const code = params.get("code");
-  if (code) {
-    const input = $("#invite-code");
-    if (input) input.value = code.trim();
-  }
+  if (!code) return;
+  const input = $("#invite-code");
+  if (input) input.value = code.trim();
+  const details = document.querySelector(".welcome-invite-details");
+  if (details) details.open = true;
 }
 
 function bindInviteForm() {
@@ -21,7 +100,7 @@ function bindInviteForm() {
     if (status) {
       status.hidden = false;
       status.textContent = "Checking invite…";
-      status.className = "waitlist-status";
+      status.className = "welcome-status";
     }
     try {
       const res = await fetch("/api/invites/redeem", {
@@ -36,15 +115,16 @@ function bindInviteForm() {
         localStorage.setItem("qoa_nalanda_community", "1");
       }
       if (status) {
-        status.className = "waitlist-status waitlist-status-ok";
-        status.textContent = data.message || "Trial started — redirecting…";
+        status.className = "welcome-status welcome-status-ok";
+        status.textContent = data.message || "Trial started — opening Arena…";
       }
+      applyRoleToStorage(selectedRole());
       setTimeout(() => {
-        location.href = "/signin";
-      }, 600);
+        location.href = ROLE_META[selectedRole()]?.path || "/app?demo=1";
+      }, 500);
     } catch (err) {
       if (status) {
-        status.className = "waitlist-status waitlist-status-err";
+        status.className = "welcome-status welcome-status-err";
         status.textContent = err.message || "Could not redeem invite";
       }
     }
@@ -53,8 +133,9 @@ function bindInviteForm() {
 
 function bindDemoBypass() {
   $("#welcome-demo-bypass")?.addEventListener("click", () => {
-    window.QoaInviteGate?.enableDemoBypass();
-    location.href = "/signin";
+    unlockArena();
+    applyRoleToStorage(selectedRole());
+    location.href = ROLE_META[selectedRole()]?.path || "/app?demo=1";
   });
 }
 
@@ -62,15 +143,15 @@ function showTrialActiveHint() {
   if (!window.QoaInviteGate?.isInviteTrialValid?.()) return;
   const params = new URLSearchParams(location.search);
   if (params.get("code")) return;
-  const foot = document.querySelector(".welcome-footnote");
-  if (!foot) return;
+  const shell = document.querySelector(".welcome-shell");
+  if (!shell) return;
   const days = window.QoaInviteGate.inviteTrialDaysLeft?.() ?? 0;
   const hint = document.createElement("p");
   hint.className = "welcome-trial-hint";
   hint.innerHTML =
     `Trial active${days ? ` (${days} day${days === 1 ? "" : "s"} left)` : ""} — ` +
-    `<a href="/signin">continue to profiles →</a>`;
-  foot.parentElement?.insertBefore(hint, foot.nextSibling);
+    `<a href="/app?demo=1">continue in Arena →</a>`;
+  shell.insertBefore(hint, shell.querySelector(".welcome-foot-links"));
 }
 
 function bindWelcomeAiPrompt() {
@@ -89,22 +170,26 @@ function bindWelcomeAiPrompt() {
     } catch {
       /* ignore quota */
     }
-    // Prefer arena when trial/demo already unlocked; else sign-in then app
-    const canEnter =
-      window.QoaInviteGate?.isInviteTrialValid?.() ||
-      window.QoaInviteGate?.isDemoBypass?.() ||
-      localStorage.getItem("qoa_web_demo_bypass") === "1";
-    if (canEnter) {
-      location.href = "/app?demo=1&planner=1";
+    unlockArena();
+    const meta = applyRoleToStorage(selectedRole());
+    const base = meta.path.split("#")[0];
+    if (selectedRole() === "client" || selectedRole() === "consultant") {
+      location.href = `${base}${base.includes("?") ? "&" : "?"}planner=1`;
     } else {
-      window.QoaInviteGate?.enableDemoBypass?.();
-      location.href = "/app?demo=1&planner=1";
+      location.href = meta.path;
     }
   });
 }
 
+function bindEnterButtons() {
+  $("#welcome-enter-arena")?.addEventListener("click", () => enterArena());
+  $("#welcome-enter-role")?.addEventListener("click", () => enterArena());
+}
+
+bindAvatars();
 prefillCodeFromUrl();
 bindInviteForm();
 bindDemoBypass();
 bindWelcomeAiPrompt();
+bindEnterButtons();
 showTrialActiveHint();

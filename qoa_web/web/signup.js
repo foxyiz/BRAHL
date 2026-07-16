@@ -1,4 +1,4 @@
-/* Two-step signup: social/email → profile with multi-role checkboxes */
+/* Two-step signup: Google/email → profile → BRAHL */
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
 
@@ -9,6 +9,8 @@ const state = {
   password: "",
   token: "",
   user: null,
+  googleReady: false,
+  authRequired: false,
 };
 
 function showError(id, msg) {
@@ -19,11 +21,13 @@ function showError(id, msg) {
 }
 
 function goStep(step) {
-  $("#signup-step-1").hidden = step !== 1;
-  $("#signup-step-2").hidden = step !== 2;
-  $("#step-indicator-1").classList.toggle("active", step === 1);
-  $("#step-indicator-1").classList.toggle("done", step > 1);
-  $("#step-indicator-2").classList.toggle("active", step === 2);
+  const s1 = $("#signup-step-1");
+  const s2 = $("#signup-step-2");
+  if (s1) s1.hidden = step !== 1;
+  if (s2) s2.hidden = step !== 2;
+  $("#step-indicator-1")?.classList.toggle("active", step === 1);
+  $("#step-indicator-1")?.classList.toggle("done", step > 1);
+  $("#step-indicator-2")?.classList.toggle("active", step === 2);
 }
 
 function selectedRoles() {
@@ -45,9 +49,30 @@ function storeAuth(user, token) {
   state.user = user;
 }
 
-function enterArena() {
+function enterBrahl() {
   const draft = sessionStorage.getItem("qoa_draft_requirement");
   location.href = draft ? "/app?restore_draft=1" : "/app";
+}
+
+function enterGuest() {
+  window.QoaInviteGate?.enableDemoBypass?.();
+  const draft = sessionStorage.getItem("qoa_draft_requirement");
+  location.href = draft ? "/app?demo=1&restore_draft=1" : "/app?demo=1";
+}
+
+function syncGuestUi() {
+  const showGuest = !state.authRequired;
+  const panel = $("#guest-continue");
+  if (panel) panel.hidden = !showGuest;
+}
+
+function takeAuthTokenFromUrl() {
+  const u = new URL(location.href);
+  const token = u.searchParams.get("auth_token");
+  if (!token) return null;
+  u.searchParams.delete("auth_token");
+  history.replaceState({}, "", u.pathname + u.search + u.hash);
+  return token;
 }
 
 async function apiJson(path, opts = {}) {
@@ -66,38 +91,42 @@ async function apiJson(path, opts = {}) {
   return data;
 }
 
-$$("[data-provider]").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    state.provider = btn.dataset.provider;
-    $("#social-provider-label").textContent = state.provider;
-    $("#social-email-panel").hidden = false;
-    $("#social-email").focus();
-  });
+async function loadProviders() {
+  try {
+    const [prov, cfg] = await Promise.all([
+      apiJson("/api/auth/providers"),
+      fetch("/api/config").then((r) => r.json()),
+    ]);
+    state.googleReady = !!prov.providers?.google;
+    state.authRequired = !!cfg.auth_required;
+  } catch {
+    state.googleReady = false;
+    state.authRequired = false;
+  }
+  syncGuestUi();
+}
+
+$("#btn-guest-continue")?.addEventListener("click", enterGuest);
+$("#footer-guest")?.addEventListener("click", (e) => {
+  e.preventDefault();
+  enterGuest();
+});
+$("#nav-guest-start")?.addEventListener("click", (e) => {
+  if (state.authRequired) return;
+  e.preventDefault();
+  enterGuest();
 });
 
-$("#social-continue")?.addEventListener("click", async () => {
+$("#btn-google")?.addEventListener("click", async () => {
   showError("#signup-error-1", "");
-  const email = $("#social-email").value.trim();
-  const name = $("#social-name").value.trim();
-  if (!email) {
-    showError("#signup-error-1", "Email is required for social continue (local OAuth stub).");
+  if (!state.googleReady) {
+    showError(
+      "#signup-error-1",
+      "Google sign-in is not configured yet. Use Continue to BRAHL without account above, or email below."
+    );
     return;
   }
-  try {
-    const data = await apiJson("/api/auth/social", {
-      method: "POST",
-      body: JSON.stringify({ provider: state.provider, email, name }),
-    });
-    storeAuth(data.user, data.token);
-    state.mode = "social";
-    state.email = email;
-    if (data.user.first_name) $("#signup-first").value = data.user.first_name;
-    if (data.user.last_name) $("#signup-last").value = data.user.last_name;
-    goStep(2);
-    syncConditional();
-  } catch (e) {
-    showError("#signup-error-1", e.message);
-  }
+  location.href = "/api/auth/google/start?next=/signup";
 });
 
 $("#signup-email-form")?.addEventListener("submit", (ev) => {
@@ -125,7 +154,7 @@ $("#signup-profile-form")?.addEventListener("submit", async (ev) => {
   showError("#signup-error-2", "");
   const roles = selectedRoles();
   if (!roles.length) {
-    showError("#signup-error-2", "Select at least one role / avatar.");
+    showError("#signup-error-2", "Select at least one role.");
     return;
   }
   const first = $("#signup-first").value.trim();
@@ -138,6 +167,7 @@ $("#signup-profile-form")?.addEventListener("submit", async (ev) => {
     first_name: first,
     last_name: last,
     country: $("#signup-country").value.trim(),
+    city: $("#signup-city").value.trim(),
     phone: $("#signup-phone").value.trim(),
     roles,
     app_url: roles.includes("creator") ? $("#signup-app-url").value.trim() : "",
@@ -170,29 +200,62 @@ $("#signup-profile-form")?.addEventListener("submit", async (ev) => {
       fd.append("file", file);
       await apiJson("/api/auth/me/profile-upload", { method: "POST", body: fd });
     }
-    enterArena();
+    enterBrahl();
   } catch (e) {
     showError("#signup-error-2", e.message);
   }
 });
 
 syncConditional();
+goStep(1);
 
-(async function resumeIncompleteProfile() {
+(async function boot() {
+  await loadProviders();
+
+  const prefill = sessionStorage.getItem("qoa_signup_email");
+  if (prefill && $("#signup-email")) {
+    $("#signup-email").value = prefill;
+    sessionStorage.removeItem("qoa_signup_email");
+  }
+
+  const oauthToken = takeAuthTokenFromUrl();
+  if (oauthToken) {
+    try {
+      state.token = oauthToken;
+      const data = await apiJson("/api/auth/me");
+      storeAuth(data.user, oauthToken);
+      state.mode = "social";
+      state.email = data.user.email || "";
+      if (data.user.first_name) $("#signup-first").value = data.user.first_name;
+      if (data.user.last_name) $("#signup-last").value = data.user.last_name;
+      if (data.user.country) $("#signup-country").value = data.user.country;
+      if (data.user.city) $("#signup-city").value = data.user.city;
+      if (data.user.phone) $("#signup-phone").value = data.user.phone;
+      if (data.user.profile_complete) {
+        enterBrahl();
+        return;
+      }
+      goStep(2);
+      syncConditional();
+      return;
+    } catch (e) {
+      showError("#signup-error-1", e.message || "Google sign-in failed.");
+    }
+  }
+
   const token = localStorage.getItem("qoa_auth_token");
   if (!token) return;
   try {
-    const res = await fetch("/api/auth/me", { headers: { Authorization: `Bearer ${token}` } });
-    if (!res.ok) return;
-    const data = await res.json();
+    state.token = token;
+    const data = await apiJson("/api/auth/me");
     if (data.user && data.user.profile_complete === false) {
-      state.token = token;
       state.user = data.user;
       state.mode = data.user.social_provider ? "social" : "email";
       state.email = data.user.email || "";
       if (data.user.first_name) $("#signup-first").value = data.user.first_name;
       if (data.user.last_name) $("#signup-last").value = data.user.last_name;
       if (data.user.country) $("#signup-country").value = data.user.country;
+      if (data.user.city) $("#signup-city").value = data.user.city;
       if (data.user.phone) $("#signup-phone").value = data.user.phone;
       if (data.user.app_url) $("#signup-app-url").value = data.user.app_url;
       (data.user.roles || []).forEach((r) => {

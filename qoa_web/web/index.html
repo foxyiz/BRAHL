@@ -10,19 +10,27 @@
   <link rel="stylesheet" href="/assets/themes.css" />
 </head>
 <body>
-  <div id="demo-banner" class="demo-banner" hidden role="status">
-    <span>Demo — fictional personas · localStorage profiles</span>
-  </div>
+  <div id="demo-banner" class="demo-banner" hidden role="status" aria-hidden="true"></div>
   <header class="topbar">
     <div class="topbar-row topbar-row-head">
       <div class="brand">
-        <h1 id="app-title">BRAHL Web — f(x,y)=z</h1>
+        <a href="/" class="brand-home" aria-label="QA on Air home">
+          <h1 id="app-title">BRAHL Web — f(x,y)=z</h1>
+        </a>
         <p class="tagline" id="app-tagline">Your QA agent — FoXYiZ runs the tests · BRAHL decides Go/No-Go</p>
       </div>
       <div id="topbar-project" class="topbar-project" hidden>
         <span class="topbar-project-label">Projects</span>
         <select id="topbar-project-select" aria-label="Switch project"></select>
         <button type="button" id="btn-topbar-add-project" class="icon-btn topbar-add-btn" title="New project">+</button>
+      </div>
+      <div id="topbar-role" class="topbar-role" hidden>
+        <label class="topbar-role-label" for="topbar-role-select">Role</label>
+        <select id="topbar-role-select" aria-label="Switch role">
+          <option value="client">Creator</option>
+          <option value="consultant">QA Hunter</option>
+          <option value="promoter">Promoter</option>
+        </select>
       </div>
       <div class="topbar-right">
         <div id="ai-toggle-wrap" class="ai-toggle-wrap" hidden>
@@ -31,7 +39,7 @@
             <span class="ai-toggle-track" aria-hidden="true"><span class="ai-toggle-thumb"></span></span>
             <span id="ai-toggle-label">AI on</span>
           </label>
-          <button type="button" id="btn-ai-docs" class="ai-md-btn" hidden title="AI context documents (.md) — shared across all projects">
+          <button type="button" id="btn-ai-docs" class="ai-md-btn" hidden title="AI context (.md) — Master for everyone + living Journey for this project">
             <span class="ai-md-dot" aria-hidden="true"></span>.md
           </button>
         </div>
@@ -55,25 +63,20 @@
             <span class="user-menu-caret" aria-hidden="true">▾</span>
           </button>
           <div id="user-menu-dropdown" class="user-menu-dropdown" hidden role="menu">
-            <a href="/signin" class="user-menu-item" role="menuitem" id="user-menu-profile">Profile / Sign in</a>
-            <button type="button" class="user-menu-item" role="menuitem" data-user-action="nalanda">Nalanda</button>
-            <button type="button" class="user-menu-item" role="menuitem" data-user-action="atomic77">Atomic 77</button>
+            <a href="/login" class="user-menu-item" role="menuitem" id="user-menu-profile">Account</a>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="promoter">Promoter</button>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="cost">Wallet ($)</button>
             <div class="user-menu-divider" role="separator"></div>
             <a href="https://github.com/foxyiz/BRAHL" class="user-menu-item" role="menuitem" target="_blank" rel="noopener noreferrer">Download on GitHub</a>
-            <div class="user-menu-divider" role="separator"></div>
-            <button type="button" class="user-menu-item" role="menuitem" data-user-action="theme-pro">Theme: Pro</button>
-            <button type="button" class="user-menu-item" role="menuitem" data-user-action="theme-arena">Theme: Arena</button>
-            <div class="user-menu-divider" role="separator"></div>
-            <button type="button" class="user-menu-item" role="menuitem" data-user-action="role-creator" id="user-menu-role-creator">View as Creator</button>
-            <button type="button" class="user-menu-item" role="menuitem" data-user-action="role-hunter" id="user-menu-role-hunter">View as QA Hunter</button>
             <div class="user-menu-divider" role="separator"></div>
             <a href="/admin" class="user-menu-item" role="menuitem" id="user-menu-admin" hidden>Admin</a>
             <a href="/admin?scope=project" class="user-menu-item" role="menuitem" id="user-menu-project-admin" hidden>Project admin</a>
             <a href="/login" class="user-menu-item" role="menuitem" id="user-menu-login">Log in</a>
             <a href="/signup" class="user-menu-item" role="menuitem" id="user-menu-signup">Sign up</a>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="signout" id="user-menu-signout" hidden>Sign out</button>
+            <div class="user-menu-divider" role="separator"></div>
+            <button type="button" class="user-menu-item user-menu-item-muted" role="menuitem" data-user-action="upcoming" disabled>Nalanda — Upcoming</button>
+            <button type="button" class="user-menu-item user-menu-item-muted" role="menuitem" data-user-action="upcoming" disabled>Atomic 77 — Upcoming</button>
           </div>
         </div>
       </div>
@@ -96,58 +99,15 @@
     </div>
   </header>
 
-  <div id="visual-reward-rail" class="visual-reward-rail" hidden aria-label="Reward loop — hunt, earn, launch">
-    <div class="reward-loop">
-      <div class="reward-step reward-step-current" id="rail-step-hunt" title="Hunt or build in the arena">
-        <span class="reward-icon" id="rail-icon-hunt">🎯</span>
-        <span id="rail-label-hunt">Hunt</span>
-      </div>
-      <span class="reward-arrow" aria-hidden="true">→</span>
-      <div class="reward-step" id="rail-step-xp" title="Experience points">
-        <span class="reward-icon">⚡</span>
-        <span>XP</span>
-        <strong id="rail-xp">0</strong>
-      </div>
-      <span class="reward-arrow" aria-hidden="true">→</span>
-      <div class="reward-step reward-step-pay" id="rail-step-pay" title="Human pool payout">
-        <span class="reward-icon">💵</span>
-        <span>Pay</span>
-        <strong id="rail-pay">$0</strong>
-      </div>
-      <span class="reward-arrow" aria-hidden="true">→</span>
-      <div class="reward-step reward-step-launch" id="rail-step-launch" title="Go/No-Go launch">
-        <span class="reward-icon">🚀</span>
-        <span>Launch</span>
-        <strong id="rail-launch">—</strong>
-      </div>
-    </div>
-    <div class="mini-arena-strip" role="img" aria-label="Champion versus Contender">
-      <span class="mini-arena-corner champion"><span aria-hidden="true">🥊</span> Champion</span>
-      <span class="mini-arena-vs">VS</span>
-      <span class="mini-arena-corner contender"><span aria-hidden="true">🎯</span> Contender</span>
-    </div>
-  </div>
+  <div id="visual-reward-rail" class="visual-reward-rail" hidden aria-hidden="true"></div>
 
   <div id="context-strip" class="context-strip">
-    <span id="status-bar" class="status-bar">Choose an avatar to start the QA agent</span>
-    <button type="button" id="persona-tips-reopen" class="persona-tips-reopen linkish" hidden>Persona tips</button>
+    <span id="status-bar" class="status-bar">Choose a role to start the QA agent</span>
     <span id="project-banner-meta" class="project-banner-meta" hidden title="Open the yPAD widget (bottom right) for plans · steps · data"></span>
     <div id="project-banner-hitl" class="project-banner-hitl" hidden></div>
   </div>
 
-  <div id="persona-tasks-strip" class="persona-badge-strip" hidden>
-    <div class="persona-badge-card" role="status">
-      <span id="persona-tasks-code" class="persona-badge-code"></span>
-      <span id="persona-tasks-label" class="persona-badge-name"></span>
-      <span id="persona-tasks-role" class="persona-badge-role"></span>
-      <button type="button" id="persona-tasks-expand" class="persona-badge-expand" title="Show demo tips" aria-expanded="false">Tips</button>
-      <button type="button" id="persona-tasks-dismiss" class="persona-badge-dismiss" title="Close" aria-label="Close persona tips">×</button>
-    </div>
-    <div id="persona-tasks-details" class="persona-badge-details" hidden>
-      <ul id="persona-tasks-list" class="persona-tasks-list"></ul>
-      <a id="persona-tasks-doc-link" class="persona-tasks-doc-link linkish" href="#" hidden>Test user data (.md)</a>
-    </div>
-  </div>
+  <div id="persona-tasks-strip" class="persona-badge-strip" hidden aria-hidden="true"></div>
 
   <div id="avatar-gate" class="avatar-gate" hidden>
     <div class="avatar-gate-card">
@@ -383,7 +343,10 @@
       <div class="ai-docs-header">
         <div>
           <h2 id="ai-docs-title">AI context · .md</h2>
-          <p class="blurb">Built-in skills stay read-only. <strong>My docs</strong> are editable and optional in the AI prompt — shared across projects.</p>
+          <p class="blurb">
+            <strong>Journey</strong> (this project) auto-updates as you Build → Run → Analyze → Heal → Loop.
+            <strong>Master</strong> docs are the same for everyone. <strong>My docs</strong> are optional extras.
+          </p>
           <p id="ai-docs-budget" class="ai-docs-budget meta" hidden></p>
         </div>
         <div class="ai-docs-header-actions">
@@ -393,7 +356,9 @@
       </div>
       <div class="ai-docs-layout">
         <div class="ai-docs-sidebar">
-          <div class="ai-docs-section-label">Built-in</div>
+          <div class="ai-docs-section-label">In AI prompt · Master &amp; Journey</div>
+          <ul id="ai-docs-list-prompt" class="ai-docs-list" role="list"></ul>
+          <div class="ai-docs-section-label">Reference (not auto-packed)</div>
           <ul id="ai-docs-list-builtin" class="ai-docs-list" role="list"></ul>
           <div class="ai-docs-section-head">
             <span class="ai-docs-section-label">My docs</span>
@@ -499,32 +464,29 @@
             </header>
 
             <section id="build-strategy" class="build-section build-strategy-section">
-              <h3 class="section-sub">Strategy / plan</h3>
-              <p class="blurb build-hero-blurb" id="build-panel-blurb">Open the markdown docs for this suite — then refine yPAD coverage below.</p>
-              <div id="build-docs-strip" class="build-docs-strip" aria-label="Test strategy and test plan documents">
-                <button type="button" class="build-doc-chip" data-doc="strategy" id="btn-build-doc-strategy" title="test strategy.md — purpose and approach">
+              <div id="build-docs-strip" class="build-docs-strip" aria-label="Suite documents">
+                <button type="button" class="build-doc-chip" data-doc="strategy" id="btn-build-doc-strategy" title="test strategy.md">
                   <span class="build-doc-chip-label">test strategy.md</span>
-                  <span class="build-doc-chip-hint" id="build-doc-strategy-hint">Synopsis on click</span>
                 </button>
-                <button type="button" class="build-doc-chip" data-doc="plan" id="btn-build-doc-plan" title="test plan.md — plans, stories, coverage">
+                <button type="button" class="build-doc-chip" data-doc="plan" id="btn-build-doc-plan" title="test plan.md">
                   <span class="build-doc-chip-label">test plan.md</span>
-                  <span class="build-doc-chip-hint" id="build-doc-plan-hint">Synopsis on click</span>
                 </button>
               </div>
-              <div id="build-strategy-summary" class="build-strategy-summary">
-                <p class="empty-hint" id="build-strategy-empty">No strategy yet — generate a BRAHL plan below, or edit yPAD in Test coverage.</p>
+              <div id="build-strategy-summary" class="build-strategy-summary" hidden>
+                <p class="empty-hint" id="build-strategy-empty" hidden></p>
                 <div id="build-strategy-body" class="build-strategy-body" hidden></div>
               </div>
-              <div class="phase-action-bar">
+              <div class="phase-action-bar build-tool-actions">
                 <button type="button" id="btn-improve-ypads" class="secondary">Improve yPADs</button>
                 <button type="button" id="btn-goto-coverage" class="secondary">Test coverage</button>
               </div>
             </section>
 
             <details id="build-brahl-plan" class="build-section build-collapsible build-brahl-plan-section">
-              <summary class="section-sub">Rebuild BRAHL plan</summary>
-              <p class="blurb">Paste a requirement — generates test strategy, user stories, and automated + Manual test cases.</p>
-              <textarea id="brahl-plan-requirement" class="brahl-plan-input" rows="4" placeholder="Describe what to test — MVP launch, changed build, edge cases for QA Hunters…"></textarea>
+              <summary class="build-collapsible-summary">Rebuild BRAHL plan</summary>
+              <div class="build-collapsible-body">
+              <p class="blurb">Paste a requirement — generates strategy, stories, and test cases.</p>
+              <textarea id="brahl-plan-requirement" class="brahl-plan-input" rows="4" placeholder="Describe what to test — MVP launch, changed build, edge cases…"></textarea>
               <div class="phase-action-bar">
                 <button type="button" id="btn-generate-brahl-plan" class="primary">Generate BRAHL Plan</button>
                 <button type="button" id="btn-accept-brahl-plan" class="secondary" hidden>Accept plan</button>
@@ -532,6 +494,7 @@
               <div id="brahl-plan-review" class="brahl-plan-review" hidden>
                 <div id="brahl-plan-stats" class="brahl-plan-stats"></div>
                 <div id="brahl-plan-body" class="brahl-plan-body"></div>
+              </div>
               </div>
             </details>
 
@@ -628,14 +591,13 @@
               </div>
             </section>
 
-            <section id="build-automation" class="build-section">
-              <h3 class="section-sub">Test coverage</h3>
+            <details id="build-automation" class="build-section build-collapsible" open>
+              <summary class="build-collapsible-summary">Test coverage</summary>
+              <div class="build-collapsible-body">
               <div id="ypad-insights" class="ypad-insights">
                 <p class="ypad-insights-lead">
-                  <strong><a href="https://foxyiz.com" target="_blank" rel="noopener">FoXYiZ</a></strong> automates tests as <code>f(x,y)=z</code> —
-                  four files: <strong>Tests</strong>, <strong>Steps</strong>, <strong>Test data</strong>, plus environment reference.
-                  Results go to <em>z/</em>. Reports on the <button type="button" class="linkish" id="ypad-goto-brahl">BRAHL</button> tab.
-                  <button type="button" class="linkish" id="ypad-foxyiz-help">What is FoXYiZ?</button>
+                  <strong><a href="https://foxyiz.com" target="_blank" rel="noopener">FoXYiZ</a></strong> · <code>f(x,y)=z</code> —
+                  Tests · Steps · Test data. Reports on <button type="button" class="linkish" id="ypad-goto-brahl">BRAHL</button>.
                 </p>
                 <div class="ypad-insights-stats" id="ypad-insights-stats"></div>
                 <div id="ypad-tag-cloud" class="ypad-tag-cloud" hidden></div>
@@ -690,7 +652,8 @@
                 </div>
                 <textarea id="ypad-csv-editor" class="ypad-csv-editor" rows="12" spellcheck="false" hidden></textarea>
               </div>
-            </section>
+              </div>
+            </details>
 
             <!-- Manual scenarios + mid-page Hunter team removed: Manual = yPAD Manual tag; invite lives under Budget -->
             <div id="build-hitl-stories" hidden aria-hidden="true">
@@ -707,12 +670,12 @@
             </div>
 
             <details id="build-advanced" class="build-section build-collapsible avatar-client-only">
-              <summary class="section-sub">Advanced — versions &amp; change requests</summary>
+              <summary class="build-collapsible-summary">Advanced — versions &amp; change requests</summary>
+              <div class="build-collapsible-body">
             <section id="build-change" class="build-change-section">
               <h3 class="section-sub">App versions &amp; launch compare</h3>
               <p class="blurb">
-                Before a new release: run Verify on the <strong>old</strong> app and save baseline (all failures captured).
-                Deploy the new version, update the label and URL, Verify again — the BRAHL report shows old vs new status.
+                Save a Verify baseline on the old app, then Verify the new version — BRAHL compares old vs new.
               </p>
               <div class="version-launch-grid">
                 <div class="form-row">
@@ -735,10 +698,12 @@
               <button type="button" id="btn-request-change" class="secondary">Project changed — request assistance</button>
               <ul id="change-request-list" class="change-request-list"></ul>
             </section>
+              </div>
             </details>
 
-            <details id="build-refine-details" class="build-refine-details avatar-client-only">
-              <summary>Budget &amp; AI chat (optional)</summary>
+            <details id="build-refine-details" class="build-section build-collapsible build-refine-details avatar-client-only">
+              <summary class="build-collapsible-summary">Budget &amp; AI chat (optional)</summary>
+              <div class="build-collapsible-body">
               <div id="client-ai-build">
                 <p id="build-ai-status" class="build-ai-status meta" aria-live="polite"></p>
                 <div id="chat-thread" class="chat-thread chat-thread-compact" aria-live="polite"></div>
@@ -790,18 +755,9 @@
                 </div>
               </div>
               <ol id="build-checklist" class="build-checklist" hidden aria-hidden="true"></ol>
+              </div>
             </details>
             </div><!-- build-main-col -->
-
-            <aside id="build-cost-rail" class="build-cost-rail avatar-client-only" hidden>
-              <div class="build-cost-rail-card">
-                <h3 class="section-sub">Project cost</h3>
-                <div id="build-cost-rail-body" class="build-cost-rail-body">
-                  <p class="empty-hint">Set budget in optional section below.</p>
-                </div>
-                <button type="button" class="linkish" id="build-goto-cost">Full wallet →</button>
-              </div>
-            </aside>
             </div><!-- build-layout -->
           </div>
         </div>
@@ -819,7 +775,7 @@
       <div id="run-content">
         <h2>Run — FoXYiZ fEngine2</h2>
         <p id="run-project-scope" class="phase-scope"></p>
-        <p class="blurb">FoXYiZ only — no AI. Select fStarts; raise <code>thread_count</code> with multiple <code>tags</code> for parallel tag workers.</p>
+        <p class="blurb">FoXYiZ only — no AI. Select fStarts; raise <code>thread_count</code> with multiple <code>tags</code> for parallel workers.</p>
         <div class="form-row run-suite-row">
           <label>Suite</label>
           <span id="run-suite-display" class="run-suite-readonly">—</span>
@@ -834,7 +790,7 @@
             <button type="button" id="btn-fstart-new" class="secondary fstart-action-btn">New</button>
           </div>
         </div>
-        <p class="hint fstart-chip-hint">Click to select · Ctrl/Cmd+click for 2+ chips · <strong>Run parallel</strong> also works on one fStart with tag fan-out</p>
+        <p class="hint fstart-chip-hint">Click to select · Ctrl/Cmd+click for 2+ · <strong>Run parallel</strong> for tag fan-out</p>
         <p id="fstart-fanout-hint" class="hint fstart-fanout-hint" hidden></p>
         <p id="fstart-empty-hint" class="hint" hidden>No fStart for this project — click <strong>New</strong>.</p>
         <div class="phase-action-bar run-actions-row">
@@ -843,7 +799,6 @@
           <div id="run-post-actions" class="run-post-actions" hidden>
             <a id="run-zdash-link" href="#" target="_blank" class="secondary link-btn">View zDash</a>
             <a id="run-batch-zdash-link" href="#" target="_blank" class="secondary link-btn" hidden>View batch zDash</a>
-            <button type="button" id="btn-goto-analyze" class="secondary">Open Analyze</button>
           </div>
         </div>
         <div class="progress-wrap"><div id="progress-bar" class="progress-bar"></div></div>
@@ -902,14 +857,16 @@
       <div id="heal-content">
         <h2>Heal — fix from Analyze</h2>
         <p id="heal-project-scope" class="phase-scope"></p>
-        <p class="blurb">Change Input / Expected / steps in yPAD on Build, then Rerun. No AI required — AI auto-heal is optional.</p>
+        <p class="blurb">Change Input / Expected / steps in yPAD on Build, then Rerun. Optional AI auto-heal can propose CSV patches you Apply.</p>
         <p id="heal-run-hint" class="hint"></p>
         <div class="phase-action-bar">
           <button type="button" id="btn-heal-edit-ypad" class="primary">Edit yPAD on Build</button>
           <button type="button" id="btn-heal-rerun" class="secondary">Rerun</button>
           <button type="button" id="btn-heal-ai" class="secondary" hidden>AI auto-heal</button>
+          <button type="button" id="btn-heal-apply" class="primary" hidden title="Write AI patches into yPAD CSVs">Apply to yPAD</button>
         </div>
         <div id="heal-ai-off-hint" class="hint" hidden>AI off — edit yPAD on Build, then Rerun.</div>
+        <p id="heal-apply-hint" class="hint" hidden></p>
         <div class="fail-table-wrap heal-fail-wrap">
           <table class="fail-table">
             <thead>
@@ -960,10 +917,13 @@
         </div>
         <div class="loop-settings">
           <fieldset class="loop-times-fieldset">
-            <legend>Loop times</legend>
-            <label class="loop-radio"><input type="radio" name="loop-times" value="1" checked /> 1</label>
-            <label class="loop-radio"><input type="radio" name="loop-times" value="2" /> 2</label>
-            <label class="loop-radio"><input type="radio" name="loop-times" value="3" /> 3</label>
+            <legend class="visually-hidden">Loop times</legend>
+            <span class="loop-times-label">Loops</span>
+            <div class="loop-segment" role="radiogroup" aria-label="Loop times">
+              <label class="loop-seg"><input type="radio" name="loop-times" value="1" checked /><span>1</span></label>
+              <label class="loop-seg"><input type="radio" name="loop-times" value="2" /><span>2</span></label>
+              <label class="loop-seg"><input type="radio" name="loop-times" value="3" /><span>3</span></label>
+            </div>
           </fieldset>
           <label class="checkbox-label loop-verify-label">
             <input type="checkbox" id="loop-verify-full" />
@@ -994,7 +954,10 @@
       </div>
       <div id="brahl-content">
         <h2>BRAHL — cycle report</h2>
-        <p class="blurb">Verify results, loop history, failures healed, and overall app health — same structure as desktop BRAHL.</p>
+        <p class="blurb">
+          BRAHLing is continuous — coordinate with your team here, then use reports and Go/No-Go for launch readiness.
+          Verify results, loop history, and overall app health stay below.
+        </p>
         <div id="version-compare-block" class="version-compare-block avatar-client-only" hidden>
           <h3 class="section-sub">Version compare — old vs new</h3>
           <p class="blurb">Launch readiness after a version change: baseline verify (old app) vs this report (new app).</p>
@@ -1035,6 +998,48 @@
           </div>
           <div id="gonogo-verdict" class="gonogo-verdict gonogo-pending" hidden></div>
         </div>
+
+        <section id="brahl-team-workspace" class="brahl-team-workspace" aria-labelledby="brahl-team-heading">
+          <div class="brahl-team-head">
+            <h3 id="brahl-team-heading" class="section-sub">Team workspace — keep BRAHLing</h3>
+            <p class="blurb">Creator + QA Hunters discuss needs, assign work, and share sources of truth. Health reports stay in Reports below.</p>
+          </div>
+          <div class="brahl-team-grid">
+            <div class="brahl-team-col">
+              <h4 class="brahl-team-col-title">Members</h4>
+              <div id="brahl-team-roster" class="brahl-team-roster"></div>
+              <button type="button" id="brahl-team-invite" class="secondary brahl-team-invite avatar-client-only">Invite QA Hunter</button>
+              <h4 class="brahl-team-col-title">Tasks</h4>
+              <ul id="brahl-team-tasks" class="brahl-team-tasks"></ul>
+              <form id="brahl-team-task-form" class="brahl-team-task-form">
+                <input type="text" id="brahl-team-task-title" placeholder="Assign a task…" maxlength="200" autocomplete="off" />
+                <button type="submit" class="primary">Add</button>
+              </form>
+            </div>
+            <div class="brahl-team-col brahl-team-col-chat">
+              <h4 class="brahl-team-col-title">Team chat</h4>
+              <div id="brahl-team-chat-thread" class="chat-thread brahl-team-chat" aria-live="polite"></div>
+              <form id="brahl-team-chat-form" class="chat-form">
+                <input type="text" id="brahl-team-chat-input" placeholder="Message the project team…" autocomplete="off" />
+                <button type="submit" class="primary">Send</button>
+              </form>
+            </div>
+            <div class="brahl-team-col">
+              <h4 class="brahl-team-col-title">Project library</h4>
+              <ul id="brahl-team-library" class="brahl-team-library"></ul>
+              <form id="brahl-team-library-form" class="brahl-team-library-form">
+                <input type="text" id="brahl-team-lib-label" placeholder="Label" maxlength="80" autocomplete="off" />
+                <input type="url" id="brahl-team-lib-url" placeholder="https://… or path" autocomplete="off" />
+                <button type="submit" class="secondary">Add link</button>
+              </form>
+              <label class="brahl-team-upload">
+                <span>Upload doc</span>
+                <input type="file" id="brahl-team-file" />
+              </label>
+            </div>
+          </div>
+        </section>
+
         <div class="brahl-layout">
           <aside class="brahl-sidebar">
             <h3 class="section-sub">Reports</h3>
@@ -1346,9 +1351,9 @@
     <nav class="footer-links" aria-label="Site links">
       <span id="footer-version">qoa_web · Arena</span>
       <a href="/welcome">Invite</a>
-      <a href="/signin">Switch profile</a>
+      <a href="/login">Log in</a>
       <a href="/about">About</a>
-      <a href="/admin" id="footer-admin-link" class="footer-admin-link">Admin</a>
+      <a href="/admin" id="footer-admin-link" class="footer-admin-link" hidden>Admin</a>
       <a href="/api/health" target="_blank" rel="noopener">/api/health</a>
     </nav>
     <span id="health-pill" class="health-pill">checking…</span>

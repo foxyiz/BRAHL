@@ -5,13 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Panel — BRAHL</title>
   <link rel="stylesheet" href="/assets/styles.css" />
+  <link rel="stylesheet" href="/assets/site-chrome.css" />
   <link rel="stylesheet" href="/assets/admin.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 </head>
 <body class="admin-page">
+  <header class="site-top">
+    <a class="site-brand" href="/" aria-label="QA on Air home">
+      <span class="site-brand-mark" aria-hidden="true">QA</span>
+      <span class="site-brand-text">
+        <span class="site-brand-name">QA on Air</span>
+        <span class="site-brand-sub">BRAHL</span>
+      </span>
+    </a>
+    <nav class="site-top-nav" aria-label="Site">
+      <a href="/pricing">Pricing</a>
+      <a href="/about">About</a>
+      <a href="/app">BRAHL</a>
+      <a class="site-top-cta" href="/admin" aria-current="page">Admin</a>
+    </nav>
+  </header>
   <header class="admin-top">
     <div class="admin-top-inner">
-      <a href="/app" class="admin-back">← Back to Arena</a>
+      <a href="/app" class="admin-back">← Back to BRAHL</a>
       <div class="admin-brand">
         <h1>Admin Panel</h1>
         <p class="admin-lead">Super Admin · Admin · Client Project Admin — privacy-scoped visibility for BRAHL.</p>
@@ -30,7 +46,7 @@
   <div id="admin-gate" class="admin-gate" hidden>
     <p>Admin is locked (<code>QOA_ADMIN_OPEN=0</code>). Sign in as a platform admin, or set testing open mode.</p>
     <a class="primary" href="/login">Log in</a>
-    <a class="secondary" href="/app">Arena</a>
+    <a class="secondary" href="/app">Open BRAHL</a>
   </div>
 
   <div id="admin-shell" class="admin-shell" hidden>
