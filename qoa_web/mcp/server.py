@@ -42,7 +42,7 @@ TOOLS = [
         "inputSchema": {
             "type": "object",
             "properties": {
-                "config_path": {"type": "string", "default": "f/fStart_qoa_web_verify.json"},
+                "config_path": {"type": "string", "default": "f/fStart/qoa_web_verify.json"},
                 "step_label": {"type": "string", "default": "Run"},
             },
         },
@@ -79,7 +79,7 @@ TOOLS = [
 def handle_tool(name: str, arguments: dict) -> dict:
     if name == "foxyiz_run":
         return _post("/api/jobs", {
-            "config_path": arguments.get("config_path", "f/fStart_qoa_web_verify.json"),
+            "config_path": arguments.get("config_path", "f/fStart/qoa_web_verify.json"),
             "step_label": arguments.get("step_label", "Run"),
         })
     if name == "foxyiz_run_status":

@@ -138,7 +138,7 @@ def parse_parallel_log(log_path: Path) -> BatchJob:
     elif label.startswith("parallel_"):
         label = label.replace("parallel_", "", 1)
 
-    config_match = re.search(r"fStart_qoa_web[^\s\"']+\.json", text)
+    config_match = re.search(r"f/fStart/[^\s\"']+\.json", text)
     config = config_match.group(0) if config_match else ""
 
     tag_match = re.search(r"Tag filter: Running plans with tags:\s*(.+)", text)

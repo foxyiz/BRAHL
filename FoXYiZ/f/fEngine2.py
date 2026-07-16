@@ -253,23 +253,24 @@ def _substitute_env_in_value(data_value):
 def _default_main_config_path():
     """Default path to the main JSON config.
 
-    Development: repo layout has ``f/fStart.json`` relative to project root.
+    Development: repo layout has ``f/fStart/default.json`` relative to project root.
 
-    Frozen (PyInstaller): the exe is often placed in ``f/`` next to ``fStart.json``.
-    Using ``f/fStart.json`` relative to the exe dir would incorrectly resolve to
-    ``f/f/fStart.json``. Prefer ``fStart.json`` beside the executable, or
-    ``f/fStart.json`` when the exe lives at project root and config is under ``f/``.
+    Frozen (PyInstaller): prefer ``fStart/default.json`` beside the executable, or
+    ``f/fStart/default.json`` when the exe lives at project root.
     """
     if getattr(sys, 'frozen', False):
         exe_dir = os.path.abspath(os.path.dirname(sys.executable))
-        beside_exe = os.path.join(exe_dir, 'fStart.json')
-        under_f = os.path.join(exe_dir, 'f', 'fStart.json')
+        beside_exe = os.path.join(exe_dir, 'fStart', 'default.json')
+        under_f = os.path.join(exe_dir, 'f', 'fStart', 'default.json')
+        legacy = os.path.join(exe_dir, 'fStart.json')
         if os.path.isfile(beside_exe):
-            return 'fStart.json'
+            return os.path.join('fStart', 'default.json')
         if os.path.isfile(under_f):
-            return 'f/fStart.json'
-        return 'fStart.json'
-    return 'f/fStart.json'
+            return 'f/fStart/default.json'
+        if os.path.isfile(legacy):
+            return 'fStart.json'
+        return os.path.join('fStart', 'default.json')
+    return 'f/fStart/default.json'
 
 
 def _frozen_data_search_bases():
@@ -1267,10 +1268,10 @@ def process_action(args):
         }
 
     # Execute the action (no driver_path logic)
-    # Only pass ui_handler for UI actions to maintain browser session and timer state
+    # Only pass ui_handler for UI/capture actions to maintain browser session and timer state
     if ui_handler is None:
         ui_handler = xActions.UIActionHandler(timeout=timeout)
-    handler_param = ui_handler if action_type == "xUI" else None
+    handler_param = ui_handler if action_type in ("xUI", "xCapture") else None
     
     # Add 0-second delay before closing browser to ensure all operations complete (from fEngine2.py v2)
     if action_type == "xUI" and action_name == "xCloseBrowser":
@@ -1355,6 +1356,13 @@ def _execute_single_ypad_suite(config_index, total_configs, config_path, main_co
     """Run one YPAD (test suite): load plans, execute plans, write results and dashboard."""
     # Each process (including multiprocessing workers) must load .env for y3Designs substitution.
     load_env()
+    try:
+        if hasattr(xActions, "set_debug_mode"):
+            xActions.set_debug_mode(debug_mode)
+        if hasattr(xActions, "set_capture_config"):
+            xActions.set_capture_config(main_config.get("capture"))
+    except Exception:
+        pass
 
     print_header(f"Processing Test Suite {config_index}/{total_configs}")
 
@@ -1464,6 +1472,7 @@ def _execute_single_ypad_suite(config_index, total_configs, config_path, main_co
         'thread_count': main_config.get('thread_count', 1),
         'timeout': timeout,
         'headless': main_config.get('headless', False),
+        'capture': main_config.get('capture') or xActions.get_capture_config(),
         'wall_clock_seconds': time.time() - start_time,
         'suite_url': suite_url,
     }
@@ -1645,7 +1654,7 @@ def main():
         '--config',
         required=False,
         default=_default_main_config_path(),
-        help="Path to the main config JSON file (default: f/fStart.json in dev; fStart.json or f/fStart.json next to exe when frozen)",
+        help="Path to the main config JSON file (default: f/fStart/default.json in dev)",
     )
     parser.add_argument('--debug', action='store_true', help="Enable verbose debug logging and error artifacts")
     args = parser.parse_args()
@@ -1669,13 +1678,16 @@ def main():
     except FileNotFoundError:
         print_status(f"Main config not found: {args.config}", "ERROR")
         print_status(
-            "Ensure fStart.json is next to the executable, or f/fStart.json if the exe is at project root (or pass --config).",
+            "Ensure f/fStart/default.json exists, or pass --config.",
             "ERROR",
         )
         return 2
 
     # Tag fan-out: thread_count > 1 with 2+ tags on one suite → orchestrator
     try:
+        _pu = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "pyUtils"))
+        if _pu not in sys.path:
+            sys.path.insert(0, _pu)
         import fOrchestrate  # type: ignore
 
         orch_code = fOrchestrate.maybe_orchestrate_config(args.config)
@@ -1705,6 +1717,14 @@ def main():
     try:
         if hasattr(xActions, 'set_debug_mode'):
             xActions.set_debug_mode(debug_mode)
+        if hasattr(xActions, 'set_capture_config'):
+            xActions.set_capture_config(main_config.get("capture"))
+            cap = xActions.get_capture_config()
+            if cap.get("image") != "on_fail" or cap.get("video") != "off":
+                print_status(
+                    f"Capture policy — image: {cap.get('image')}, video: {cap.get('video')}",
+                    "INFO",
+                )
     except Exception:
         pass
 

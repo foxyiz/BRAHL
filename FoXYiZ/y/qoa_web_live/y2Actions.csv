@@ -246,7 +246,7 @@ PWeb_Build_DocChips,2,Click Build,xUI,xClick,nav_build_btn,,,y
 PWeb_Build_DocChips,3,Verify strategy chip,xUI,xGetText,build_doc_strategy_locator,,build_doc_strategy_expected,y
 PWeb_Build_DocChips,4,Verify plan chip,xUI,xGetText,build_doc_plan_locator,,build_doc_plan_expected,y
 PWeb_Heal_AiBtn,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
-PWeb_Heal_AiBtn,2,Click AI toggle label,xUI,xClick,ai_toggle_label_locator,,,n
+PWeb_Heal_AiBtn,2,Enable AI toggle,xUI,xClick,ai_toggle_locator,,,n
 PWeb_Heal_AiBtn,3,Wait AI,xTime,xTimeWait,1,,,n
 PWeb_Heal_AiBtn,4,Click Heal,xUI,xClick,nav_heal_btn,,,y
 PWeb_Heal_AiBtn,5,Wait,xTime,xTimeWait,2,,,y

@@ -23,9 +23,10 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
-KK_ROOT = Path(__file__).resolve().parents[1]
-F_DIR = KK_ROOT / "f"
-Z_DIR = KK_ROOT / "z"
+FOXYIZ_ROOT = Path(__file__).resolve().parents[1]
+PYUTILS_DIR = Path(__file__).resolve().parent
+F_DIR = FOXYIZ_ROOT / "f"
+Z_DIR = FOXYIZ_ROOT / "z"
 ENGINE = F_DIR / "fEngine2.py"
 OUTPUT_DIR_RE = re.compile(r"Output Directory:\s*(.+)")
 
@@ -66,7 +67,7 @@ def _write_temp_fstart(base: dict[str, Any], tag: str, batch_id: str) -> Path:
 
 def _run_engine_config(config_rel: str, label: str = "") -> dict[str, Any]:
     """Run fEngine2 for one fStart; return {ok, output_dir, log, return_code, label}."""
-    cfg_path = KK_ROOT / config_rel.replace("/", "\\")
+    cfg_path = FOXYIZ_ROOT / config_rel.replace("/", "\\")
     if not cfg_path.is_file():
         return {
             "ok": False,
@@ -79,8 +80,8 @@ def _run_engine_config(config_rel: str, label: str = "") -> dict[str, Any]:
     env = os.environ.copy()
     env["FOXYIZ_ORCHESTRATED"] = "1"
     proc = subprocess.run(
-        [sys.executable, str(ENGINE), "--config", str(cfg_path.relative_to(KK_ROOT))],
-        cwd=str(KK_ROOT),
+        [sys.executable, str(ENGINE), "--config", str(cfg_path.relative_to(FOXYIZ_ROOT))],
+        cwd=str(FOXYIZ_ROOT),
         capture_output=True,
         text=True,
         encoding="utf-8",
@@ -113,14 +114,14 @@ def build_batch_dashboard(name: str, run_dirs: list[str]) -> str | None:
     if not run_dirs:
         return None
     try:
-        sys.path.insert(0, str(KK_ROOT / "pyUtils"))
+        sys.path.insert(0, str(PYUTILS_DIR))
         import zBatchDash as zbd  # type: ignore
 
         jobs = []
         for rd in run_dirs:
             p = Path(rd)
             if not p.is_absolute():
-                p = KK_ROOT / rd.replace("/", "\\")
+                p = FOXYIZ_ROOT / rd.replace("/", "\\")
             if p.is_dir():
                 jobs.append(zbd.analyze_run_dir(p))
         jobs = zbd.merge_jobs(jobs)
@@ -130,7 +131,7 @@ def build_batch_dashboard(name: str, run_dirs: list[str]) -> str | None:
         html = zbd.build_html(name, jobs, failures)
         out = Z_DIR / f"zDash_batch_{name}.html"
         out.write_text(html, encoding="utf-8")
-        return str(out.relative_to(KK_ROOT)).replace("\\", "/")
+        return str(out.relative_to(FOXYIZ_ROOT)).replace("\\", "/")
     except Exception as exc:
         print(f"[ORCH] batch dash failed: {exc}", file=sys.stderr)
         return None
@@ -152,7 +153,7 @@ def run_tag_fanout(config_path: Path, cfg: dict[str, Any] | None = None) -> int:
         for tag in tags:
             tmp = _write_temp_fstart(cfg, tag, batch_id)
             temp_files.append(tmp)
-            rel = str(tmp.relative_to(KK_ROOT)).replace("\\", "/")
+            rel = str(tmp.relative_to(FOXYIZ_ROOT)).replace("\\", "/")
             jobs_args.append((rel, f"tag:{tag}"))
             print(f"[ORCH] queued {rel} ({tag})")
 
@@ -234,7 +235,7 @@ def maybe_orchestrate_config(config_path: str | Path) -> int | None:
         return None
     path = Path(config_path)
     if not path.is_absolute():
-        path = KK_ROOT / str(config_path).replace("/", "\\")
+        path = FOXYIZ_ROOT / str(config_path).replace("/", "\\")
     if not path.is_file():
         return None
     try:
@@ -265,12 +266,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.config:
         path = Path(args.config)
         if not path.is_absolute():
-            path = KK_ROOT / args.config.replace("/", "\\")
+            path = FOXYIZ_ROOT / args.config.replace("/", "\\")
         cfg = _load_fstart(path)
         if needs_tag_fanout(cfg):
             return run_tag_fanout(path, cfg)
         # Delegate single run to engine
-        r = _run_engine_config(str(path.relative_to(KK_ROOT)).replace("\\", "/"))
+        r = _run_engine_config(str(path.relative_to(FOXYIZ_ROOT)).replace("\\", "/"))
         sys.stdout.write(r.get("log") or "")
         return int(r.get("return_code") or 0)
 

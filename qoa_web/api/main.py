@@ -132,7 +132,7 @@ def _require_project(project_id: str, request: Request) -> dict[str, Any]:
 
 
 class RunRequest(BaseModel):
-    config_path: str = Field(default="f/fStart_Math_smoke.json")
+    config_path: str = Field(default="f/fStart/Math_smoke.json")
     config_paths: list[str] | None = None
     parallel: bool = False
     step_label: str = Field(default="Run")
@@ -140,7 +140,7 @@ class RunRequest(BaseModel):
 
 class ContextRequest(BaseModel):
     prompt: str
-    config_path: str = Field(default="f/fStart_Math_smoke.json")
+    config_path: str = Field(default="f/fStart/Math_smoke.json")
     documents: list[dict[str, str]] | None = None
     project_id: str | None = None
 
@@ -294,7 +294,7 @@ class ShrinkRequest(BaseModel):
 
 class ReportGenerateRequest(BaseModel):
     run_name: str
-    config_path: str = Field(default="f/fStart_Math_verify.json")
+    config_path: str = Field(default="f/fStart/Math_verify.json")
     step_label: str = Field(default="Verify")
     project_id: str | None = None
 
@@ -840,7 +840,7 @@ def configs(suite: str | None = None) -> dict[str, Any]:
         items = list_fstart_for_suite(suite)
         default = items[0] if items else None
         if not default:
-            suggested = f"f/fStart_{suite}_verify.json"
+            suggested = f"f/fStart/{suite}_verify.json"
             return {
                 "configs": [],
                 "default": None,

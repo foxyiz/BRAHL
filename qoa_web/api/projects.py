@@ -960,7 +960,7 @@ def register_brahl_report(
                 suite_name = "_".join(suite[2:]) if len(suite) >= 3 else ""
                 ensure_brahl_report(
                     run_name,
-                    config_path=default_fstart_for_suite(suite_name) if suite_name else "f/fStart_Math_verify.json",
+                    config_path=default_fstart_for_suite(suite_name) if suite_name else "f/fStart/Math_verify.json",
                     project=p,
                 )
                 resolved = _resolve_report_file(run_name)
@@ -1473,7 +1473,7 @@ def apply_brahl_plan(
 
                 prompt = (p.get("purpose") or p.get("prompt") or summary or "").strip()
                 if prompt:
-                    fstart = default_fstart_for_suite(suite) if suite else "f/fStart_Math.json"
+                    fstart = default_fstart_for_suite(suite) if suite else "f/fStart/Math.json"
                     ctx = capture_brahl_context(prompt, fstart)
                     return update_project(
                         project_id,

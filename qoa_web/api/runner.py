@@ -27,6 +27,8 @@ from paths import (
     resolve_repo,
 )
 
+FSTART_DIR = F_DIR / "fStart"
+
 OUTPUT_DIR_RE = re.compile(r"Output Directory:\s*(.+)")
 
 
@@ -117,9 +119,9 @@ _lock = threading.Lock()
 
 
 def list_fstart_configs() -> list[str]:
-    if not F_DIR.is_dir():
+    if not FSTART_DIR.is_dir():
         return []
-    return [f"f/{p.name}" for p in sorted(F_DIR.glob("fStart*.json"))]
+    return [f"f/fStart/{p.name}" for p in sorted(FSTART_DIR.glob("*.json"))]
 
 
 def list_fstart_for_suite(suite_name: str) -> list[str]:
@@ -143,19 +145,19 @@ def list_fstart_for_suite(suite_name: str) -> list[str]:
     named = [c for c in list_fstart_configs() if suite_name in c.lower()]
     if named:
         return named
-    fallback = f"f/fStart_{suite_name}_verify.json"
-    if (F_DIR / f"fStart_{suite_name}_verify.json").is_file():
+    fallback = f"f/fStart/{suite_name}_verify.json"
+    if (FSTART_DIR / f"{suite_name}_verify.json").is_file():
         return [fallback]
     return []
 
 
 def _validate_fstart_path(rel_path: str) -> Path:
     rel = rel_path.replace("\\", "/").strip()
-    if not rel.startswith("f/fStart") or not rel.endswith(".json"):
+    if not rel.startswith("f/fStart/") or not rel.endswith(".json"):
         raise ValueError("Invalid fStart path")
     path = resolve_repo(rel)
-    if not path.resolve().is_relative_to(F_DIR.resolve()):
-        raise ValueError("Path must be under f/")
+    if not path.resolve().is_relative_to(FSTART_DIR.resolve()):
+        raise ValueError("Path must be under f/fStart/")
     return path
 
 
@@ -183,15 +185,21 @@ def default_fstart_template(suite_name: str, variant: str = "verify") -> dict[st
         "headless": variant == "smoke_headless",
         "debug": False,
         "tags": tags,
+        "capture": {
+            "image": "on_fail",
+            "video": "off",
+            "video_fps": 2,
+            "subdir": "",
+        },
     }
 
 
 def create_fstart_config(suite_name: str, variant: str = "verify") -> str:
-    """Create f/fStart_{suite}_{variant}.json for a y/ suite."""
+    """Create f/fStart/{suite}_{variant}.json for a y/ suite."""
     suffix = variant if variant != "verify" else "verify"
-    filename = f"fStart_{suite_name}_{suffix}.json"
-    rel = f"f/{filename}"
-    path = F_DIR / filename
+    filename = f"{suite_name}_{suffix}.json"
+    rel = f"f/fStart/{filename}"
+    path = FSTART_DIR / filename
     if path.is_file():
         raise ValueError(f"Config already exists: {rel}")
     write_fstart_config(rel, default_fstart_template(suite_name, variant))
@@ -376,7 +384,7 @@ def start_batch(
     with _lock:
         _jobs[job_id] = job
 
-    orch = F_DIR / "fOrchestrate.py"
+    orch = PYUTILS_DIR / "fOrchestrate.py"
 
     def worker() -> None:
         job.status = "running"
@@ -642,7 +650,7 @@ def _recovery_trace_section(cycle_history: list[dict[str, Any]]) -> str:
 
 def generate_brahl_report_md(
     run_name: str,
-    config_path: str = "f/fStart_qoa_web_verify.json",
+    config_path: str = "f/fStart/qoa_web_verify.json",
     step_label: str = "Verify",
     project: dict[str, Any] | None = None,
 ) -> str:
@@ -813,7 +821,7 @@ def write_brahl_report_files(
 
 def ensure_brahl_report(
     run_name: str,
-    config_path: str = "f/fStart_qoa_web_verify.json",
+    config_path: str = "f/fStart/qoa_web_verify.json",
     step_label: str = "Verify",
     project: dict[str, Any] | None = None,
 ) -> Path:
@@ -947,15 +955,15 @@ def default_fstart_for_suite(suite_name: str) -> str:
             continue
     if not matches:
         for candidate in (
-            f"fStart_{suite_name}_verify.json",
-            f"fStart_{suite_name}_smoke.json",
-            f"fStart_{suite_name}.json",
-            "fStart_Math_verify.json",
-            "fStart_Math.json",
+            f"f/fStart/{suite_name}_verify.json",
+            f"f/fStart/{suite_name}_smoke.json",
+            f"f/fStart/{suite_name}.json",
+            "f/fStart/Math_verify.json",
+            "f/fStart/Math.json",
         ):
-            if (F_DIR / candidate).is_file():
-                return f"f/{candidate}"
-        return "f/fStart_Math.json"
+            if resolve_repo(candidate).is_file():
+                return candidate
+        return "f/fStart/Math.json"
     for pref in ("verify", "smoke"):
         for m in matches:
             if pref in m.lower():

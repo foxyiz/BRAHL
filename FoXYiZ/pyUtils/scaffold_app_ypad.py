@@ -309,7 +309,9 @@ def write_fstart(suite: str, tag: str | None = None) -> Path:
         "debug": False,
         "tags": [tag or "Smoke"],
     }
-    path = F_DIR / f"fStart_{safe}_smoke.json"
+    fstart_dir = F_DIR / "fStart"
+    fstart_dir.mkdir(parents=True, exist_ok=True)
+    path = fstart_dir / f"{safe}_smoke.json"
     path.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
     return path
 

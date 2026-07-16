@@ -23,12 +23,11 @@ from pathlib import Path
 
 from _paths import ARCHIVE_CLEANUP, FOXYIZ_ROOT, KK_ROOT, Y_VISUALIZATION_HTML, Z_DEFECTS_DASHBOARD_HTML, Z_DIR
 
-# Files/dirs under z/ that are kept in place (engine templates, thin wrappers)
+# Files/dirs under z/ that are kept in place (engine templates)
 Z_KEEP_NAMES = frozenset(
     {
         ".gitkeep",
         "zDash_template.html",
-        "zDefects.py",
     }
 )
 

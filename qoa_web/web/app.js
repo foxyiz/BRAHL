@@ -1098,7 +1098,10 @@ let fstartPrimary = null;
 const fstartMetaCache = {};
 
 function fstartChipLabel(path) {
-  return (path || "").replace(/^f\//, "").replace(/\.json$/i, "");
+  return (path || "")
+    .replace(/^f\/fStart\//, "")
+    .replace(/^f\//, "")
+    .replace(/\.json$/i, "");
 }
 
 function selectedFstartPaths() {
@@ -5880,7 +5883,7 @@ async function openFstartNew() {
   }
   const hasSmoke = data.configs.some((c) => c.toLowerCase().includes("smoke"));
   const suffix = hasSmoke ? "custom" : "smoke";
-  fstartEditorPath = `f/fStart_${suite}_${suffix}.json`;
+  fstartEditorPath = `f/fStart/${suite}_${suffix}.json`;
   const template = data.template || {
     configs: [`y/${suite}/${suite}.json`],
     thread_count: 1,
@@ -5888,6 +5891,12 @@ async function openFstartNew() {
     headless: false,
     debug: false,
     tags: [],
+    capture: {
+      image: "on_fail",
+      video: "off",
+      video_fps: 2,
+      subdir: "",
+    },
   };
   $("#fstart-modal-title").textContent = "New fStart config";
   $("#fstart-modal-path").textContent = fstartEditorPath;

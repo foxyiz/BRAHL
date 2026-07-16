@@ -8,5 +8,11 @@
   "debug": false,
   "tags": [
     "smoke"
-  ]
+  ],
+  "capture": {
+    "image": "on_fail",
+    "video": "off",
+    "video_fps": 2,
+    "subdir": ""
+  }
 }

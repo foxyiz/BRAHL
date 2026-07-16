@@ -26,7 +26,11 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from _paths import KK_ROOT, SUITE_QOA_WEB
+from _paths import FOXYIZ_ROOT, KK_ROOT, SUITE_QOA_WEB, SUITE_QOA_WEB_LIVE
+
+SUITE_DIR = SUITE_QOA_WEB
+SUITE_SLUG = "qoa_web"
+OPEN_SITE_REUSE = "PReuse_qoa_web_OpenSite"
 
 BASE = "http://127.0.0.1:8765"
 PERSONA_DATA = KK_ROOT / "Docs" / "test-user-data"
@@ -162,23 +166,25 @@ class Persona:
         return self.col
 
 
-def load_personas() -> list[Persona]:
+def load_personas(suite_slug: str = "qoa_web") -> list[Persona]:
     idx = json.loads((PERSONA_DATA / "index.json").read_text(encoding="utf-8"))
     out: list[Persona] = []
     for entry in idx.get("personas", []):
         p = json.loads((PERSONA_DATA / entry["file"]).read_text(encoding="utf-8"))
         allowed = set(p.get("allowed_avatars") or [])
+        pid = p.get("id") or entry.get("id", "")
+        col = entry.get("ypad_design_column") or f"D{pid[1:]}" if pid.startswith("p") else "D1"
         out.append(
             Persona(
-                col=entry["ypad_design_column"],
-                pid=p["id"],
-                code=p["code"],
-                name=p["name"],
+                col=col,
+                pid=pid,
+                code=p.get("code") or entry.get("code", ""),
+                name=p.get("name") or entry.get("name", ""),
                 default_avatar=p.get("default_avatar", "client"),
                 can_client="client" in allowed,
                 can_hunter="consultant" in allowed,
                 profile_url=p.get("profile_url")
-                or f"{BASE}/?reset=1&profile={p['id']}&suite=qoa_web",
+                or f"{BASE}/?reset=1&profile={pid}&suite={suite_slug}",
             )
         )
     return out
@@ -210,14 +216,15 @@ def slug(s: str, max_len: int = 48) -> str:
 
 
 class JourneyBuilder:
-    def __init__(self, target: int = 800) -> None:
+    def __init__(self, target: int = 800, suite_slug: str = "qoa_web") -> None:
         self.target = target
-        self.personas = load_personas()
+        self.suite_slug = suite_slug
+        self.personas = load_personas(suite_slug)
         self.plans: list[Plan] = []
         self._existing_ids: set[str] = set()
 
     def load_existing_plan_ids(self) -> None:
-        verify_plans = SUITE_QOA_WEB / "y1Plans.csv"
+        verify_plans = SUITE_DIR / "y1Plans.csv"
         if verify_plans.is_file():
             with verify_plans.open(encoding="utf-8") as f:
                 for row in csv.DictReader(f):
@@ -233,7 +240,7 @@ class JourneyBuilder:
 
     def shell_steps(self, persona: Persona, avatar: str) -> list[Step]:
         steps = [
-            Step("Open site", "xReuse", "PReuse_qoa_web_OpenSite"),
+            Step("Open site", "xReuse", OPEN_SITE_REUSE),
             Step("Load persona profile", "xUI", "xNavigate", "profile_url"),
             Step("Wait for profile", "xTime", "xTimeWait", "3"),
             Step("Verify profile chip", "xUI", "xGetText", "profile_chip_code_locator", "persona_code"),
@@ -278,7 +285,7 @@ class JourneyBuilder:
         shell = self.register_shell_reuse(persona, avatar)
         steps = [Step("Journey shell ready", "xReuse", shell), *extra_steps]
         plan_id = f"PJ_{persona.code}_{suffix}"
-        tags = ";".join(["Journey", "qoa_web", "Regression", persona.code, *tag_parts])
+        tags = ";".join(["Journey", self.suite_slug, "Regression", persona.code, *tag_parts])
         self.add_plan(Plan(plan_id, name, persona.design_id, tags, output, steps))
 
     def generate_phase_nav(self) -> None:
@@ -684,13 +691,13 @@ class JourneyBuilder:
         for persona in self.personas:
             for slug_name, url_key, loc, exp, cat in pages:
                 steps = [
-                    Step("Open site", "xReuse", "PReuse_qoa_web_OpenSite"),
+                    Step("Open site", "xReuse", OPEN_SITE_REUSE),
                     Step(f"Navigate {cat}", "xUI", "xNavigate", url_key),
                     Step("Wait", "xTime", "xTimeWait", "2"),
                     Step(f"Verify {cat}", "xUI", "xGetText", loc, exp),
                 ]
                 plan_id = f"PJ_{persona.code}_Ext_{slug_name}"
-                tags = f"Journey;qoa_web;Regression;{persona.code};External;{cat}"
+                tags = f"Journey;{self.suite_slug};Regression;{persona.code};External;{cat}"
                 self.add_plan(
                     Plan(
                         plan_id,
@@ -723,11 +730,11 @@ class JourneyBuilder:
         for persona in self.personas:
             for name, ep, code in endpoints:
                 steps = [
-                    Step("Open site", "xReuse", "PReuse_qoa_web_OpenSite"),
+                    Step("Open site", "xReuse", OPEN_SITE_REUSE),
                     Step(f"GET {name}", "xAPI", "xGet", f"api_base_url;{ep}", code),
                 ]
                 plan_id = f"PJ_{persona.code}_API_{name}"
-                tags = f"Journey;qoa_web;Regression;{persona.code};API;{name}"
+                tags = f"Journey;{self.suite_slug};Regression;{persona.code};API;{name}"
                 self.add_plan(
                     Plan(
                         plan_id,
@@ -785,7 +792,7 @@ class JourneyBuilder:
                     f"PJ_P9_NUX_{slug_name}",
                     f"P9 NUX {slug_name}",
                     p9.design_id,
-                    f"Journey;qoa_web;Regression;P9;NUX;{slug_name}",
+                    f"Journey;{self.suite_slug};Regression;P9;NUX;{slug_name}",
                     f"pj_p9_nux_{slug_name.lower()}",
                     [Step("P9 shell", "xReuse", shell), *steps],
                 )
@@ -832,7 +839,7 @@ class JourneyBuilder:
                         f"PJ_{persona.code}_{suffix}",
                         f"{persona.code} extra navigation {phase} #{i}",
                         persona.design_id,
-                        f"Journey;qoa_web;Regression;{persona.code};Extra;{phase}",
+                        f"Journey;{self.suite_slug};Regression;{persona.code};Extra;{phase}",
                         f"pj_{persona.pid}_extra_{i}",
                         [Step("Shell", "xReuse", self.register_shell_reuse(persona, av)), *extra],
                     )
@@ -847,15 +854,17 @@ def append_design_locators() -> None:
     """Append journey locators to y3Designs.csv if missing."""
     fix_script = Path(__file__).resolve().parent / "fix_y3_journey_locators.py"
     if fix_script.is_file():
+        import os
         import runpy
 
+        os.environ["FOXYIZ_SUITE_DIR"] = str(SUITE_DIR)
         runpy.run_path(str(fix_script), run_name="__fix_y3__")
         return
 
 
 def tag_verify_plans() -> None:
     """Ensure verify gate plans carry Verify tag (for fStart tag filter)."""
-    path = SUITE_QOA_WEB / "y1Plans.csv"
+    path = SUITE_DIR / "y1Plans.csv"
     rows: list[dict[str, str]] = []
     with path.open(encoding="utf-8") as f:
         reader = csv.DictReader(f)
@@ -875,8 +884,8 @@ def tag_verify_plans() -> None:
 
 
 def write_journey_csvs(plans: list[Plan]) -> tuple[int, int]:
-    plans_path = SUITE_QOA_WEB / "y1Plans_journey.csv"
-    actions_path = SUITE_QOA_WEB / "y2Actions_journey.csv"
+    plans_path = SUITE_DIR / "y1Plans_journey.csv"
+    actions_path = SUITE_DIR / "y2Actions_journey.csv"
     plan_rows = []
     action_rows = []
     for p in plans:
@@ -928,52 +937,88 @@ def write_journey_csvs(plans: list[Plan]) -> tuple[int, int]:
     return len(plan_rows), len(action_rows)
 
 
-def update_suite_json() -> None:
-    cfg_path = SUITE_QOA_WEB / "qoa_web.json"
+def update_suite_json(suite_slug: str) -> None:
+    cfg_path = SUITE_DIR / f"{suite_slug}.json"
+    if not cfg_path.is_file():
+        return
     cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+    rel = f"y/{suite_slug}"
     cfg["input_files"]["yPlans"] = [
-        "y/qoa_web/y1Plans.csv",
-        "y/qoa_web/y1Plans_journey.csv",
+        f"{rel}/y1Plans.csv",
+        f"{rel}/y1Plans_journey.csv",
     ]
     cfg["input_files"]["yActions"] = [
-        "y/qoa_web/y2Actions.csv",
-        "y/qoa_web/y2Actions_journey.csv",
+        f"{rel}/y2Actions.csv",
+        f"{rel}/y2Actions_journey.csv",
     ]
     cfg["description"] = (
-        "BRAHL web app — verify gate (52) + journey regression library "
+        f"BRAHL web app — verify gate + journey regression library "
         f"({cfg.get('journey_plans', '800+')} plans, tag Journey)"
     )
     cfg_path.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Generate qoa_web journey yPAD library")
-    ap.add_argument("--target", type=int, default=800, help="Target plan count (600–1000)")
+    global SUITE_DIR, SUITE_SLUG, OPEN_SITE_REUSE
+    ap = argparse.ArgumentParser(description="Generate BRAHL journey yPAD library")
+    ap.add_argument("--target", type=int, default=None, help="Target plan count")
+    ap.add_argument(
+        "--suite",
+        choices=("qoa_web", "qoa_web_live"),
+        default="qoa_web",
+        help="yPAD suite folder under y/",
+    )
     args = ap.parse_args()
-    target = max(600, min(1000, args.target))
+
+    SUITE_SLUG = args.suite
+    SUITE_DIR = SUITE_QOA_WEB_LIVE if SUITE_SLUG == "qoa_web_live" else SUITE_QOA_WEB
+    OPEN_SITE_REUSE = "PReuse_qoa_web_OpenSite"
+
+    if args.target is None:
+        target = 300 if SUITE_SLUG == "qoa_web_live" else 800
+    else:
+        target = args.target
+    if SUITE_SLUG == "qoa_web_live":
+        target = max(150, min(500, target))
+    else:
+        target = max(600, min(1000, target))
 
     append_design_locators()
     tag_verify_plans()
 
-    builder = JourneyBuilder(target=target)
+    builder = JourneyBuilder(target=target, suite_slug=SUITE_SLUG)
     builder.generate_all()
     n_plans, n_steps = write_journey_csvs(builder.plans)
 
-    cfg_path = SUITE_QOA_WEB / "qoa_web.json"
-    cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
-    cfg["journey_plans"] = n_plans
-    cfg["version"] = cfg.get("version", "1.2.0")
-    cfg_path.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
-    update_suite_json()
+    cfg_path = SUITE_DIR / f"{SUITE_SLUG}.json"
+    if cfg_path.is_file():
+        cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+        cfg["journey_plans"] = n_plans
+        if SUITE_SLUG == "qoa_web_live":
+            cfg["version"] = cfg.get("version", "1.4.0-v1")
+            cfg["description"] = (
+                "BRAHL Arena live gate (V1 verify) + Journey library (re-BRAHL'd). Current /app UX."
+            )
+        else:
+            cfg["version"] = cfg.get("version", "1.2.0")
+        cfg_path.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
+    update_suite_json(SUITE_SLUG)
 
-    verify_count = sum(
-        1
-        for row in csv.DictReader((SUITE_QOA_WEB / "y1Plans.csv").open(encoding="utf-8"))
-        if row.get("Run", "").upper() == "Y"
-    )
+    verify_path = SUITE_DIR / "y1Plans.csv"
+    verify_count = 0
+    if verify_path.is_file():
+        verify_count = sum(
+            1
+            for row in csv.DictReader(verify_path.open(encoding="utf-8"))
+            if row.get("Run", "").upper() == "Y"
+        )
+    print(f"Suite: {SUITE_SLUG} @ {SUITE_DIR}")
     print(f"Journey library: {n_plans} plans, {n_steps} action steps (target {target})")
     print(f"Verify gate unchanged: {verify_count} plans in y1Plans.csv (tag Verify)")
-    print("Run: python f/fEngine2.py --config f/fStart_qoa_web_regression.json")
+    if SUITE_SLUG == "qoa_web_live":
+        print("Run: python FoXYiZ\\f\\fEngine2.py --config f/fStart/qoa_web_live_journey_nav.json")
+    else:
+        print("Run: python FoXYiZ\\f\\fEngine2.py --config f/fStart/qoa_web_regression.json")
 
 
 if __name__ == "__main__":

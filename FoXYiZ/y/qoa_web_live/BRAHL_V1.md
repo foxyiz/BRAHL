@@ -6,38 +6,39 @@ Suite for testing **current** BRAHL Arena (`/app`) with FoXYiZ.
 
 | Version | What | Status |
 |---------|------|--------|
-| **V1 (now)** | Verify gate + AI .md / Build doc chips / Heal Apply CTA · suite `qoa_web_live` · version **1.4.0-v1** | Active |
-| **V2 (later)** | Re-BRAHL Journey library (~800) via `python pyUtils/gen_journey_ypad.py --target 800` pointed at this suite | Not run yet |
+| **V1** | Verify gate · `qoa_web_verify_gate.json` · **69** plans (**62** Run=Y) | Active |
+| **V2** | Journey library · regen via `refresh_qoa_web_live.py` · **~300** focused plans | Active |
 
-Yes: **V1 gate first, re-BRAHL Journey later** is the right cadence.
+## Refresh (V1 + V2)
+
+```powershell
+cd c:\006\FXYZ\KK
+python FoXYiZ\pyUtils\refresh_qoa_web_live.py --target 300
+```
 
 ## Files
 
 | File | Role |
 |------|------|
-| `y1Plans.csv` + `y2Actions.csv` | Verify gate (~58 Run=Y) |
-| `y1Plans_journey.csv` + `y2Actions_journey.csv` | Overnight Journey (legacy 800; refresh in V2) |
-| `y3Designs.csv` | Locators / URLs (persona D1–D9) |
+| `y1Plans.csv` + `y2Actions.csv` | Verify gate |
+| `y1Plans_journey.csv` + `y2Actions_journey.csv` | Journey (tag `Journey;qoa_web_live;…`) |
+| `y3Designs.csv` | Locators / URLs (`suite=qoa_web_live`) |
 | `qoa_web_live.json` | Full suite (gate + journey) |
 | `qoa_web_verify_gate.json` | Gate only |
 
 ## Run
 
 ```powershell
-# From KK/ — V1 verify gate (headless smoke)
-cd FoXYiZ
-python f\fEngine2.py --config f\fStart_qoa_web_live_smoke_headless.json
+# App up first
+python qoa_web/run_local.py
 
-# V1.4 AI / Build-doc slice
-python f\fEngine2.py --config f\fStart_qoa_web_live_ai_smoke.json
+# V1 verify smoke (gate only)
+python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live_smoke_headless.json
 
-# Re-apply V1 patches after UI edits (idempotent-ish)
-python pyUtils\patch_qoa_web_live_v1.py
+# V2 journey slices (after refresh)
+python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live_journey_nav.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live_journey_brahl.json
 ```
-
-App must be up: `python qoa_web/run_local.py` → http://127.0.0.1:8765/
-
-Persona deep links use `suite=qoa_web_live`.
 
 ## Guardrails
 

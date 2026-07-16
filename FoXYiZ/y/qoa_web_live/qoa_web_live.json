@@ -13,9 +13,9 @@
     ]
   },
   "name": "qoa_web_live",
-  "description": "BRAHL Arena live gate (V1.4 verify + AI context) + Journey library (V2). Current /app UX.",
+  "description": "BRAHL web app \u2014 verify gate + journey regression library (300 plans, tag Journey)",
   "version": "1.4.0-v1",
   "url": "http://127.0.0.1:8765/",
-  "journey_plans": 800,
+  "journey_plans": 300,
   "brahl_version": "v1"
 }

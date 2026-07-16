@@ -10,8 +10,11 @@ from pathlib import Path
 
 FOXYIZ_ROOT = Path(__file__).resolve().parent.parent
 KK_ROOT = FOXYIZ_ROOT.parent
-U_DIR = Path(__file__).resolve().parent
+PYUTILS_DIR = Path(__file__).resolve().parent
+U_DIR = PYUTILS_DIR  # legacy alias
 SUITE_QOA_WEB = FOXYIZ_ROOT / "y" / "qoa_web"
+SUITE_QOA_WEB_LIVE = FOXYIZ_ROOT / "y" / "qoa_web_live"
+ARCHIVE_PYUTILS = KK_ROOT / "archive" / "pyUtils_oneoff"
 Z_DIR = FOXYIZ_ROOT / "z"
 ARCHIVE_CLEANUP = KK_ROOT / "archive" / "cleanup"
 

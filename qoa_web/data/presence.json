@@ -347,11 +347,11 @@
       "user_id": null,
       "display_name": "Arena guest",
       "email": "",
-      "project_id": "15745c9b6515",
+      "project_id": "nalanda_launch_001",
       "path": "/app",
       "avatar": "qa_hunter",
       "roles": [],
-      "ts": 1784184685.911901,
+      "ts": 1784186071.7886443,
       "started_at": 1784182971.0712,
       "ip_hash": "12ca17b49af22894",
       "city": "Approx",
@@ -398,6 +398,25 @@
       "lng": -118.60744929687426,
       "location_label": "Approx",
       "geo_source": "browser"
+    },
+    "s:1784191543827:cyptuyv0": {
+      "session_key": "s:1784191543827:cyptuyv0",
+      "user_id": null,
+      "display_name": "Alex Chen",
+      "email": "",
+      "project_id": "66ae1a926c31",
+      "path": "/app",
+      "avatar": "creator",
+      "roles": [],
+      "ts": 1784191593.7126307,
+      "started_at": 1784191543.8787177,
+      "ip_hash": "12ca17b49af22894",
+      "city": "Local",
+      "country": "Local",
+      "lat": 37.77,
+      "lng": -122.42,
+      "location_label": "Local, Local",
+      "geo_source": "local"
     }
   },
   "time_spent": {
@@ -443,9 +462,10 @@
     "s:1784175578739:6nck4yv6:66ae1a926c31": 51.07887387275696,
     "s:1784175645829:ohfhpc0m:nalanda_launch_001": 3588.1361956596375,
     "s:1784175650763:7oh1nejn:nalanda_launch_001": 3583.2080013751984,
-    "s:1784182971044:qkhjshbw:15745c9b6515": 499.3864049911499,
+    "s:1784182971044:qkhjshbw:15745c9b6515": 637.2098741531372,
     "s:1784182971044:qkhjshbw:66ae1a926c31": 998.8268055915833,
     "s:1784183722474:hfxw5den:66ae1a926c31": 55.721285581588745,
-    "s:1784182971044:qkhjshbw:nalanda_launch_001": 89.97965383529663
+    "s:1784182971044:qkhjshbw:nalanda_launch_001": 1338.0329279899597,
+    "s:1784191543827:cyptuyv0:66ae1a926c31": 49.178412675857544
   }
 }

@@ -67,3 +67,6 @@ Time,xTimeWait,Wait for specified duration or condition,duration_seconds;[condit
 Time,xTimeSchedule,Schedule action execution at specific time,schedule_time;action_type;action_name;action_input,Schedule status
 Phone,xMakeCall,Make a phone call via tel: link,phone_number,Call initiated
 Phone,xSendSMS,Send SMS message via sms: link,phone_number;[message],SMS initiated
+Capture,xCaptureImage,Save PNG screenshot to z/ run folder,[label],Captured image
+Capture,xCaptureVideoStart,Start frame-based screen recording (PNG sequence),[label],Video capture started
+Capture,xCaptureVideoStop,Stop active screen recording,,Video capture stopped

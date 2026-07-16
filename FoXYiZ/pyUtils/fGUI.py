@@ -22,9 +22,10 @@ class FoXYiZGui:
         self.root.title("FoXYiZ Runner")
         self.root.geometry("980x700")
 
-        self.base_dir = Path(__file__).resolve().parent
-        self.project_root = self.base_dir.parent
-        self.fstart_path = self.base_dir / "fStart.json"
+        self.util_dir = Path(__file__).resolve().parent
+        self.project_root = self.util_dir.parent
+        self.f_dir = self.project_root / "f"
+        self.fstart_path = self.f_dir / "fStart" / "default.json"
 
         self.output_queue: queue.Queue[str] = queue.Queue()
         self.process: subprocess.Popen | None = None
@@ -52,15 +53,15 @@ class FoXYiZGui:
 
     def _default_executable_path(self) -> Path:
         candidates = [
-            self.base_dir / "Foxyiz.exe",
-            self.base_dir / "foxyiz.exe",
-            self.base_dir / "Foxyiz",
-            self.base_dir / "foxyiz",
+            self.f_dir / "Foxyiz.exe",
+            self.f_dir / "foxyiz.exe",
+            self.f_dir / "Foxyiz",
+            self.f_dir / "foxyiz",
         ]
         for path in candidates:
             if path.exists():
                 return path
-        return self.base_dir / "Foxyiz.exe"
+        return self.f_dir / "Foxyiz.exe"
 
     def _build_ui(self) -> None:
         frm_top = ttk.Frame(self.root, padding=10)
@@ -132,7 +133,7 @@ class FoXYiZGui:
     def _pick_executable(self) -> None:
         picked = filedialog.askopenfilename(
             title="Select FoXYiZ executable",
-            initialdir=str(self.base_dir),
+            initialdir=str(self.f_dir),
             filetypes=[("Executable", "*.exe"), ("All files", "*.*")],
         )
         if picked:

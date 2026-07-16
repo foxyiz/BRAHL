@@ -4,7 +4,12 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
+import os
 from _paths import SUITE_QOA_WEB
+
+def _suite_dir() -> Path:
+    env = os.environ.get("FOXYIZ_SUITE_DIR")
+    return Path(env) if env else SUITE_QOA_WEB
 
 ADDITIONS = {
     "nav_atomic77_btn": "css=button[data-phase='atomic77']",
@@ -47,7 +52,7 @@ def is_corrupt_row(parts: list[str]) -> bool:
 
 
 def main() -> None:
-    path = SUITE_QOA_WEB / "y3Designs.csv"
+    path = _suite_dir() / "y3Designs.csv"
     with path.open(encoding="utf-8") as f:
         reader = csv.DictReader(f)
         fieldnames = list(reader.fieldnames or [])

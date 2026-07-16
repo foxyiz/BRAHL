@@ -1,4 +1,4 @@
 {
-  "config_path": "f/fStart_qoa_web_smoke.json",
+  "config_path": "f/fStart/qoa_web_smoke.json",
   "step_label": "API test job"
 }

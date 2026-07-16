@@ -67,22 +67,25 @@ except ImportError:
     WEBDRIVER_MANAGER_AVAILABLE = False
 # import win32com.client  # Removed SAP dependency for IoT-only project
 
-# Import custom actions handler (optional - gracefully handle if not present)
+# Import custom actions handler (optional — pyUtils/xCustom.py)
 try:
-    import x.xCustom as xCustom
+    _pyutils = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "pyUtils"))
+    if _pyutils not in sys.path:
+        sys.path.insert(0, _pyutils)
+    import xCustom  # type: ignore[import-not-found]
     CUSTOM_AVAILABLE = True
 except ImportError:
     try:
         # Fallback for bundled execution
-        x_dir = None
+        pu_dir = None
         try:
-            x_dir = os.path.abspath(os.path.join(sys._MEIPASS, 'x'))  # type: ignore[attr-defined]
+            pu_dir = os.path.abspath(os.path.join(sys._MEIPASS, "pyUtils"))  # type: ignore[attr-defined]
         except Exception:
             pass
-        if not x_dir or not os.path.isdir(x_dir):
-            x_dir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
-        if x_dir not in sys.path:
-            sys.path.insert(0, x_dir)
+        if not pu_dir or not os.path.isdir(pu_dir):
+            pu_dir = _pyutils if "_pyutils" in dir() else None
+        if pu_dir and pu_dir not in sys.path:
+            sys.path.insert(0, pu_dir)
         import xCustom  # type: ignore[import-not-found]
         CUSTOM_AVAILABLE = True
     except ImportError:
@@ -99,12 +102,60 @@ Selector rules:
 Debug mode:
 - Enable via fEngine --debug flag or config key 'debug': true
 - Captures screenshots and page source on errors into results_dir and results_dir/_debug
+- fStart.json "capture" block controls auto image/video (see set_capture_config)
+- yPAD xCapture steps: xCaptureImage, xCaptureVideoStart, xCaptureVideoStop
 """
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 _DEBUG_MODE = False
+
+# fStart.json "capture" block — global screenshot/video policy (see set_capture_config).
+_CAPTURE_CONFIG = {
+    "image": "on_fail",  # off | on_fail | every_step | on_pass
+    "video": "off",      # off | on_fail | every_step | plan
+    "video_fps": 2,
+    "subdir": "",        # optional subfolder under results_dir (e.g. "captures")
+}
+
+def _normalize_capture_mode(value, allowed, default):
+    if value is None:
+        return default
+    mode = str(value).strip().lower().replace("-", "_")
+    return mode if mode in allowed else default
+
+
+def set_capture_config(config: dict | None):
+    """Apply fStart capture policy for automatic artifacts during a run."""
+    global _CAPTURE_CONFIG
+    if not config:
+        _CAPTURE_CONFIG = {
+            "image": "on_fail",
+            "video": "off",
+            "video_fps": 2,
+            "subdir": "",
+        }
+        return
+    _CAPTURE_CONFIG = {
+        "image": _normalize_capture_mode(
+            config.get("image"),
+            {"off", "on_fail", "every_step", "on_pass"},
+            "on_fail",
+        ),
+        "video": _normalize_capture_mode(
+            config.get("video"),
+            {"off", "on_fail", "every_step", "plan"},
+            "off",
+        ),
+        "video_fps": max(1, min(10, int(config.get("video_fps", 2) or 2))),
+        "subdir": str(config.get("subdir") or "").strip().strip("/\\"),
+    }
+
+
+def get_capture_config() -> dict:
+    return dict(_CAPTURE_CONFIG)
+
 
 def set_debug_mode(enabled: bool):
     global _DEBUG_MODE
@@ -200,6 +251,106 @@ def _save_error_artifacts(driver, results_dir, plan_id, design_id, step_id, err_
         return f"{err_msg} [Artifacts => {' | '.join(links)}]"
     return err_msg
 
+
+def _capture_target_dir(results_dir):
+    if not results_dir:
+        return None
+    sub = (_CAPTURE_CONFIG.get("subdir") or "").strip()
+    if sub:
+        target = os.path.join(results_dir, sub)
+    elif _DEBUG_MODE:
+        target = os.path.join(results_dir, "_debug")
+    else:
+        target = results_dir
+    os.makedirs(target, exist_ok=True)
+    return target
+
+
+def _capture_basename(plan_id, design_id, step_id, label=None):
+    ts = datetime.now().strftime("%H%M%S")
+    parts = [p for p in (plan_id, design_id, step_id, label, ts) if p]
+    return "_".join(str(p) for p in parts)
+
+
+def _should_capture_image(result: str, manual: bool = False) -> bool:
+    if manual:
+        return True
+    mode = _CAPTURE_CONFIG.get("image", "on_fail")
+    if mode == "off":
+        return False
+    if mode == "every_step":
+        return True
+    if mode == "on_pass":
+        return result == "Pass"
+    return result == "Fail"
+
+
+def _should_capture_video(result: str, lifecycle: str = "step") -> bool:
+    """lifecycle: step | plan_open | plan_close"""
+    mode = _CAPTURE_CONFIG.get("video", "off")
+    if mode == "off":
+        return False
+    if mode == "plan":
+        return lifecycle in ("plan_open", "plan_close")
+    if mode == "every_step":
+        return lifecycle == "step"
+    if mode == "on_fail":
+        return lifecycle == "step" and result == "Fail"
+    return False
+
+
+def _save_step_screenshot(driver, results_dir, plan_id, design_id, step_id, label=None):
+    target = _capture_target_dir(results_dir)
+    if not target or not driver:
+        return None
+    base = _capture_basename(plan_id, design_id, step_id, label)
+    screenshot_path = os.path.join(target, f"{base}.png")
+    try:
+        if getattr(driver, "save_screenshot", None):
+            driver.save_screenshot(screenshot_path)
+            return os.path.basename(screenshot_path)
+    except Exception as exc:
+        logger.error(f"Failed to capture screenshot: {exc}")
+    return None
+
+
+def _apply_auto_capture(aT, aName, handler, results_dir, plan_id, design_id, step_id, vRes, vOut):
+    """Honor fStart capture policy and append artifact links to step output."""
+    if aT == "xCapture":
+        return vOut
+    if aT != "xUI" or not getattr(handler, "_driver", None) or not results_dir:
+        return vOut
+    links = []
+    if _should_capture_image(vRes):
+        shot = _save_step_screenshot(handler._driver, results_dir, plan_id, design_id, step_id)
+        if shot:
+            links.append(f"screenshot: {shot}")
+    if aT == "xUI" and aName == "xOpenBrowser" and _should_capture_video(vRes, "plan_open"):
+        try:
+            started = handler.xCaptureVideoStart("")
+            if started:
+                links.append(f"video: {started}")
+        except Exception as exc:
+            logger.debug(f"Plan video start skipped: {exc}")
+    if aT == "xUI" and aName == "xCloseBrowser" and _CAPTURE_CONFIG.get("video") == "plan":
+        try:
+            stopped = handler.xCaptureVideoStop("")
+            if stopped:
+                links.append(f"video: {stopped}")
+        except Exception as exc:
+            logger.debug(f"Plan video stop skipped: {exc}")
+    elif _should_capture_video(vRes, "step") and _CAPTURE_CONFIG.get("video") != "plan":
+        try:
+            session = handler._start_video_session(results_dir, plan_id, design_id, step_id)
+            handler._stop_video_session(session, brief=True)
+            if session and session.get("folder"):
+                links.append(f"video_frames: {session['folder']}")
+        except Exception as exc:
+            logger.debug(f"Step video capture skipped: {exc}")
+    if links:
+        return f"{vOut} [Link to {' | '.join(links)}]"
+    return vOut
+
 class ActionHandler:
     """Base class for handling actions with common utilities."""
     def __init__(self, timeout=6):
@@ -242,6 +393,9 @@ class UIActionHandler(ActionHandler):
     """Handles UI-related actions using Selenium."""
     _shared_driver = None
     _chrome_user_data_dir = None
+    _video_session = None
+    _video_thread = None
+    _video_stop_event = None
 
     def __init__(self, timeout=6):
         super().__init__(timeout)
@@ -818,6 +972,97 @@ class UIActionHandler(ActionHandler):
             msg = f"xRefresh failed: {str(e)}"
             logger.error(msg)
             raise Exception(_save_error_artifacts(self._driver, getattr(self, '_results_dir', None), None, None, None, msg))
+
+    def _video_fps(self):
+        return max(1, min(10, int(_CAPTURE_CONFIG.get("video_fps", 2) or 2)))
+
+    def _video_loop(self, session_dir, fps, stop_event):
+        frame = 0
+        while not stop_event.is_set():
+            path = os.path.join(session_dir, f"frame_{frame:05d}.png")
+            try:
+                if self._driver:
+                    self._driver.save_screenshot(path)
+            except Exception:
+                pass
+            frame += 1
+            if stop_event.wait(1.0 / fps):
+                break
+
+    def _start_video_session(self, results_dir, plan_id=None, design_id=None, step_id=None, label=None):
+        if not self._driver or not results_dir:
+            raise WebDriverException("WebDriver not initialized")
+        if UIActionHandler._video_session:
+            self._stop_video_session(UIActionHandler._video_session)
+        target = _capture_target_dir(results_dir) or results_dir
+        base = _capture_basename(plan_id, design_id, step_id, label or "video")
+        session_dir = os.path.join(target, f"{base}_frames")
+        os.makedirs(session_dir, exist_ok=True)
+        stop_event = threading.Event()
+        thread = threading.Thread(
+            target=self._video_loop,
+            args=(session_dir, self._video_fps(), stop_event),
+            daemon=True,
+        )
+        UIActionHandler._video_stop_event = stop_event
+        UIActionHandler._video_thread = thread
+        UIActionHandler._video_session = {
+            "dir": session_dir,
+            "folder": os.path.basename(session_dir),
+            "frames": 0,
+        }
+        thread.start()
+        return UIActionHandler._video_session
+
+    def _stop_video_session(self, session=None, brief=False):
+        session = session or UIActionHandler._video_session
+        if UIActionHandler._video_stop_event:
+            UIActionHandler._video_stop_event.set()
+        if UIActionHandler._video_thread:
+            UIActionHandler._video_thread.join(timeout=3.0 if brief else 10.0)
+        frame_count = 0
+        if session and session.get("dir") and os.path.isdir(session["dir"]):
+            frame_count = len([f for f in os.listdir(session["dir"]) if f.endswith(".png")])
+            session["frames"] = frame_count
+        UIActionHandler._video_stop_event = None
+        UIActionHandler._video_thread = None
+        UIActionHandler._video_session = None
+        return session
+
+    def xCaptureImage(self, aIn=""):
+        """Capture a PNG screenshot. Input: optional label suffix."""
+        if not self._driver:
+            raise WebDriverException("WebDriver not initialized")
+        results_dir = getattr(self, "_results_dir", None)
+        if not results_dir:
+            raise ValueError("No results_dir for capture")
+        label = str(aIn or "").strip() or None
+        plan_id = getattr(self, "_capture_plan_id", "capture")
+        design_id = getattr(self, "_capture_design_id", "D1")
+        step_id = getattr(self, "_capture_step_id", "")
+        shot = _save_step_screenshot(self._driver, results_dir, plan_id, design_id, step_id, label)
+        if not shot:
+            raise RuntimeError("Screenshot capture failed")
+        return f"Captured image [Link to {shot}]"
+
+    def xCaptureVideoStart(self, aIn=""):
+        """Start frame-based screen capture. Input: optional label."""
+        results_dir = getattr(self, "_results_dir", None)
+        if not results_dir:
+            raise ValueError("No results_dir for video capture")
+        label = str(aIn or "").strip() or None
+        plan_id = getattr(self, "_capture_plan_id", "capture")
+        design_id = getattr(self, "_capture_design_id", "D1")
+        step_id = getattr(self, "_capture_step_id", "video")
+        session = self._start_video_session(results_dir, plan_id, design_id, step_id, label)
+        return f"Video capture started [Link to {session['folder']}]"
+
+    def xCaptureVideoStop(self, aIn=""):
+        """Stop active frame-based screen capture."""
+        session = self._stop_video_session()
+        if not session:
+            return "No active video capture"
+        return f"Video capture stopped ({session.get('frames', 0)} frames) [Link to {session.get('folder', '')}]"
 
     def xStartTimer(self):
         """Start a timer for performance measurement."""
@@ -2269,9 +2514,13 @@ def runAction(aT, aName, aIn, aOut=None, aExpected=None, plan_id=None, design_id
         "xReuse": None
     }
     handler = handler or handlers.get(aT)
+    if aT == "xCapture":
+        handler = handler or UIActionHandler(timeout=timeout)
+        if UIActionHandler._shared_driver and not getattr(handler, "_driver", None):
+            handler._driver = UIActionHandler._shared_driver
     if not handler and aT != "xReuse":
         if aT == "xCustom" and not CUSTOM_AVAILABLE:
-            raise ValueError(f"Custom actions not available. Ensure x/xCustom.py exists and is properly configured.")
+            raise ValueError(f"Custom actions not available. Ensure pyUtils/xCustom.py exists and is properly configured.")
         raise ValueError(f"Unknown action type: {aT}")
 
     start_time = time.time()
@@ -2295,7 +2544,10 @@ def runAction(aT, aName, aIn, aOut=None, aExpected=None, plan_id=None, design_id
             else:
                 # Inject results_dir into handler for artifact paths
                 try:
-                    setattr(handler, '_results_dir', results_dir)
+                    setattr(handler, "_results_dir", results_dir)
+                    setattr(handler, "_capture_plan_id", plan_id)
+                    setattr(handler, "_capture_design_id", design_id)
+                    setattr(handler, "_capture_step_id", step_id)
                 except Exception:
                     pass
                 vOut = method(aIn)
@@ -2317,14 +2569,10 @@ def runAction(aT, aName, aIn, aOut=None, aExpected=None, plan_id=None, design_id
         logger.error(f"Action failed: {aT}.{aName}: {sanitized_err}")
     time_taken = time.time() - start_time
 
-    if aT == "xUI" and vRes.startswith("Fail") and getattr(handler, '_driver', None) and results_dir:
-        screenshot_name = f"{plan_id}_{design_id}_{step_id}.png" if step_id else f"{plan_id}_{design_id}.png"
-        screenshot_path = os.path.join(results_dir, screenshot_name)
-        try:
-            handler._driver.save_screenshot(screenshot_path)
-            vOut += f" [Link to {screenshot_name}]"
-        except WebDriverException as e:
-            logger.error(f"Failed to capture screenshot: {str(e)}")
+    if handler and aT in ("xUI", "xCapture"):
+        vOut = _apply_auto_capture(
+            aT, aName, handler, results_dir, plan_id, design_id, step_id, vRes, vOut
+        )
 
     if handler:
         vOut = handler.save_output_to_file(vOut, plan_id, design_id, step_id, results_dir)

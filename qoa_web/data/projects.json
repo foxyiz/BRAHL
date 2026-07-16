@@ -571,6 +571,38 @@
     "change_requests": [],
     "cycle_history": [
       {
+        "id": "95d4c31b",
+        "step": "Loop 2",
+        "detail": "completed",
+        "at": "2026-07-16T06:55:05+00:00",
+        "run_name": "20260715_235451_nalanda_app",
+        "stats": {
+          "passes": 7,
+          "fails": 0,
+          "total_plans": 7,
+          "health": "green"
+        }
+      },
+      {
+        "id": "6ff68240",
+        "step": "Loop 1",
+        "detail": "completed",
+        "at": "2026-07-16T06:54:43+00:00",
+        "run_name": "20260715_235428_nalanda_app",
+        "stats": {
+          "passes": 7,
+          "fails": 0,
+          "total_plans": 7,
+          "health": "green"
+        }
+      },
+      {
+        "id": "9a607106",
+        "step": "Context",
+        "detail": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260715_235425_nalanda_app.json",
+        "at": "2026-07-16T06:54:25+00:00"
+      },
+      {
         "id": "2bdb1b59",
         "step": "Run",
         "detail": "completed",
@@ -637,7 +669,7 @@
       }
     ],
     "created_at": "2026-07-05T20:00:00+00:00",
-    "updated_at": "2026-07-16T06:48:40+00:00",
+    "updated_at": "2026-07-16T06:55:05+00:00",
     "atomic77_chat_messages": [
       {
         "id": "a77-welcome",
@@ -755,8 +787,8 @@
       "total_tokens": 0,
       "usd_est": 0.0
     },
-    "brahl_context_path": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260714_211518_nalanda_app.json",
-    "latest_run": "20260715_234536_nalanda_app",
+    "brahl_context_path": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260715_235425_nalanda_app.json",
+    "latest_run": "20260715_235451_nalanda_app",
     "reports": [
       {
         "id": "ef48086c",
@@ -792,9 +824,23 @@
         "report_path": "z/20260715_234536_nalanda_app/brahl_report.md",
         "submitted_at": "2026-07-16T06:45:49+00:00",
         "source": "automation"
+      },
+      {
+        "id": "97c4741a",
+        "run_name": "20260715_235428_nalanda_app",
+        "report_path": "z/20260715_235428_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-16T06:54:43+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "82b2a49e",
+        "run_name": "20260715_235451_nalanda_app",
+        "report_path": "z/20260715_235451_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-16T06:55:05+00:00",
+        "source": "automation"
       }
     ],
-    "ai_journey_updated_at": "2026-07-16T06:48:40+00:00",
+    "ai_journey_updated_at": "2026-07-16T06:55:05+00:00",
     "team_messages": [
       {
         "id": "33c4a830",
@@ -830,7 +876,7 @@
         "at": "2026-07-16T04:39:07+00:00"
       }
     ],
-    "current_phase": "Run"
+    "current_phase": "Loop 2"
   },
   {
     "id": "66ae1a926c31",
@@ -880,12 +926,12 @@
     },
     "hitl_consultants": [],
     "reports": [],
-    "ai_enabled": true,
+    "ai_enabled": false,
     "brahl_context_path": null,
     "brahl_plan_draft": null,
     "latest_run": "20260715_233517_qoa_web_verify_gate",
     "created_at": "2026-07-14T21:14:07+00:00",
-    "updated_at": "2026-07-16T06:44:29+00:00",
+    "updated_at": "2026-07-16T08:46:34+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -950,7 +996,7 @@
       "completion_tokens": 19,
       "updated_at": "2026-07-15T19:56:46+00:00"
     },
-    "ai_journey_updated_at": "2026-07-16T06:44:29+00:00",
+    "ai_journey_updated_at": "2026-07-16T08:46:34+00:00",
     "team_messages": [],
     "team_tasks": [],
     "current_phase": "Run parallel"
@@ -1094,7 +1140,7 @@
     "brahl_plan_draft": null,
     "latest_run": "20260715_232926_Math",
     "created_at": "2026-07-14T21:50:30+00:00",
-    "updated_at": "2026-07-16T06:48:43+00:00",
+    "updated_at": "2026-07-16T06:53:44+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -1349,7 +1395,7 @@
       "total_tokens": 0,
       "usd_est": 0.0
     },
-    "ai_journey_updated_at": "2026-07-16T06:48:43+00:00",
+    "ai_journey_updated_at": "2026-07-16T06:53:44+00:00",
     "current_phase": "Verify",
     "team_messages": [],
     "team_tasks": []
