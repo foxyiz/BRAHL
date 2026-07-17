@@ -1,8 +1,0 @@
-{
-  "configs": ["y/qoa_web/qoa_web.json"],
-  "thread_count": 2,
-  "timeout": 8,
-  "headless": true,
-  "debug": false,
-  "tags": ["Smoke", "API"]
-}

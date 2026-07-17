@@ -4,7 +4,15 @@
   ],
   "thread_count": 1,
   "timeout": 6,
-  "headless": false,
+  "headless": true,
   "debug": false,
-  "tags": []
+  "tags": [
+    "Smoke"
+  ],
+  "capture": {
+    "image": "on_fail",
+    "video": "off",
+    "video_fps": 2,
+    "subdir": ""
+  }
 }

@@ -453,7 +453,8 @@
       "usd_est": 0.0
     },
     "team_messages": [],
-    "team_tasks": []
+    "team_tasks": [],
+    "evidence_library": []
   },
   {
     "id": "nalanda_launch_001",
@@ -571,6 +572,19 @@
     "change_requests": [],
     "cycle_history": [
       {
+        "id": "60dd85ad",
+        "step": "Run parallel",
+        "detail": "completed",
+        "at": "2026-07-17T04:05:00+00:00",
+        "run_name": "20260716_210445_nalanda_app",
+        "stats": {
+          "passes": 7,
+          "fails": 0,
+          "total_plans": 7,
+          "health": "green"
+        }
+      },
+      {
         "id": "95d4c31b",
         "step": "Loop 2",
         "detail": "completed",
@@ -669,7 +683,7 @@
       }
     ],
     "created_at": "2026-07-05T20:00:00+00:00",
-    "updated_at": "2026-07-16T06:55:05+00:00",
+    "updated_at": "2026-07-17T05:40:05+00:00",
     "atomic77_chat_messages": [
       {
         "id": "a77-welcome",
@@ -788,7 +802,7 @@
       "usd_est": 0.0
     },
     "brahl_context_path": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260715_235425_nalanda_app.json",
-    "latest_run": "20260715_235451_nalanda_app",
+    "latest_run": "20260716_223950_nalanda_app",
     "reports": [
       {
         "id": "ef48086c",
@@ -838,9 +852,26 @@
         "report_path": "z/20260715_235451_nalanda_app/brahl_report.md",
         "submitted_at": "2026-07-16T06:55:05+00:00",
         "source": "automation"
+      },
+      {
+        "id": "ced93207",
+        "run_name": "20260716_210445_nalanda_app",
+        "report_path": "z/20260716_210445_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-17T04:05:00+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "c3fcff6e",
+        "run_name": "20260716_223950_nalanda_app",
+        "report_path": "z/20260716_223950_nalanda_app/brahl_report.md",
+        "submitted_at": "2026-07-17T05:40:05+00:00",
+        "source": "automation",
+        "batch_id": "6a59cb0a8e",
+        "batch_dashboard": "z/zDash_batch_batch_20260716_223947_8159fc.html",
+        "archived": false
       }
     ],
-    "ai_journey_updated_at": "2026-07-16T06:55:05+00:00",
+    "ai_journey_updated_at": "2026-07-17T04:08:18+00:00",
     "team_messages": [
       {
         "id": "33c4a830",
@@ -876,7 +907,8 @@
         "at": "2026-07-16T04:39:07+00:00"
       }
     ],
-    "current_phase": "Loop 2"
+    "current_phase": "Run parallel",
+    "evidence_library": []
   },
   {
     "id": "66ae1a926c31",
@@ -925,13 +957,108 @@
       "human_pct": 50
     },
     "hitl_consultants": [],
-    "reports": [],
-    "ai_enabled": false,
+    "reports": [
+      {
+        "id": "7262401f",
+        "run_name": "20260716_141445_qoa_web_live",
+        "report_path": "z/20260716_141445_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-16T21:16:58+00:00",
+        "source": "automation_ai"
+      },
+      {
+        "id": "9e2c01b6",
+        "run_name": "20260716_141654_qoa_web_live",
+        "report_path": "z/20260716_141654_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-16T21:21:56+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "6c2e4988",
+        "run_name": "20260716_142258_qoa_web_live",
+        "report_path": "z/20260716_142258_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-17T00:19:21+00:00",
+        "source": "automation_ai"
+      },
+      {
+        "id": "22fc342c",
+        "run_name": "20260716_171904_qoa_web_live",
+        "report_path": "z/20260716_171904_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-17T00:21:14+00:00",
+        "source": "automation_ai"
+      },
+      {
+        "id": "f3282c68",
+        "run_name": "20260716_172452_qoa_web_live",
+        "report_path": "z/20260716_172452_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-17T01:49:13+00:00",
+        "source": "automation_ai"
+      },
+      {
+        "id": "f03e874b",
+        "run_name": "20260716_184953_qoa_web_live",
+        "report_path": "z/20260716_184953_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-17T01:51:18+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "0d3dfc99",
+        "run_name": "20260716_185016_qoa_web_live",
+        "report_path": "z/20260716_185016_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-17T01:52:32+00:00",
+        "source": "automation_ai"
+      },
+      {
+        "id": "4770d5bd",
+        "run_name": "20260716_185151_qoa_web_live",
+        "report_path": "z/20260716_185151_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-17T01:53:01+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "cab4cb58",
+        "run_name": "20260716_185250_qoa_web_live",
+        "report_path": "z/20260716_185250_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-17T01:54:17+00:00",
+        "source": "automation_ai"
+      },
+      {
+        "id": "66bbf1b0",
+        "run_name": "20260716_185424_qoa_web_live",
+        "report_path": "z/20260716_185424_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-17T01:55:41+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "bf8023af",
+        "run_name": "20260716_185619_qoa_web_live",
+        "report_path": "z/20260716_185619_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-17T01:56:30+00:00",
+        "source": "automation"
+      },
+      {
+        "id": "097f42a5",
+        "run_name": "20260716_185636_qoa_web_live",
+        "report_path": "z/20260716_185636_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-17T01:57:06+00:00",
+        "source": "automation_ai"
+      },
+      {
+        "id": "8b068206",
+        "run_name": "20260716_223256_qoa_web_live",
+        "report_path": "z/20260716_223256_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-17T05:37:37+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      }
+    ],
+    "ai_enabled": true,
     "brahl_context_path": null,
     "brahl_plan_draft": null,
-    "latest_run": "20260715_233517_qoa_web_verify_gate",
+    "latest_run": "20260716_223256_qoa_web_live",
     "created_at": "2026-07-14T21:14:07+00:00",
-    "updated_at": "2026-07-16T08:46:34+00:00",
+    "updated_at": "2026-07-17T05:38:20+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -954,6 +1081,19 @@
       "user_messages": 0
     },
     "cycle_history": [
+      {
+        "id": "69d7bea5",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-17T01:53:05+00:00",
+        "run_name": "20260716_185151_qoa_web_live",
+        "stats": {
+          "passes": 21,
+          "fails": 3,
+          "total_plans": 24,
+          "health": "amber"
+        }
+      },
       {
         "id": "65ac0e5f",
         "step": "Run parallel",
@@ -996,10 +1136,11 @@
       "completion_tokens": 19,
       "updated_at": "2026-07-15T19:56:46+00:00"
     },
-    "ai_journey_updated_at": "2026-07-16T08:46:34+00:00",
+    "ai_journey_updated_at": "2026-07-17T05:38:20+00:00",
     "team_messages": [],
     "team_tasks": [],
-    "current_phase": "Run parallel"
+    "current_phase": "Run",
+    "evidence_library": []
   },
   {
     "id": "15745c9b6515",
@@ -1011,7 +1152,7 @@
     "prompt": "",
     "owner_avatar": "client",
     "owner_user_id": null,
-    "status": "open",
+    "status": "in_progress",
     "documents": [],
     "context_items": [],
     "chat_messages": [
@@ -1020,6 +1161,12 @@
         "role": "assistant",
         "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
         "at": "2026-07-14T21:50:30+00:00"
+      },
+      {
+        "id": "751e9175",
+        "role": "assistant",
+        "text": "A QA Hunter joined this challenge. They can upload yPADs offline and enrich BRAHL reports.",
+        "at": "2026-07-17T03:55:37+00:00"
       }
     ],
     "budget_usd": 0.0,
@@ -1027,7 +1174,19 @@
       "automation_pct": 50,
       "human_pct": 50
     },
-    "hitl_consultants": [],
+    "hitl_consultants": [
+      {
+        "id": "local-hitl-consultant",
+        "name": "Consultant",
+        "joined_at": "2026-07-17T03:55:37+00:00",
+        "deliverables": {
+          "critical_issues": 0,
+          "time_hours": 0.0,
+          "features_found": 0,
+          "reports_submitted": 0
+        }
+      }
+    ],
     "reports": [
       {
         "id": "c682b62f",
@@ -1133,14 +1292,21 @@
         "report_path": "z/20260715_232926_Math/brahl_report.md",
         "submitted_at": "2026-07-16T06:29:27+00:00",
         "source": "automation"
+      },
+      {
+        "id": "d3751cd1",
+        "run_name": "20260716_131122_Math",
+        "report_path": "z/20260716_131122_Math/brahl_report.md",
+        "submitted_at": "2026-07-17T03:50:13+00:00",
+        "source": "automation"
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260715_232913_Math.json",
     "brahl_plan_draft": null,
-    "latest_run": "20260715_232926_Math",
+    "latest_run": "20260716_131122_Math",
     "created_at": "2026-07-14T21:50:30+00:00",
-    "updated_at": "2026-07-16T06:53:44+00:00",
+    "updated_at": "2026-07-17T03:55:37+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -1163,6 +1329,19 @@
       "user_messages": 0
     },
     "cycle_history": [
+      {
+        "id": "2a943225",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-16T20:11:23+00:00",
+        "run_name": "20260716_131122_Math",
+        "stats": {
+          "passes": 2,
+          "fails": 2,
+          "total_plans": 4,
+          "health": "amber"
+        }
+      },
       {
         "id": "d3c6f882",
         "step": "Verify",
@@ -1395,10 +1574,11 @@
       "total_tokens": 0,
       "usd_est": 0.0
     },
-    "ai_journey_updated_at": "2026-07-16T06:53:44+00:00",
-    "current_phase": "Verify",
+    "ai_journey_updated_at": "2026-07-17T03:53:41+00:00",
+    "current_phase": "Run",
     "team_messages": [],
-    "team_tasks": []
+    "team_tasks": [],
+    "evidence_library": []
   },
   {
     "id": "f4e0d9077eff",
@@ -1500,6 +1680,7 @@
       "calls": 0,
       "total_tokens": 0,
       "usd_est": 0.0
-    }
+    },
+    "evidence_library": []
   }
 ]

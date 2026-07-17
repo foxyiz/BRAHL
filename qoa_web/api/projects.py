@@ -63,6 +63,7 @@ def _normalize(project: dict[str, Any]) -> dict[str, Any]:
     project.setdefault("owner_user_id", None)
     project.setdefault("brahl_plan_draft", None)
     project.setdefault("ai_usage", {"calls": 0, "total_tokens": 0, "usd_est": 0.0})
+    project.setdefault("evidence_library", [])
     if not project.get("chat_messages"):
         project["chat_messages"] = [
             {
@@ -491,6 +492,176 @@ def add_document(project_id: str, filename: str, content: bytes) -> dict[str, An
     raise KeyError(project_id)
 
 
+EVIDENCE_KINDS = (
+    "screen_recording",
+    "audio_note",
+    "screenshot",
+    "video",
+    "file",
+    "document",
+    "url",
+    "note",
+)
+
+
+def add_evidence_item(
+    project_id: str,
+    kind: str,
+    *,
+    author: str = "",
+    url: str = "",
+    path: str = "",
+    title: str = "",
+    note: str = "",
+    finding_id: str | None = None,
+    report_id: str | None = None,
+) -> dict[str, Any]:
+    """Add one normalized evidence item to the project's searchable library."""
+    projects = load_projects()
+    for i, p in enumerate(projects):
+        if p.get("id") != project_id:
+            continue
+        p = _normalize(p)
+        items = list(p.get("evidence_library") or [])
+        norm_kind = (kind or "note").strip().lower()
+        if norm_kind not in EVIDENCE_KINDS:
+            norm_kind = "note"
+        entry = {
+            "id": uuid.uuid4().hex[:10],
+            "kind": norm_kind,
+            "author": (author or "").strip() or "unknown",
+            "created_at": _now(),
+            "finding_id": (finding_id or None),
+            "report_id": (report_id or None),
+            "url": (url or "").strip(),
+            "path": (path or "").strip(),
+            "title": (title or "").strip(),
+            "note": (note or "").strip(),
+        }
+        items.append(entry)
+        p["evidence_library"] = items
+        p["updated_at"] = _now()
+        projects[i] = p
+        save_projects(projects)
+        return entry
+    raise KeyError(project_id)
+
+
+def list_evidence(
+    project_id: str,
+    *,
+    kind: str | None = None,
+    query: str | None = None,
+    report_id: str | None = None,
+    finding_id: str | None = None,
+) -> list[dict[str, Any]]:
+    """Searchable evidence index — the single library backing BRAHL/Hunter UI.
+
+    Merges the normalized evidence_library with legacy context_items/documents
+    (links + uploads added before this feature) so the project library stays
+    the one searchable index without losing older entries.
+    """
+    project = get_project(project_id)
+    if not project:
+        raise KeyError(project_id)
+    items = list(project.get("evidence_library") or [])
+    known_paths = {(i.get("path") or i.get("url") or "").strip() for i in items if (i.get("path") or i.get("url"))}
+    for c in project.get("context_items") or []:
+        value = (c.get("value") or "").strip()
+        if not value or value in known_paths:
+            continue
+        is_url = value.lower().startswith(("http://", "https://"))
+        items.append(
+            {
+                "id": f"ctx-{c.get('id') or value[:8]}",
+                "kind": "url" if is_url else "document" if c.get("kind") == "document" else "note",
+                "author": "",
+                "created_at": c.get("added_at") or "",
+                "finding_id": None,
+                "report_id": None,
+                "url": value if is_url else "",
+                "path": "" if is_url else value,
+                "title": c.get("label") or value,
+                "note": "" if c.get("kind") != "note" else value,
+                "legacy": True,
+            }
+        )
+        known_paths.add(value)
+    for d in project.get("documents") or []:
+        value = (d.get("path") or "").strip()
+        if not value or value in known_paths:
+            continue
+        items.append(
+            {
+                "id": f"doc-{value[-12:]}",
+                "kind": "document",
+                "author": "",
+                "created_at": "",
+                "finding_id": None,
+                "report_id": None,
+                "url": "",
+                "path": value,
+                "title": d.get("name") or value,
+                "note": "",
+                "legacy": True,
+            }
+        )
+        known_paths.add(value)
+    if kind:
+        items = [i for i in items if i.get("kind") == kind]
+    if report_id:
+        items = [i for i in items if i.get("report_id") == report_id]
+    if finding_id:
+        items = [i for i in items if i.get("finding_id") == finding_id]
+    if query and query.strip():
+        q = query.strip().lower()
+        items = [
+            i
+            for i in items
+            if q in (i.get("title") or "").lower()
+            or q in (i.get("note") or "").lower()
+            or q in (i.get("url") or "").lower()
+            or q in (i.get("path") or "").lower()
+            or q in (i.get("kind") or "").lower()
+            or q in (i.get("author") or "").lower()
+        ]
+    items.sort(key=lambda x: x.get("created_at") or "", reverse=True)
+    return items
+
+
+def link_evidence(
+    project_id: str,
+    evidence_ids: list[str],
+    *,
+    report_id: str | None = None,
+    finding_id: str | None = None,
+) -> list[dict[str, Any]]:
+    """Attach existing library evidence to a report and/or a finding."""
+    if not evidence_ids:
+        return []
+    projects = load_projects()
+    for i, p in enumerate(projects):
+        if p.get("id") != project_id:
+            continue
+        p = _normalize(p)
+        items = list(p.get("evidence_library") or [])
+        wanted = {str(x).strip() for x in evidence_ids if str(x).strip()}
+        updated: list[dict[str, Any]] = []
+        for item in items:
+            if item.get("id") in wanted:
+                if report_id:
+                    item["report_id"] = report_id
+                if finding_id:
+                    item["finding_id"] = finding_id
+                updated.append(item)
+        p["evidence_library"] = items
+        p["updated_at"] = _now()
+        projects[i] = p
+        save_projects(projects)
+        return updated
+    raise KeyError(project_id)
+
+
 def add_hitl_story(project_id: str, title: str, description: str = "") -> dict[str, Any]:
     projects = load_projects()
     for i, p in enumerate(projects):
@@ -673,6 +844,7 @@ def submit_hitl_report(
     features_found: int = 0,
     hunt_report_path: str | None = None,
     artifact_paths: list[str] | None = None,
+    evidence_ids: list[str] | None = None,
 ) -> dict[str, Any]:
     projects = load_projects()
     for i, p in enumerate(projects):
@@ -693,6 +865,8 @@ def submit_hitl_report(
             "submitted_at": _now(),
             "source": report_source,
             "artifacts": list(artifact_paths or []),
+            "evidence_ids": list(evidence_ids or []),
+            "archived": False,
         }
         reports.append(entry)
         p["reports"] = reports
@@ -707,6 +881,13 @@ def submit_hitl_report(
                 d["reports_submitted"] = d.get("reports_submitted", 0) + 1
                 c["deliverables"] = d
         p["hitl_consultants"] = team
+        if evidence_ids:
+            wanted = {str(x).strip() for x in evidence_ids if str(x).strip()}
+            lib = list(p.get("evidence_library") or [])
+            for item in lib:
+                if item.get("id") in wanted:
+                    item["report_id"] = entry["id"]
+            p["evidence_library"] = lib
         p["updated_at"] = _now()
         projects[i] = p
         save_projects(projects)
@@ -941,12 +1122,31 @@ def register_brahl_report(
     run_name: str,
     source: str = "automation",
     report_path: str | None = None,
+    *,
+    batch_id: str | None = None,
+    batch_dashboard: str | None = None,
+    evidence_ids: list[str] | None = None,
 ) -> dict[str, Any]:
     projects = load_projects()
     for i, p in enumerate(projects):
         if p.get("id") != project_id:
             continue
         p = _normalize(p)
+        project_suite = (p.get("suite_name") or "").strip()
+        parts = run_name.split("_")
+        run_suite = "_".join(parts[2:]) if len(parts) >= 3 else ""
+        if project_suite and run_suite and run_suite != project_suite:
+            try:
+                from runner import _y_suite_names
+
+                known = set(_y_suite_names())
+            except Exception:
+                known = set()
+            if run_suite in known:
+                raise ValueError(
+                    f"Run '{run_name}' belongs to suite '{run_suite}', "
+                    f"not project suite '{project_suite}'"
+                )
         reports = list(p.get("reports") or [])
         for r in reports:
             if r.get("run_name") == run_name:
@@ -960,7 +1160,9 @@ def register_brahl_report(
                 suite_name = "_".join(suite[2:]) if len(suite) >= 3 else ""
                 ensure_brahl_report(
                     run_name,
-                    config_path=default_fstart_for_suite(suite_name) if suite_name else "f/fStart/Math_verify.json",
+                    config_path=default_fstart_for_suite(suite_name or project_suite)
+                    if (suite_name or project_suite)
+                    else "f/fStart/Math.json",
                     project=p,
                 )
                 resolved = _resolve_report_file(run_name)
@@ -975,15 +1177,54 @@ def register_brahl_report(
             "report_path": path,
             "submitted_at": _now(),
             "source": source if source in REPORT_SOURCE_LABELS else "automation",
+            "batch_id": (batch_id or None),
+            "batch_dashboard": (batch_dashboard or None),
+            "archived": False,
         }
         reports.append(entry)
         p["reports"] = reports
         p["latest_run"] = run_name
+        if evidence_ids:
+            wanted = {str(x).strip() for x in evidence_ids if str(x).strip()}
+            lib = list(p.get("evidence_library") or [])
+            for item in lib:
+                if item.get("id") in wanted:
+                    item["report_id"] = entry["id"]
+            p["evidence_library"] = lib
         p["updated_at"] = _now()
         projects[i] = p
         save_projects(projects)
         return entry
     raise KeyError(project_id)
+
+
+def register_brahl_report_batch(
+    project_id: str,
+    run_names: list[str],
+    source: str = "automation",
+    *,
+    batch_dashboard: str | None = None,
+    job_id: str | None = None,
+) -> dict[str, Any]:
+    """Register every child run_dir of a parallel batch as its own report, grouped by batch_id."""
+    clean = [r.strip() for r in (run_names or []) if (r or "").strip()]
+    if not clean:
+        return {"entries": [], "batch_id": None}
+    batch_id = job_id or uuid.uuid4().hex[:10]
+    entries: list[dict[str, Any]] = []
+    for run_name in clean:
+        try:
+            entry = register_brahl_report(
+                project_id,
+                run_name,
+                source,
+                batch_id=batch_id,
+                batch_dashboard=batch_dashboard,
+            )
+        except ValueError:
+            continue
+        entries.append(entry)
+    return {"entries": entries, "batch_id": batch_id, "batch_dashboard": batch_dashboard}
 
 
 def list_brahl_reports(project_id: str) -> list[dict[str, Any]]:
@@ -1015,10 +1256,33 @@ def list_brahl_reports(project_id: str) -> list[dict[str, Any]]:
                 "source_label": REPORT_SOURCE_LABELS.get(src, src),
                 "has_file": path is not None or upload_path is not None,
                 "is_hunt_report": bool(upload_path and "hunt-report" in Path(rp).name),
+                "archived": bool(r.get("archived", False)),
             }
         )
     enriched.sort(key=lambda x: x.get("submitted_at") or "", reverse=True)
     return enriched
+
+
+def set_report_archived(project_id: str, report_id: str, archived: bool) -> dict[str, Any]:
+    projects = load_projects()
+    for i, p in enumerate(projects):
+        if p.get("id") != project_id:
+            continue
+        p = _normalize(p)
+        reports = list(p.get("reports") or [])
+        found = None
+        for r in reports:
+            if r.get("id") == report_id:
+                r["archived"] = bool(archived)
+                found = r
+        if found is None:
+            raise KeyError(report_id)
+        p["reports"] = reports
+        p["updated_at"] = _now()
+        projects[i] = p
+        save_projects(projects)
+        return found
+    raise KeyError(project_id)
 
 
 def load_report_markdown(run_name: str, project: dict[str, Any] | None = None) -> str:
@@ -1410,6 +1674,7 @@ def apply_brahl_plan(
     plan: dict[str, Any],
     *,
     write_ypad: bool = True,
+    created_by: str = "",
 ) -> dict[str, Any]:
     """Persist accepted BRAHL Plan — purpose, stories, draft; optionally rewrite yPAD CSVs."""
     projects = load_projects()
@@ -1456,6 +1721,7 @@ def apply_brahl_plan(
                         suite,
                         app_url=p.get("app_url") or "",
                         brahl_plan=plan,
+                        created_by=created_by,
                     )
                 except Exception:
                     pass

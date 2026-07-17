@@ -1,8 +1,9 @@
 # Docs — slim reference hub
 
 **Agents:** start at [../qoa_web/MEMORY.md](../qoa_web/MEMORY.md).  
+**Resume todos:** [../NEXT.md](../NEXT.md).  
 **Session log:** [../todaysummary.md](../todaysummary.md).  
-**Engine operator guide:** [../FoXYiZ/FoXYiZ_Readme.md](../FoXYiZ/FoXYiZ_Readme.md).
+**fStart:** [../FoXYiZ/f/fStart_SCOPE.md](../FoXYiZ/f/fStart_SCOPE.md).
 
 Goal: **docs + a small file slice**, not the whole `z/` tree.
 
@@ -46,7 +47,7 @@ KK/
 
 ```powershell
 python qoa_web/run_local.py
-python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json
 python FoXYiZ\pyUtils\cleaner.py --apply
 python FoXYiZ\pyUtils\sync_personas.py
 ```
@@ -68,10 +69,10 @@ Personas **P1–P9** → yPAD columns **D1–D9**. Source: [test-user-data/](./t
 ## Maintenance (end of session)
 
 1. `python FoXYiZ\pyUtils\cleaner.py` then `--apply`
-2. Update [../todaysummary.md](../todaysummary.md) if product changed
+2. Update [../todaysummary.md](../todaysummary.md) + [../NEXT.md](../NEXT.md) if product changed
 3. Keep **in-app AI** files short (`BRAHL_PROMPT`, `AI_GUARDRAILS`)
 4. Do not put `Docs/` or `MEMORY.md` in `.cursorignore`
 
 ---
 
-*Doc pass: 2026-07-14 · lean Docs set + FoXYiZ one-folder layout*
+*Doc pass: 2026-07-16 · one fStart per suite + NEXT.md resume*

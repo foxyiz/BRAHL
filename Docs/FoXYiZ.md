@@ -45,7 +45,7 @@ You are an expert on **FoXYiZ** — a low-code/no-code automation framework.
 KK/
 ├── FoXYiZ/
 │   ├── f/fEngine2.py           # Engine (primary)
-│   ├── f/fStart_*.json         # Run configs (short paths: f/…)
+│   ├── f/fStart/{suite}.json   # One run config per suite
 │   ├── x/xActions.py           # Action handlers
 │   ├── y/<suite>/              # yPAD — Math, nalanda_app, qoa_web_live, …
 │   ├── z/<timestamp>_…/        # Run output (ephemeral; ignore in agents)
@@ -54,8 +54,8 @@ KK/
 └── Docs/                       # Slim docs — start at Docs/README.md
 ```
 
-From **KK/**: `python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json`  
-(engine resolves short `f/` · `y/` · `z/` under `FoXYiZ/`).
+From **KK/**: `python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json`  
+(engine resolves short `f/` · `y/` · `z/` under `FoXYiZ/`). See [f/fStart_SCOPE.md](../FoXYiZ/f/fStart_SCOPE.md).
 ---
 
 ## YPAD file contract
@@ -233,11 +233,11 @@ Orchestrator / future exe entry: `python f/fOrchestrate.py --config f/…` or `-
 From **`KK/`**:
 
 ```powershell
-# Sequential — debug / heal
-python f\fEngine2.py --config f\fStart_qoa_web_verify.json
+# Smoke gate (qoa_web_live)
+python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live.json
 
-# Single suite
-python f\fEngine2.py --config y\qoa_web\qoa_web.json
+# Suite JSON (full yPAD config — not an fStart)
+python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web.json
 ```
 
 ### Tag filters
@@ -406,9 +406,9 @@ Run: `python f\fEngine.py --config y\Math\Math.json`
 Files:     y1Plans (what) + y2Actions (how) + y3Designs / yD_Common (data)
 Reuse:     PReuse_<Suite>_OpenSite — unique per suite, Run=N
 Reset:     xNavigate,base_url before home-page clicks
-Run smoke: python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json
+Run smoke: python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json
 Failures:  FoXYiZ/z/<timestamp>_<Suite>/_errors.csv
 Utilities: python FoXYiZ\pyUtils\cleaner.py --apply
 Heal:      yPAD only — locators + steps, never weaken A1
-Tags:      Smoke | … filter via fStart.json
+Tags:      Smoke | UI | API | … via fStart tags or Arena profiles
 ```

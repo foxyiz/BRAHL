@@ -1,17 +1,17 @@
 {
   "configs": [
-    "y/qoa2/qoa2.json"
+    "y/qoa_web_live/qoa_web_live.json"
   ],
   "thread_count": 1,
-  "timeout": 10,
+  "timeout": 8,
   "headless": false,
   "debug": false,
   "tags": [
-    "smoke"
+    "Smoke"
   ],
   "capture": {
     "image": "on_fail",
-    "video": "off",
+    "video": "on",
     "video_fps": 2,
     "subdir": ""
   }

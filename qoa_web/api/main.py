@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import threading
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote as urllib_quote
@@ -24,6 +25,7 @@ from runner import (
     default_fstart_template,
     delete_fstart_config,
     ensure_brahl_report,
+    expand_run_profiles,
     get_job,
     get_suite_detail,
     list_fstart_configs,
@@ -34,6 +36,9 @@ from runner import (
     load_failures,
     read_fstart_config,
     report_stats,
+    PROFILE_SUITE_MODE,
+    RUN_PROFILE_ORDER,
+    RUN_PROFILES,
     start_batch,
     start_run,
     suite_report_context,
@@ -41,6 +46,7 @@ from runner import (
     write_run_report,
 )
 import ypad as ypad_store
+import ypad_versions as ypad_versions_store
 import waitlist as waitlist_store
 import invites as invite_store
 import nalanda as nalanda_store
@@ -49,6 +55,7 @@ import brahl_plan as brahl_plan_store
 import admin_panel as admin_panel_store
 import presence as presence_store
 import suite_docs as suite_docs_store
+import schedules as schedules_store
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 APP_VERSION = "1.3.0"
@@ -56,9 +63,56 @@ APP_VERSION = "1.3.0"
 app = FastAPI(title="qoa_web", description="BRAHL web — FoXYiZ local API", version=APP_VERSION)
 
 
+def _run_due_schedules_once() -> None:
+    """Reuse the existing job runner for any due, enabled schedule. Never AI — plain Run/Verify only."""
+    for sched in schedules_store.due_schedules():
+        try:
+            job = start_run(
+                sched["config_path"],
+                step_label=sched.get("step_label") or "Verify",
+                thread_count=sched.get("thread_count") or 1,
+                profiles=sched.get("profiles") or None,
+            )
+        except Exception:
+            schedules_store.mark_schedule_ran(sched["id"], None, None)
+            continue
+
+        def _watch(schedule_id: str, job_id: str, project_id_ref: str | None) -> None:
+            for _ in range(3600):
+                j = get_job(job_id)
+                if j is None or j.status in ("completed", "failed"):
+                    run_name = None
+                    if j is not None:
+                        run_name = (j.run_dirs or [None])[0] or (
+                            j.output_dir.replace("\\", "/").split("/")[-1] if j.output_dir else None
+                        )
+                        if run_name and project_id_ref:
+                            try:
+                                project_store.register_brahl_report(project_id_ref, run_name, source="automation")
+                            except Exception:
+                                pass
+                    schedules_store.mark_schedule_ran(schedule_id, job_id, run_name)
+                    return
+                threading.Event().wait(2)
+
+        threading.Thread(
+            target=_watch, args=(sched["id"], job.job_id, sched.get("project_id")), daemon=True
+        ).start()
+
+
+def _scheduler_loop() -> None:
+    while True:
+        try:
+            _run_due_schedules_once()
+        except Exception:
+            pass
+        threading.Event().wait(60)
+
+
 @app.on_event("startup")
 def _startup() -> None:
     auth_store.init_db()
+    threading.Thread(target=_scheduler_loop, daemon=True).start()
 
 
 class AuthRegisterRequest(BaseModel):
@@ -132,15 +186,18 @@ def _require_project(project_id: str, request: Request) -> dict[str, Any]:
 
 
 class RunRequest(BaseModel):
-    config_path: str = Field(default="f/fStart/Math_smoke.json")
+    config_path: str = Field(default="f/fStart/Math.json")
     config_paths: list[str] | None = None
     parallel: bool = False
     step_label: str = Field(default="Run")
+    tags: list[str] | None = None
+    thread_count: int | None = None
+    profiles: list[str] | None = None
 
 
 class ContextRequest(BaseModel):
     prompt: str
-    config_path: str = Field(default="f/fStart/Math_smoke.json")
+    config_path: str = Field(default="f/fStart/Math.json")
     documents: list[dict[str, str]] | None = None
     project_id: str | None = None
 
@@ -201,6 +258,7 @@ class VersionBaselineRequest(BaseModel):
 
 class ChatMessage(BaseModel):
     text: str
+    note_only: bool = False
 
 
 class HitlStoryCreate(BaseModel):
@@ -224,6 +282,18 @@ class ChangeAssistanceRequest(BaseModel):
 class YpadSheetSave(BaseModel):
     headers: list[str] | None = None
     rows: list[dict[str, str]]
+    source: str | None = None
+
+
+class YpadVersionCreate(BaseModel):
+    label: str = ""
+    author: str = ""
+    source_build: str = ""
+
+
+class YpadVersionMerge(BaseModel):
+    sheet: str = "plans"
+    keys: list[str] | None = None
 
 
 class ContextItem(BaseModel):
@@ -240,11 +310,66 @@ class HitlReportSubmit(BaseModel):
     features_found: int = 0
     hunt_report_path: str | None = None
     artifact_paths: list[str] | None = None
+    evidence_ids: list[str] | None = None
 
 
 class BrahlReportRegister(BaseModel):
     run_name: str
     source: str = "automation"
+    evidence_ids: list[str] | None = None
+
+
+class BrahlReportRegisterBatch(BaseModel):
+    run_names: list[str]
+    source: str = "automation"
+    batch_dashboard: str | None = None
+    job_id: str | None = None
+
+
+class EvidenceCreate(BaseModel):
+    kind: str
+    author: str = ""
+    url: str = ""
+    path: str = ""
+    title: str = ""
+    note: str = ""
+    finding_id: str | None = None
+    report_id: str | None = None
+
+
+class EvidenceLink(BaseModel):
+    evidence_ids: list[str]
+    report_id: str | None = None
+    finding_id: str | None = None
+
+
+class ReportArchiveUpdate(BaseModel):
+    archived: bool = True
+
+
+class ScheduleCreate(BaseModel):
+    suite: str
+    config_path: str
+    profiles: list[str] | None = None
+    thread_count: int = 1
+    interval: str = "daily"
+    runtime: str = "local"
+    step_label: str = "Verify"
+    enabled: bool = False
+
+
+class ScheduleUpdate(BaseModel):
+    suite: str | None = None
+    config_path: str | None = None
+    profiles: list[str] | None = None
+    thread_count: int | None = None
+    interval: str | None = None
+    runtime: str | None = None
+    step_label: str | None = None
+
+
+class ScheduleToggle(BaseModel):
+    enabled: bool
 
 
 class BrahlChatMessage(BaseModel):
@@ -817,8 +942,10 @@ def brahl_plan_generate(project_id: str, body: BrahlPlanGenerateRequest, request
 @app.post("/api/projects/{project_id}/brahl-plan/accept")
 def brahl_plan_accept(project_id: str, body: BrahlPlanAcceptRequest, request: Request) -> dict[str, Any]:
     _require_project(project_id, request)
+    auth_user = auth_store.user_from_request(request.headers.get("Authorization"))
+    created_by = (auth_user.get("email") or auth_user.get("name") or "") if auth_user else ""
     try:
-        project = project_store.apply_brahl_plan(project_id, body.brahl_plan)
+        project = project_store.apply_brahl_plan(project_id, body.brahl_plan, created_by=created_by)
     except KeyError:
         raise HTTPException(404, "Project not found") from None
     return {"project": project}
@@ -1143,7 +1270,12 @@ def get_suite_markdown_doc(suite_name: str, doc_id: str, request: Request) -> di
 
 
 @app.get("/api/suites/{suite_name}/ypad/{sheet}")
-def get_ypad_sheet(suite_name: str, sheet: str) -> dict[str, Any]:
+def get_ypad_sheet(
+    suite_name: str,
+    sheet: str,
+    source: str | None = Query(None),
+    source_kind: str | None = Query(None),
+) -> dict[str, Any]:
     sheet = sheet.lower()
     if sheet not in ("plans", "actions", "designs", "env"):
         raise HTTPException(400, "sheet must be plans, actions, designs, or env")
@@ -1151,9 +1283,16 @@ def get_ypad_sheet(suite_name: str, sheet: str) -> dict[str, Any]:
     try:
         if sheet == "env":
             return ypad_store.read_env_example(suite_config)
-        return ypad_store.read_ypad_sheet(suite_config, sheet)
+        return ypad_store.read_ypad_sheet(
+            suite_config,
+            sheet,
+            source=source,
+            source_kind=source_kind,
+        )
     except FileNotFoundError as exc:
         raise HTTPException(404, str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
 
 
 @app.put("/api/suites/{suite_name}/ypad/{sheet}")
@@ -1163,7 +1302,81 @@ def put_ypad_sheet(suite_name: str, sheet: str, body: YpadSheetSave) -> dict[str
         raise HTTPException(400, "Only plans, actions, and designs are editable")
     suite_config = _suite_config_for_name(suite_name)
     try:
-        return ypad_store.write_ypad_sheet(suite_config, sheet, body.rows, body.headers)
+        return ypad_store.write_ypad_sheet(
+            suite_config,
+            sheet,
+            body.rows,
+            body.headers,
+            source=body.source,
+        )
+    except (FileNotFoundError, ValueError) as exc:
+        raise HTTPException(400, str(exc)) from exc
+
+
+@app.get("/api/suites/{suite_name}/ypad-versions")
+def list_ypad_versions(suite_name: str) -> dict[str, Any]:
+    suite_config = _suite_config_for_name(suite_name)
+    try:
+        return ypad_versions_store.list_versions(suite_config)
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+
+
+@app.post("/api/suites/{suite_name}/ypad-versions")
+def create_ypad_version(suite_name: str, body: YpadVersionCreate) -> dict[str, Any]:
+    suite_config = _suite_config_for_name(suite_name)
+    try:
+        return ypad_versions_store.create_snapshot(
+            suite_config,
+            label=body.label,
+            author=body.author,
+            source_build=body.source_build,
+        )
+    except (FileNotFoundError, OSError, ValueError) as exc:
+        raise HTTPException(400, str(exc)) from exc
+
+
+@app.get("/api/suites/{suite_name}/ypad-versions/{version_id}")
+def get_ypad_version(suite_name: str, version_id: str) -> dict[str, Any]:
+    suite_config = _suite_config_for_name(suite_name)
+    try:
+        return ypad_versions_store.get_version(suite_config, version_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+
+
+@app.get("/api/suites/{suite_name}/ypad-versions/{version_id}/diff")
+def diff_ypad_version(
+    suite_name: str,
+    version_id: str,
+    sheet: str = Query("plans"),
+) -> dict[str, Any]:
+    suite_config = _suite_config_for_name(suite_name)
+    try:
+        return ypad_versions_store.diff_version(suite_config, version_id, sheet=sheet)
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+
+
+@app.post("/api/suites/{suite_name}/ypad-versions/{version_id}/restore")
+def restore_ypad_version(suite_name: str, version_id: str) -> dict[str, Any]:
+    suite_config = _suite_config_for_name(suite_name)
+    try:
+        return ypad_versions_store.restore_version(suite_config, version_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+
+
+@app.post("/api/suites/{suite_name}/ypad-versions/{version_id}/merge")
+def merge_ypad_version(suite_name: str, version_id: str, body: YpadVersionMerge) -> dict[str, Any]:
+    suite_config = _suite_config_for_name(suite_name)
+    try:
+        return ypad_versions_store.merge_missing(
+            suite_config,
+            version_id,
+            sheet=body.sheet,
+            keys=body.keys,
+        )
     except (FileNotFoundError, ValueError) as exc:
         raise HTTPException(400, str(exc)) from exc
 
@@ -1188,14 +1401,15 @@ def create_ypad_project(body: YpadProjectCreate, request: Request) -> dict[str, 
     name = body.name.strip()
     if not name:
         raise HTTPException(400, "name required")
+    auth_user = auth_store.user_from_request(request.headers.get("Authorization"))
+    created_by = (auth_user.get("email") or auth_user.get("name") or "") if auth_user else ""
     try:
-        detail = create_ypad_suite(name, body.app_url, body.purpose)
+        detail = create_ypad_suite(name, body.app_url, body.purpose, created_by=created_by)
     except ValueError as exc:
         raise HTTPException(409, str(exc)) from exc
     except Exception as exc:
         raise HTTPException(500, f"Could not scaffold yPAD: {exc}") from exc
     safe = detail["name"]
-    auth_user = auth_store.user_from_request(request.headers.get("Authorization"))
     project = project_store.create_project(
         {
             "name": safe,
@@ -1233,6 +1447,7 @@ def planner_create(body: PlannerCreateRequest, request: Request) -> dict[str, An
             body.draft,
             brahl_plan=body.brahl_plan,
             owner_user_id=auth_user.get("id") if auth_user else None,
+            created_by=(auth_user.get("email") or auth_user.get("name") or "") if auth_user else "",
         )
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
@@ -1284,6 +1499,8 @@ def suite_brahl_report_content(
     except FileNotFoundError:
         raise HTTPException(404, f"No results for run: {run_name}") from None
     version_compare = None
+    report_id = None
+    archived = False
     if project:
         baseline_run = (project.get("baseline_run") or "").strip()
         if baseline_run and baseline_run != run_name:
@@ -1294,11 +1511,26 @@ def suite_brahl_report_content(
                     version_compare["app_version"] = project.get("app_version") or "current (new)"
             except Exception:
                 version_compare = None
-    return {"run_name": run_name, "markdown": markdown, "stats": stats, "suite": get_suite_detail(suite_name), "version_compare": version_compare}
+        registered = next(
+            (r for r in (project.get("reports") or []) if r.get("run_name") == run_name), None
+        )
+        if registered:
+            report_id = registered.get("id")
+            archived = bool(registered.get("archived", False))
+    return {
+        "run_name": run_name,
+        "markdown": markdown,
+        "stats": stats,
+        "suite": get_suite_detail(suite_name),
+        "version_compare": version_compare,
+        "report_id": report_id,
+        "archived": archived,
+    }
 
 
 @app.get("/api/runs")
 def runs(suite: str | None = None) -> dict[str, Any]:
+    """List z/ runs. Pass suite=all (or omit with suite=*) for every suite."""
     return {"runs": list_z_runs(suite)}
 
 
@@ -1511,11 +1743,21 @@ def get_cycle_history(project_id: str) -> dict[str, Any]:
     return {"cycle_history": project.get("cycle_history") or []}
 
 
+@app.get("/api/run-profiles")
+def run_profiles() -> dict[str, Any]:
+    """Ordered Run profiles, yPAD tag mappings, and suite file-set mode."""
+    return {
+        "order": RUN_PROFILE_ORDER,
+        "profiles": {k: list(v) for k, v in RUN_PROFILES.items()},
+        "suite_mode": dict(PROFILE_SUITE_MODE),
+    }
+
+
 @app.post("/api/jobs")
 def create_job(body: RunRequest) -> dict[str, Any]:
     """Start FoXYiZ fEngine2 / orchestrator — Run/Loop execution path (no AI)."""
     paths = [p for p in (body.config_paths or []) if p]
-    if len(paths) > 1 or (len(paths) == 1 and body.parallel):
+    if len(paths) > 1 or (len(paths) == 1 and body.parallel and not body.profiles and not body.tags):
         try:
             job = start_batch(
                 paths or [body.config_path],
@@ -1525,7 +1767,13 @@ def create_job(body: RunRequest) -> dict[str, Any]:
         except ValueError as exc:
             raise HTTPException(400, str(exc)) from exc
         return job.to_dict()
-    job = start_run(body.config_path, body.step_label)
+    job = start_run(
+        body.config_path,
+        body.step_label,
+        tags=body.tags,
+        thread_count=body.thread_count,
+        profiles=body.profiles,
+    )
     return job.to_dict()
 
 
@@ -1800,8 +2048,16 @@ def patch_project(project_id: str, body: ProjectUpdate, request: Request) -> dic
 @app.post("/api/projects/{project_id}/chat")
 def post_chat(project_id: str, body: ChatMessage, request: Request) -> dict[str, Any]:
     project = _require_project(project_id, request)
-    if not project.get("ai_enabled", True):
-        raise HTTPException(400, "AI is off — use manual purpose field on Build")
+    # note_only: save a Build comment without requiring AI (AI-off mode)
+    if body.note_only or not project.get("ai_enabled", True):
+        user_msg = project_store.add_chat_message(project_id, "user", body.text)
+        assistant_msg = project_store.add_chat_message(
+            project_id,
+            "assistant",
+            "Note saved (AI off). Turn **AI on** in the top bar for BRAHL replies, or edit purpose manually.",
+        )
+        project = project_store.get_project(project_id)
+        return {"user_message": user_msg, "assistant_message": assistant_msg, "project": project}
     user_msg = project_store.add_chat_message(project_id, "user", body.text)
     project = project_store.get_project(project_id)
     assert project
@@ -1863,12 +2119,62 @@ def submit_hitl_report(project_id: str, body: HitlReportSubmit) -> dict[str, Any
             features_found=body.features_found,
             hunt_report_path=body.hunt_report_path,
             artifact_paths=body.artifact_paths,
+            evidence_ids=body.evidence_ids,
         )
     except KeyError:
         raise HTTPException(404, "Project not found") from None
     project = project_store.get_project(project_id)
     payout = project_store.compute_payout_preview(project) if project else []
     return {"report": entry, "project": project, "payout_preview": payout}
+
+
+@app.get("/api/projects/{project_id}/evidence")
+def list_project_evidence(
+    project_id: str,
+    kind: str | None = None,
+    q: str | None = None,
+    report_id: str | None = None,
+    finding_id: str | None = None,
+) -> dict[str, Any]:
+    try:
+        items = project_store.list_evidence(
+            project_id, kind=kind, query=q, report_id=report_id, finding_id=finding_id
+        )
+    except KeyError:
+        raise HTTPException(404, "Project not found") from None
+    return {"items": items, "count": len(items)}
+
+
+@app.post("/api/projects/{project_id}/evidence")
+def add_project_evidence(project_id: str, body: EvidenceCreate) -> dict[str, Any]:
+    if not (body.url or body.path or body.note or body.title):
+        raise HTTPException(400, "Evidence needs a url, path, title, or note")
+    try:
+        item = project_store.add_evidence_item(
+            project_id,
+            body.kind,
+            author=body.author,
+            url=body.url,
+            path=body.path,
+            title=body.title,
+            note=body.note,
+            finding_id=body.finding_id,
+            report_id=body.report_id,
+        )
+    except KeyError:
+        raise HTTPException(404, "Project not found") from None
+    return {"item": item}
+
+
+@app.post("/api/projects/{project_id}/evidence/link")
+def link_project_evidence(project_id: str, body: EvidenceLink) -> dict[str, Any]:
+    try:
+        items = project_store.link_evidence(
+            project_id, body.evidence_ids, report_id=body.report_id, finding_id=body.finding_id
+        )
+    except KeyError:
+        raise HTTPException(404, "Project not found") from None
+    return {"items": items}
 
 
 @app.get("/api/projects/{project_id}/brahl/reports")
@@ -1880,6 +2186,86 @@ def list_brahl_reports(project_id: str) -> dict[str, Any]:
     project = project_store.get_project(project_id)
     latest = reports[0]["run_name"] if reports else None
     return {"reports": reports, "latest_run_name": latest, "project_name": project.get("name") if project else ""}
+
+
+@app.get("/api/projects/{project_id}/schedules")
+def list_schedules(project_id: str) -> dict[str, Any]:
+    if not project_store.get_project(project_id):
+        raise HTTPException(404, "Project not found")
+    return {"schedules": schedules_store.list_project_schedules(project_id)}
+
+
+@app.post("/api/projects/{project_id}/schedules")
+def create_schedule(project_id: str, body: ScheduleCreate) -> dict[str, Any]:
+    if not project_store.get_project(project_id):
+        raise HTTPException(404, "Project not found")
+    try:
+        entry = schedules_store.create_schedule(
+            project_id,
+            body.suite,
+            body.config_path,
+            profiles=body.profiles,
+            thread_count=body.thread_count,
+            interval=body.interval,
+            runtime=body.runtime,
+            step_label=body.step_label,
+            enabled=body.enabled,
+        )
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    cost = (
+        schedules_store.estimate_cloud_cost(body.profiles, body.thread_count, body.interval)
+        if body.runtime == "cloud"
+        else None
+    )
+    return {"schedule": entry, "cloud_cost_estimate": cost}
+
+
+@app.get("/api/schedules/cost-estimate")
+def schedule_cost_estimate(
+    interval: str = "daily", thread_count: int = 1, profiles: str | None = None
+) -> dict[str, Any]:
+    profile_list = [p for p in (profiles or "").split(",") if p.strip()]
+    return schedules_store.estimate_cloud_cost(profile_list, thread_count, interval)
+
+
+@app.patch("/api/schedules/{schedule_id}")
+def patch_schedule(schedule_id: str, body: ScheduleUpdate) -> dict[str, Any]:
+    patch = {k: v for k, v in body.model_dump().items() if v is not None}
+    try:
+        entry = schedules_store.update_schedule(schedule_id, patch)
+    except KeyError:
+        raise HTTPException(404, "Schedule not found") from None
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    return {"schedule": entry}
+
+
+@app.post("/api/schedules/{schedule_id}/toggle")
+def toggle_schedule(schedule_id: str, body: ScheduleToggle) -> dict[str, Any]:
+    try:
+        entry = schedules_store.toggle_schedule(schedule_id, body.enabled)
+    except KeyError:
+        raise HTTPException(404, "Schedule not found") from None
+    return {"schedule": entry}
+
+
+@app.delete("/api/schedules/{schedule_id}")
+def remove_schedule(schedule_id: str) -> dict[str, Any]:
+    try:
+        schedules_store.delete_schedule(schedule_id)
+    except KeyError:
+        raise HTTPException(404, "Schedule not found") from None
+    return {"deleted": True}
+
+
+@app.post("/api/projects/{project_id}/brahl/reports/{report_id}/archive")
+def archive_brahl_report(project_id: str, report_id: str, body: ReportArchiveUpdate) -> dict[str, Any]:
+    try:
+        entry = project_store.set_report_archived(project_id, report_id, body.archived)
+    except KeyError as exc:
+        raise HTTPException(404, f"Report or project not found: {exc}") from None
+    return {"report": entry}
 
 
 @app.get("/api/projects/{project_id}/brahl/reports/{run_name}/content")
@@ -1963,11 +2349,32 @@ def brahl_report_ensure(project_id: str, run_name: str) -> dict[str, Any]:
 @app.post("/api/projects/{project_id}/brahl/reports")
 def register_brahl_report(project_id: str, body: BrahlReportRegister) -> dict[str, Any]:
     try:
-        entry = project_store.register_brahl_report(project_id, body.run_name, body.source)
+        entry = project_store.register_brahl_report(
+            project_id, body.run_name, body.source, evidence_ids=body.evidence_ids
+        )
+    except KeyError:
+        raise HTTPException(404, "Project not found") from None
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from None
+    reports = project_store.list_brahl_reports(project_id)
+    return {"report": entry, "reports": reports}
+
+
+@app.post("/api/projects/{project_id}/brahl/reports/batch")
+def register_brahl_report_batch(project_id: str, body: BrahlReportRegisterBatch) -> dict[str, Any]:
+    """Register every child run_dir of a parallel batch job as its own report."""
+    try:
+        result = project_store.register_brahl_report_batch(
+            project_id,
+            body.run_names,
+            body.source,
+            batch_dashboard=body.batch_dashboard,
+            job_id=body.job_id,
+        )
     except KeyError:
         raise HTTPException(404, "Project not found") from None
     reports = project_store.list_brahl_reports(project_id)
-    return {"report": entry, "reports": reports}
+    return {**result, "reports": reports}
 
 
 @app.post("/api/projects/{project_id}/brahl/chat")

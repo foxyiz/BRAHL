@@ -487,7 +487,13 @@ def analyze_run_rca(
         "Classify each failure: T1 (yPAD/locator/step), T2 (engine), T3 (environment), A1 (application defect).\n"
         "Use the BRAHL RCA decision tree. Do not suggest weakening A1 tests.\n"
         "Output markdown with:\n"
-        "## Summary\n## Classification table (PlanId | Step | Class | Root cause | Recommended action)\n"
+        "## Summary\n"
+        "## Classification table\n"
+        "Use a real GFM table:\n"
+        "| PlanId | Step | Class | Root cause | Recommended action |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "For Recommended action give a concrete before→after example "
+        "(e.g. Expected `12` → `13`, or locator `css=#old` → `css=#new`).\n"
         "## Next steps (Heal vs app bug)\n\n"
         + brahl_doc_context(role="analyze", project=project)
     )
@@ -530,16 +536,18 @@ def heal_suggestions(
     )
     system = (
         "You are a FoXYiZ/BRAHL Heal assistant. Suggest minimal yPAD fixes for T1/T2/T3 only.\n"
-        "Priority: yD_Common/yD_Secure locators → y2Actions steps → y1Plans Run/Tags → y3Designs.\n"
+        "Priority: yD_Common/yD_Secure locators → y2Actions steps → y1Plans Tags → y3Designs.\n"
         "Never weaken A1 tests. Prefer xNavigate to reset session; no xWaitFor.\n"
-        "Output markdown with ## Heal plan and ## Verify after heal.\n"
+        "NEVER set Run (Y/N) in patches — Shrink/Restore owns Run flags.\n"
+        "Output markdown with ## Heal plan (GFM table of PlanId | Step | Field | Before | After) "
+        "and ## Verify after heal.\n"
         "ALWAYS end with a fenced JSON block the Arena can Apply:\n"
         "```json\n"
         '{"patches":[{"sheet":"y2Actions","match":{"PlanId":"P1","StepId":"2"},'
         '"set":{"Expected":"..."},"class":"T1","note":"why"}]}\n'
         "```\n"
         "sheet must be one of: y1Plans, y2Actions, y3Designs (or plans/actions/designs).\n"
-        "Only set safe CSV fields: Input, Expected, StepInfo, Run, Tags, D1–D5.\n"
+        "Only set safe CSV fields: Input, Expected, StepInfo, Tags, D1–D9.\n"
         "Omit A1 defects from patches (empty array if nothing safe).\n"
         "Never invent PlanId/StepId — only use ids from the failure list.\n\n"
         + brahl_doc_context(role="heal", project=project)

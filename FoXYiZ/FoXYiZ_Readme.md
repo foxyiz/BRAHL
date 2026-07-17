@@ -48,11 +48,11 @@ Short paths in configs stay `f/…`, `y/…`, `z/…`. The Arena API resolves th
 
 ```powershell
 python qoa_web\run_local.py
-python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json
 python FoXYiZ\pyUtils\cleaner.py --apply
 ```
 
-Lean day-to-day smoke: **Math** / **nalanda_app**. Full Arena UX gate: `y/qoa_web_live` + `f/fStart_qoa_web_live_verify.json`.
+Lean day-to-day smoke: **Math** / **nalanda_app**. Full Arena UX gate: `y/qoa_web_live` + `f/fStart/qoa_web_live.json` (Smoke profile / tags).
 
 ---
 
@@ -247,7 +247,7 @@ Packed prompts should stay slim: **AI_GUARDRAILS** + **BRAHL_PROMPT** (+ short �
 2. `y/<App>/<App>.json` + y1 / y2 / y3 (+ Common designs)  
 3. `PReuse_<App>_OpenSite` (`Run=N`)  
 4. Tag Smoke + feature tags  
-5. `f/fStart_<App>_smoke.json` then verify fStart  
+5. `f/fStart/<App>.json` (one file; Arena profiles for Smoke/UI/API)  
 6. Loop → Verify → BRAHL report  
 
 ---
@@ -321,20 +321,20 @@ python qoa_web\run_local.py
 # http://127.0.0.1:8765/app?demo=1
 
 # Lean engine smoke
-python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json
 
-# Tag parallel (example)
-python FoXYiZ\f\fOrchestrate.py --config f\fStart_Math_parallel_tags.json
+# Parallel by tag: thread_count>1 + tags in fStart, or Arena Threads>1 + 2+ profiles
+# (engine: pyUtils/fOrchestrate.py)
 
 # Live Arena V1 gate (server must be up)
 python FoXYiZ\pyUtils\reset_demo_data.py
-python FoXYiZ\f\fEngine2.py --config f\fStart_qoa_web_live_verify.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live.json
 
 # Hygiene
 python FoXYiZ\pyUtils\cleaner.py --apply
 ```
 
-Configs still use short paths (`f\…`) — run with cwd such that FoXYiZ roots resolve (Arena does this automatically; CLI: run engine from paths that include `FoXYiZ` on `FOXYIZ_ROOT`, or `cd FoXYiZ` then `python f\fEngine2.py --config f\…`).
+Short paths (`f/…`) resolve with `cwd=FoXYiZ/` (Arena) or `FOXYIZ_ROOT`.
 
 ---
 
@@ -352,7 +352,8 @@ This README consolidates day-to-day practice. For long tables and history:
 | [../Docs/rules.md](../Docs/rules.md) | Explore vs automate boundaries |
 | [../Docs/MAINTENANCE.md](../Docs/MAINTENANCE.md) | End-of-session checklist |
 | [../Docs/BRAHL_DESKTOP_BYOK.md](../Docs/BRAHL_DESKTOP_BYOK.md) | OpenAI key / hosted quotas |
-| [f/fStart_SCOPE.md](./f/fStart_SCOPE.md) | Which fStart for smoke / verify / journey |
+| [f/fStart_SCOPE.md](./f/fStart_SCOPE.md) | One fStart per suite + Arena profiles |
+| [../NEXT.md](../NEXT.md) | Resume checklist |
 | [pyUtils/README.md](./pyUtils/README.md) | Utility scripts |
 | [../.cursor/rules/ai-token-hygiene.mdc](../.cursor/rules/ai-token-hygiene.mdc) | Cursor always-on hygiene |
 

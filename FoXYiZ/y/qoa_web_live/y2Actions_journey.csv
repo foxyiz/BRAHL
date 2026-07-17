@@ -50,9 +50,9 @@ PJ_P1_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
 PJ_P1_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
 PJ_P1_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
 PJ_P1_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Networker,,,,y
-PJ_P1_Nav_promote_net,2,Click Promote tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P1_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
 PJ_P1_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
-PJ_P1_Nav_promote_net,4,Verify Promote nav label,xUI,xGetText,nav_promote_btn,,Promote,y
+PJ_P1_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
 PReuse_J_P2_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
 PReuse_J_P2_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
 PReuse_J_P2_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
@@ -142,9 +142,9 @@ PJ_P2_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
 PJ_P2_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
 PJ_P2_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
 PJ_P2_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Networker,,,,y
-PJ_P2_Nav_promote_net,2,Click Promote tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P2_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
 PJ_P2_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
-PJ_P2_Nav_promote_net,4,Verify Promote nav label,xUI,xGetText,nav_promote_btn,,Promote,y
+PJ_P2_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
 PReuse_J_P3_Shell_Consultant,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
 PReuse_J_P3_Shell_Consultant,2,Load persona profile,xUI,xNavigate,profile_url,,,y
 PReuse_J_P3_Shell_Consultant,3,Wait for profile,xTime,xTimeWait,3,,,y
@@ -198,9 +198,9 @@ PJ_P3_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
 PJ_P3_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
 PJ_P3_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
 PJ_P3_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Networker,,,,y
-PJ_P3_Nav_promote_net,2,Click Promote tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P3_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
 PJ_P3_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
-PJ_P3_Nav_promote_net,4,Verify Promote nav label,xUI,xGetText,nav_promote_btn,,Promote,y
+PJ_P3_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
 PReuse_J_P4_Shell_Consultant,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
 PReuse_J_P4_Shell_Consultant,2,Load persona profile,xUI,xNavigate,profile_url,,,y
 PReuse_J_P4_Shell_Consultant,3,Wait for profile,xTime,xTimeWait,3,,,y
@@ -254,9 +254,9 @@ PJ_P4_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
 PJ_P4_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
 PJ_P4_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
 PJ_P4_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Networker,,,,y
-PJ_P4_Nav_promote_net,2,Click Promote tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P4_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
 PJ_P4_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
-PJ_P4_Nav_promote_net,4,Verify Promote nav label,xUI,xGetText,nav_promote_btn,,Promote,y
+PJ_P4_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
 PReuse_J_P5_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
 PReuse_J_P5_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
 PReuse_J_P5_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
@@ -308,9 +308,9 @@ PJ_P5_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
 PJ_P5_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
 PJ_P5_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
 PJ_P5_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Networker,,,,y
-PJ_P5_Nav_promote_net,2,Click Promote tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P5_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
 PJ_P5_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
-PJ_P5_Nav_promote_net,4,Verify Promote nav label,xUI,xGetText,nav_promote_btn,,Promote,y
+PJ_P5_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
 PReuse_J_P6_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
 PReuse_J_P6_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
 PReuse_J_P6_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
@@ -400,9 +400,9 @@ PJ_P6_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
 PJ_P6_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
 PJ_P6_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
 PJ_P6_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Networker,,,,y
-PJ_P6_Nav_promote_net,2,Click Promote tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P6_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
 PJ_P6_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
-PJ_P6_Nav_promote_net,4,Verify Promote nav label,xUI,xGetText,nav_promote_btn,,Promote,y
+PJ_P6_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
 PReuse_J_P7_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
 PReuse_J_P7_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
 PReuse_J_P7_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
@@ -454,9 +454,9 @@ PJ_P7_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
 PJ_P7_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
 PJ_P7_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
 PJ_P7_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Networker,,,,y
-PJ_P7_Nav_promote_net,2,Click Promote tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P7_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
 PJ_P7_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
-PJ_P7_Nav_promote_net,4,Verify Promote nav label,xUI,xGetText,nav_promote_btn,,Promote,y
+PJ_P7_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
 PReuse_J_P8_Shell_Consultant,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
 PReuse_J_P8_Shell_Consultant,2,Load persona profile,xUI,xNavigate,profile_url,,,y
 PReuse_J_P8_Shell_Consultant,3,Wait for profile,xTime,xTimeWait,3,,,y
@@ -510,9 +510,9 @@ PJ_P8_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
 PJ_P8_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
 PJ_P8_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
 PJ_P8_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Networker,,,,y
-PJ_P8_Nav_promote_net,2,Click Promote tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P8_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
 PJ_P8_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
-PJ_P8_Nav_promote_net,4,Verify Promote nav label,xUI,xGetText,nav_promote_btn,,Promote,y
+PJ_P8_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
 PReuse_J_P9_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
 PReuse_J_P9_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
 PReuse_J_P9_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
@@ -564,9 +564,9 @@ PJ_P9_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
 PJ_P9_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
 PJ_P9_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
 PJ_P9_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Networker,,,,y
-PJ_P9_Nav_promote_net,2,Click Promote tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P9_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
 PJ_P9_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
-PJ_P9_Nav_promote_net,4,Verify Promote nav label,xUI,xGetText,nav_promote_btn,,Promote,y
+PJ_P9_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
 PJ_P1_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
 PJ_P1_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
 PJ_P1_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
@@ -610,7 +610,7 @@ PJ_P1_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
 PJ_P1_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Networker,,,,y
 PJ_P1_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
 PJ_P1_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
-PJ_P1_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promote the arena,y
+PJ_P1_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
 PJ_P2_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
 PJ_P2_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
 PJ_P2_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
@@ -686,7 +686,7 @@ PJ_P2_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
 PJ_P2_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Networker,,,,y
 PJ_P2_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
 PJ_P2_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
-PJ_P2_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promote the arena,y
+PJ_P2_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
 PReuse_J_P3_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
 PReuse_J_P3_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
 PReuse_J_P3_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
@@ -768,7 +768,7 @@ PJ_P3_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
 PJ_P3_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Networker,,,,y
 PJ_P3_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
 PJ_P3_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
-PJ_P3_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promote the arena,y
+PJ_P3_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
 PReuse_J_P4_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
 PReuse_J_P4_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
 PReuse_J_P4_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
@@ -850,7 +850,7 @@ PJ_P4_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
 PJ_P4_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Networker,,,,y
 PJ_P4_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
 PJ_P4_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
-PJ_P4_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promote the arena,y
+PJ_P4_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
 PJ_P5_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
 PJ_P5_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
 PJ_P5_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
@@ -894,7 +894,7 @@ PJ_P5_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
 PJ_P5_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Networker,,,,y
 PJ_P5_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
 PJ_P5_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
-PJ_P5_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promote the arena,y
+PJ_P5_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
 PJ_P6_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
 PJ_P6_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
 PJ_P6_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
@@ -970,7 +970,7 @@ PJ_P6_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
 PJ_P6_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Networker,,,,y
 PJ_P6_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
 PJ_P6_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
-PJ_P6_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promote the arena,y
+PJ_P6_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
 PJ_P7_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
 PJ_P7_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
 PJ_P7_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
@@ -1014,7 +1014,7 @@ PJ_P7_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
 PJ_P7_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Networker,,,,y
 PJ_P7_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
 PJ_P7_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
-PJ_P7_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promote the arena,y
+PJ_P7_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
 PReuse_J_P8_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
 PReuse_J_P8_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
 PReuse_J_P8_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
@@ -1096,7 +1096,7 @@ PJ_P8_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
 PJ_P8_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Networker,,,,y
 PJ_P8_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
 PJ_P8_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
-PJ_P8_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promote the arena,y
+PJ_P8_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
 PJ_P9_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
 PJ_P9_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
 PJ_P9_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
@@ -1140,7 +1140,7 @@ PJ_P9_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
 PJ_P9_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Networker,,,,y
 PJ_P9_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
 PJ_P9_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
-PJ_P9_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promote the arena,y
+PJ_P9_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
 PJ_P1_Build_ChatInput,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
 PJ_P1_Build_ChatInput,2,Open Build,xUI,xClick,nav_build_btn,,,y
 PJ_P1_Build_ChatInput,3,Wait,xTime,xTimeWait,2,,,y

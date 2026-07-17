@@ -130,14 +130,14 @@ Same page layout; sections show or hide by avatar.
 
 ### Add a challenge
 
-If no suite exists: **Build** empty state → **Add challenge to arena** → scaffolds `y/<name>/` with suite JSON, **D1–D9 persona y3Designs**, starter smoke plans/actions, and `f/fStart_<name>_smoke.json`.
+If no suite exists: **Build** empty state → **Add challenge to arena** → scaffolds `y/<name>/` with suite JSON, **D1–D9 persona y3Designs**, starter smoke plans/actions, and `f/fStart/<name>.json`.
 
 ### Creator workflow — test data in yDesigns (every new app)
 
 1. **Build** — enter launch prompt + app URL → **Add challenge** (scaffolds yPAD with persona columns).
 2. **Designs** — open yPAD **Y Designs** tab; fill `base_url`, route URLs, and per-persona `login_email` / `login_password` / expected values. Column headers show persona names (e.g. Alex Chen (D1)).
 3. **Plans / Actions** — add or AI-assist smoke plans; reference `DataName` tokens in actions — never hard-code URLs in y2Actions.
-4. **Run** — FoXYiZ smoke via `f/fStart_<suite>_smoke.json`.
+4. **Run** — FoXYiZ via `f/fStart/<suite>.json` (Arena profiles for Smoke/UI/API).
 5. **QA Hunter** — record screen in Build → log findings → **Submit QA Hunter report** → Creator reviews hunt artifacts on **BRAHL** for Go/No-Go.
 
 Use Designs tab filters (**URLs**, **Locators**, **Expected**, **Credentials**) and **Active profile only** when editing one persona column.
@@ -149,7 +149,7 @@ Use Designs tab filters (**URLs**, **Locators**, **Expected**, **Credentials**) 
 | Path | Contents |
 |------|----------|
 | `y/<suite>/` | y1Plans, y2Actions, y3Designs, `<suite>.json` |
-| `f/fStart*.json` | Run configs (verify, smoke) |
+| `f/fStart/<suite>.json` | One run config per suite (see `f/fStart_SCOPE.md`) |
 | `z/<timestamp>_<suite>/` | Run results, dashboards, BRAHL reports |
 | `qoa_web/data/projects.json` | Workspace metadata (chat, budget, QA Hunter roster) |
 
@@ -260,12 +260,12 @@ Hard-refresh (Ctrl+Shift+R) after code changes.
 **Verify UI + API with FoXYiZ** (server must be running):
 
 ```powershell
-python f/fEngine2.py --config f/fStart_qoa_web_verify.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live.json
 ```
 
-Expect **49/49** plans (`Run=Y`, tag **Verify**) · dashboard in `z/<timestamp>_qoa_web/`. Test project: **qoa_web Local** (`d21afcefc002`).
+Expect **24/24** Smoke plans · dashboard in `z/<timestamp>_qoa_web_live/`. Or use Arena → Smoke profile → Run.
 
-Before verify: `python u/reset_demo_data.py` (clears join/submit state from prior runs).
+Before verify: `python FoXYiZ/pyUtils/reset_demo_data.py` (clears join/submit state from prior runs).
 
 ### Troubleshooting
 

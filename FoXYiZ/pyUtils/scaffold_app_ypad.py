@@ -9,6 +9,7 @@ import csv
 import json
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -141,7 +142,19 @@ def _plan_prefix(suite: str) -> str:
     return "".join(p[:1].upper() + p[1:] for p in parts if p)
 
 
-def write_smoke_ypad(y_dir: Path, suite: str, app_url: str) -> None:
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _annotate_plan_rows(plans: list[tuple], created_by: str) -> list[tuple]:
+    """Append CreatedBy / CreatedAt to each plan row tuple — mirrors qoa_web's
+    ypad_versions.annotate_plan_creator so every newly scaffolded plan carries
+    provenance, whether written by the web app or this standalone script."""
+    stamp = _now_iso()
+    return [(*row, created_by or "", stamp) for row in plans]
+
+
+def write_smoke_ypad(y_dir: Path, suite: str, app_url: str, *, created_by: str = "") -> None:
     prefix = _plan_prefix(suite)
     reuse = f"PReuse_{prefix}_OpenSite"
     landing = f"P{prefix}_Smoke_Landing"
@@ -163,8 +176,8 @@ def write_smoke_ypad(y_dir: Path, suite: str, app_url: str) -> None:
 
     with (y_dir / "y1Plans.csv").open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["PlanId", "PlanName", "DesignId", "Run", "Tags", "Output"])
-        w.writerows(plans)
+        w.writerow(["PlanId", "PlanName", "DesignId", "Run", "Tags", "Output", "CreatedBy", "CreatedAt"])
+        w.writerows(_annotate_plan_rows(plans, created_by))
 
     with (y_dir / "y2Actions.csv").open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -185,6 +198,7 @@ def write_ypad_from_brahl_plan(
     brahl_plan: dict[str, Any] | None,
     *,
     max_auto: int = 12,
+    created_by: str = "",
 ) -> dict[str, Any]:
     """Materialize automated + Manual test_cases into y1/y2 white pads.
 
@@ -194,7 +208,7 @@ def write_ypad_from_brahl_plan(
     cases = list((brahl_plan or {}).get("test_cases") or [])
     auto = [c for c in cases if c.get("automated") is not False][:max_auto]
     if not auto:
-        write_smoke_ypad(y_dir, suite, app_url)
+        write_smoke_ypad(y_dir, suite, app_url, created_by=created_by)
         return {"mode": "smoke", "automated_plans": 1, "skipped_manual": len(cases)}
 
     prefix = _plan_prefix(suite)
@@ -281,8 +295,8 @@ def write_ypad_from_brahl_plan(
 
     with (y_dir / "y1Plans.csv").open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["PlanId", "PlanName", "DesignId", "Run", "Tags", "Output"])
-        w.writerows(plans)
+        w.writerow(["PlanId", "PlanName", "DesignId", "Run", "Tags", "Output", "CreatedBy", "CreatedAt"])
+        w.writerows(_annotate_plan_rows(plans, created_by))
 
     with (y_dir / "y2Actions.csv").open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -320,6 +334,8 @@ def materialize_brahl_plan_suite(
     suite_name: str,
     app_url: str = "",
     brahl_plan: dict[str, Any] | None = None,
+    *,
+    created_by: str = "",
 ) -> dict[str, Any]:
     """Rewrite y1/y2 for an existing suite from a BRAHL plan (keeps y3Designs)."""
     safe = slug_suite_name(suite_name)
@@ -328,7 +344,7 @@ def materialize_brahl_plan_suite(
         raise FileNotFoundError(f"Suite folder missing: y/{safe}")
     if not (y_dir / "y3Designs.csv").is_file():
         write_y3_designs(y_dir / "y3Designs.csv", app_url)
-    meta = write_ypad_from_brahl_plan(y_dir, safe, app_url, brahl_plan)
+    meta = write_ypad_from_brahl_plan(y_dir, safe, app_url, brahl_plan, created_by=created_by)
     meta["suite"] = safe
     meta["path"] = f"y/{safe}/{safe}.json"
     return meta
@@ -339,6 +355,8 @@ def write_app_ypad_suite(
     app_url: str = "",
     description: str = "",
     brahl_plan: dict[str, Any] | None = None,
+    *,
+    created_by: str = "",
 ) -> dict[str, Any]:
     """Create y/<name>/ with persona y3Designs, plan-driven or smoke yPAD, suite JSON, and fStart."""
     safe = slug_suite_name(name)
@@ -362,7 +380,7 @@ def write_app_ypad_suite(
     }
     config_path.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
     write_y3_designs(y_dir / "y3Designs.csv", app_url)
-    pad_meta = write_ypad_from_brahl_plan(y_dir, safe, app_url, brahl_plan)
+    pad_meta = write_ypad_from_brahl_plan(y_dir, safe, app_url, brahl_plan, created_by=created_by)
     fstart = write_fstart(safe)
 
     personas = load_personas()

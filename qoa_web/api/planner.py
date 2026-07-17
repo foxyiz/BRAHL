@@ -139,6 +139,7 @@ def create_from_planner(
     draft: dict[str, Any],
     brahl_plan: dict[str, Any] | None = None,
     owner_user_id: str | None = None,
+    created_by: str = "",
 ) -> dict[str, Any]:
     from runner import capture_brahl_context
 
@@ -163,7 +164,7 @@ def create_from_planner(
         except Exception:
             plan = None
 
-    detail = create_ypad_suite(name, app_url, purpose, brahl_plan=plan)
+    detail = create_ypad_suite(name, app_url, purpose, brahl_plan=plan, created_by=created_by)
     safe = detail["name"]
     context_items = [{"kind": "url", "label": "App URL", "value": app_url}]
     project = project_store.create_project(

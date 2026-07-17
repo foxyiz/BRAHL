@@ -1,24 +1,23 @@
 # FoXYiZ
 
-Engine package for **`f(x, y) = z`** — used by the BRAHL Arena (`qoa_web`) as the automation backend.
+Engine for **`f(x, y) = z`** — BRAHL Arena backend.
 
-**Full guide (skills · memory · yPAD efficiency · AI rules):**  
-**[FoXYiZ_Readme.md](./FoXYiZ_Readme.md)** ← start here.
+**Guide:** [FoXYiZ_Readme.md](./FoXYiZ_Readme.md)
 
 ```
 FoXYiZ/
-  f/         engine (fEngine2.py, fStart_*.json, fOrchestrate.py)
+  f/         fEngine2.py · fStart/{suite}.json · fStart_SCOPE.md
   x/         actions
-  y/         yPAD suites
-  z/         run output (excluded from Cursor index)
-  pyUtils/   maintenance scripts
-  FoXYiZ_Readme.md   consolidated operator + AI guide
+  y/         yPAD suites (one folder = one app)
+  z/         run output (gitignored / Cursor-excluded)
+  pyUtils/   fOrchestrate, cleaner, journey regen
 ```
 
 ```powershell
 # From KK/
-python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live.json
 python FoXYiZ\pyUtils\cleaner.py
 ```
 
-Arena: [../qoa_web/README.md](../qoa_web/README.md) · memory: [../qoa_web/MEMORY.md](../qoa_web/MEMORY.md).
+Arena: [../qoa_web/README.md](../qoa_web/README.md) · memory: [../qoa_web/MEMORY.md](../qoa_web/MEMORY.md) · resume: [../NEXT.md](../NEXT.md)

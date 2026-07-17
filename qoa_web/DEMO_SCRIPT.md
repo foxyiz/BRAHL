@@ -5,13 +5,13 @@ Use after deploy or locally at http://127.0.0.1:8765. **GTM funnel:** invite tri
 ## Pre-flight (5 min)
 
 ```powershell
-cd KK
+cd c:\006\FXYZ\KK
 python qoa_web/run_local.py
-python u/reset_demo_data.py
-python f\fEngine2.py --config f\fStart_qoa_web_verify.json   # expect 49/49
+python FoXYiZ\pyUtils\reset_demo_data.py
+python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live.json   # Smoke gate
 ```
 
-Production: run `python u/patch_ypad_urls.py` then `fStart_qoa_web_smoke_prod.json`.
+Arena alternative: `/app?demo=1` → `qoa_web_live` → Smoke → Run.
 
 ---
 
@@ -69,7 +69,7 @@ python u/zBatchDash.py --name parallel_demo --logs z/parallel_demo_*.log
 # → z/zDash_batch_parallel_demo.html
 ```
 
-See [f/fStart_SCOPE.md](../f/fStart_SCOPE.md).
+See [FoXYiZ/f/fStart_SCOPE.md](../FoXYiZ/f/fStart_SCOPE.md).
 
 ---
 

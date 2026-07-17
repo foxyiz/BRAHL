@@ -1,4 +1,4 @@
-PlanId,PlanName,DesignId,Run,Tags,Output
+﻿PlanId,PlanName,DesignId,Run,Tags,Output
 PReuse_qoa_web_OpenSite,Open browser and navigate to BRAHL Web,D1,N,Reuse,site_loaded
 PReuse_PersonaReady,Sign in test persona via profile URL,D1,N,Reuse;Persona,persona_ready
 PReuse_qoa_web_ClientReady,Persona ready as Client with qoa_web project,D1,N,Reuse;Client,client_ready
@@ -68,3 +68,6 @@ PWeb_AiDocs_MdBtn,AI .md context button visible,D1,Y,Verify;qoa_web_live;Smoke;A
 PWeb_AiDocs_Modal,AI .md modal opens Master+Journey list,D1,N,Verify;qoa_web_live;AI;V1;Manual,ai_md_modal_ok
 PWeb_Build_DocChips,Build test strategy/plan.md chips,D1,Y,Verify;qoa_web_live;Smoke;Build;V1,doc_chips_ok
 PWeb_Heal_AiBtn,Heal AI auto-heal button when AI on,D1,Y,Verify;qoa_web_live;Smoke;Heal;AI;V1,heal_ai_ok
+PWeb_Brahl_ReportTabs,BRAHL Automation and Human verified tabs,D1,Y,Verify;qoa_web_live;Smoke;BRAHL;V1,brahl_tabs_ok
+PWeb_Build_EditTop,Build top-right Edit yPAD control,D1,Y,Verify;qoa_web_live;Smoke;Build;yPAD;V1,build_edit_ok
+PWeb_Loop_Schedules,Loop schedules section visible,D1,Y,Verify;qoa_web_live;Smoke;Loop;V1,schedules_ok

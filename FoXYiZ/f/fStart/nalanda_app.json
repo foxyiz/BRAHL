@@ -6,5 +6,13 @@
   "timeout": 15,
   "headless": false,
   "debug": false,
-  "tags": []
+  "tags": [
+    "Smoke"
+  ],
+  "capture": {
+    "image": "on_fail",
+    "video": "off",
+    "video_fps": 2,
+    "subdir": ""
+  }
 }

@@ -40,6 +40,9 @@ ADDITIONS = {
     "api_themes_css_endpoint": "/assets/themes.css",
     "api_theme_js_endpoint": "/assets/theme.js",
     "api_ecosystem_endpoint": "/api/about/ecosystem",
+    "nav_promote_btn": "css=button[data-phase='promoter']",
+    "promote_heading_locator": "css=#panel-promoter h2",
+    "promote_heading": "Promoter",
     "atomic77_heading": "Atomic 77",
 }
 
@@ -61,6 +64,11 @@ def main() -> None:
     existing = {r["DataName"] for r in rows if r.get("DataName")}
     for name, val in ADDITIONS.items():
         if name in existing:
+            # Refresh known drifted locators (e.g. promote → promoter)
+            row = next(r for r in rows if r.get("DataName") == name)
+            for c in cols:
+                if row.get(c) != val:
+                    row[c] = val
             continue
         row = {"Type": "UI", "DataName": name, **{c: val for c in cols}}
         rows.append(row)

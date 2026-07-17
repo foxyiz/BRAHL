@@ -20,7 +20,7 @@ python FoXYiZ\pyUtils\zBatchDash.py --name wave1 --since 20260716
 | `fGUI.py` | Desktop runner GUI |
 | `xCustom.py` | End-user custom actions (`xCustom` in yPAD) |
 | `zBatchDash.py` | Multi-run HTML batch dashboard |
-| `cleaner.py` | Archive dated `z/` noise → `archive/cleanup/` |
+| `cleaner.py` | Archive dated `z/` runs → `../archive/cleanup/` (outside KK) |
 | `reset_demo_data.py` | Reset Arena seed projects |
 | `sync_personas.py` | Personas: `gen_persona_ypad` + `sync_profiles_from_docs` |
 | `gen_persona_ypad.py` | Persona yPAD rows (called by sync) |

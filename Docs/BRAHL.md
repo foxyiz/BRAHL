@@ -3,16 +3,16 @@
 > **Full skill reference** continues below (FoXYiZ lifecycle, qoa2 lessons, heal tables).
 > **Slim in-app version:** [BRAHL_PROMPT.md](./BRAHL_PROMPT.md) · **Session hygiene:** [MAINTENANCE.md](./MAINTENANCE.md)
 
-**Active workspace:** KK/ · **App:** qoa_web @ http://127.0.0.1:8765 · **Suite:** y/qoa_web/
+**Active workspace:** KK/ · **App:** qoa_web @ http://127.0.0.1:8765 · **Suite:** `y/qoa_web_live/`
 
 | Item | Value |
 |------|-------|
-| Verify config | /fStart_qoa_web_verify.json |
-| Plans (Run=Y) | **45** (4 reuse plans stay Run=N) |
-| Tag filter | ll → all Run=Y plans |
-| Personas | P1–P9 in Docs/test-user-data/ → python u/sync_personas.py |
-| Utilities | u/cleaner.py, u/yVisualizer.py, u/zDefects.py — HTML reports in u/ |
-| Avatars | Creator · QA Hunter · Networker (all profiles can switch) |
+| Verify config | `f/fStart/qoa_web_live.json` (Smoke) / Arena profiles |
+| Plans (Run=Y) | Gate plans in `y/qoa_web_live/` |
+| Tag filter | fStart `tags` or Arena Run profiles |
+| Personas | P1–P9 in Docs/test-user-data/ → `python FoXYiZ/pyUtils/sync_personas.py` |
+| Utilities | `FoXYiZ/pyUtils/` — cleaner, dashboards |
+| Avatars | Creator · QA Hunter · Networker |
 
 ## Loop protocol (required)
 

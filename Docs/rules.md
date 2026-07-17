@@ -14,7 +14,7 @@ Do **not** add one-off Python scrapers. Use Playwright (`browser_navigate`, `bro
 |-------|--------------------|
 | `qoa_web/web/*`, `qoa_web/api/*` | `FoXYiZ/f/fEngine2.py`, `FoXYiZ/x/xActions.py` |
 | `FoXYiZ/y/<suite>/*.csv`, `*.json` | Dumping `FoXYiZ/z/**` into chat |
-| `FoXYiZ/f/fStart_*.json` | `archive/**` |
+| `FoXYiZ/f/fStart/{suite}.json` | `archive/**`, `f/fStart/archive/**` |
 
 ## BRAHL lifecycle
 
@@ -25,7 +25,7 @@ Run/Loop = FoXYiZ only (no LLM). Heal in yPAD first; never weaken A1 assertions.
 
 - Always **BRAHL** · **FoXYiZ**.
 - Engine lives in **`KK/FoXYiZ/{f,x,y,z,pyUtils}`**. From `KK/`:  
-  `python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json`
+  `python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json`
 - UI: `python qoa_web/run_local.py` → http://127.0.0.1:8765
 
 ## Suite habits

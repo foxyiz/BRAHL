@@ -11,7 +11,7 @@ PJ_P1_Nav_cost_cli,P1 client opens Cost phase,D1,Y,Journey;qoa_web_live;Regressi
 PReuse_J_P1_Shell_Networker,Journey shell P1 as Networker,D1,Y,Journey;Reuse;P1;networker,shell_p1_networker
 PJ_P1_Nav_atomic77_net,P1 networker opens Atomic77 phase,D1,Y,Journey;qoa_web_live;Regression;P1;Nav;Atomic77;networker,pj_p1_atomic77_networker_nav
 PJ_P1_Nav_cost_net,P1 networker opens Cost phase,D1,Y,Journey;qoa_web_live;Regression;P1;Nav;Cost;networker,pj_p1_cost_networker_nav
-PJ_P1_Nav_promote_net,P1 networker opens Promote phase,D1,Y,Journey;qoa_web_live;Regression;P1;Nav;Promote;networker,pj_p1_promote_networker_nav
+PJ_P1_Nav_promote_net,P1 networker opens Promoter phase,D1,Y,Journey;qoa_web_live;Regression;P1;Nav;Promoter;networker,pj_p1_promote_networker_nav
 PReuse_J_P2_Shell_Client,Journey shell P2 as Creator,D2,Y,Journey;Reuse;P2;client,shell_p2_client
 PJ_P2_Nav_build_cli,P2 client opens Build phase,D2,Y,Journey;qoa_web_live;Regression;P2;Nav;Build;client,pj_p2_build_client_nav
 PJ_P2_Nav_run_cli,P2 client opens Run phase,D2,Y,Journey;qoa_web_live;Regression;P2;Nav;Run;client,pj_p2_run_client_nav
@@ -33,7 +33,7 @@ PJ_P2_Nav_cost_con,P2 consultant opens Cost phase,D2,Y,Journey;qoa_web_live;Regr
 PReuse_J_P2_Shell_Networker,Journey shell P2 as Networker,D2,Y,Journey;Reuse;P2;networker,shell_p2_networker
 PJ_P2_Nav_atomic77_net,P2 networker opens Atomic77 phase,D2,Y,Journey;qoa_web_live;Regression;P2;Nav;Atomic77;networker,pj_p2_atomic77_networker_nav
 PJ_P2_Nav_cost_net,P2 networker opens Cost phase,D2,Y,Journey;qoa_web_live;Regression;P2;Nav;Cost;networker,pj_p2_cost_networker_nav
-PJ_P2_Nav_promote_net,P2 networker opens Promote phase,D2,Y,Journey;qoa_web_live;Regression;P2;Nav;Promote;networker,pj_p2_promote_networker_nav
+PJ_P2_Nav_promote_net,P2 networker opens Promoter phase,D2,Y,Journey;qoa_web_live;Regression;P2;Nav;Promoter;networker,pj_p2_promote_networker_nav
 PReuse_J_P3_Shell_Consultant,Journey shell P3 as Hunter,D3,Y,Journey;Reuse;P3;consultant,shell_p3_consultant
 PJ_P3_Nav_build_con,P3 consultant opens Build phase,D3,Y,Journey;qoa_web_live;Regression;P3;Nav;Build;consultant,pj_p3_build_consultant_nav
 PJ_P3_Nav_run_con,P3 consultant opens Run phase,D3,Y,Journey;qoa_web_live;Regression;P3;Nav;Run;consultant,pj_p3_run_consultant_nav
@@ -46,7 +46,7 @@ PJ_P3_Nav_cost_con,P3 consultant opens Cost phase,D3,Y,Journey;qoa_web_live;Regr
 PReuse_J_P3_Shell_Networker,Journey shell P3 as Networker,D3,Y,Journey;Reuse;P3;networker,shell_p3_networker
 PJ_P3_Nav_atomic77_net,P3 networker opens Atomic77 phase,D3,Y,Journey;qoa_web_live;Regression;P3;Nav;Atomic77;networker,pj_p3_atomic77_networker_nav
 PJ_P3_Nav_cost_net,P3 networker opens Cost phase,D3,Y,Journey;qoa_web_live;Regression;P3;Nav;Cost;networker,pj_p3_cost_networker_nav
-PJ_P3_Nav_promote_net,P3 networker opens Promote phase,D3,Y,Journey;qoa_web_live;Regression;P3;Nav;Promote;networker,pj_p3_promote_networker_nav
+PJ_P3_Nav_promote_net,P3 networker opens Promoter phase,D3,Y,Journey;qoa_web_live;Regression;P3;Nav;Promoter;networker,pj_p3_promote_networker_nav
 PReuse_J_P4_Shell_Consultant,Journey shell P4 as Hunter,D4,Y,Journey;Reuse;P4;consultant,shell_p4_consultant
 PJ_P4_Nav_build_con,P4 consultant opens Build phase,D4,Y,Journey;qoa_web_live;Regression;P4;Nav;Build;consultant,pj_p4_build_consultant_nav
 PJ_P4_Nav_run_con,P4 consultant opens Run phase,D4,Y,Journey;qoa_web_live;Regression;P4;Nav;Run;consultant,pj_p4_run_consultant_nav
@@ -59,7 +59,7 @@ PJ_P4_Nav_cost_con,P4 consultant opens Cost phase,D4,Y,Journey;qoa_web_live;Regr
 PReuse_J_P4_Shell_Networker,Journey shell P4 as Networker,D4,Y,Journey;Reuse;P4;networker,shell_p4_networker
 PJ_P4_Nav_atomic77_net,P4 networker opens Atomic77 phase,D4,Y,Journey;qoa_web_live;Regression;P4;Nav;Atomic77;networker,pj_p4_atomic77_networker_nav
 PJ_P4_Nav_cost_net,P4 networker opens Cost phase,D4,Y,Journey;qoa_web_live;Regression;P4;Nav;Cost;networker,pj_p4_cost_networker_nav
-PJ_P4_Nav_promote_net,P4 networker opens Promote phase,D4,Y,Journey;qoa_web_live;Regression;P4;Nav;Promote;networker,pj_p4_promote_networker_nav
+PJ_P4_Nav_promote_net,P4 networker opens Promoter phase,D4,Y,Journey;qoa_web_live;Regression;P4;Nav;Promoter;networker,pj_p4_promote_networker_nav
 PReuse_J_P5_Shell_Client,Journey shell P5 as Creator,D5,Y,Journey;Reuse;P5;client,shell_p5_client
 PJ_P5_Nav_build_cli,P5 client opens Build phase,D5,Y,Journey;qoa_web_live;Regression;P5;Nav;Build;client,pj_p5_build_client_nav
 PJ_P5_Nav_run_cli,P5 client opens Run phase,D5,Y,Journey;qoa_web_live;Regression;P5;Nav;Run;client,pj_p5_run_client_nav
@@ -72,7 +72,7 @@ PJ_P5_Nav_cost_cli,P5 client opens Cost phase,D5,Y,Journey;qoa_web_live;Regressi
 PReuse_J_P5_Shell_Networker,Journey shell P5 as Networker,D5,Y,Journey;Reuse;P5;networker,shell_p5_networker
 PJ_P5_Nav_atomic77_net,P5 networker opens Atomic77 phase,D5,Y,Journey;qoa_web_live;Regression;P5;Nav;Atomic77;networker,pj_p5_atomic77_networker_nav
 PJ_P5_Nav_cost_net,P5 networker opens Cost phase,D5,Y,Journey;qoa_web_live;Regression;P5;Nav;Cost;networker,pj_p5_cost_networker_nav
-PJ_P5_Nav_promote_net,P5 networker opens Promote phase,D5,Y,Journey;qoa_web_live;Regression;P5;Nav;Promote;networker,pj_p5_promote_networker_nav
+PJ_P5_Nav_promote_net,P5 networker opens Promoter phase,D5,Y,Journey;qoa_web_live;Regression;P5;Nav;Promoter;networker,pj_p5_promote_networker_nav
 PReuse_J_P6_Shell_Client,Journey shell P6 as Creator,D6,Y,Journey;Reuse;P6;client,shell_p6_client
 PJ_P6_Nav_build_cli,P6 client opens Build phase,D6,Y,Journey;qoa_web_live;Regression;P6;Nav;Build;client,pj_p6_build_client_nav
 PJ_P6_Nav_run_cli,P6 client opens Run phase,D6,Y,Journey;qoa_web_live;Regression;P6;Nav;Run;client,pj_p6_run_client_nav
@@ -94,7 +94,7 @@ PJ_P6_Nav_cost_con,P6 consultant opens Cost phase,D6,Y,Journey;qoa_web_live;Regr
 PReuse_J_P6_Shell_Networker,Journey shell P6 as Networker,D6,Y,Journey;Reuse;P6;networker,shell_p6_networker
 PJ_P6_Nav_atomic77_net,P6 networker opens Atomic77 phase,D6,Y,Journey;qoa_web_live;Regression;P6;Nav;Atomic77;networker,pj_p6_atomic77_networker_nav
 PJ_P6_Nav_cost_net,P6 networker opens Cost phase,D6,Y,Journey;qoa_web_live;Regression;P6;Nav;Cost;networker,pj_p6_cost_networker_nav
-PJ_P6_Nav_promote_net,P6 networker opens Promote phase,D6,Y,Journey;qoa_web_live;Regression;P6;Nav;Promote;networker,pj_p6_promote_networker_nav
+PJ_P6_Nav_promote_net,P6 networker opens Promoter phase,D6,Y,Journey;qoa_web_live;Regression;P6;Nav;Promoter;networker,pj_p6_promote_networker_nav
 PReuse_J_P7_Shell_Client,Journey shell P7 as Creator,D7,Y,Journey;Reuse;P7;client,shell_p7_client
 PJ_P7_Nav_build_cli,P7 client opens Build phase,D7,Y,Journey;qoa_web_live;Regression;P7;Nav;Build;client,pj_p7_build_client_nav
 PJ_P7_Nav_run_cli,P7 client opens Run phase,D7,Y,Journey;qoa_web_live;Regression;P7;Nav;Run;client,pj_p7_run_client_nav
@@ -107,7 +107,7 @@ PJ_P7_Nav_cost_cli,P7 client opens Cost phase,D7,Y,Journey;qoa_web_live;Regressi
 PReuse_J_P7_Shell_Networker,Journey shell P7 as Networker,D7,Y,Journey;Reuse;P7;networker,shell_p7_networker
 PJ_P7_Nav_atomic77_net,P7 networker opens Atomic77 phase,D7,Y,Journey;qoa_web_live;Regression;P7;Nav;Atomic77;networker,pj_p7_atomic77_networker_nav
 PJ_P7_Nav_cost_net,P7 networker opens Cost phase,D7,Y,Journey;qoa_web_live;Regression;P7;Nav;Cost;networker,pj_p7_cost_networker_nav
-PJ_P7_Nav_promote_net,P7 networker opens Promote phase,D7,Y,Journey;qoa_web_live;Regression;P7;Nav;Promote;networker,pj_p7_promote_networker_nav
+PJ_P7_Nav_promote_net,P7 networker opens Promoter phase,D7,Y,Journey;qoa_web_live;Regression;P7;Nav;Promoter;networker,pj_p7_promote_networker_nav
 PReuse_J_P8_Shell_Consultant,Journey shell P8 as Hunter,D8,Y,Journey;Reuse;P8;consultant,shell_p8_consultant
 PJ_P8_Nav_build_con,P8 consultant opens Build phase,D8,Y,Journey;qoa_web_live;Regression;P8;Nav;Build;consultant,pj_p8_build_consultant_nav
 PJ_P8_Nav_run_con,P8 consultant opens Run phase,D8,Y,Journey;qoa_web_live;Regression;P8;Nav;Run;consultant,pj_p8_run_consultant_nav
@@ -120,7 +120,7 @@ PJ_P8_Nav_cost_con,P8 consultant opens Cost phase,D8,Y,Journey;qoa_web_live;Regr
 PReuse_J_P8_Shell_Networker,Journey shell P8 as Networker,D8,Y,Journey;Reuse;P8;networker,shell_p8_networker
 PJ_P8_Nav_atomic77_net,P8 networker opens Atomic77 phase,D8,Y,Journey;qoa_web_live;Regression;P8;Nav;Atomic77;networker,pj_p8_atomic77_networker_nav
 PJ_P8_Nav_cost_net,P8 networker opens Cost phase,D8,Y,Journey;qoa_web_live;Regression;P8;Nav;Cost;networker,pj_p8_cost_networker_nav
-PJ_P8_Nav_promote_net,P8 networker opens Promote phase,D8,Y,Journey;qoa_web_live;Regression;P8;Nav;Promote;networker,pj_p8_promote_networker_nav
+PJ_P8_Nav_promote_net,P8 networker opens Promoter phase,D8,Y,Journey;qoa_web_live;Regression;P8;Nav;Promoter;networker,pj_p8_promote_networker_nav
 PReuse_J_P9_Shell_Client,Journey shell P9 as Creator,D9,Y,Journey;Reuse;P9;client,shell_p9_client
 PJ_P9_Nav_build_cli,P9 client opens Build phase,D9,Y,Journey;qoa_web_live;Regression;P9;Nav;Build;client,pj_p9_build_client_nav
 PJ_P9_Nav_run_cli,P9 client opens Run phase,D9,Y,Journey;qoa_web_live;Regression;P9;Nav;Run;client,pj_p9_run_client_nav
@@ -133,7 +133,7 @@ PJ_P9_Nav_cost_cli,P9 client opens Cost phase,D9,Y,Journey;qoa_web_live;Regressi
 PReuse_J_P9_Shell_Networker,Journey shell P9 as Networker,D9,Y,Journey;Reuse;P9;networker,shell_p9_networker
 PJ_P9_Nav_atomic77_net,P9 networker opens Atomic77 phase,D9,Y,Journey;qoa_web_live;Regression;P9;Nav;Atomic77;networker,pj_p9_atomic77_networker_nav
 PJ_P9_Nav_cost_net,P9 networker opens Cost phase,D9,Y,Journey;qoa_web_live;Regression;P9;Nav;Cost;networker,pj_p9_cost_networker_nav
-PJ_P9_Nav_promote_net,P9 networker opens Promote phase,D9,Y,Journey;qoa_web_live;Regression;P9;Nav;Promote;networker,pj_p9_promote_networker_nav
+PJ_P9_Nav_promote_net,P9 networker opens Promoter phase,D9,Y,Journey;qoa_web_live;Regression;P9;Nav;Promoter;networker,pj_p9_promote_networker_nav
 PJ_P1_Head_build_cli,P1 client Build panel heading,D1,Y,Journey;qoa_web_live;Regression;P1;Panel;Build;client,pj_p1_build_head
 PJ_P1_Head_run_cli,P1 client Run panel heading,D1,Y,Journey;qoa_web_live;Regression;P1;Panel;Run;client,pj_p1_run_head
 PJ_P1_Head_analyze_cli,P1 client Analyze panel heading,D1,Y,Journey;qoa_web_live;Regression;P1;Panel;Analyze;client,pj_p1_analyze_head

@@ -28,8 +28,51 @@ from paths import (
 )
 
 FSTART_DIR = F_DIR / "fStart"
+FSTART_RUNTIME_DIR = FSTART_DIR / ".runtime"
+
+# Arena Run profiles (fixed order) → yPAD Tags (OR filter within a profile).
+# Smoke → gate CSVs · UI/API/… → journey CSVs when the suite has them.
+RUN_PROFILES: dict[str, list[str]] = {
+    "Smoke": ["Smoke"],
+    "UI": [
+        "Nav",
+        "Build",
+        "Panel",
+        "Heal",
+        "Loop",
+        "Analyze",
+        "BRAHL",
+        "Shell",
+        "Landing",
+        "Atomic77",
+        "Cost",
+        "Run",
+    ],
+    "API": ["API"],
+    "Performance": ["Performance"],
+    "Security": ["Security"],
+    "Manual": ["Manual"],
+}
+RUN_PROFILE_ORDER = list(RUN_PROFILES.keys())
+
+# Which yPAD file set each profile uses when the suite ships journey CSVs.
+PROFILE_SUITE_MODE: dict[str, str] = {
+    "Smoke": "gate",
+    "UI": "journey",
+    "API": "journey",
+    "Performance": "journey",
+    "Security": "journey",
+    "Manual": "full",
+}
 
 OUTPUT_DIR_RE = re.compile(r"Output Directory:\s*(.+)")
+
+DEFAULT_CAPTURE = {
+    "image": "on_fail",
+    "video": "off",
+    "video_fps": 2,
+    "subdir": "",
+}
 
 
 def _engine_subprocess_env() -> dict[str, str]:
@@ -119,42 +162,255 @@ _lock = threading.Lock()
 
 
 def list_fstart_configs() -> list[str]:
+    """List fStarts under FoXYiZ/f/fStart/ (skip archive + .runtime)."""
     if not FSTART_DIR.is_dir():
         return []
-    return [f"f/fStart/{p.name}" for p in sorted(FSTART_DIR.glob("*.json"))]
+    out: list[str] = []
+    for p in sorted(FSTART_DIR.glob("*.json")):
+        if p.name.startswith("_orch_") or p.name.startswith("."):
+            continue
+        out.append(f"f/fStart/{p.name}")
+    return out
+
+
+def _y_suite_names() -> list[str]:
+    if not Y_DIR.is_dir():
+        return []
+    return sorted(p.name for p in Y_DIR.iterdir() if p.is_dir())
+
+
+def _fstart_stem_belongs_to_suite(stem: str, suite_name: str) -> bool:
+    """True if fStart filename stem is suite or suite_* — not a longer sibling suite."""
+    if stem == suite_name:
+        return True
+    if not stem.startswith(suite_name + "_"):
+        return False
+    for other in _y_suite_names():
+        if other == suite_name:
+            continue
+        if stem == other or stem.startswith(other + "_"):
+            return False
+    return True
+
+
+def _fstart_refs_suite(suite_name: str, config_entries: list[str]) -> bool:
+    """True when fStart configs[] points at y/<suite>/… (path-prefix safe)."""
+    prefix = f"y/{suite_name}/"
+    for raw in config_entries:
+        c = str(raw).replace("\\", "/").lstrip("./")
+        if c == f"y/{suite_name}/{suite_name}.json" or c.startswith(prefix):
+            return True
+    return False
 
 
 def list_fstart_for_suite(suite_name: str) -> list[str]:
-    """fStart configs that reference this y/ suite."""
-    cfg_path = f"y/{suite_name}/{suite_name}.json"
+    """Prefer canonical f/fStart/{suite}.json — one file per app."""
+    suite_name = (suite_name or "").strip()
+    if not suite_name:
+        return []
+    canonical = f"f/fStart/{suite_name}.json"
+    if (FSTART_DIR / f"{suite_name}.json").is_file():
+        return [canonical]
     matches: list[str] = []
     for rel in list_fstart_configs():
+        if Path(rel).name == "default.json":
+            continue
         try:
             data = json.loads(resolve_repo(rel).read_text(encoding="utf-8"))
             configs = data.get("configs") or []
-            if cfg_path in configs or any(suite_name in c for c in configs):
+            if _fstart_refs_suite(suite_name, configs):
                 matches.append(rel)
+                continue
         except (OSError, json.JSONDecodeError):
+            pass
+        stem = Path(rel).stem
+        if _fstart_stem_belongs_to_suite(stem, suite_name):
+            matches.append(rel)
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for m in matches:
+        if m not in seen:
+            seen.add(m)
+            ordered.append(m)
+    return ordered
+
+
+def expand_run_profiles(profiles: list[str] | None) -> list[str]:
+    """Map Arena profile names → unique yPAD tags (preserve order)."""
+    if not profiles:
+        return []
+    tags: list[str] = []
+    seen: set[str] = set()
+    for raw in profiles:
+        name = (raw or "").strip()
+        mapped = RUN_PROFILES.get(name) or ([name] if name else [])
+        for t in mapped:
+            if t not in seen:
+                seen.add(t)
+                tags.append(t)
+    return tags
+
+
+def _suite_mode_for_profiles(profiles: list[str] | None) -> str | None:
+    """Resolve gate vs journey vs full for a profile selection."""
+    clean = [p.strip() for p in (profiles or []) if (p or "").strip()]
+    if not clean:
+        return None
+    modes = {PROFILE_SUITE_MODE.get(p, "full") for p in clean}
+    if modes == {"gate"}:
+        return "gate"
+    if modes == {"journey"}:
+        return "journey"
+    if len(clean) == 1:
+        return PROFILE_SUITE_MODE.get(clean[0], "full")
+    # Mixed profiles (e.g. Smoke+UI OR) → full suite JSON
+    return "full"
+
+
+def _suite_name_from_config_rel(config_rel: str) -> str | None:
+    parts = Path(str(config_rel).replace("\\", "/")).parts
+    if len(parts) >= 2 and parts[0] == "y":
+        return parts[1]
+    return None
+
+
+def _read_suite_json(suite_rel: str) -> dict[str, Any] | None:
+    path = resolve_repo(suite_rel)
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def _filter_input_files_for_mode(
+    input_files: dict[str, Any], mode: str
+) -> dict[str, Any] | None:
+    """Return a copy of input_files limited to gate or journey CSVs."""
+    if mode not in ("gate", "journey"):
+        return None
+    out: dict[str, Any] = {}
+    for key in ("yPlans", "yActions", "yDesigns"):
+        files = list(input_files.get(key) or [])
+        if key == "yDesigns":
+            out[key] = files
             continue
-    if matches:
-        for pref in ("verify", "smoke"):
-            for m in matches:
-                if pref in m.lower():
-                    return [m] + [x for x in matches if x != m]
-        return matches
-    named = [c for c in list_fstart_configs() if suite_name in c.lower()]
-    if named:
-        return named
-    fallback = f"f/fStart/{suite_name}_verify.json"
-    if (FSTART_DIR / f"{suite_name}_verify.json").is_file():
-        return [fallback]
-    return []
+        if mode == "journey":
+            picked = [f for f in files if "_journey" in Path(str(f)).name.lower()]
+        else:
+            picked = [f for f in files if "_journey" not in Path(str(f)).name.lower()]
+        if not picked:
+            return None
+        out[key] = picked
+    if out.get("yPlans") == list(input_files.get("yPlans") or []):
+        return None
+    return out
+
+
+def _gate_suite_rel(suite_name: str) -> str | None:
+    """Prefer dedicated verify-gate suite JSON when present."""
+    candidates = [
+        f"y/{suite_name}/{suite_name}_verify_gate.json",
+        f"y/{suite_name}/qoa_web_verify_gate.json",
+        f"y/{suite_name}/{suite_name}_gate.json",
+    ]
+    for rel in candidates:
+        if resolve_repo(rel).is_file():
+            return rel
+    return None
+
+
+def _materialize_suite_override(
+    suite_rel: str, mode: str
+) -> str | None:
+    """Write f/fStart/.runtime/suite_*.json for gate/journey file sets; return rel."""
+    if mode == "gate":
+        suite_name = _suite_name_from_config_rel(suite_rel)
+        gate = _gate_suite_rel(suite_name) if suite_name else None
+        if gate:
+            return gate
+
+    suite = _read_suite_json(suite_rel)
+    if not suite:
+        return None
+    input_files = suite.get("input_files")
+    if not isinstance(input_files, dict):
+        return None
+    filtered = _filter_input_files_for_mode(input_files, mode)
+    if not filtered:
+        return None
+    if filtered == input_files and mode != "journey":
+        return None
+
+    data = dict(suite)
+    data["input_files"] = filtered
+    data["description"] = (
+        f"{suite.get('description') or suite.get('name') or 'suite'} "
+        f"[runtime {mode}]"
+    )
+    FSTART_RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
+    name = f"suite_{mode}_{uuid.uuid4().hex[:8]}.json"
+    # Engine resolves y/… paths; keep runtime suites under fStart/.runtime but
+    # reference them as repo-relative paths the engine can open via FOXYIZ_ROOT.
+    rel = f"f/fStart/.runtime/{name}"
+    path = FSTART_RUNTIME_DIR / name
+    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    return rel
+
+
+def materialize_runtime_fstart(
+    base_config_path: str,
+    *,
+    tags: list[str] | None = None,
+    thread_count: int | None = None,
+    profiles: list[str] | None = None,
+) -> str:
+    """Write f/fStart/.runtime/<id>.json with tag/thread/suite overrides; return rel path."""
+    base = read_fstart_config(base_config_path)
+    data = dict(base)
+    data.setdefault("capture", dict(DEFAULT_CAPTURE))
+    if not isinstance(data.get("capture"), dict):
+        data["capture"] = dict(DEFAULT_CAPTURE)
+    else:
+        cap = dict(DEFAULT_CAPTURE)
+        cap.update({k: v for k, v in data["capture"].items() if v is not None})
+        data["capture"] = cap
+
+    resolved_tags = expand_run_profiles(profiles) if profiles else None
+    if resolved_tags is None and tags is not None:
+        resolved_tags = [t for t in tags if t]
+    if resolved_tags is not None:
+        data["tags"] = resolved_tags
+    if thread_count is not None:
+        data["thread_count"] = max(1, int(thread_count))
+
+    suite_mode = _suite_mode_for_profiles(profiles)
+    if suite_mode in ("gate", "journey"):
+        configs = list(data.get("configs") or [])
+        new_configs: list[str] = []
+        for cfg in configs:
+            override = _materialize_suite_override(str(cfg), suite_mode)
+            new_configs.append(override or str(cfg))
+        if new_configs:
+            data["configs"] = new_configs
+
+    FSTART_RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
+    name = f"run_{uuid.uuid4().hex[:10]}.json"
+    rel = f"f/fStart/.runtime/{name}"
+    path = FSTART_RUNTIME_DIR / name
+    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    return rel
 
 
 def _validate_fstart_path(rel_path: str) -> Path:
     rel = rel_path.replace("\\", "/").strip()
     if not rel.startswith("f/fStart/") or not rel.endswith(".json"):
         raise ValueError("Invalid fStart path")
+    # Allow f/fStart/.runtime/*.json for job overrides
+    if "/archive/" in rel or rel.startswith("f/fStart/archive/"):
+        raise ValueError("Archived fStarts are read-only")
     path = resolve_repo(rel)
     if not path.resolve().is_relative_to(FSTART_DIR.resolve()):
         raise ValueError("Path must be under f/fStart/")
@@ -175,29 +431,22 @@ def write_fstart_config(rel_path: str, data: dict[str, Any]) -> str:
     return rel_path.replace("\\", "/")
 
 
-def default_fstart_template(suite_name: str, variant: str = "verify") -> dict[str, Any]:
+def default_fstart_template(suite_name: str, variant: str = "smoke") -> dict[str, Any]:
     cfg_path = f"y/{suite_name}/{suite_name}.json"
-    tags: list[str] = ["Smoke"] if variant == "smoke" else []
     return {
         "configs": [cfg_path],
         "thread_count": 1,
-        "timeout": 10 if variant != "smoke" else 6,
-        "headless": variant == "smoke_headless",
+        "timeout": 8,
+        "headless": True,
         "debug": False,
-        "tags": tags,
-        "capture": {
-            "image": "on_fail",
-            "video": "off",
-            "video_fps": 2,
-            "subdir": "",
-        },
+        "tags": ["Smoke"],
+        "capture": dict(DEFAULT_CAPTURE),
     }
 
 
-def create_fstart_config(suite_name: str, variant: str = "verify") -> str:
-    """Create f/fStart/{suite}_{variant}.json for a y/ suite."""
-    suffix = variant if variant != "verify" else "verify"
-    filename = f"{suite_name}_{suffix}.json"
+def create_fstart_config(suite_name: str, variant: str = "smoke") -> str:
+    """Create canonical f/fStart/{suite}.json for a y/ suite."""
+    filename = f"{suite_name}.json"
     rel = f"f/fStart/{filename}"
     path = FSTART_DIR / filename
     if path.is_file():
@@ -269,17 +518,27 @@ def list_z_runs(suite_suffix: str | None = None) -> list[dict[str, Any]]:
     for path in sorted(Z_DIR.iterdir(), key=lambda p: p.name, reverse=True):
         if not path.is_dir():
             continue
-        if suite_suffix and not path.name.endswith(f"_{suite_suffix}"):
+        if suite_suffix and suite_suffix not in ("*", "all") and not path.name.endswith(
+            f"_{suite_suffix}"
+        ):
             continue
         results = next(path.glob("*_zResults.csv"), None)
         if not results:
             continue
         agg = plan_stats_from_zresults(results)
         dash = next(path.glob("*_zDash.html"), None)
+        # Folder: YYYYMMDD_HHMMSS_<suite>
+        ts, _, suite_part = path.name.partition("_")
+        # Prefer full timestamp prefix YYYYMMDD_HHMMSS
+        m = re.match(r"^(\d{8}_\d{6})_(.+)$", path.name)
+        timestamp = m.group(1) if m else ts
+        suite_name = m.group(2) if m else suite_part or path.name
         runs.append(
             {
                 "name": path.name,
                 "path": repo_rel(path),
+                "suite": suite_name,
+                "timestamp": timestamp,
                 "passes": agg["passes"],
                 "fails": agg["fails"],
                 "total_plans": agg["total_plans"],
@@ -327,7 +586,42 @@ def get_job(job_id: str) -> Job | None:
     return _jobs.get(job_id)
 
 
-def start_run(config_path: str, step_label: str = "Run") -> Job:
+def start_run(
+    config_path: str,
+    step_label: str = "Run",
+    *,
+    tags: list[str] | None = None,
+    thread_count: int | None = None,
+    profiles: list[str] | None = None,
+) -> Job:
+    """Start one fStart. Optional profiles/tags/thread_count override via runtime JSON.
+
+    Multi-profile + thread_count>1 → one worker per profile (parallel batch).
+    Otherwise → single engine process (OR filter), or engine tag fan-out if
+    thread_count>1 and 2+ raw tags.
+    """
+    clean_profiles = [p for p in (profiles or []) if (p or "").strip()]
+    tc = max(1, int(thread_count)) if thread_count is not None else None
+
+    # Parallel by profile: Smoke+API with thread_count=2 → two jobs
+    if len(clean_profiles) >= 2 and tc is not None and tc > 1:
+        runtime_paths: list[str] = []
+        for prof in clean_profiles:
+            runtime_paths.append(
+                materialize_runtime_fstart(
+                    config_path,
+                    profiles=[prof],
+                    thread_count=1,
+                )
+            )
+        job = start_batch(
+            runtime_paths,
+            parallel=True,
+            step_label=step_label or "Run parallel",
+        )
+        job.config_path = config_path
+        return job
+
     job_id = uuid.uuid4().hex[:10]
     job = Job(job_id=job_id, config_path=config_path, step_label=step_label)
     with _lock:
@@ -336,15 +630,34 @@ def start_run(config_path: str, step_label: str = "Run") -> Job:
     def worker() -> None:
         job.status = "running"
         job.started_at = time.time()
-        cfg = resolve_repo(config_path)
-        if not cfg.is_file():
-            job.status = "failed"
-            job.log_lines.append(f"Config not found: {config_path}")
-            job.finished_at = time.time()
-            return
+        runtime_rel: str | None = None
         try:
+            use_override = tags is not None or tc is not None or bool(clean_profiles)
+            if use_override:
+                runtime_rel = materialize_runtime_fstart(
+                    config_path,
+                    tags=tags,
+                    thread_count=tc,
+                    profiles=clean_profiles or None,
+                )
+                job.log_lines.append(
+                    f"[i] Runtime fStart: {runtime_rel}"
+                    + (f" profiles={clean_profiles}" if clean_profiles else "")
+                    + (f" tags={tags}" if tags and not clean_profiles else "")
+                    + (f" thread_count={tc}" if tc is not None else "")
+                )
+                cfg = resolve_repo(runtime_rel)
+                engine_rel = runtime_rel
+            else:
+                cfg = resolve_repo(config_path)
+                engine_rel = str(Path(config_path).as_posix())
+            if not cfg.is_file():
+                job.status = "failed"
+                job.log_lines.append(f"Config not found: {config_path}")
+                job.finished_at = time.time()
+                return
             proc = _popen_engine(
-                [sys.executable, str(ENGINE), "--config", str(cfg.relative_to(FOXYIZ_ROOT))]
+                [sys.executable, str(ENGINE), "--config", engine_rel]
             )
             _drain_stdout(proc, job)
             proc.wait()
@@ -354,6 +667,11 @@ def start_run(config_path: str, step_label: str = "Run") -> Job:
             job.log_lines.append(f"[ERROR] {exc}")
             job.status = "failed"
         finally:
+            if runtime_rel:
+                try:
+                    resolve_repo(runtime_rel).unlink(missing_ok=True)
+                except OSError:
+                    pass
             job.finished_at = time.time()
 
     threading.Thread(target=worker, daemon=True).start()
@@ -873,35 +1191,55 @@ def capture_brahl_context(prompt: str, config_path: str, documents: list[dict] |
     return {"context_path": ctx_path, "baseline": baseline}
 
 
+def _suite_entry_from_json(path: Path) -> dict[str, Any] | None:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict) or "input_files" not in data:
+        return None
+    name = data.get("name") or path.parent.name
+    rel = repo_rel(path)
+    entry: dict[str, Any] = {
+        "path": rel,
+        "name": name,
+        "url": data.get("url", ""),
+        "description": data.get("description", ""),
+        "version": data.get("version", ""),
+    }
+    try:
+        import ypad as ypad_store
+
+        entry.update(ypad_store.plan_stats(rel))
+    except (FileNotFoundError, OSError):
+        entry.update({"plan_total": 0, "plan_run_y": 0, "plan_run_n": 0, "plan_reuse": 0, "yplans_paths": []})
+    runs = list_z_runs(name)
+    entry["latest_run"] = runs[0]["name"] if runs else None
+    entry["run_count"] = len(runs)
+    return entry
+
+
 def list_suites() -> list[dict[str, Any]]:
+    """One project per y/<suite>/ folder — primary JSON is y/<suite>/<suite>.json."""
     y_dir = Y_DIR
     out: list[dict[str, Any]] = []
-    for path in sorted(y_dir.glob("*/*.json")):
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            continue
-        if not isinstance(data, dict) or "input_files" not in data:
-            continue
-        name = data.get("name") or path.parent.name
-        rel = repo_rel(path)
-        entry: dict[str, Any] = {
-            "path": rel,
-            "name": name,
-            "url": data.get("url", ""),
-            "description": data.get("description", ""),
-            "version": data.get("version", ""),
-        }
-        try:
-            import ypad as ypad_store
-
-            entry.update(ypad_store.plan_stats(rel))
-        except (FileNotFoundError, OSError):
-            entry.update({"plan_total": 0, "plan_run_y": 0, "plan_run_n": 0, "plan_reuse": 0, "yplans_paths": []})
-        runs = list_z_runs(name)
-        entry["latest_run"] = runs[0]["name"] if runs else None
-        entry["run_count"] = len(runs)
-        out.append(entry)
+    if not y_dir.is_dir():
+        return out
+    for suite_dir in sorted(p for p in y_dir.iterdir() if p.is_dir()):
+        primary = suite_dir / f"{suite_dir.name}.json"
+        entry = None
+        if primary.is_file():
+            entry = _suite_entry_from_json(primary)
+        if entry is None:
+            # Scaffold edge case: first suite JSON with input_files in the folder.
+            for path in sorted(suite_dir.glob("*.json")):
+                entry = _suite_entry_from_json(path)
+                if entry:
+                    break
+        if entry:
+            # Canonical name = folder name so topbar keys stay unique.
+            entry["name"] = suite_dir.name
+            out.append(entry)
     return out
 
 
@@ -942,33 +1280,16 @@ def suite_report_context(suite_name: str, project: dict[str, Any] | None = None)
 
 
 def default_fstart_for_suite(suite_name: str) -> str:
-    """Best-match fStart config for a suite."""
-    cfg_path = f"y/{suite_name}/{suite_name}.json"
-    matches: list[str] = []
-    for rel in list_fstart_configs():
-        try:
-            data = json.loads(resolve_repo(rel).read_text(encoding="utf-8"))
-            configs = data.get("configs") or []
-            if cfg_path in configs or any(suite_name in c for c in configs):
-                matches.append(rel)
-        except (OSError, json.JSONDecodeError):
-            continue
-    if not matches:
-        for candidate in (
-            f"f/fStart/{suite_name}_verify.json",
-            f"f/fStart/{suite_name}_smoke.json",
-            f"f/fStart/{suite_name}.json",
-            "f/fStart/Math_verify.json",
-            "f/fStart/Math.json",
-        ):
-            if resolve_repo(candidate).is_file():
-                return candidate
+    """Best-match fStart config for a suite — prefer canonical f/fStart/{suite}.json."""
+    canonical = f"f/fStart/{suite_name}.json"
+    if resolve_repo(canonical).is_file():
+        return canonical
+    matches = list_fstart_for_suite(suite_name)
+    if matches:
+        return matches[0]
+    if resolve_repo("f/fStart/Math.json").is_file():
         return "f/fStart/Math.json"
-    for pref in ("verify", "smoke"):
-        for m in matches:
-            if pref in m.lower():
-                return m
-    return matches[0]
+    return "f/fStart/Math.json"
 
 
 def slug_suite_name(name: str) -> str:
@@ -982,6 +1303,8 @@ def create_ypad_suite(
     app_url: str = "",
     description: str = "",
     brahl_plan: dict[str, Any] | None = None,
+    *,
+    created_by: str = "",
 ) -> dict[str, Any]:
     """Scaffold y/<name>/ with persona y3Designs and plan-driven or smoke plans."""
     import sys
@@ -992,7 +1315,7 @@ def create_ypad_suite(
     from scaffold_app_ypad import write_app_ypad_suite
 
     try:
-        result = write_app_ypad_suite(name, app_url, description, brahl_plan=brahl_plan)
+        result = write_app_ypad_suite(name, app_url, description, brahl_plan=brahl_plan, created_by=created_by)
     except ValueError:
         raise
     safe = result["name"]
@@ -1007,6 +1330,8 @@ def materialize_brahl_plan_for_suite(
     suite_name: str,
     app_url: str = "",
     brahl_plan: dict[str, Any] | None = None,
+    *,
+    created_by: str = "",
 ) -> dict[str, Any]:
     """Rewrite existing suite y1/y2 from an accepted BRAHL plan."""
     import sys
@@ -1016,4 +1341,4 @@ def materialize_brahl_plan_for_suite(
         sys.path.insert(0, str(py_utils))
     from scaffold_app_ypad import materialize_brahl_plan_suite
 
-    return materialize_brahl_plan_suite(suite_name, app_url, brahl_plan)
+    return materialize_brahl_plan_suite(suite_name, app_url, brahl_plan, created_by=created_by)

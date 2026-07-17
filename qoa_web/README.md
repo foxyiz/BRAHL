@@ -1,6 +1,6 @@
 # qoa_web — BRAHL Web App
 
-Local BRAHL web UI over **FoXYiZ**. **Agent handoff:** [MEMORY.md](./MEMORY.md) · **Today:** [../todaysummary.md](../todaysummary.md) · Engine: [../FoXYiZ/README.md](../FoXYiZ/README.md).
+Local BRAHL web UI over **FoXYiZ**. **Agent handoff:** [MEMORY.md](./MEMORY.md) · **Next:** [../NEXT.md](../NEXT.md) · **Today:** [../todaysummary.md](../todaysummary.md).
 
 ```
 KK/
@@ -20,10 +20,10 @@ KK/
 ```powershell
 python qoa_web/run_local.py
 python FoXYiZ\pyUtils\reset_demo_data.py
-python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json
 ```
 
-Configs still use short paths (`f/…`, `y/…`); the API runs the engine with `cwd=FoXYiZ/`.
+fStarts: `f/fStart/{suite}.json` — see [../FoXYiZ/f/fStart_SCOPE.md](../FoXYiZ/f/fStart_SCOPE.md). API runs engine with `cwd=FoXYiZ/`.
 
 ## MCP (Cursor agents)
 

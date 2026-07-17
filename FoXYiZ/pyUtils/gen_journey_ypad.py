@@ -9,12 +9,12 @@ Usage (from KK/):
   python u/gen_journey_ypad.py --target 600
   python u/gen_journey_ypad.py --target 1000
 
-Then run subsets:
-  python f/fEngine2.py --config f/fStart_qoa_web_regression.json
-  python f/fEngine2.py --config f/fStart_qoa_web_regression_nav.json
+Then run via Arena profiles or CLI:
+  python FoXYiZ/f/fEngine2.py --config f/fStart/qoa_web.json
+  # UI/API slices: Arena Run profiles + Threads, or tags in fStart
 
-Verify gate unchanged:
-  python f/fEngine2.py --config f/fStart_qoa_web_verify.json  # tags: Verify only
+Smoke / verify gate:
+  python FoXYiZ/f/fEngine2.py --config f/fStart/qoa_web_live.json
 """
 
 from __future__ import annotations
@@ -45,7 +45,7 @@ LOC = {
     "nav_brahl_btn": "css=button[data-phase='brahl']",
     "nav_atomic77_btn": "css=button[data-phase='atomic77']",
     "nav_cost_btn": "css=button[data-phase='cost']",
-    "nav_promote_btn": "css=button[data-phase='promote']",
+    "nav_promote_btn": "css=button[data-phase='promoter']",
     "avatar_client_bar_btn": "css=.avatar-btn[data-avatar='client']",
     "avatar_hitl_bar_btn": "css=.avatar-btn[data-avatar='consultant']",
     "avatar_networker_bar_btn": "css=.avatar-btn[data-avatar='networker']",
@@ -57,7 +57,7 @@ LOC = {
     "loop_heading_locator": "css=#panel-loop h2",
     "brahl_heading_locator": "css=#panel-brahl h2",
     "atomic77_heading_locator": "css=#panel-atomic77 h2",
-    "promote_heading_locator": "css=#panel-promote h2",
+    "promote_heading_locator": "css=#panel-promoter h2",
     "xp_heading_locator": "css=#cost-xp-view h2",
     "cost_project_name_locator": "css=#cost-project-name",
     "chat_input_locator": "css=#chat-input",
@@ -127,7 +127,7 @@ EXPECTED = {
     "loop_heading": "Loop — BRAHL cycle (FoXYiZ)",
     "brahl_heading": "BRAHL — cycle report",
     "atomic77_heading": "Atomic 77",
-    "promote_heading": "Promote the arena",
+    "promote_heading": "Promoter",
     "gonogo_heading": "Launch readiness — Go / No-Go",
     "hunt_heading": "Hunt evidence",
     "version_heading": "App versions & launch compare",
@@ -298,7 +298,7 @@ class JourneyBuilder:
             ("brahl", "nav_brahl_btn", "Nav", "BRAHL"),
             ("atomic77", "nav_atomic77_btn", "Nav", "Atomic77"),
             ("cost", "nav_cost_btn", "Nav", "Cost"),
-            ("promote", "nav_promote_btn", "Nav", "Promote"),
+            ("promote", "nav_promote_btn", "Nav", "Promoter"),
         ]
         brahl_avatars = {"client", "consultant"}
         networker_only = {"promote", "atomic77", "cost"}

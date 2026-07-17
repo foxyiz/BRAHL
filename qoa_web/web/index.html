@@ -23,6 +23,7 @@
         <span class="topbar-project-label">Projects</span>
         <select id="topbar-project-select" aria-label="Switch project"></select>
         <button type="button" id="btn-topbar-add-project" class="icon-btn topbar-add-btn" title="New project">+</button>
+        <span id="topbar-project-switching" class="topbar-project-switching" hidden aria-live="polite">Switching…</span>
       </div>
       <div id="topbar-role" class="topbar-role" hidden>
         <label class="topbar-role-label" for="topbar-role-select">Role</label>
@@ -64,6 +65,7 @@
           </button>
           <div id="user-menu-dropdown" class="user-menu-dropdown" hidden role="menu">
             <a href="/login" class="user-menu-item" role="menuitem" id="user-menu-profile">Account</a>
+            <button type="button" class="user-menu-item" role="menuitem" data-user-action="account-roles">Role guide</button>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="promoter">Promoter</button>
             <button type="button" class="user-menu-item" role="menuitem" data-user-action="cost">Wallet ($)</button>
             <div class="user-menu-divider" role="separator"></div>
@@ -455,7 +457,9 @@
               <div class="build-header-row">
                 <h2 id="build-panel-title">Build</h2>
                 <button type="button" id="btn-build-add-context" class="icon-btn" title="New project">+</button>
+                <button type="button" id="ypad-toggle-edit" class="secondary build-edit-top" title="Edit yPAD CSV">Edit</button>
               </div>
+              <p class="blurb build-one-liner">Shape the challenge yPAD — tests, steps, and data — then Run.</p>
               <p id="hunter-hero-tagline" class="hunter-hero-tagline avatar-consultant-only" hidden>
                 <strong>There are ships sinking. Find and kill the bugs.</strong>
                 Human (QA) + Automation + AI — record evidence, submit findings, get paid.
@@ -475,10 +479,6 @@
               <div id="build-strategy-summary" class="build-strategy-summary" hidden>
                 <p class="empty-hint" id="build-strategy-empty" hidden></p>
                 <div id="build-strategy-body" class="build-strategy-body" hidden></div>
-              </div>
-              <div class="phase-action-bar build-tool-actions">
-                <button type="button" id="btn-improve-ypads" class="secondary">Improve yPADs</button>
-                <button type="button" id="btn-goto-coverage" class="secondary">Test coverage</button>
               </div>
             </section>
 
@@ -521,15 +521,37 @@
                 <section id="hunt-evidence" class="hunt-evidence">
                   <h3 class="section-sub">Hunt evidence</h3>
                   <p class="blurb">
-                    Record what you do in the app — screen, steps, screenshots, and voice notes — so Creators see
+                    Capture what you do in the app — one menu for every evidence type — so Creators see
                     reproducible findings and can pay for real coverage.
                   </p>
                   <div class="hunt-recorder-bar">
-                    <button type="button" id="btn-hunt-start" class="primary hunt-record-btn" title="Share your screen or this tab">● Record hunt</button>
+                    <div class="evidence-menu-wrap">
+                      <button type="button" id="btn-add-evidence" class="primary evidence-menu-btn" aria-haspopup="true" aria-expanded="false">+ Add evidence ▾</button>
+                      <div id="evidence-menu" class="evidence-menu" hidden role="menu" aria-label="Add evidence">
+                        <button type="button" class="evidence-menu-item" data-eve="screen" role="menuitem">🎥 Screen recording</button>
+                        <button type="button" class="evidence-menu-item" data-eve="audio" role="menuitem">🎤 Audio note</button>
+                        <button type="button" class="evidence-menu-item" data-eve="screenshot" role="menuitem">🖼️ Screenshot / image</button>
+                        <button type="button" class="evidence-menu-item" data-eve="file" role="menuitem">📎 Upload video / document</button>
+                        <button type="button" class="evidence-menu-item" data-eve="url" role="menuitem">🔗 URL / YouTube link</button>
+                        <button type="button" class="evidence-menu-item" data-eve="note" role="menuitem">📝 Text note</button>
+                      </div>
+                    </div>
                     <button type="button" id="btn-hunt-stop" class="secondary" hidden>Stop recording</button>
-                    <button type="button" id="btn-hunt-audio" class="secondary" title="Voice note only">🎤 Audio note</button>
                     <span id="hunt-timer" class="hunt-timer" hidden>00:00</span>
                     <span id="hunt-rec-status" class="hunt-rec-status"></span>
+                  </div>
+                  <input type="file" id="hunt-screenshot-file" accept="image/*" hidden />
+                  <input type="file" id="hunt-file-upload" accept="video/*,.pdf,.doc,.docx,.txt,.md,.csv,.json" hidden />
+                  <div id="evidence-url-form" class="evidence-inline-form" hidden>
+                    <input type="url" id="evidence-url-input" placeholder="https://… or YouTube link" />
+                    <input type="text" id="evidence-url-title" placeholder="Title (optional)" maxlength="120" />
+                    <button type="button" id="evidence-url-save" class="secondary">Save link</button>
+                    <button type="button" id="evidence-url-cancel" class="secondary">Cancel</button>
+                  </div>
+                  <div id="evidence-note-form" class="evidence-inline-form" hidden>
+                    <textarea id="evidence-note-input" rows="2" placeholder="Text note…"></textarea>
+                    <button type="button" id="evidence-note-save" class="secondary">Save note</button>
+                    <button type="button" id="evidence-note-cancel" class="secondary">Cancel</button>
                   </div>
                   <video id="hunt-preview" class="hunt-preview" hidden controls playsinline></video>
                   <div class="hunt-issue-compose">
@@ -559,13 +581,16 @@
                       <textarea id="hunt-issue-repro" rows="3" placeholder="1. Open …&#10;2. Click …&#10;3. See …"></textarea>
                     </div>
                     <div class="form-row hunt-issue-actions">
-                      <button type="button" id="btn-hunt-screenshot" class="secondary">Add screenshot</button>
-                      <input type="file" id="hunt-screenshot-file" accept="image/*" hidden />
                       <button type="button" id="btn-hunt-add-issue" class="secondary">Add to hunt log</button>
                     </div>
                   </div>
                   <ul id="hunt-issue-list" class="hunt-issue-list" aria-live="polite"></ul>
-                  <p id="hunt-evidence-hint" class="hint">Recording uses your browser (screen/tab + optional mic). Artifacts upload when you submit your QA Hunter report.</p>
+                  <p id="hunt-evidence-hint" class="hint">Recording uses your browser (screen/tab + optional mic). Every item lands in the project evidence library below as soon as it's captured.</p>
+                  <div class="hunt-evidence-library">
+                    <h4 class="section-sub">Evidence library</h4>
+                    <input type="search" id="hunt-evidence-search" class="evidence-search" placeholder="Search evidence — kind, title, author…" />
+                    <ul id="hunt-evidence-list" class="hunt-evidence-list" aria-live="polite"></ul>
+                  </div>
                 </section>
 
                 <h3 class="section-sub">Your deliverables</h3>
@@ -610,36 +635,35 @@
                   <button type="button" class="ypad-tab" data-ypad-tab="env" role="tab">Environment example</button>
                 </div>
                 <div class="ypad-toolbar">
+                  <div id="ypad-source-chips" class="ypad-source-chips" role="group" aria-label="yPAD source file" hidden></div>
                   <div id="ypad-coverage-chips" class="ypad-coverage-chips" role="group" aria-label="Coverage filter">
                     <button type="button" class="ypad-cov-chip active" data-ypad-cov="all">All</button>
                     <button type="button" class="ypad-cov-chip" data-ypad-cov="auto">Automated</button>
                     <button type="button" class="ypad-cov-chip" data-ypad-cov="manual">Manual</button>
                   </div>
-                  <input type="search" id="ypad-filter" class="ypad-filter" placeholder="Filter rows…" />
+                  <input type="search" id="ypad-filter" class="ypad-filter" placeholder="Search plans, tags, steps…" />
                   <label class="checkbox-label ypad-plans-only" id="ypad-run-y-wrap" hidden>
                     <input type="checkbox" id="ypad-run-y-only" />
                     Automated only (Run=Y)
                   </label>
-                  <div id="ypad-designs-toolbar" class="ypad-designs-toolbar" hidden>
-                    <label class="ypad-design-col-mode-label">
-                      Personas
-                      <select id="ypad-design-col-mode" class="ypad-design-col-mode">
-                        <option value="all">All personas (D1–D9)</option>
-                        <option value="active">Active profile only</option>
-                      </select>
-                    </label>
-                    <span class="ypad-design-group-label">Show:</span>
-                    <button type="button" class="ypad-design-group-chip active" data-design-group="">All rows</button>
-                    <button type="button" class="ypad-design-group-chip" data-design-group="url">URLs</button>
-                    <button type="button" class="ypad-design-group-chip" data-design-group="locator">Locators</button>
-                    <button type="button" class="ypad-design-group-chip" data-design-group="expected">Expected</button>
-                    <button type="button" class="ypad-design-group-chip" data-design-group="credential">Credentials</button>
-                  </div>
-                  <button type="button" id="ypad-toggle-edit" class="secondary">Edit CSV</button>
                   <button type="button" id="ypad-save" class="primary" hidden>Save</button>
                   <span id="ypad-meta" class="ypad-meta"></span>
                 </div>
-                <div id="ypad-table-wrap" class="ypad-table-wrap">
+                <div id="ypad-versions" class="ypad-versions">
+                  <div class="ypad-versions-head">
+                    <strong>yPAD versions</strong>
+                    <button type="button" id="btn-ypad-snapshot" class="secondary">Snapshot</button>
+                  </div>
+                  <ul id="ypad-versions-list" class="ypad-versions-list"></ul>
+                  <div id="ypad-version-diff" class="ypad-version-diff" hidden></div>
+                </div>
+                <div id="ypad-table-wrap" class="ypad-table-wrap" hidden>
+                  <div class="ypad-table-controls">
+                    <button type="button" id="ypad-show-table" class="linkish">Show table</button>
+                    <span id="ypad-page-meta" class="ypad-page-meta"></span>
+                    <button type="button" id="ypad-page-prev" class="secondary" hidden>Prev</button>
+                    <button type="button" id="ypad-page-next" class="secondary" hidden>Next</button>
+                  </div>
                   <table id="ypad-table" class="ypad-table">
                     <thead id="ypad-thead"></thead>
                     <tbody id="ypad-tbody"></tbody>
@@ -775,32 +799,38 @@
       <div id="run-content">
         <h2>Run — FoXYiZ fEngine2</h2>
         <p id="run-project-scope" class="phase-scope"></p>
-        <p class="blurb">FoXYiZ only — no AI. Select fStarts; raise <code>thread_count</code> with multiple <code>tags</code> for parallel workers.</p>
+        <p class="blurb">FoXYiZ only — no AI. One fStart per suite; pick Run profiles. Smoke = gate · UI/API = journey slices when the suite has journey CSVs.</p>
         <div class="form-row run-suite-row">
           <label>Suite</label>
           <span id="run-suite-display" class="run-suite-readonly">—</span>
           <span class="run-suite-hint">Switch via Projects in the top bar.</span>
         </div>
         <div class="fstart-toolbar">
-          <span class="fstart-toolbar-label">fStarts</span>
-          <div id="fstart-chip-row" class="fstart-chip-row" role="group" aria-label="fStart configs"></div>
+          <span class="fstart-toolbar-label">fStart</span>
+          <div id="fstart-chip-row" class="fstart-chip-row" role="group" aria-label="fStart config"></div>
           <select id="config-select" class="fstart-select-hidden" aria-label="fStart config" hidden></select>
           <div class="fstart-toolbar-actions">
             <button type="button" id="btn-fstart-edit" class="secondary fstart-action-btn">Edit</button>
-            <button type="button" id="btn-fstart-new" class="secondary fstart-action-btn">New</button>
           </div>
         </div>
-        <p class="hint fstart-chip-hint">Click to select · Ctrl/Cmd+click for 2+ · <strong>Run parallel</strong> for tag fan-out</p>
+        <div class="run-profile-block">
+          <span class="fstart-toolbar-label">Run profiles</span>
+          <div id="run-profile-row" class="fstart-chip-row run-profile-row" role="group" aria-label="Run profiles"></div>
+          <label class="run-thread-label" for="run-thread-count">Threads
+            <input type="number" id="run-thread-count" min="1" max="8" value="1" title="1 = OR filter · 2+ with multiple profiles = parallel" />
+          </label>
+        </div>
+        <p class="hint fstart-chip-hint">Smoke → verify gate. UI/API → journey library tags (replaces archived journey fStarts). Threads &gt; 1 with 2+ profiles runs each profile in parallel — one Run derives sequential vs. parallel automatically.</p>
         <p id="fstart-fanout-hint" class="hint fstart-fanout-hint" hidden></p>
-        <p id="fstart-empty-hint" class="hint" hidden>No fStart for this project — click <strong>New</strong>.</p>
+        <p id="fstart-empty-hint" class="hint" hidden>No fStart yet — one is created automatically for this project.</p>
         <div class="phase-action-bar run-actions-row">
           <button type="button" id="btn-run" class="primary">Run</button>
-          <button type="button" id="btn-run-parallel" class="secondary" disabled title="Select 2+ fStarts or one with tag fan-out">Run parallel</button>
           <div id="run-post-actions" class="run-post-actions" hidden>
             <a id="run-zdash-link" href="#" target="_blank" class="secondary link-btn">View zDash</a>
             <a id="run-batch-zdash-link" href="#" target="_blank" class="secondary link-btn" hidden>View batch zDash</a>
           </div>
         </div>
+        <div id="run-batch-rows" class="run-batch-rows" hidden></div>
         <div class="progress-wrap"><div id="progress-bar" class="progress-bar"></div></div>
         <pre id="run-log" class="log"></pre>
       </div>
@@ -815,9 +845,9 @@
         </div>
       </div>
       <div id="analyze-content">
-        <h2>Analyze — z/</h2>
+        <h2>Analyze — z-result review</h2>
         <p id="analyze-project-scope" class="phase-scope"></p>
-        <p class="blurb">Failures from z/ results (Input · Expected · Output). AI RCA is optional when AI is on.</p>
+        <p class="blurb">Review what a verify run produced in z/ — pass/fail per plan, and the evidence for each failure (Input · Expected · Output). AI root-cause is optional when AI is on.</p>
         <div class="phase-action-bar">
           <button type="button" id="btn-refresh-runs">Refresh runs</button>
           <button type="button" id="btn-analyze-ai" class="secondary" hidden>AI root-cause</button>
@@ -855,9 +885,9 @@
         </div>
       </div>
       <div id="heal-content">
-        <h2>Heal — fix from Analyze</h2>
+        <h2>Heal — yPAD changes from Analyze</h2>
         <p id="heal-project-scope" class="phase-scope"></p>
-        <p class="blurb">Change Input / Expected / steps in yPAD on Build, then Rerun. Optional AI auto-heal can propose CSV patches you Apply.</p>
+        <p class="blurb">Fix failures found on Analyze by editing Input / Expected / steps in yPAD, then Rerun to confirm. Optional AI auto-heal <strong>proposes</strong> CSV patches — nothing is written until you review and <strong>Apply</strong> them (Run flags are never touched here).</p>
         <p id="heal-run-hint" class="hint"></p>
         <div class="phase-action-bar">
           <button type="button" id="btn-heal-edit-ypad" class="primary">Edit yPAD on Build</button>
@@ -884,8 +914,8 @@
         </div>
         <div id="heal-ai-result" class="ai-panel" hidden></div>
         <details class="phase-advanced">
-          <summary>Loop prep — shrink / restore y1Plans</summary>
-          <p class="hint">Python ops for Loop (not AI). Shrink Run=Y to last-run failures; restore before Verify.</p>
+          <summary>Loop prep — shrink / restore y1Plans (not AI Apply)</summary>
+          <p class="hint">Shrink sets Run=Y only on last-run failures (others → Run=N). Restore brings Run=Y back before Verify. Do not confuse with Apply to yPAD.</p>
           <div class="phase-action-bar">
             <button type="button" id="btn-shrink-plans" class="secondary">Shrink to failures</button>
             <button type="button" id="btn-restore-plans" class="secondary">Restore all Run=Y</button>
@@ -904,13 +934,14 @@
         </div>
       </div>
       <div id="loop-content">
-        <h2>Loop — BRAHL cycle</h2>
+        <h2>Loop — rerun · heal · verify history</h2>
         <p class="blurb">
           This is your <strong>QA agent</strong> loop (FoXYiZ engine only — no AI).
           Each time: Run → Analyze → Heal. After the last time, optionally <strong>Verify</strong> the full automated set, then open the report on <strong>BRAHL</strong>.
+          Every step below is logged to the cycle history so you can trace exactly which run/version each rerun, heal, and verify happened against.
         </p>
         <div id="loop-built-summary" class="loop-built-summary">
-          <p class="loop-built-lead"><strong>Built</strong> — from your project</p>
+          <p class="loop-built-lead"><strong>Provenance</strong> — suite, latest run, and yPAD version this Loop uses</p>
           <p id="loop-built-purpose" class="loop-built-purpose">—</p>
           <p id="loop-built-meta" class="hint">—</p>
           <button type="button" id="btn-loop-open-build" class="linkish">Open Build</button>
@@ -938,9 +969,53 @@
         </p>
         <textarea id="cycle-prompt" hidden readonly aria-hidden="true"></textarea>
         <textarea id="cycle-docs" hidden readonly aria-hidden="true"></textarea>
-        <h3 class="section-sub">Cycle history</h3>
+        <h3 class="section-sub">Cycle history — rerun / heal / verify log</h3>
+        <p class="hint">Every Run, Shrink, Heal, Restore, and Verify on this project, newest first, each tagged with the run it happened against.</p>
         <ul id="cycle-history" class="cycle-history"></ul>
         <pre id="loop-log" class="log"></pre>
+
+        <details id="schedules-section" class="schedules-section">
+          <summary class="section-sub">Schedules (beta) — automated Verify, disabled by default</summary>
+          <p class="hint">
+            Runs the same job runner as the <strong>Run</strong> button on a timer — no AI in scheduled Verify/Run.
+            Schedules start <strong>disabled</strong>; turn one on only when you want it to run unattended.
+          </p>
+          <ul id="schedules-list" class="schedules-list"></ul>
+          <form id="schedule-create-form" class="schedule-create-form">
+            <div class="schedule-form-row">
+              <label class="schedule-field">
+                <span>Profiles</span>
+                <div id="schedule-profile-row" class="fstart-chip-row"></div>
+              </label>
+              <label class="schedule-field">
+                <span>Threads</span>
+                <input type="number" id="schedule-thread-count" min="1" max="8" value="1" />
+              </label>
+            </div>
+            <div class="schedule-form-row">
+              <label class="schedule-field">
+                <span>Interval</span>
+                <select id="schedule-interval">
+                  <option value="daily" selected>Daily</option>
+                  <option value="hourly">Hourly</option>
+                </select>
+              </label>
+              <label class="schedule-field">
+                <span>Runtime</span>
+                <select id="schedule-runtime">
+                  <option value="local" selected>Local FoXYiZ — no runtime charge</option>
+                  <option value="cloud">Cloud — bills compute</option>
+                </select>
+              </label>
+            </div>
+            <p id="schedule-cost-estimate" class="hint" hidden></p>
+            <label class="checkbox-label">
+              <input type="checkbox" id="schedule-enabled" />
+              Enable immediately (otherwise saved disabled)
+            </label>
+            <button type="submit" class="secondary">Add schedule</button>
+          </form>
+        </details>
       </div>
     </section>
 
@@ -999,11 +1074,63 @@
           <div id="gonogo-verdict" class="gonogo-verdict gonogo-pending" hidden></div>
         </div>
 
-        <section id="brahl-team-workspace" class="brahl-team-workspace" aria-labelledby="brahl-team-heading">
-          <div class="brahl-team-head">
-            <h3 id="brahl-team-heading" class="section-sub">Team workspace — keep BRAHLing</h3>
-            <p class="blurb">Creator + QA Hunters discuss needs, assign work, and share sources of truth. Health reports stay in Reports below.</p>
+        <div class="brahl-layout">
+          <aside class="brahl-sidebar">
+            <h3 class="section-sub">Reports</h3>
+            <div id="brahl-report-tabs" class="brahl-report-tabs" role="tablist" aria-label="Report source">
+              <button type="button" class="brahl-report-tab active" data-tab="automation" role="tab" aria-selected="true">Automation</button>
+              <button type="button" class="brahl-report-tab" data-tab="human" role="tab" aria-selected="false">Human verified</button>
+            </div>
+            <ul id="brahl-report-list" class="brahl-report-list"></ul>
+            <button type="button" id="btn-link-run-report" class="secondary">+ Link Verify run</button>
+          </aside>
+          <div class="brahl-main">
+            <div class="brahl-report-header">
+              <span id="brahl-report-source" class="source-badge"></span>
+              <strong id="brahl-report-title"></strong>
+              <span id="brahl-report-status-badge" class="report-status-badge" hidden></span>
+              <button type="button" id="brahl-report-archive-toggle" class="link-btn sm" hidden>Archive</button>
+              <a id="brahl-report-open" href="#" target="_blank" class="report-link" hidden>Open raw</a>
+            </div>
+            <div id="brahl-report-summary" class="brahl-report-summary" hidden>
+              <span id="brahl-health-badge" class="health-badge">—</span>
+              <span class="brahl-stat"><strong id="brahl-stat-pass">0</strong> passed</span>
+              <span class="brahl-stat"><strong id="brahl-stat-fail">0</strong> failed</span>
+              <span class="brahl-stat"><strong id="brahl-stat-total">0</strong> plans</span>
+              <span class="brahl-stat" id="brahl-stat-time-wrap" hidden>~<strong id="brahl-stat-time">0</strong>s</span>
+              <a id="brahl-zdash-link" href="#" target="_blank" class="secondary link-btn" hidden>View zDash</a>
+            </div>
+            <div id="brahl-hunt-artifacts" class="brahl-hunt-artifacts" hidden></div>
+            <div id="brahl-zdash-embed-wrap" class="brahl-zdash-embed-wrap" hidden>
+              <h4 class="section-sub">zDash — embedded evidence</h4>
+              <iframe id="brahl-zdash-embed" class="brahl-zdash-embed" title="zDash evidence" loading="lazy"></iframe>
+            </div>
+            <div id="brahl-evidence-wrap" class="brahl-evidence-wrap" hidden>
+              <h4 class="section-sub">Report evidence</h4>
+              <ul id="brahl-report-evidence-list" class="hunt-evidence-list"></ul>
+            </div>
+            <details id="brahl-report-markdown-details" class="brahl-report-markdown-details">
+              <summary>Full markdown report</summary>
+              <article id="brahl-report-body" class="brahl-report-body empty-hint">No report selected.</article>
+            </details>
+            <div id="brahl-ai-off-hint" class="manual-build" hidden>
+              <p class="hint">AI off — view uploaded <strong>Automation + AI</strong> reports. QA Hunters run FoXYiZ locally and upload BRAHL reports to the server.</p>
+            </div>
+            <details id="brahl-ai-chat" class="brahl-chat-details">
+              <summary>Ask about this report (optional)</summary>
+              <p class="hint">Answers are pulled from the report above — summary, failures, timing, loop steps.</p>
+              <div id="brahl-chat-thread" class="chat-thread brahl-chat" aria-live="polite"></div>
+              <form id="brahl-chat-form" class="chat-form">
+                <input type="text" id="brahl-chat-input" placeholder="e.g. summary, failures, how long did tests take…" autocomplete="off" />
+                <button type="submit" class="primary">Ask</button>
+              </form>
+            </details>
           </div>
+        </div>
+
+        <details id="brahl-team-workspace" class="brahl-team-workspace" aria-labelledby="brahl-team-heading">
+          <summary id="brahl-team-heading" class="section-sub">Team workspace — keep BRAHLing</summary>
+          <p class="blurb">Creator + QA Hunters discuss needs, assign work, and share sources of truth. Health reports stay in Reports above.</p>
           <div class="brahl-team-grid">
             <div class="brahl-team-col">
               <h4 class="brahl-team-col-title">Members</h4>
@@ -1025,7 +1152,9 @@
               </form>
             </div>
             <div class="brahl-team-col">
-              <h4 class="brahl-team-col-title">Project library</h4>
+              <h4 class="brahl-team-col-title">Project library — evidence index</h4>
+              <p class="hint">Every finding, recording, link, and upload from QA Hunter and Build — one searchable index.</p>
+              <input type="search" id="brahl-team-lib-search" class="evidence-search" placeholder="Search evidence — kind, title, author…" />
               <ul id="brahl-team-library" class="brahl-team-library"></ul>
               <form id="brahl-team-library-form" class="brahl-team-library-form">
                 <input type="text" id="brahl-team-lib-label" placeholder="Label" maxlength="80" autocomplete="off" />
@@ -1038,44 +1167,7 @@
               </label>
             </div>
           </div>
-        </section>
-
-        <div class="brahl-layout">
-          <aside class="brahl-sidebar">
-            <h3 class="section-sub">Reports</h3>
-            <ul id="brahl-report-list" class="brahl-report-list"></ul>
-            <button type="button" id="btn-link-run-report" class="secondary">+ Link Verify run</button>
-          </aside>
-          <div class="brahl-main">
-            <div class="brahl-report-header">
-              <span id="brahl-report-source" class="source-badge"></span>
-              <strong id="brahl-report-title"></strong>
-              <a id="brahl-report-open" href="#" target="_blank" class="report-link" hidden>Open raw</a>
-            </div>
-            <div id="brahl-report-summary" class="brahl-report-summary" hidden>
-              <span id="brahl-health-badge" class="health-badge">—</span>
-              <span class="brahl-stat"><strong id="brahl-stat-pass">0</strong> passed</span>
-              <span class="brahl-stat"><strong id="brahl-stat-fail">0</strong> failed</span>
-              <span class="brahl-stat"><strong id="brahl-stat-total">0</strong> plans</span>
-              <span class="brahl-stat" id="brahl-stat-time-wrap" hidden>~<strong id="brahl-stat-time">0</strong>s</span>
-              <a id="brahl-zdash-link" href="#" target="_blank" class="secondary link-btn" hidden>View zDash</a>
-            </div>
-            <div id="brahl-hunt-artifacts" class="brahl-hunt-artifacts" hidden></div>
-            <article id="brahl-report-body" class="brahl-report-body empty-hint">No report selected.</article>
-            <div id="brahl-ai-off-hint" class="manual-build" hidden>
-              <p class="hint">AI off — view uploaded <strong>Automation + AI</strong> reports. QA Hunters run FoXYiZ locally and upload BRAHL reports to the server.</p>
-            </div>
-            <details id="brahl-ai-chat" class="brahl-chat-details">
-              <summary>Ask about this report (optional)</summary>
-              <p class="hint">Answers are pulled from the report above — summary, failures, timing, loop steps.</p>
-              <div id="brahl-chat-thread" class="chat-thread brahl-chat" aria-live="polite"></div>
-              <form id="brahl-chat-form" class="chat-form">
-                <input type="text" id="brahl-chat-input" placeholder="e.g. summary, failures, how long did tests take…" autocomplete="off" />
-                <button type="submit" class="primary">Ask</button>
-              </form>
-            </details>
-          </div>
-        </div>
+        </details>
       </div>
     </section>
 
@@ -1362,6 +1454,7 @@
   <script src="/assets/profiles.js"></script>
   <script src="/assets/invite-gate.js"></script>
   <script src="/assets/arena-labels.js"></script>
+  <script src="/assets/role-copy.js"></script>
   <script src="/assets/theme.js"></script>
   <script src="/assets/nalanda.js"></script>
   <script src="/assets/app.js"></script>

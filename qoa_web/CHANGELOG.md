@@ -1,5 +1,19 @@
 # qoa_web Changelog
 
+## 1.4.0 — 2026-07-16
+
+**One fStart per suite · Run profiles · portal sync**
+
+### Features
+- Canonical fStarts: `FoXYiZ/f/fStart/{suite}.json` (per-tag clones → `archive/`)
+- Arena Run profiles (Smoke→Manual) + Threads; `POST /api/jobs` `profiles` / `thread_count`
+- Suites = one per `y/<folder>/`; BRAHL auto-register after Run; cross-suite register blocked
+- Account **Role guide** (`role-copy.js`); Atomic FAQ when AI off
+- Heal Apply vs Shrink; run history by suite; Loop green early-exit
+
+### Docs
+- `NEXT.md` · `todaysummary.md` · `f/fStart_SCOPE.md` · lean MEMORY / HANDOFF
+
 ## 1.3.0 — 2026-07-05
 
 **Invite GTM + leaner UX**

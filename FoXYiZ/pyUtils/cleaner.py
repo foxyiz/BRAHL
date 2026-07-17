@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-Archive ephemeral KK artifacts to archive/cleanup/<timestamp>/.
+Archive ephemeral FoXYiZ z/ runs (and probe leftovers) outside KK.
 
-Keeps the working tree small for humans and AI context. Safe to delete the entire
-archive/cleanup/ folder when you need disk space.
+Default destination: <FXYZ>/archive/cleanup/<timestamp>/  (sibling of KK/)
+
+Keeps the KK working tree small for humans and AI context. Safe to delete the
+entire archive/cleanup/ folder when you need disk space.
 
 Does NOT modify f/fEngine2.py, x/xActions.py, or any engine/action code.
 
 Usage (from KK/):
-  python u/cleaner.py              # dry-run — list what would move
-  python u/cleaner.py --apply      # move files into archive/cleanup/
-  python u/cleaner.py --apply --purge-archive   # also delete archive/cleanup/* older than 30 days
+  python FoXYiZ/pyUtils/cleaner.py              # dry-run — list what would move
+  python FoXYiZ/pyUtils/cleaner.py --apply      # move into ../archive/cleanup/
+  python FoXYiZ/pyUtils/cleaner.py --apply --purge-archive
 """
 
 from __future__ import annotations
@@ -21,7 +23,7 @@ import shutil
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from _paths import ARCHIVE_CLEANUP, FOXYIZ_ROOT, KK_ROOT, Y_VISUALIZATION_HTML, Z_DEFECTS_DASHBOARD_HTML, Z_DIR
+from _paths import ARCHIVE_CLEANUP, FOXYIZ_ROOT, FXYZ_ROOT, KK_ROOT, Y_VISUALIZATION_HTML, Z_DEFECTS_DASHBOARD_HTML, Z_DIR
 
 # Files/dirs under z/ that are kept in place (engine templates)
 Z_KEEP_NAMES = frozenset(
@@ -42,13 +44,12 @@ ROOT_PROBE_GLOBS = ("*_probe.json", "*_probe.py")
 
 
 def _rel(path: Path) -> str:
-    try:
+    for root in (FOXYIZ_ROOT, KK_ROOT, FXYZ_ROOT):
         try:
-            return str(path.relative_to(FOXYIZ_ROOT)).replace("\\", "/")
+            return str(path.relative_to(root)).replace("\\", "/")
         except ValueError:
-            return str(path.relative_to(KK_ROOT)).replace("\\", "/")
-    except ValueError:
-        return str(path)
+            continue
+    return str(path)
 
 
 def _is_dated_run_dir(name: str) -> bool:
@@ -133,14 +134,16 @@ def purge_old_archives(days: int, dry_run: bool) -> list[str]:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Archive ephemeral KK files to archive/cleanup/")
+    ap = argparse.ArgumentParser(
+        description="Archive ephemeral z/ runs to <FXYZ>/archive/cleanup/ (outside KK)"
+    )
     ap.add_argument("--apply", action="store_true", help="Move files (default is dry-run)")
     ap.add_argument("--docs", action="store_true", help="Also archive deprecated doc stubs")
     ap.add_argument("--viz", action="store_true", help="Also archive u/*.html utility reports")
     ap.add_argument(
         "--purge-archive",
         action="store_true",
-        help="Delete archive/cleanup/* folders older than --purge-days (use with --apply)",
+        help="Delete <FXYZ>/archive/cleanup/* folders older than --purge-days (use with --apply)",
     )
     ap.add_argument("--purge-days", type=int, default=30, help="Age for --purge-archive (default 30)")
     args = ap.parse_args()
@@ -178,7 +181,7 @@ def main() -> int:
             print("[cleaner] No old archive folders to purge.")
 
     if dry_run and targets:
-        print("\nRun with --apply to move files. Delete archive/cleanup/ anytime to free disk.")
+        print("\nRun with --apply to move files. Delete ../archive/cleanup/ anytime to free disk.")
 
     return 0
 

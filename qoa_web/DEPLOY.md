@@ -78,6 +78,6 @@ docker run -d -p 8765:8765 \
 2. `/welcome` → invite / sign-in  
 3. `/app` with project → Build / Run  
 4. Confirm Run console streams live while the engine runs  
-5. Optional smoke: `python FoXYiZ/f/fEngine2.py --config FoXYiZ/f/fStart_…json` from repo root cwd as documented for local runs  
+5. Optional smoke: `python FoXYiZ/f/fEngine2.py --config f/fStart/qoa_web_live.json` from `KK/`
 
 Spelling: **BRAHL** · **FoXYiZ**.

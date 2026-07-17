@@ -1,9 +1,11 @@
-# BRAHL — what’s next (go live)
+# BRAHL — go-live checklist (prod)
+
+**Local resume (BRAHL / Arena / fStart):** use **[NEXT.md](NEXT.md)** — not this file.
 
 **Prod:** https://brahl.qaonair.com · **Repo:** https://github.com/foxyiz/BRAHL (`main`) · deploy ~6h after push  
 **Local:** http://127.0.0.1:8765 · Spelling: **BRAHL** · **FoXYiZ**
 
-Right now guests can use BRAHL without login (`/app?demo=1`). Turn that off only after Google auth works.
+Guests can use BRAHL without login (`/app?demo=1`). Turn that off only after Google auth works.
 
 ---
 

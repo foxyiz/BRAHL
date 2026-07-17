@@ -45,7 +45,7 @@ PPersona_P7_Journey,2,Reload profile URL,xUI,xNavigate,profile_url,,,y
 PPersona_P7_Journey,3,Wait for profile,xTime,xTimeWait,4,,,y
 PPersona_P7_Journey,4,Verify P7 chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
 PPersona_P7_Journey,5,Click Build,xUI,xClick,nav_build_btn,,,y
-PPersona_P7_Journey,6,Verify yPAD,xUI,xGetText,ypad_explorer_locator,,Y Plans,y
+PPersona_P7_Journey,6,Verify yPAD,xUI,xGetText,ypad_explorer_locator,,Tests,y
 PPersona_P8_Journey,1,P8 persona ready,xReuse,PReuse_PersonaReady,,,,y
 PPersona_P8_Journey,2,Click Build,xUI,xClick,nav_build_btn,,,y
 PPersona_P8_Journey,3,Wait for profile,xTime,xTimeWait,6,,,y
@@ -139,6 +139,16 @@ PWeb_Panel_Analyze,3,Verify Analyze heading,xUI,xGetText,analyze_heading_locator
 PWeb_Panel_Brahl,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
 PWeb_Panel_Brahl,2,Click BRAHL,xUI,xClick,nav_brahl_btn,,,y
 PWeb_Panel_Brahl,3,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,brahl_heading_expected,y
+PWeb_Brahl_ReportTabs,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Brahl_ReportTabs,2,Click BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PWeb_Brahl_ReportTabs,3,Verify report tabs,xUI,xGetText,brahl_report_tabs_locator,,brahl_automation_tab_expected,y
+PWeb_Brahl_ReportTabs,4,Verify Human tab,xUI,xGetText,brahl_report_tabs_locator,,brahl_human_tab_expected,y
+PWeb_Build_EditTop,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Build_EditTop,2,Click Build,xUI,xClick,nav_build_btn,,,y
+PWeb_Build_EditTop,3,Verify Edit control,xUI,xGetText,ypad_edit_top_locator,,Edit,y
+PWeb_Loop_Schedules,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
+PWeb_Loop_Schedules,2,Click Loop,xUI,xClick,nav_loop_btn,,,y
+PWeb_Loop_Schedules,3,Verify schedules section,xUI,xGetText,schedules_section_locator,,Schedules,y
 PWeb_Panel_Build,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
 PWeb_Panel_Build,2,Click Build,xUI,xClick,nav_build_btn,,,y
 PWeb_Panel_Build,3,Verify Build title,xUI,xGetText,build_panel_title_locator,,build_title_client_expected,y
@@ -154,11 +164,11 @@ PWeb_Panel_Run,3,Verify Run heading,xUI,xGetText,run_heading_locator,,run_headin
 PWeb_Panel_Run,4,Verify fStarts label,xUI,xGetText,config_label_locator,,fstart_label_expected,y
 PWeb_Panel_Run,5,Verify fStart chips,xUI,xGetText,fstart_chip_row_locator,,,y
 PWeb_Panel_Run,6,Verify Run button,xUI,xGetText,btn_run_locator,,btn_run_expected,y
-PWeb_Panel_Run,7,Verify Run parallel,xUI,xGetText,btn_run_parallel_locator,,btn_run_parallel_expected,y
+PWeb_Panel_Run,7,Verify Threads control,xUI,xGetText,run_threads_locator,,run_threads_expected,y
 PWeb_Panel_Run,8,Verify Edit fStart,xUI,xGetText,btn_fstart_edit_locator,,Edit,y
 PWeb_Power_YpadExplorer,1,P7 persona,xReuse,PReuse_PersonaReady,,,,y
 PWeb_Power_YpadExplorer,2,Click Build,xUI,xClick,nav_build_btn,,,y
-PWeb_Power_YpadExplorer,3,Verify yPAD explorer,xUI,xGetText,ypad_explorer_locator,,Y Plans,y
+PWeb_Power_YpadExplorer,3,Verify yPAD explorer,xUI,xGetText,ypad_explorer_locator,,Tests,y
 PWeb_Profile_Chip,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
 PWeb_Profile_Chip,2,Verify profile code,xUI,xGetText,profile_chip_code_locator,,,y
 PWeb_Signin_CreatorPitch,1,Open browser,xReuse,PReuse_qoa_web_OpenSite,,,,y
@@ -190,6 +200,7 @@ PWeb_Version_BaselineBtn,3,Verify baseline button,xUI,xGetText,version_baseline_
 PWeb_Hunt_EvidencePanel,1,HITL ready,xReuse,PReuse_qoa_web_HitlReady,,,,y
 PWeb_Hunt_EvidencePanel,2,Click Build,xUI,xClick,nav_build_btn,,,y
 PWeb_Hunt_EvidencePanel,3,Verify hunt evidence,xUI,xGetText,hunt_evidence_heading_locator,,hunt_evidence_heading_expected,y
+PWeb_Hunt_EvidencePanel,4,Verify Add evidence menu,xUI,xGetText,btn_add_evidence_locator,,btn_add_evidence_expected,y
 PWeb_P9_AddProjectModal,1,P9 profile,xReuse,PPersona_P9_Journey,,,,y
 PWeb_P9_AddProjectModal,2,Click new project,xUI,xClick,btn_new_project_locator,,,y
 PWeb_P9_AddProjectModal,3,Verify modal title,xUI,xGetText,add_project_modal_title_locator,,add_project_modal_title_expected,y
@@ -222,7 +233,7 @@ PWeb_Loop_PrimaryButton,5,Verify Loop button,xUI,xGetText,btn_loop_run_locator,,
 PWeb_Loop_BuiltSummary,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
 PWeb_Loop_BuiltSummary,2,Click Loop,xUI,xClick,nav_loop_btn,,,y
 PWeb_Loop_BuiltSummary,3,Wait,xTime,xTimeWait,2,,,y
-PWeb_Loop_BuiltSummary,4,Verify Built block,xUI,xGetText,loop_built_summary_locator,,Built,y
+PWeb_Loop_BuiltSummary,4,Verify Built block,xUI,xGetText,loop_built_summary_locator,,Provenance,y
 PWeb_Analyze_FailColumns,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
 PWeb_Analyze_FailColumns,2,Click Analyze,xUI,xClick,nav_analyze_btn,,,y
 PWeb_Analyze_FailColumns,3,Wait,xTime,xTimeWait,2,,,y
@@ -246,8 +257,8 @@ PWeb_Build_DocChips,2,Click Build,xUI,xClick,nav_build_btn,,,y
 PWeb_Build_DocChips,3,Verify strategy chip,xUI,xGetText,build_doc_strategy_locator,,build_doc_strategy_expected,y
 PWeb_Build_DocChips,4,Verify plan chip,xUI,xGetText,build_doc_plan_locator,,build_doc_plan_expected,y
 PWeb_Heal_AiBtn,1,Client ready,xReuse,PReuse_qoa_web_ClientReady,,,,y
-PWeb_Heal_AiBtn,2,Enable AI toggle,xUI,xClick,ai_toggle_locator,,,n
-PWeb_Heal_AiBtn,3,Wait AI,xTime,xTimeWait,1,,,n
+PWeb_Heal_AiBtn,2,Open Arena with AI on,xUI,xNavigate,arena_ai_on_url,,,y
+PWeb_Heal_AiBtn,3,Wait AI boot,xTime,xTimeWait,5,,,y
 PWeb_Heal_AiBtn,4,Click Heal,xUI,xClick,nav_heal_btn,,,y
-PWeb_Heal_AiBtn,5,Wait,xTime,xTimeWait,2,,,y
-PWeb_Heal_AiBtn,6,Verify AI auto-heal CTA,xUI,xGetText,heal_ai_btn_locator,,heal_ai_btn_expected,y
+PWeb_Heal_AiBtn,5,Wait Heal panel,xTime,xTimeWait,3,,,y
+PWeb_Heal_AiBtn,6,Verify AI auto-heal visible,xUI,xGetText,heal_ai_btn_locator,,heal_ai_btn_expected,y

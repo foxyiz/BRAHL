@@ -95,6 +95,14 @@ const ypadState = {
   designColumnMode: "all",
   designGroupFilter: "",
   coverageFilter: "all",
+  /** Explicit CSV source path for multi-file suites (gate vs journey). */
+  source: "",
+  sourceKind: "",
+  showTable: false,
+  page: 0,
+  pageSize: 50,
+  versions: [],
+  selectedVersionId: "",
 };
 
 async function api(path, opts = {}) {
@@ -168,8 +176,14 @@ function showPhase(name) {
   if (name === "cost") loadCostPanel();
   if (name === "nalanda") window.QoaNalanda?.loadPanel?.();
   if (name === "promoter") loadPromoterPanel();
-  if (name === "heal") refreshHealFailures();
-  if (name === "loop") refreshLoopBuiltSummary();
+  if (name === "heal") {
+    applyAiMode();
+    refreshHealFailures();
+  }
+  if (name === "loop") {
+    refreshLoopBuiltSummary();
+    loadSchedules();
+  }
   if (name === "analyze" && selectedRun && isAiOn()) {
     /* user can click AI analyze or we leave prior result visible */
   }
@@ -637,6 +651,30 @@ async function enforceProfileAiPolicy() {
   }
 }
 
+/** ?ai=1 forces AI on (smoke / deep-links). Soft aiDefault=false is overridden; hard aiLocked is not. */
+async function ensureAiFromQuery() {
+  const params = new URLSearchParams(location.search);
+  if (params.get("ai") !== "1") return;
+  if (!state.projectId || !activeProject) return;
+  if (state.profile?.aiLocked) return;
+  // Optimistic local enable so Heal/Analyze AI controls appear even if PATCH is slow/denied.
+  activeProject = { ...activeProject, ai_enabled: true };
+  const toggle = $("#ai-toggle");
+  if (toggle) toggle.checked = true;
+  if (activeProject.ai_enabled !== false) {
+    /* still PATCH below when server still has it off — use prior server flag */
+  }
+  try {
+    const { project } = await api(`/api/projects/${state.projectId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ ai_enabled: true }),
+    });
+    activeProject = project;
+  } catch {
+    /* keep optimistic local enable for smoke / guest */
+  }
+}
+
 async function loadYpadProjects() {
   if (!state.avatar) return;
   await loadSuites();
@@ -660,14 +698,33 @@ async function loadYpadProjects() {
   }
 }
 
+let projectSwitchToken = 0;
+
+function setProjectSwitching(on) {
+  const wrap = $("#topbar-project");
+  const badge = $("#topbar-project-switching");
+  if (wrap) wrap.classList.toggle("switching", on);
+  if (badge) badge.hidden = !on;
+}
+
+/**
+ * Project switch — sequenced + cancellable. Every await checks whether a
+ * newer switch has already started; if so, this stale call stops updating
+ * shared state/UI so an older Math/Nalanda response can never win a race
+ * against a faster, more recent switch.
+ */
 async function selectYpadProject(suiteName) {
   if (!suiteName) return;
+  const myToken = ++projectSwitchToken;
+  const stale = () => myToken !== projectSwitchToken;
   state.suiteName = suiteName;
   localStorage.setItem(STORAGE_SUITE, suiteName);
   selectedBrahlRun = null;
   selectedRun = null;
+  setProjectSwitching(true);
   try {
     const data = await api(`/api/ypad-projects/${encodeURIComponent(suiteName)}`);
+    if (stale()) return;
     activeProject = data.project;
     state.projectId = activeProject?.id || null;
     if (state.projectId) localStorage.setItem(STORAGE_PROJECT, state.projectId);
@@ -680,14 +737,17 @@ async function selectYpadProject(suiteName) {
     }
     updateProjectBanner(data.payout_preview);
   } catch {
+    if (stale()) return;
     activeProject = null;
     state.projectId = null;
     localStorage.removeItem(STORAGE_PROJECT);
     updateProjectBanner();
   }
+  if (stale()) return;
   syncRunSuiteDisplay();
   syncScopeLabels();
   await loadConfigsForSuite();
+  if (stale()) return;
   renderTopbarProjectSelect();
   syncAvatarSections();
   renderClientWorkspace();
@@ -700,11 +760,16 @@ async function selectYpadProject(suiteName) {
   renderBrahlChat();
   renderAtomic77Chat();
   await enforceProfileAiPolicy();
+  if (stale()) return;
+  await ensureAiFromQuery();
   applyAiMode();
   await loadRuns();
+  if (stale()) return;
   await loadYpadInsights();
   loadBuildDocs();
+  if (stale()) return;
   if ($("#panel-brahl")?.classList.contains("active")) await loadBrahlPanel();
+  if (!stale()) setProjectSwitching(false);
 }
 
 async function refreshActiveProject() {
@@ -861,28 +926,32 @@ function renderAiMarkdown(el, markdown) {
   if (!markdown) {
     el.hidden = true;
     el.textContent = "";
+    el.innerHTML = "";
     return;
   }
   el.hidden = false;
   el.classList.remove("ai-loading");
-  el.textContent = markdown;
+  el.innerHTML = renderMarkdown(markdown);
 }
 
 function isAiOn() {
-  return activeProject?.ai_enabled !== false;
+  if (!activeProject) return false;
+  const el = $("#ai-toggle");
+  if (el && !$("#ai-toggle-wrap")?.hidden) return !!el.checked;
+  return activeProject.ai_enabled !== false;
 }
 
 function applyAiMode() {
-  const on = isAiOn();
   const hasProject = !!activeProject;
   const profile = state.profile;
   const aiLocked = !!profile?.aiLocked;
   $("#ai-toggle-wrap").hidden = !hasProject;
   renderProjectSelectors();
   if (hasProject) {
-    $("#ai-toggle").checked = on;
+    $("#ai-toggle").checked = activeProject.ai_enabled !== false;
     $("#ai-toggle").disabled = aiLocked;
   }
+  const on = isAiOn();
   $("#ai-toggle-label").textContent = aiLocked ? "AI off (profile)" : on ? "AI on" : "AI off";
   $("#ai-toggle-wrap")?.classList.toggle("ai-off", !on);
   const aiDocsBtn = $("#btn-ai-docs");
@@ -1041,6 +1110,40 @@ function pickRunViaModal() {
   });
 }
 
+async function renderBatchRunRows(runNames, batchDashboard) {
+  const wrap = $("#run-batch-rows");
+  if (!wrap) return;
+  if (!runNames?.length) {
+    wrap.hidden = true;
+    wrap.innerHTML = "";
+    return;
+  }
+  const rows = await Promise.all(
+    runNames.map(async (name) => {
+      let href = null;
+      try {
+        const stats = await api(`/api/runs/${encodeURIComponent(name)}/stats`);
+        href = zDashHref(stats.dashboard);
+      } catch {
+        /* stats not ready yet */
+      }
+      const link = href
+        ? `<a href="${escapeHtml(href)}" target="_blank" class="secondary link-btn sm">View zDash</a>`
+        : `<span class="hint">zDash generating…</span>`;
+      return `<div class="run-batch-row"><span class="run-batch-name">${escapeHtml(name)}</span>${link}</div>`;
+    })
+  );
+  let batchLinkHtml = "";
+  if (batchDashboard) {
+    const path = String(batchDashboard).replace(/\\/g, "/");
+    const name = path.split("/").pop();
+    batchLinkHtml = `<a href="/api/files/z-root/${encodeURIComponent(name)}" target="_blank" class="secondary link-btn">View combined batch zDash</a>`;
+  }
+  wrap.innerHTML =
+    `<h4 class="section-sub">Batch jobs (${runNames.length})</h4>` + rows.join("") + batchLinkHtml;
+  wrap.hidden = false;
+}
+
 function zDashHref(dashboardRelPath) {
   if (!dashboardRelPath) return null;
   const parts = dashboardRelPath.replace(/\\/g, "/").split("/");
@@ -1096,6 +1199,9 @@ async function showRunPostActions(runName, batchDashboard) {
 let fstartSelected = new Set();
 let fstartPrimary = null;
 const fstartMetaCache = {};
+const RUN_PROFILE_DEFAULT = ["Smoke", "UI", "API", "Performance", "Security", "Manual"];
+let runProfileOrder = [...RUN_PROFILE_DEFAULT];
+let runProfilesSelected = new Set(["Smoke"]);
 
 function fstartChipLabel(path) {
   return (path || "")
@@ -1108,6 +1214,16 @@ function selectedFstartPaths() {
   return [...fstartSelected];
 }
 
+function selectedRunProfiles() {
+  return runProfileOrder.filter((p) => runProfilesSelected.has(p));
+}
+
+function runThreadCount() {
+  const el = $("#run-thread-count");
+  const n = Number(el?.value || 1);
+  return Number.isFinite(n) && n >= 1 ? Math.min(8, Math.floor(n)) : 1;
+}
+
 function syncConfigSelectFromChips() {
   const sel = $("#config-select");
   if (!sel) return;
@@ -1117,79 +1233,72 @@ function syncConfigSelectFromChips() {
   }
   updateRunParallelEnabled();
   const runBtn = $("#btn-run");
-  if (runBtn) runBtn.disabled = selectedFstartPaths().length < 1;
+  if (runBtn) runBtn.disabled = selectedFstartPaths().length < 1 || selectedRunProfiles().length < 1;
 }
 
-function fstartContentAllowsFanout(content) {
-  if (!content) return false;
-  const tags = Array.isArray(content.tags) ? content.tags.filter(Boolean) : [];
-  const threads = Number(content.thread_count) || 1;
-  return threads > 1 && tags.length >= 2;
-}
-
-async function updateRunParallelEnabled() {
-  const para = $("#btn-run-parallel");
-  if (!para) return;
-  const paths = selectedFstartPaths();
-  if (paths.length >= 2) {
-    para.disabled = false;
-    para.title = "Run selected fStarts in parallel";
-    return;
-  }
-  if (paths.length === 1) {
-    const path = paths[0];
-    try {
-      let content = fstartMetaCache[path];
-      if (!content) {
-        const data = await api(`/api/configs/content?path=${encodeURIComponent(path)}`);
-        content = data.content || {};
-        fstartMetaCache[path] = content;
-      }
-      if (fstartContentAllowsFanout(content)) {
-        para.disabled = false;
-        para.title = "Tag fan-out: thread_count + multiple tags";
-        return;
-      }
-    } catch {
-      /* ignore */
-    }
-  }
-  para.disabled = true;
-  para.title = "Select 2+ fStarts or one with tag fan-out (thread_count>1 + 2+ tags)";
+/** Parallel execution is derived only from Threads > 1 + 2+ profiles — no separate control. */
+function updateRunParallelEnabled() {
+  refreshFstartFanoutHint();
 }
 
 async function refreshFstartFanoutHint() {
   const hint = $("#fstart-fanout-hint");
   if (!hint) return;
-  const path = fstartPrimary || selectedFstartPaths()[0];
-  if (!path) {
+  const profiles = selectedRunProfiles();
+  const threads = runThreadCount();
+  if (!profiles.length) {
     hint.hidden = true;
     return;
   }
-  try {
-    let content = fstartMetaCache[path];
-    if (!content) {
-      const data = await api(`/api/configs/content?path=${encodeURIComponent(path)}`);
-      content = data.content || {};
-      fstartMetaCache[path] = content;
-    }
-    const tags = Array.isArray(content.tags) ? content.tags.filter(Boolean) : [];
-    const threads = Number(content.thread_count) || 1;
-    if (threads > 1 && tags.length >= 2) {
-      const workers = Math.min(threads, tags.length);
-      hint.textContent = `${threads} threads · ${tags.length} tags → ${tags.length} jobs, ${workers} at a time`;
-      hint.hidden = false;
-    } else if (tags.length) {
-      hint.textContent = `thread_count ${threads} · tags: ${tags.join(", ")} (OR filter when threads=1)`;
-      hint.hidden = false;
-    } else {
-      hint.textContent = `thread_count ${threads} · no tag filter`;
-      hint.hidden = false;
-    }
-  } catch {
-    hint.hidden = true;
+  if (threads > 1 && profiles.length >= 2) {
+    const workers = Math.min(threads, profiles.length);
+    hint.textContent = `${threads} threads · ${profiles.join("+")} → ${profiles.length} jobs, ${workers} at a time`;
+    hint.hidden = false;
+  } else {
+    hint.textContent = `thread_count ${threads} · profiles: ${profiles.join(", ")} (OR filter when threads=1)`;
+    hint.hidden = false;
   }
-  updateRunParallelEnabled();
+}
+
+function renderRunProfileChips() {
+  const row = $("#run-profile-row");
+  if (!row) return;
+  row.innerHTML = runProfileOrder
+    .map(
+      (p) =>
+        `<button type="button" class="fstart-chip run-profile-chip${runProfilesSelected.has(p) ? " selected" : ""}" data-profile="${escapeHtml(p)}">${escapeHtml(p)}</button>`
+    )
+    .join("");
+  row.querySelectorAll(".run-profile-chip").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const name = btn.dataset.profile;
+      if (runProfilesSelected.has(name)) {
+        if (runProfilesSelected.size > 1) runProfilesSelected.delete(name);
+      } else {
+        runProfilesSelected.add(name);
+      }
+      row.querySelectorAll(".run-profile-chip").forEach((b) => {
+        b.classList.toggle("selected", runProfilesSelected.has(b.dataset.profile));
+      });
+      syncConfigSelectFromChips();
+    });
+  });
+  const thr = $("#run-thread-count");
+  if (thr && !thr.dataset.bound) {
+    thr.dataset.bound = "1";
+    thr.addEventListener("change", () => syncConfigSelectFromChips());
+    thr.addEventListener("input", () => syncConfigSelectFromChips());
+  }
+}
+
+async function loadRunProfiles() {
+  try {
+    const data = await api("/api/run-profiles");
+    if (Array.isArray(data.order) && data.order.length) runProfileOrder = data.order;
+  } catch {
+    /* keep defaults */
+  }
+  renderRunProfileChips();
 }
 
 function renderFstartChips(configs, preferred) {
@@ -1205,40 +1314,28 @@ function renderFstartChips(configs, preferred) {
     .join("");
   row.querySelectorAll(".fstart-chip").forEach((btn) => {
     const path = btn.dataset.path;
-    btn.addEventListener("click", (ev) => {
-      if (ev.shiftKey || ev.ctrlKey || ev.metaKey) {
-        if (fstartSelected.has(path)) {
-          if (fstartSelected.size > 1) fstartSelected.delete(path);
-        } else {
-          fstartSelected.add(path);
-        }
-        fstartPrimary = path;
-      } else {
-        fstartSelected = new Set([path]);
-        fstartPrimary = path;
-      }
-      if (!fstartSelected.has(fstartPrimary)) {
-        fstartPrimary = selectedFstartPaths()[0] || null;
-      }
+    btn.addEventListener("click", () => {
+      fstartSelected = new Set([path]);
+      fstartPrimary = path;
       row.querySelectorAll(".fstart-chip").forEach((b) => {
         b.classList.toggle("selected", fstartSelected.has(b.dataset.path));
         b.classList.toggle("active-primary", b.dataset.path === fstartPrimary);
       });
       syncConfigSelectFromChips();
-      refreshFstartFanoutHint();
     });
     if (prev.has(path) || path === preferred || (!preferred && prev.size === 0 && path === configs[0])) {
       fstartSelected.add(path);
     }
   });
-  if (!fstartSelected.size && configs?.length) fstartSelected.add(preferred && configs.includes(preferred) ? preferred : configs[0]);
+  if (!fstartSelected.size && configs?.length) {
+    fstartSelected.add(preferred && configs.includes(preferred) ? preferred : configs[0]);
+  }
   fstartPrimary = preferred && fstartSelected.has(preferred) ? preferred : selectedFstartPaths()[0] || null;
   row.querySelectorAll(".fstart-chip").forEach((b) => {
     b.classList.toggle("selected", fstartSelected.has(b.dataset.path));
     b.classList.toggle("active-primary", b.dataset.path === fstartPrimary);
   });
   syncConfigSelectFromChips();
-  refreshFstartFanoutHint();
 }
 
 async function loadAppVersion() {
@@ -1282,10 +1379,11 @@ function updateHealHint() {
   const hint = $("#heal-run-hint");
   if (!hint) return;
   if (!activeProject?.latest_run) {
-    hint.textContent = "Select a run in Analyze to shrink to failures.";
+    hint.textContent =
+      "Select a run in Analyze. AI Apply edits Input/Expected/locators only — never Run flags. Shrink (below) is for Loop prep.";
     return;
   }
-  hint.textContent = `Last run: ${activeProject.latest_run} — shrink uses its failures.`;
+  hint.textContent = `Last run: ${activeProject.latest_run} — Apply = CSV field patches · Shrink = Run=Y on failures only (Restore undoes it).`;
 }
 
 async function recordCycleEvent(step, detail, runName) {
@@ -1378,6 +1476,7 @@ function syncProjectToUI() {
 
 function renderMarkdown(md) {
   let html = escapeHtml(md);
+  html = html.replace(/^#### (.+)$/gm, "<h5>$1</h5>");
   html = html.replace(/^### (.+)$/gm, "<h4>$1</h4>");
   html = html.replace(/^## (.+)$/gm, "<h3>$1</h3>");
   html = html.replace(/^# (.+)$/gm, "<h2>$1</h2>");
@@ -1402,7 +1501,7 @@ function renderMarkdown(md) {
         .map((c) => c.trim());
     const head = parse(rows[0]);
     const bodyRows = rows.slice(1).filter((r) => !/^\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?$/.test(r));
-    let out = "<table><thead><tr>" + head.map((c) => `<th>${c}</th>`).join("") + "</tr></thead><tbody>";
+    let out = '<table class="ai-md-table"><thead><tr>' + head.map((c) => `<th>${c}</th>`).join("") + "</tr></thead><tbody>";
     bodyRows.forEach((r) => {
       out += "<tr>" + parse(r).map((c) => `<td>${c}</td>`).join("") + "</tr>";
     });
@@ -1504,36 +1603,6 @@ function renderBrahlTeamTasks(tasks) {
     .join("");
 }
 
-function renderBrahlTeamLibrary(project) {
-  const el = $("#brahl-team-library");
-  if (!el) return;
-  const items = [...(project?.context_items || [])];
-  const docs = project?.documents || [];
-  docs.forEach((d) => {
-    if (!items.some((i) => i.value === d.path || i.label === d.filename)) {
-      items.push({ kind: "document", label: d.filename || "Upload", value: d.path || d.filename || "" });
-    }
-  });
-  if (!items.length) {
-    el.innerHTML = '<li class="empty-hint">Add links or upload docs the team can reference while BRAHLing.</li>';
-    return;
-  }
-  el.innerHTML = items
-    .slice()
-    .reverse()
-    .slice(0, 40)
-    .map((i) => {
-      const kind = CONTEXT_KIND_LABELS[i.kind] || i.kind || "Item";
-      const val = i.value || "";
-      const isUrl = /^https?:\/\//i.test(val);
-      const body = isUrl
-        ? `<a href="${escapeHtml(val)}" target="_blank" rel="noopener noreferrer">${escapeHtml(i.label || val)}</a>`
-        : escapeHtml(i.label || val);
-      return `<li class="brahl-team-lib-item"><span class="meta">${escapeHtml(kind)}</span> — ${body}</li>`;
-    })
-    .join("");
-}
-
 async function loadBrahlTeamWorkspace() {
   if (!state.projectId) return;
   let project = activeProject;
@@ -1564,7 +1633,7 @@ async function loadBrahlTeamWorkspace() {
   renderBrahlTeamRoster(project);
   renderBrahlTeamChat(project.team_messages || []);
   renderBrahlTeamTasks(project.team_tasks || []);
-  renderBrahlTeamLibrary(project);
+  await renderEvidenceLibraries();
 }
 
 async function sendBrahlTeamChat(ev) {
@@ -1639,7 +1708,7 @@ async function addBrahlTeamLibraryLink(ev) {
     activeProject = data.project;
     if ($("#brahl-team-lib-label")) $("#brahl-team-lib-label").value = "";
     if ($("#brahl-team-lib-url")) $("#brahl-team-lib-url").value = "";
-    renderBrahlTeamLibrary(activeProject);
+    await registerEvidence("url", { url: value, title: label || value });
     setStatus("Library link added");
   } catch (err) {
     setStatus(`Library failed: ${err.message}`);
@@ -1657,7 +1726,9 @@ async function uploadBrahlTeamFile(ev) {
     const data = await res.json();
     if (data.project) activeProject = data.project;
     else await refreshActiveProject();
-    renderBrahlTeamLibrary(activeProject);
+    const path = data.document?.path;
+    if (path) await registerEvidence("document", { path, title: file.name });
+    else await renderEvidenceLibraries();
     setStatus(`Uploaded ${file.name}`);
   } catch (err) {
     setStatus(`Upload failed: ${err.message}`);
@@ -1769,8 +1840,24 @@ async function sendAtomic77Chat(ev, faqKey) {
     return;
   }
   if (!faqKey && !isAiOn()) {
-    setStatus("AI is off — use FAQ chips or turn AI on");
-    return;
+    const lower = text.toLowerCase();
+    const keywordMap = {
+      idea: ["idea", "project", "ypad", "start"],
+      brahl: ["brahl", "loop", "verify"],
+      launch: ["launch", "go/no", "gonogo", "ship"],
+      cost: ["cost", "wallet", "budget", "$", "price", "payout"],
+      hunter: ["hunt", "hunter", "paid", "earn"],
+    };
+    for (const [key, words] of Object.entries(keywordMap)) {
+      if (words.some((w) => lower.includes(w))) {
+        faqKey = key;
+        break;
+      }
+    }
+    if (!faqKey) {
+      setStatus("AI is off — use FAQ chips or mention idea/BRAHL/launch/cost/hunter");
+      return;
+    }
   }
   try {
     let data;
@@ -1802,12 +1889,84 @@ async function sendAtomic77Chat(ev, faqKey) {
   }
 }
 
+let brahlReportTab = "automation";
+const brahlReportsCache = { runs: [], huntReports: [] };
+
+function renderBrahlReportTabs() {
+  $$(".brahl-report-tab").forEach((btn) => {
+    const active = btn.dataset.tab === brahlReportTab;
+    btn.classList.toggle("active", active);
+    btn.setAttribute("aria-selected", active ? "true" : "false");
+  });
+}
+
+function renderBrahlReportListFromCache() {
+  const list = $("#brahl-report-list");
+  if (!list) return;
+  renderBrahlReportTabs();
+  const { runs, huntReports } = brahlReportsCache;
+  list.innerHTML = "";
+  if (brahlReportTab === "human") {
+    if (!huntReports.length) {
+      list.innerHTML =
+        '<li class="empty-hint">No QA Hunter reports yet — submit one from the QA Hunter workspace.</li>';
+      return;
+    }
+    huntReports.forEach((r) => {
+      const li = document.createElement("li");
+      const label = PathBasename(r.report_path) || r.run_name;
+      const isSel = selectedBrahlReportId ? r.id === selectedBrahlReportId : false;
+      if (isSel) li.classList.add("selected");
+      li.innerHTML =
+        `<span class="source-badge sm source-${escapeHtml(r.source || "human_in_the_loop")}">${escapeHtml(r.source_label || "QA Hunter")}</span>` +
+        `<span>${escapeHtml(label)}</span>` +
+        `<span class="meta">${escapeHtml(r.run_name)}</span>`;
+      li.onclick = () =>
+        selectBrahlReport(r.run_name, {
+          source: r.source || "human_in_the_loop",
+          source_label: r.source_label || "QA Hunter",
+          report_id: r.id,
+          is_hunt: true,
+          report_path: r.report_path,
+          archived: Boolean(r.archived),
+        });
+      list.appendChild(li);
+    });
+  } else {
+    if (!runs.length) {
+      list.innerHTML = '<li class="empty-hint">No automation verify runs yet — Run on the Run tab.</li>';
+      return;
+    }
+    runs.forEach((r, i) => {
+      const li = document.createElement("li");
+      const isSel = !selectedBrahlReportId && (selectedBrahlRun ? r.name === selectedBrahlRun : i === 0);
+      if (isSel) li.classList.add("selected");
+      li.innerHTML =
+        `<span class="source-badge sm">Run</span><span>${escapeHtml(r.name)}</span>` +
+        `<span class="meta">${r.passes} pass · ${r.fails} fail</span>`;
+      li.onclick = () =>
+        selectBrahlReport(r.name, { source: "automation", source_label: "Automation", report_id: null, is_hunt: false });
+      list.appendChild(li);
+    });
+  }
+}
+
+function bindBrahlReportTabs() {
+  if (bindBrahlReportTabs._bound) return;
+  bindBrahlReportTabs._bound = true;
+  $("#brahl-report-tabs")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".brahl-report-tab");
+    if (!btn || btn.dataset.tab === brahlReportTab) return;
+    brahlReportTab = btn.dataset.tab;
+    renderBrahlReportListFromCache();
+  });
+}
+
 async function loadBrahlPanel() {
   if (!state.projectId || !state.suiteName) return;
   bindBrahlTeamWorkspace();
+  bindBrahlReportTabs();
   await loadBrahlTeamWorkspace();
-  const list = $("#brahl-report-list");
-  list.innerHTML = "";
 
   let projectReports = [];
   try {
@@ -1822,53 +1981,31 @@ async function loadBrahlPanel() {
   const huntReports = projectReports.filter(
     (r) => r.is_hunt_report || (r.source || "").includes("human")
   );
+  brahlReportsCache.runs = runs;
+  brahlReportsCache.huntReports = huntReports;
+  // Default the tab to wherever the latest activity is, without fighting a user's explicit choice.
+  if (!runs.length && huntReports.length) brahlReportTab = "human";
+  else if (runs.length && brahlReportTab === "human" && !huntReports.length) brahlReportTab = "automation";
 
   if (!runs.length && !huntReports.length) {
-    list.innerHTML = "<li class=\"empty-hint\">No verify runs for this suite yet.</li>";
+    renderBrahlReportListFromCache();
     $("#brahl-report-body").innerHTML =
-      `<p class="empty-hint">No BRAHL report for <strong>${escapeHtml(state.suiteName)}</strong> yet. Run Verify on the Loop tab, or submit a QA Hunter hunt report from Build.</p>` +
+      `<p class="empty-hint">No BRAHL report for <strong>${escapeHtml(state.suiteName)}</strong> yet. Run from the <strong>Run</strong> tab (Smoke profile) or Verify on Loop, then return here.</p>` +
       (data.suite?.description ? `<p class="hint">${escapeHtml(data.suite.description)}</p>` : "");
     $("#brahl-report-summary").hidden = true;
     $("#brahl-hunt-artifacts").hidden = true;
     $("#brahl-report-title").textContent = state.suiteName;
     $("#brahl-report-source").textContent = "y/ suite";
+    $("#brahl-report-status-badge").hidden = true;
+    $("#brahl-zdash-embed-wrap").hidden = true;
+    $("#brahl-evidence-wrap").hidden = true;
     renderGoNoGo(null);
     renderVersionCompare(null);
     renderBrahlChat();
     return;
   }
 
-  huntReports.forEach((r) => {
-    const li = document.createElement("li");
-    const label = PathBasename(r.report_path) || r.run_name;
-    const isSel = selectedBrahlReportId ? r.id === selectedBrahlReportId : false;
-    if (isSel) li.classList.add("selected");
-    li.innerHTML =
-      `<span class="source-badge sm source-${escapeHtml(r.source || "human_in_the_loop")}">${escapeHtml(r.source_label || "QA Hunter")}</span>` +
-      `<span>${escapeHtml(label)}</span>` +
-      `<span class="meta">${escapeHtml(r.run_name)}</span>`;
-    li.onclick = () =>
-      selectBrahlReport(r.run_name, {
-        source: r.source || "human_in_the_loop",
-        source_label: r.source_label || "QA Hunter",
-        report_id: r.id,
-        is_hunt: true,
-        report_path: r.report_path,
-      });
-    list.appendChild(li);
-  });
-
-  runs.forEach((r, i) => {
-    const li = document.createElement("li");
-    const isSel = !selectedBrahlReportId && (selectedBrahlRun ? r.name === selectedBrahlRun : i === 0 && !huntReports.length);
-    if (isSel) li.classList.add("selected");
-    li.innerHTML =
-      `<span class="source-badge sm">Verify</span><span>${escapeHtml(r.name)}</span>` +
-      `<span class="meta">${r.passes} pass · ${r.fails} fail</span>`;
-    li.onclick = () =>
-      selectBrahlReport(r.name, { source: "automation", source_label: "Automation", report_id: null, is_hunt: false });
-    list.appendChild(li);
-  });
+  renderBrahlReportListFromCache();
 
   const pickHunt = huntReports.find((r) => r.id === selectedBrahlReportId) || huntReports[0];
   const pickRun = selectedBrahlRun || data.latest_run_name || runs[0]?.name;
@@ -1879,6 +2016,16 @@ async function loadBrahlPanel() {
       report_id: pickHunt.id,
       is_hunt: true,
       report_path: pickHunt.report_path,
+      archived: Boolean(pickHunt.archived),
+    });
+  } else if (brahlReportTab === "human" && pickHunt) {
+    await selectBrahlReport(pickHunt.run_name, {
+      source: pickHunt.source,
+      source_label: pickHunt.source_label,
+      report_id: pickHunt.id,
+      is_hunt: true,
+      report_path: pickHunt.report_path,
+      archived: Boolean(pickHunt.archived),
     });
   } else if (pickRun) {
     await selectBrahlReport(pickRun, { source: "automation", source_label: "Automation", report_id: null, is_hunt: false });
@@ -2020,11 +2167,80 @@ function renderGoNoGo(stats) {
   }
 }
 
+// Best-effort live status for the run currently being polled by startRun(), so a
+// report the user is looking at can show "running" instead of looking stale/broken.
+const liveRunStatus = { runName: null, status: null };
+
+function reportStatusFor(runName, meta, stats) {
+  if (meta?.archived) return "archived";
+  if (runName && liveRunStatus.runName === runName && liveRunStatus.status === "running") return "running";
+  if (!stats || !stats.total_plans) return meta?.is_hunt ? "completed" : null;
+  if (!meta?.is_hunt && !stats.dashboard) return "generating";
+  if (stats.fails > 0) return "failed";
+  return "completed";
+}
+
+const REPORT_STATUS_LABELS = {
+  running: "Running…",
+  generating: "Generating zDash…",
+  completed: "Completed",
+  failed: "Failed",
+  archived: "Archived",
+};
+
+function renderReportStatusBadge(runName, meta, stats) {
+  const badge = $("#brahl-report-status-badge");
+  if (!badge) return;
+  const status = reportStatusFor(runName, meta, stats);
+  if (!status) {
+    badge.hidden = true;
+    return;
+  }
+  badge.hidden = false;
+  badge.textContent = REPORT_STATUS_LABELS[status] || status;
+  badge.className = `report-status-badge status-${status}`;
+}
+
+function renderZdashEmbed(stats) {
+  const wrap = $("#brahl-zdash-embed-wrap");
+  const frame = $("#brahl-zdash-embed");
+  if (!wrap || !frame) return;
+  const href = zDashHref(stats?.dashboard);
+  if (href) {
+    wrap.hidden = false;
+    if (frame.src !== location.origin + href) frame.src = href;
+  } else {
+    wrap.hidden = true;
+    frame.src = "about:blank";
+  }
+}
+
+async function renderReportEvidence(reportId) {
+  const wrap = $("#brahl-evidence-wrap");
+  const list = $("#brahl-report-evidence-list");
+  if (!wrap || !list) return;
+  if (!reportId || !state.projectId) {
+    wrap.hidden = true;
+    list.innerHTML = "";
+    return;
+  }
+  try {
+    const { items } = await api(`/api/projects/${state.projectId}/evidence?report_id=${encodeURIComponent(reportId)}`);
+    wrap.hidden = false;
+    list.innerHTML = (items || []).length
+      ? items.map(evidenceItemHtml).join("")
+      : '<li class="empty-hint">No evidence linked to this report yet.</li>';
+  } catch {
+    wrap.hidden = true;
+  }
+}
+
 function renderBrahlSummaryStats(stats, runName) {
   const wrap = $("#brahl-report-summary");
   if (!wrap || !stats?.total_plans) {
     if (wrap) wrap.hidden = true;
     renderGoNoGo(stats?.total_plans ? stats : null);
+    renderZdashEmbed(stats);
     return;
   }
   wrap.hidden = false;
@@ -2054,11 +2270,36 @@ function renderBrahlSummaryStats(stats, runName) {
       zdash.hidden = true;
     }
   }
+  renderZdashEmbed(stats);
   renderGoNoGo(stats);
+}
+
+let currentBrahlReportRef = { id: null, archived: false };
+
+function bindBrahlArchiveToggle() {
+  if (bindBrahlArchiveToggle._bound) return;
+  bindBrahlArchiveToggle._bound = true;
+  $("#brahl-report-archive-toggle")?.addEventListener("click", async () => {
+    if (!state.projectId || !currentBrahlReportRef.id) return;
+    const next = !currentBrahlReportRef.archived;
+    try {
+      await api(`/api/projects/${state.projectId}/brahl/reports/${currentBrahlReportRef.id}/archive`, {
+        method: "POST",
+        body: JSON.stringify({ archived: next }),
+      });
+      currentBrahlReportRef.archived = next;
+      const btn = $("#brahl-report-archive-toggle");
+      if (btn) btn.textContent = next ? "Unarchive" : "Archive";
+      renderReportStatusBadge(selectedBrahlRun, { archived: next }, null);
+    } catch (e) {
+      setStatus(`Could not update archive state: ${e.message}`);
+    }
+  });
 }
 
 async function selectBrahlReport(runName, meta) {
   if (!state.suiteName) return;
+  bindBrahlArchiveToggle();
   selectedBrahlRun = runName;
   selectedBrahlReportId = meta?.report_id || null;
   $$("#brahl-report-list li").forEach((li) => li.classList.remove("selected"));
@@ -2085,11 +2326,16 @@ async function selectBrahlReport(runName, meta) {
     }
     $("#brahl-report-body").innerHTML = renderMarkdown(data.markdown);
     renderBrahlHuntArtifacts(data.artifacts);
+    const archiveBtn = $("#brahl-report-archive-toggle");
     if (meta?.is_hunt) {
       $("#brahl-report-summary").hidden = true;
       $("#brahl-zdash-link").hidden = true;
+      renderZdashEmbed(null);
       renderGoNoGo(null);
       renderVersionCompare(null);
+      currentBrahlReportRef = { id: meta.report_id || null, archived: Boolean(meta.archived) };
+      renderReportStatusBadge(runName, meta, null);
+      await renderReportEvidence(meta.report_id);
       const open = $("#brahl-report-open");
       if (open && data.artifacts?.length) {
         const md = data.artifacts.find((a) => String(a).includes("hunt-report") && String(a).endsWith(".md"));
@@ -2099,11 +2345,20 @@ async function selectBrahlReport(runName, meta) {
         } else open.hidden = true;
       }
     } else {
+      const archived = Boolean(data.archived);
+      const effMeta = { ...meta, report_id: data.report_id || meta?.report_id, archived };
       renderBrahlSummaryStats(data.stats, runName);
       renderVersionCompare(data.version_compare);
+      currentBrahlReportRef = { id: data.report_id || null, archived };
+      renderReportStatusBadge(runName, effMeta, data.stats);
+      await renderReportEvidence(data.report_id || null);
       const open = $("#brahl-report-open");
       open.href = `/api/files/z/${encodeURIComponent(runName)}/brahl_report.md`;
       open.hidden = false;
+    }
+    if (archiveBtn) {
+      archiveBtn.hidden = !currentBrahlReportRef.id;
+      archiveBtn.textContent = currentBrahlReportRef.archived ? "Unarchive" : "Archive";
     }
   } catch {
     $("#brahl-report-body").innerHTML =
@@ -2112,6 +2367,10 @@ async function selectBrahlReport(runName, meta) {
     $("#brahl-hunt-artifacts").hidden = true;
     $("#brahl-zdash-link").hidden = true;
     $("#brahl-report-open").hidden = true;
+    $("#brahl-report-archive-toggle").hidden = true;
+    renderZdashEmbed(null);
+    renderReportStatusBadge(runName, meta, null);
+    renderReportEvidence(null);
     renderVersionCompare(null);
   }
 }
@@ -2577,8 +2836,18 @@ function ypadDisplayColumnsForTab(tab, data) {
 
 function ypadRowMatchesFilter(row, filter) {
   if (!filter) return true;
-  const q = filter.toLowerCase();
-  return Object.values(row).some((v) => String(v || "").toLowerCase().includes(q));
+  const q = String(filter).trim().toLowerCase();
+  if (!q) return true;
+  // Exact tag match first (semicolon-separated Tags), then substring fallback on other fields
+  const tags = String(row.Tags || "")
+    .split(";")
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean);
+  if (tags.includes(q)) return true;
+  return Object.entries(row).some(([k, v]) => {
+    if (k === "Tags" || String(k).startsWith("_")) return false;
+    return String(v || "").toLowerCase().includes(q);
+  });
 }
 
 function rowsToCsv(headers, rows) {
@@ -2637,7 +2906,11 @@ async function loadYpadSheet(tab = ypadState.tab) {
   ypadState.selectedIndex = -1;
   closeYpadDrawer(false);
   try {
-    ypadState.data = await api(`/api/suites/${encodeURIComponent(state.suiteName)}/ypad/${tab}`);
+    const qs = new URLSearchParams();
+    if (ypadState.source) qs.set("source", ypadState.source);
+    else if (ypadState.sourceKind) qs.set("source_kind", ypadState.sourceKind);
+    const q = qs.toString() ? `?${qs}` : "";
+    ypadState.data = await api(`/api/suites/${encodeURIComponent(state.suiteName)}/ypad/${tab}${q}`);
   } catch {
     ypadState.data = { headers: [], rows: [], row_count: 0, env_example: "" };
   }
@@ -2646,6 +2919,7 @@ async function loadYpadSheet(tab = ypadState.tab) {
     ypadState.insights = computeYpadInsights(ypadState.data);
     renderYpadInsights();
   }
+  loadYpadVersions();
 }
 
 function computeYpadInsights(plansData) {
@@ -2678,21 +2952,27 @@ function computeYpadInsights(plansData) {
 }
 
 async function loadYpadInsights() {
-  if (!state.suiteName) return;
+  // Guard against a slower request for a since-abandoned suite winning the race
+  // and overwriting the floating yPAD widget with stale Math/Nalanda numbers.
+  const requestedSuite = state.suiteName;
+  if (!requestedSuite) return;
   try {
     const [plans, actions, designs] = await Promise.all([
-      api(`/api/suites/${encodeURIComponent(state.suiteName)}/ypad/plans`),
-      api(`/api/suites/${encodeURIComponent(state.suiteName)}/ypad/actions`),
-      api(`/api/suites/${encodeURIComponent(state.suiteName)}/ypad/designs`),
+      api(`/api/suites/${encodeURIComponent(requestedSuite)}/ypad/plans`),
+      api(`/api/suites/${encodeURIComponent(requestedSuite)}/ypad/actions`),
+      api(`/api/suites/${encodeURIComponent(requestedSuite)}/ypad/designs`),
     ]);
+    if (state.suiteName !== requestedSuite) return; // superseded — a newer switch already won
     ypadState.insights = {
       ...computeYpadInsights(plans),
       actionSteps: actions.row_count ?? actions.rows?.length ?? 0,
       designRows: designs.row_count ?? designs.rows?.length ?? 0,
     };
   } catch {
+    if (state.suiteName !== requestedSuite) return;
     ypadState.insights = null;
   }
+  if (state.suiteName !== requestedSuite) return;
   renderYpadInsights();
   refreshArenaYpadWidget();
   refreshProjectBannerMeta();
@@ -2777,6 +3057,16 @@ function initUserMenu() {
       const action = el.dataset.userAction;
       if (action === "upcoming") {
         setStatus("Coming soon — Nalanda & Atomic 77 are on the roadmap");
+        return;
+      }
+      if (action === "account-roles") {
+        const copy = window.ROLE_COPY || {};
+        const lines = ["creator", "hunter", "promoter", "nalanda", "account"]
+          .map((k) => copy[k])
+          .filter(Boolean)
+          .map((r) => `• ${r.title}: ${r.pitch}`)
+          .join("\n\n");
+        alert(lines || "Role guide unavailable.");
         return;
       }
       if (action === "promoter") showPhase("promoter");
@@ -3723,30 +4013,26 @@ function renderYpadExplorer() {
     btn.setAttribute("aria-selected", on ? "true" : "false");
   });
   const isEnv = tab === "env";
-  $("#ypad-table-wrap").hidden = isEnv || ypadState.editMode;
   $("#ypad-env-panel").hidden = !isEnv || ypadState.editMode;
   $("#ypad-csv-editor").hidden = !ypadState.editMode || isEnv;
   $("#ypad-run-y-wrap").hidden = true;
   const covChips = $("#ypad-coverage-chips");
   if (covChips) covChips.hidden = tab !== "plans" || ypadState.editMode;
   const designsToolbar = $("#ypad-designs-toolbar");
-  if (designsToolbar) designsToolbar.hidden = tab !== "designs" || ypadState.editMode;
+  if (designsToolbar) designsToolbar.hidden = true;
   $("#ypad-toggle-edit").hidden = isEnv;
   $("#ypad-save").hidden = !ypadState.editMode || isEnv;
   $("#ypad-filter").hidden = ypadState.editMode;
-  if (tab === "designs" && !ypadState.editMode) {
-    const modeSel = $("#ypad-design-col-mode");
-    if (modeSel) modeSel.value = ypadState.designColumnMode;
-    $$(".ypad-design-group-chip").forEach((chip) => {
-      chip.classList.toggle("active", chip.dataset.designGroup === ypadState.designGroupFilter);
-    });
-  }
 
   if (data?.paths?.length) {
-    $("#ypad-meta").textContent = `${data.row_count ?? data.rows?.length ?? 0} rows · ${data.paths[0]}`;
+    const srcHint =
+      ypadState.source ||
+      (data.multi_file ? `${data.paths.length} files (pick source to edit)` : data.paths[0]);
+    $("#ypad-meta").textContent = `${data.row_count ?? data.rows?.length ?? 0} rows · ${srcHint}`;
   } else {
     $("#ypad-meta").textContent = "";
   }
+  renderYpadSourceChips(data);
 
   if (isEnv) {
     $("#ypad-env-example").textContent = data?.env_example || "# No ENV defined";
@@ -3758,10 +4044,39 @@ function renderYpadExplorer() {
     return;
   }
 
-  const rows = getYpadDisplayRows();
+  const rowsAll = getYpadDisplayRows();
+  const pageSize = ypadState.pageSize || 50;
+  const maxPage = Math.max(0, Math.ceil(rowsAll.length / pageSize) - 1);
+  if (ypadState.page > maxPage) ypadState.page = maxPage;
+  const start = ypadState.page * pageSize;
+  const rows = rowsAll.slice(start, start + pageSize);
   const { cols, labels } = ypadDisplayColumnsForTab(tab, data);
   const tableWrap = $("#ypad-table-wrap");
-  if (tableWrap) tableWrap.classList.toggle("ypad-table-wide", tab === "designs" && cols.length > 4);
+  const showTable = ypadState.showTable || ypadState.editMode;
+  if (tableWrap) {
+    tableWrap.hidden = isEnv || ypadState.editMode ? (isEnv || false) : !showTable;
+    if (ypadState.editMode) tableWrap.hidden = true;
+    tableWrap.classList.toggle("ypad-table-wide", tab === "designs" && cols.length > 4);
+  }
+  const showBtn = $("#ypad-show-table");
+  if (showBtn) {
+    showBtn.hidden = isEnv || ypadState.editMode;
+    showBtn.textContent = ypadState.showTable ? "Hide table" : "Show table";
+  }
+  const pageMeta = $("#ypad-page-meta");
+  if (pageMeta) {
+    pageMeta.textContent = rowsAll.length
+      ? `${start + 1}–${Math.min(start + pageSize, rowsAll.length)} of ${rowsAll.length}`
+      : "0 rows";
+  }
+  const prevBtn = $("#ypad-page-prev");
+  const nextBtn = $("#ypad-page-next");
+  if (prevBtn) {
+    prevBtn.hidden = !ypadState.showTable || ypadState.page <= 0;
+  }
+  if (nextBtn) {
+    nextBtn.hidden = !ypadState.showTable || ypadState.page >= maxPage;
+  }
 
   const thead = $("#ypad-thead");
   const tbody = $("#ypad-tbody");
@@ -3797,7 +4112,14 @@ function openYpadDrawer(row) {
   const label =
     row.PlanName || row.PlanId || row.DataName || row.ActionName || row.StepInfo || "Row details";
   title.textContent = label;
-  body.innerHTML = Object.entries(row)
+  const preferred = ["PlanId", "PlanName", "Tags", "Run", "CreatedBy", "CreatedAt", "StepId", "DataName"];
+  const entries = Object.entries(row).sort(([a], [b]) => {
+    const ia = preferred.indexOf(a);
+    const ib = preferred.indexOf(b);
+    if (ia >= 0 || ib >= 0) return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib);
+    return a.localeCompare(b);
+  });
+  body.innerHTML = entries
     .map(([k, v]) => `<dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v || "—")}</dd>`)
     .join("");
   if (backdrop) backdrop.hidden = false;
@@ -3813,8 +4135,60 @@ function closeYpadDrawer(rerender = true) {
   if (rerender) renderYpadExplorer();
 }
 
+function renderYpadSourceChips(data) {
+  let host = $("#ypad-source-chips");
+  if (!host) {
+    const toolbar = $(".ypad-toolbar");
+    if (!toolbar) return;
+    host = document.createElement("div");
+    host.id = "ypad-source-chips";
+    host.className = "ypad-source-chips";
+    host.setAttribute("role", "group");
+    host.setAttribute("aria-label", "yPAD source file");
+    toolbar.insertBefore(host, toolbar.firstChild);
+  }
+  const sources = data?.sources || [];
+  if (!data?.multi_file && sources.length <= 1) {
+    host.hidden = true;
+    host.innerHTML = "";
+    return;
+  }
+  host.hidden = false;
+  const chips = [
+    { kind: "", source: "", label: "All files" },
+    { kind: "gate", source: "", label: "Gate" },
+    { kind: "journey", source: "", label: "Journey" },
+    ...sources.map((s) => ({
+      kind: "",
+      source: s.path,
+      label: `${s.kind}: ${String(s.path).split("/").pop()}`,
+    })),
+  ];
+  host.innerHTML = chips
+    .map((c) => {
+      const active =
+        (c.source && ypadState.source === c.source) ||
+        (!c.source && !ypadState.source && (ypadState.sourceKind || "") === (c.kind || ""));
+      return `<button type="button" class="ypad-source-chip${active ? " active" : ""}" data-source="${escapeHtml(c.source)}" data-kind="${escapeHtml(c.kind)}">${escapeHtml(c.label)}</button>`;
+    })
+    .join("");
+  host.querySelectorAll(".ypad-source-chip").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      ypadState.source = btn.dataset.source || "";
+      ypadState.sourceKind = btn.dataset.kind || "";
+      loadYpadSheet(ypadState.tab);
+    });
+  });
+}
+
 function toggleYpadEdit() {
   if (ypadState.tab === "env") return;
+  const paths = ypadState.data?.paths || [];
+  const multi = !!ypadState.data?.multi_file || paths.length > 1;
+  if (!ypadState.editMode && multi && !ypadState.source && paths.length !== 1) {
+    setStatus("Pick a Gate or Journey source chip before editing multi-file yPAD sheets.");
+    return;
+  }
   ypadState.editMode = !ypadState.editMode;
   renderYpadExplorer();
 }
@@ -3826,13 +4200,142 @@ async function saveYpadSheet() {
     setStatus("CSV must have a header row");
     return;
   }
-  await api(`/api/suites/${encodeURIComponent(state.suiteName)}/ypad/${ypadState.tab}`, {
-    method: "PUT",
-    body: JSON.stringify({ headers: parsed.headers, rows: parsed.rows }),
-  });
+  const paths = ypadState.data?.paths || [];
+  const multi = !!ypadState.data?.multi_file || paths.length > 1;
+  const source =
+    ypadState.source ||
+    (paths.length === 1 ? paths[0] : "") ||
+    (ypadState.data?.sources?.length === 1 ? ypadState.data.sources[0].path : "");
+  if (multi && !source) {
+    setStatus("Pick a source file (gate or journey) before saving — merged writes are blocked.");
+    return;
+  }
+  try {
+    await api(`/api/suites/${encodeURIComponent(state.suiteName)}/ypad/${ypadState.tab}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        headers: parsed.headers,
+        rows: parsed.rows,
+        ...(source ? { source } : {}),
+      }),
+    });
+  } catch (err) {
+    setStatus(String(err.message || err));
+    return;
+  }
   ypadState.editMode = false;
   await loadYpadSheet(ypadState.tab);
-  setStatus(`Saved y${ypadState.tab === "plans" ? "1Plans" : ypadState.tab === "actions" ? "2Actions" : "3Designs"}.csv`);
+  const label = ypadState.tab === "plans" ? "1Plans" : ypadState.tab === "actions" ? "2Actions" : "3Designs";
+  setStatus(`Saved y${label}.csv${source ? ` → ${source}` : ""}`);
+}
+
+async function loadYpadVersions() {
+  const list = $("#ypad-versions-list");
+  if (!list || !state.suiteName) return;
+  try {
+    const data = await api(`/api/suites/${encodeURIComponent(state.suiteName)}/ypad-versions`);
+    ypadState.versions = data.versions || [];
+  } catch {
+    ypadState.versions = [];
+  }
+  list.innerHTML = ypadState.versions.length
+    ? ypadState.versions
+        .map((v) => {
+          const active = v.id === ypadState.selectedVersionId ? " active" : "";
+          return `<li class="ypad-version-item${active}" data-vid="${escapeHtml(v.id)}">
+            <div><strong>${escapeHtml(v.label || v.id)}</strong>
+            <span class="meta">${escapeHtml(v.author || "—")} · ${escapeHtml(v.created_at || "")}</span></div>
+            <div class="ypad-version-actions">
+              <button type="button" class="linkish" data-act="diff">Diff</button>
+              <button type="button" class="linkish" data-act="merge">Merge missing</button>
+              <button type="button" class="linkish" data-act="restore">Restore</button>
+            </div>
+          </li>`;
+        })
+        .join("")
+    : `<li class="meta">No snapshots yet — Snapshot before a big rebuild.</li>`;
+  list.querySelectorAll(".ypad-version-item").forEach((li) => {
+    const vid = li.dataset.vid;
+    li.querySelectorAll("button[data-act]").forEach((btn) => {
+      btn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        handleYpadVersionAction(vid, btn.dataset.act);
+      });
+    });
+    li.addEventListener("click", () => {
+      ypadState.selectedVersionId = vid;
+      loadYpadVersions();
+    });
+  });
+}
+
+async function handleYpadVersionAction(versionId, act) {
+  if (!state.suiteName || !versionId) return;
+  const base = `/api/suites/${encodeURIComponent(state.suiteName)}/ypad-versions/${encodeURIComponent(versionId)}`;
+  try {
+    if (act === "diff") {
+      const diff = await api(`${base}/diff?sheet=plans`);
+      const el = $("#ypad-version-diff");
+      if (el) {
+        el.hidden = false;
+        el.innerHTML =
+          `<strong>Diff vs current</strong> — +${diff.counts?.added || 0} / −${diff.counts?.removed || 0} / ~${diff.counts?.changed || 0}` +
+          `<pre class="ypad-version-diff-pre">${escapeHtml(
+            JSON.stringify(
+              {
+                added: (diff.added || []).slice(0, 8).map((r) => r.PlanId || r.DataName),
+                removed: (diff.removed || []).slice(0, 8).map((r) => r.PlanId || r.DataName),
+                changed: (diff.changed || []).slice(0, 8).map((c) => c.key),
+              },
+              null,
+              2
+            )
+          )}</pre>`;
+      }
+      setStatus(`Compared version ${versionId}`);
+      return;
+    }
+    if (act === "merge") {
+      const res = await api(`${base}/merge`, {
+        method: "POST",
+        body: JSON.stringify({ sheet: "plans" }),
+      });
+      setStatus(`Merged ${res.merged || 0} missing plan(s) from ${versionId}`);
+      await loadYpadSheet(ypadState.tab);
+      return;
+    }
+    if (act === "restore") {
+      if (!confirm(`Restore yPAD files from snapshot ${versionId}? Current CSVs will be overwritten.`)) return;
+      await api(`${base}/restore`, { method: "POST", body: "{}" });
+      setStatus(`Restored yPAD from ${versionId}`);
+      await loadYpadSheet(ypadState.tab);
+      await loadYpadVersions();
+    }
+  } catch (err) {
+    setStatus(String(err.message || err));
+  }
+}
+
+async function createYpadSnapshot() {
+  if (!state.suiteName) return;
+  const label = prompt("Snapshot label (optional)", "before-rebuild") || "";
+  const author =
+    getAuthUser()?.name || getAuthUser()?.email || localStorage.getItem("qoa_profile_name") || "arena";
+  try {
+    const snap = await api(`/api/suites/${encodeURIComponent(state.suiteName)}/ypad-versions`, {
+      method: "POST",
+      body: JSON.stringify({
+        label,
+        author,
+        source_build: state.projectId || state.suiteName || "",
+      }),
+    });
+    ypadState.selectedVersionId = snap.id;
+    setStatus(`Snapshot saved: ${snap.label || snap.id}`);
+    await loadYpadVersions();
+  } catch (err) {
+    setStatus(String(err.message || err));
+  }
 }
 
 function updateInviteButtonState() {
@@ -4271,7 +4774,9 @@ function renderChat(el, messages) {
   el.innerHTML = (messages || [])
     .map(
       (m) =>
-        `<div class="chat-msg chat-${m.role}"><span class="chat-role">${m.role === "assistant" ? "BRAHL AI" : "You"}</span>${escapeHtml(m.text)}</div>`
+        `<div class="chat-msg chat-${m.role}"><span class="chat-role">${m.role === "assistant" ? "BRAHL AI" : "You"}</span>${
+          m.role === "assistant" ? renderMarkdown(m.text) : escapeHtml(m.text)
+        }</div>`
     )
     .join("");
   scrollChatToBottom();
@@ -4626,6 +5131,7 @@ async function renderConsultantWorkspace() {
 const huntSession = {
   issues: [],
   blobs: [],
+  evidenceIds: [],
   timerId: null,
   startedAt: null,
   mediaRecorder: null,
@@ -4758,6 +5264,7 @@ function persistHuntSession() {
 async function loadHuntSessionForProject() {
   huntSession.issues = [];
   huntSession.blobs = [];
+  huntSession.evidenceIds = [];
   stopHuntTimer();
   const preview = $("#hunt-preview");
   if (preview) {
@@ -4792,8 +5299,9 @@ async function loadHuntSessionForProject() {
       ? `${huntSession.issues.length} finding(s) in this hunt log${blobNote}`
       : huntSession.blobs.length
         ? `${huntSession.blobs.length} recording(s) restored — add findings or submit`
-        : "Ready — record your session or log findings"
+        : "Ready — use + Add evidence or log findings"
   );
+  await renderEvidenceLibraries();
 }
 
 function setHuntRecStatus(msg) {
@@ -4860,24 +5368,28 @@ async function startHuntRecording() {
     recorder.ondataavailable = (e) => {
       if (e.data?.size) chunks.push(e.data);
     };
-    recorder.onstop = () => {
+    recorder.onstop = async () => {
       const blob = new Blob(chunks, { type: mime });
       const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-      huntSession.blobs.push({ blob, name: `hunt-screen-${stamp}.webm`, type: mime, kind: "screen" });
+      const name = `hunt-screen-${stamp}.webm`;
+      huntSession.blobs.push({ blob, name, type: mime, kind: "screen" });
       const preview = $("#hunt-preview");
       if (preview) {
         preview.src = URL.createObjectURL(blob);
         preview.hidden = false;
       }
       stopHuntStreams();
-      setHuntRecStatus(`Screen recording saved (${Math.round(blob.size / 1024)} KB)`);
-      $("#btn-hunt-start")?.classList.remove("recording");
+      setHuntRecStatus(`Screen recording saved (${Math.round(blob.size / 1024)} KB) — uploading…`);
       persistHuntSession();
+      const path = await uploadEvidenceBlob(blob, name);
+      if (path) {
+        await registerEvidence("screen_recording", { path, title: "Screen recording" });
+        setHuntRecStatus(`Screen recording added to evidence library (${Math.round(blob.size / 1024)} KB)`);
+      }
     };
     display.getVideoTracks()[0]?.addEventListener("ended", () => stopHuntRecording());
     recorder.start(1000);
     huntSession.mediaRecorder = recorder;
-    $("#btn-hunt-start")?.classList.add("recording");
     $("#btn-hunt-stop").hidden = false;
     startHuntTimer();
     setHuntRecStatus("Recording — share the app window or tab you are testing");
@@ -4911,13 +5423,19 @@ async function startHuntAudioNote() {
     recorder.ondataavailable = (e) => {
       if (e.data?.size) chunks.push(e.data);
     };
-    recorder.onstop = () => {
+    recorder.onstop = async () => {
       stream.getTracks().forEach((t) => t.stop());
       const blob = new Blob(chunks, { type: mime });
       const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-      huntSession.blobs.push({ blob, name: `hunt-audio-${stamp}.webm`, type: mime, kind: "audio" });
-      setHuntRecStatus(`Audio note saved (${Math.round(blob.size / 1024)} KB)`);
+      const name = `hunt-audio-${stamp}.webm`;
+      huntSession.blobs.push({ blob, name, type: mime, kind: "audio" });
+      setHuntRecStatus(`Audio note saved (${Math.round(blob.size / 1024)} KB) — uploading…`);
       persistHuntSession();
+      const path = await uploadEvidenceBlob(blob, name);
+      if (path) {
+        await registerEvidence("audio_note", { path, title: "Audio note" });
+        setHuntRecStatus(`Audio note added to evidence library (${Math.round(blob.size / 1024)} KB)`);
+      }
     };
     setHuntRecStatus("Recording audio… (auto-stops after 60s)");
     recorder.start();
@@ -4987,6 +5505,194 @@ function attachHuntScreenshot(file) {
   persistHuntSession();
 }
 
+/** Add evidence — one menu → screen/audio/screenshot/file/URL/note, all land in the project evidence library. */
+async function uploadEvidenceBlob(blob, filename) {
+  if (!state.projectId) return null;
+  try {
+    const fd = new FormData();
+    fd.append("file", blob, filename);
+    const res = await fetch(`/api/projects/${state.projectId}/documents`, { method: "POST", body: fd });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.document?.path || null;
+  } catch {
+    return null;
+  }
+}
+
+async function registerEvidence(kind, opts = {}) {
+  if (!state.projectId) return null;
+  try {
+    const author = teamAuthorMeta().author;
+    const { item } = await api(`/api/projects/${state.projectId}/evidence`, {
+      method: "POST",
+      body: JSON.stringify({ kind, author, ...opts }),
+    });
+    if (item?.id) huntSession.evidenceIds.push(item.id);
+    await renderEvidenceLibraries();
+    return item;
+  } catch (e) {
+    setStatus(`Evidence save failed: ${e.message}`);
+    return null;
+  }
+}
+
+function closeEvidenceMenu() {
+  const menu = $("#evidence-menu");
+  if (menu) menu.hidden = true;
+  $("#btn-add-evidence")?.setAttribute("aria-expanded", "false");
+}
+
+function openEvidenceAction(kind) {
+  closeEvidenceMenu();
+  $("#evidence-url-form")?.setAttribute("hidden", "");
+  $("#evidence-note-form")?.setAttribute("hidden", "");
+  if (kind === "screen") startHuntRecording();
+  else if (kind === "audio") startHuntAudioNote();
+  else if (kind === "screenshot") $("#hunt-screenshot-file")?.click();
+  else if (kind === "file") $("#hunt-file-upload")?.click();
+  else if (kind === "url") $("#evidence-url-form")?.removeAttribute("hidden");
+  else if (kind === "note") $("#evidence-note-form")?.removeAttribute("hidden");
+}
+
+function bindEvidenceMenu() {
+  if (bindEvidenceMenu._bound) return;
+  bindEvidenceMenu._bound = true;
+  const btn = $("#btn-add-evidence");
+  const menu = $("#evidence-menu");
+  btn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const willOpen = menu?.hidden;
+    if (menu) menu.hidden = !willOpen;
+    btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+  });
+  menu?.addEventListener("click", (e) => {
+    const item = e.target.closest("[data-eve]");
+    if (item) openEvidenceAction(item.dataset.eve);
+  });
+  document.addEventListener("click", (e) => {
+    if (menu && !menu.hidden && !menu.contains(e.target) && e.target !== btn) closeEvidenceMenu();
+  });
+  $("#hunt-screenshot-file")?.addEventListener("change", async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    attachHuntScreenshot(file);
+    setHuntRecStatus(`Uploading screenshot ${file.name}…`);
+    const path = await uploadEvidenceBlob(file, file.name);
+    if (path) {
+      await registerEvidence("screenshot", { path, title: file.name });
+      setHuntRecStatus(`Screenshot added to evidence library: ${file.name}`);
+    }
+  });
+  $("#hunt-file-upload")?.addEventListener("change", async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setHuntRecStatus(`Uploading ${file.name}…`);
+    const path = await uploadEvidenceBlob(file, file.name);
+    if (path) {
+      const kind = file.type?.startsWith("video/") ? "video" : "document";
+      await registerEvidence(kind, { path, title: file.name });
+      setHuntRecStatus(`${file.name} added to evidence library`);
+    } else {
+      setHuntRecStatus(`Upload failed for ${file.name}`);
+    }
+  });
+  $("#evidence-url-save")?.addEventListener("click", async () => {
+    const url = $("#evidence-url-input")?.value?.trim();
+    if (!url) return;
+    const title = $("#evidence-url-title")?.value?.trim() || url;
+    const item = await registerEvidence("url", { url, title });
+    if (item) {
+      if ($("#evidence-url-input")) $("#evidence-url-input").value = "";
+      if ($("#evidence-url-title")) $("#evidence-url-title").value = "";
+      $("#evidence-url-form").hidden = true;
+      setHuntRecStatus(`Link added to evidence library: ${title}`);
+    }
+  });
+  $("#evidence-url-cancel")?.addEventListener("click", () => {
+    if ($("#evidence-url-form")) $("#evidence-url-form").hidden = true;
+  });
+  $("#evidence-note-save")?.addEventListener("click", async () => {
+    const note = $("#evidence-note-input")?.value?.trim();
+    if (!note) return;
+    const item = await registerEvidence("note", { note, title: note.slice(0, 60) });
+    if (item) {
+      if ($("#evidence-note-input")) $("#evidence-note-input").value = "";
+      $("#evidence-note-form").hidden = true;
+      setHuntRecStatus("Text note added to evidence library");
+    }
+  });
+  $("#evidence-note-cancel")?.addEventListener("click", () => {
+    if ($("#evidence-note-form")) $("#evidence-note-form").hidden = true;
+  });
+  $("#hunt-evidence-search")?.addEventListener("input", () => renderEvidenceLibraries());
+  $("#brahl-team-lib-search")?.addEventListener("input", () => renderEvidenceLibraries());
+}
+
+const EVIDENCE_KIND_LABELS = {
+  screen_recording: "Screen recording",
+  audio_note: "Audio note",
+  screenshot: "Screenshot",
+  video: "Video",
+  file: "File",
+  document: "Document",
+  url: "Link",
+  note: "Note",
+};
+
+function evidenceItemHtml(item) {
+  const kindLabel = EVIDENCE_KIND_LABELS[item.kind] || item.kind || "Evidence";
+  const when = item.created_at ? new Date(item.created_at).toLocaleString() : "";
+  let body = "";
+  if (item.url) {
+    body = `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title || item.url)}</a>`;
+  } else if (item.path && state.projectId) {
+    const name = PathBasename(item.path);
+    const href = `/api/projects/${encodeURIComponent(state.projectId)}/uploads/${encodeURIComponent(name)}`;
+    body = `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title || name)}</a>`;
+  } else {
+    body = escapeHtml(item.title || item.note || "Evidence");
+  }
+  return (
+    `<li class="evidence-item" data-evidence-id="${escapeHtml(item.id || "")}">` +
+    `<span class="evidence-kind">${escapeHtml(kindLabel)}</span>` +
+    `<span>${body}</span>` +
+    `<span class="evidence-meta">${escapeHtml(item.author || "")}${when ? " · " + escapeHtml(when) : ""}</span>` +
+    `</li>`
+  );
+}
+
+async function fetchEvidenceLibrary(query) {
+  if (!state.projectId) return [];
+  try {
+    const q = query ? `?q=${encodeURIComponent(query)}` : "";
+    const { items } = await api(`/api/projects/${state.projectId}/evidence${q}`);
+    return items || [];
+  } catch {
+    return [];
+  }
+}
+
+async function renderEvidenceLibraries() {
+  if (!state.projectId) return;
+  const huntList = $("#hunt-evidence-list");
+  const teamList = $("#brahl-team-library");
+  if (!huntList && !teamList) return;
+  const query = ($("#hunt-evidence-search")?.value || $("#brahl-team-lib-search")?.value || "").trim();
+  const items = await fetchEvidenceLibrary(query);
+  const html = items.length
+    ? items.map(evidenceItemHtml).join("")
+    : '<li class="empty-hint">No evidence yet — use + Add evidence above or link a source on BRAHL.</li>';
+  if (huntList) huntList.innerHTML = html;
+  if (teamList) teamList.innerHTML = html || renderBrahlTeamLibraryFallbackHtml();
+}
+
+function renderBrahlTeamLibraryFallbackHtml() {
+  return '<li class="empty-hint">No evidence yet — add links or upload docs the team can reference.</li>';
+}
+
 function buildHuntReportMarkdown() {
   const lines = [
     "# QA Hunter — Hunt evidence report",
@@ -5046,6 +5752,7 @@ async function uploadHuntEvidence() {
 async function clearHuntSessionAfterSubmit() {
   huntSession.issues = [];
   huntSession.blobs = [];
+  huntSession.evidenceIds = [];
   const key = huntStorageKey();
   if (key) sessionStorage.removeItem(key);
   if (state.projectId) await huntIdbClear(state.projectId);
@@ -5092,15 +5799,24 @@ async function toggleAiMode() {
     return;
   }
   const ai_enabled = $("#ai-toggle").checked;
-  const { project } = await api(`/api/projects/${state.projectId}`, {
-    method: "PATCH",
-    body: JSON.stringify({ ai_enabled }),
-  });
-  activeProject = project;
+  if (activeProject) activeProject.ai_enabled = ai_enabled;
   applyAiMode();
-  loadBuildAiStatus();
-  setStatus(ai_enabled ? "AI assistant enabled" : "AI off — manual Build mode");
-  renderClientWorkspace();
+  try {
+    const { project } = await api(`/api/projects/${state.projectId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ ai_enabled }),
+    });
+    activeProject = project;
+    applyAiMode();
+    loadBuildAiStatus();
+    setStatus(ai_enabled ? "AI assistant enabled" : "AI off — manual Build mode");
+    renderClientWorkspace();
+  } catch (err) {
+    if (activeProject) activeProject.ai_enabled = !ai_enabled;
+    $("#ai-toggle").checked = !ai_enabled;
+    applyAiMode();
+    setStatus(`AI toggle failed: ${err.message || err}`);
+  }
 }
 
 async function saveManualPurpose() {
@@ -5117,10 +5833,6 @@ async function saveManualPurpose() {
 
 async function sendChat(ev) {
   ev.preventDefault();
-  if (!isAiOn()) {
-    setStatus("AI is off — turn on AI in the top bar or use manual purpose");
-    return;
-  }
   const input = $("#chat-input");
   const sendBtn = $("#chat-send-btn");
   const text = input.value.trim();
@@ -5129,6 +5841,17 @@ async function sendChat(ev) {
   input.placeholder = "Describe what you want BRAHL to test…";
   if (sendBtn) sendBtn.disabled = true;
   try {
+    // When AI is off, still accept a Build note (comment) so chat is never dead
+    if (!isAiOn()) {
+      const data = await api(`/api/projects/${state.projectId}/chat`, {
+        method: "POST",
+        body: JSON.stringify({ text, note_only: true }),
+      });
+      activeProject = data.project;
+      renderChat($("#chat-thread"), activeProject.chat_messages || []);
+      setStatus("Note saved (AI off — turn AI on for BRAHL replies)");
+      return;
+    }
     const data = await api(`/api/projects/${state.projectId}/chat`, {
       method: "POST",
       body: JSON.stringify({ text }),
@@ -5241,6 +5964,7 @@ async function submitHitlReport() {
       features_found: parseInt($("#hitl-features").value, 10) || 0,
       hunt_report_path: huntUpload?.huntReportPath || null,
       artifact_paths: huntUpload?.artifactPaths?.length ? huntUpload.artifactPaths : null,
+      evidence_ids: huntSession.evidenceIds.length ? huntSession.evidenceIds : null,
     }),
   });
   if (huntUpload) await clearHuntSessionAfterSubmit();
@@ -5335,33 +6059,47 @@ async function applyHealPatches() {
   const logEl = $("#heal-log");
   const applyHint = $("#heal-apply-hint");
   const applyBtn = $("#btn-heal-apply");
+  const suite = suiteConfigPath();
   if (applyBtn) applyBtn.disabled = true;
   try {
     const preview = await api(`/api/projects/${state.projectId}/heal-apply`, {
       method: "POST",
       body: JSON.stringify({
         patches: lastHealPatches,
-        suite_config: suiteConfigPath(),
+        suite_config: suite,
         dry_run: true,
       }),
     });
     const n = preview.applied || 0;
     if (!n) {
-      if (logEl) {
-        logEl.textContent = `Dry-run: nothing to apply.\n${JSON.stringify(preview.changes || [], null, 2)}`;
+      const detail = [
+        `Dry-run: nothing to apply for suite \`${suite}\`.`,
+        preview.error || "",
+        ...(preview.errors || []),
+        "",
+        JSON.stringify(preview.changes || [], null, 2),
+      ]
+        .filter(Boolean)
+        .join("\n");
+      if (logEl) logEl.textContent = detail;
+      if (applyHint) {
+        applyHint.hidden = false;
+        applyHint.textContent =
+          preview.error ||
+          "No matching CSV rows — check PlanId/StepId and that the project suite_config points at the right yPAD.";
       }
       setStatus("Heal Apply: no matching CSV rows");
       return;
     }
     const ok = confirm(
-      `Apply ${n} yPAD field change(s) from AI heal?\n\nThis updates suite CSV files on disk. A1 defects are skipped.`
+      `Apply ${n} yPAD field change(s) from AI heal?\n\nSuite: ${suite}\nUpdates Input/Expected/locators only — never Run=Y/N.\nA1 defects are skipped.`
     );
     if (!ok) return;
     const res = await api(`/api/projects/${state.projectId}/heal-apply`, {
       method: "POST",
       body: JSON.stringify({
         patches: lastHealPatches,
-        suite_config: suiteConfigPath(),
+        suite_config: suite,
         dry_run: false,
       }),
     });
@@ -5373,7 +6111,7 @@ async function applyHealPatches() {
       "",
       ...(res.changes || []).slice(0, 20).map(
         (c) =>
-          `[${c.status}] ${c.sheet || ""} ${JSON.stringify(c.match || {})} → ${JSON.stringify(c.after || {})}`
+          `[${c.status}] ${c.sheet || ""} ${JSON.stringify(c.match || {})} → ${JSON.stringify(c.after || c.reason || {})}`
       ),
     ];
     if (logEl) logEl.textContent = lines.filter(Boolean).join("\n");
@@ -5396,6 +6134,10 @@ async function applyHealPatches() {
     }
   } catch (e) {
     if (logEl) logEl.textContent = `Apply error: ${e.message}`;
+    if (applyHint) {
+      applyHint.hidden = false;
+      applyHint.textContent = e.message;
+    }
   } finally {
     if (applyBtn) applyBtn.disabled = false;
   }
@@ -5408,15 +6150,25 @@ async function shrinkPlans() {
     logEl.textContent = "Select a run in Analyze first.";
     return;
   }
+  const ok = confirm(
+    "Shrink sets Run=Y only on plans that failed in this run (others → Run=N).\n\n" +
+      "This is Loop prep — not AI Heal Apply.\n" +
+      "Use Restore all Run=Y when you want the full suite again."
+  );
+  if (!ok) return;
   try {
     const res = await api("/api/ypad/shrink", {
       method: "POST",
       body: JSON.stringify({ run_name: runName, suite_config: suiteConfigPath() }),
     });
     logEl.textContent = res.ok
-      ? `Shrunk: Run=Y on ${res.run_y} failure(s), Run=N on ${res.run_n} pass(es). ${res.changed} row(s) updated.`
+      ? `Shrunk: Run=Y on ${res.run_y} failure(s), Run=N on ${res.run_n} pass(es). ${res.changed} row(s) updated.\n` +
+        `Click “Restore all Run=Y” before a full Verify.`
       : res.error || "No failures to shrink.";
-    if (res.ok) await recordCycleEvent("Shrink", `Run=Y on ${res.run_y} plans`, runName);
+    if (res.ok) {
+      await recordCycleEvent("Shrink", `Run=Y on ${res.run_y} plans`, runName);
+      setStatus(`Shrunk to ${res.run_y} failing plan(s) — Restore before full Verify`);
+    }
   } catch (e) {
     logEl.textContent = `Error: ${e.message}`;
   }
@@ -5429,8 +6181,10 @@ async function restorePlans() {
       method: "POST",
       body: JSON.stringify({ suite_config: suiteConfigPath() }),
     });
-    logEl.textContent = `Restored Run=Y on ${res.run_y} plan(s). ${res.changed} row(s) updated.`;
+    logEl.textContent = `Restored Run=Y on ${res.run_y} plan(s). ${res.changed} row(s) updated.` +
+      (res.from_baseline ? " (from pre-shrink baseline)" : "");
     await recordCycleEvent("Restore", "All Run=Y restored");
+    setStatus(`Restored ${res.run_y} Run=Y plan(s)`);
   } catch (e) {
     logEl.textContent = `Error: ${e.message}`;
   }
@@ -5532,7 +6286,8 @@ function refreshLoopBuiltSummary() {
   const auto = draft?.automated_count ?? draft?.test_cases?.filter?.((c) => c.automated !== false)?.length;
   const manual = draft?.manual_count ?? draft?.test_cases?.filter?.((c) => c.automated === false)?.length;
   const parts = [`yPAD ${suite}`];
-  if (activeProject?.latest_run) parts.push(`last run ${activeProject.latest_run}`);
+  if (activeProject?.app_version) parts.push(`version ${activeProject.app_version}`);
+  if (activeProject?.latest_run) parts.push(`latest run ${activeProject.latest_run}`);
   if (auto != null || manual != null) parts.push(`${auto ?? "—"} automated · ${manual ?? "—"} manual`);
   if (metaEl) metaEl.textContent = parts.join(" · ");
   const promptEl = $("#cycle-prompt");
@@ -5543,6 +6298,156 @@ function refreshLoopBuiltSummary() {
     docsEl.value = [...new Set(paths)].join("\n");
   }
 }
+
+let schedulesCache = [];
+let scheduleProfilesSelected = new Set(["Smoke"]);
+
+function renderScheduleProfileChips() {
+  const row = $("#schedule-profile-row");
+  if (!row) return;
+  row.innerHTML = runProfileOrder
+    .map(
+      (p) =>
+        `<button type="button" class="fstart-chip schedule-profile-chip${scheduleProfilesSelected.has(p) ? " selected" : ""}" data-profile="${escapeHtml(p)}">${escapeHtml(p)}</button>`
+    )
+    .join("");
+  row.querySelectorAll(".schedule-profile-chip").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const name = btn.dataset.profile;
+      if (scheduleProfilesSelected.has(name)) {
+        if (scheduleProfilesSelected.size > 1) scheduleProfilesSelected.delete(name);
+      } else {
+        scheduleProfilesSelected.add(name);
+      }
+      row.querySelectorAll(".schedule-profile-chip").forEach((b) => {
+        b.classList.toggle("selected", scheduleProfilesSelected.has(b.dataset.profile));
+      });
+      refreshScheduleCostEstimate();
+    });
+  });
+}
+
+async function refreshScheduleCostEstimate() {
+  const el = $("#schedule-cost-estimate");
+  if (!el) return;
+  const runtime = $("#schedule-runtime")?.value || "local";
+  if (runtime !== "cloud") {
+    el.hidden = true;
+    return;
+  }
+  const interval = $("#schedule-interval")?.value || "daily";
+  const threads = Number($("#schedule-thread-count")?.value || 1);
+  const profiles = runProfileOrder.filter((p) => scheduleProfilesSelected.has(p));
+  try {
+    const est = await api(
+      `/api/schedules/cost-estimate?interval=${encodeURIComponent(interval)}&thread_count=${threads}&profiles=${encodeURIComponent(profiles.join(","))}`
+    );
+    el.hidden = false;
+    el.textContent = `Estimated cloud runtime: ~$${est.per_run_usd}/run · ~$${est.monthly_usd_est}/mo at ${interval} cadence (${est.runs_per_month_est} runs). ${est.note}`;
+  } catch {
+    el.hidden = false;
+    el.textContent = "Could not estimate cloud cost right now.";
+  }
+}
+
+function scheduleItemHtml(s) {
+  const runtimeBadge = `<span class="schedule-runtime-badge runtime-${escapeHtml(s.runtime)}">${escapeHtml(s.runtime)}</span>`;
+  const next = s.next_run ? new Date(s.next_run).toLocaleString() : "—";
+  const last = s.last_run_at ? new Date(s.last_run_at).toLocaleString() : "never";
+  const profiles = (s.profiles || []).join("+") || "default";
+  return (
+    `<li class="schedule-item" data-schedule-id="${escapeHtml(s.id)}">` +
+    `<strong>${escapeHtml(s.step_label || "Verify")}</strong>` +
+    `<span class="meta">${escapeHtml(profiles)} · ${escapeHtml(s.interval)} · ${s.thread_count || 1} thread(s)</span>` +
+    runtimeBadge +
+    `<span class="meta">Next: ${escapeHtml(next)} · Last: ${escapeHtml(last)}</span>` +
+    `<span class="schedule-item-spacer"></span>` +
+    `<label class="checkbox-label sm">` +
+    `<input type="checkbox" class="schedule-toggle" ${s.enabled ? "checked" : ""} /> Enabled</label>` +
+    `<button type="button" class="link-btn sm schedule-delete">Delete</button>` +
+    `</li>`
+  );
+}
+
+async function loadSchedules() {
+  const list = $("#schedules-list");
+  if (!list || !state.projectId) return;
+  renderScheduleProfileChips();
+  try {
+    const { schedules } = await api(`/api/projects/${state.projectId}/schedules`);
+    schedulesCache = schedules || [];
+  } catch {
+    schedulesCache = [];
+  }
+  list.innerHTML = schedulesCache.length
+    ? schedulesCache.map(scheduleItemHtml).join("")
+    : '<li class="empty-hint">No schedules yet — automated Verify stays off until you add one.</li>';
+  list.querySelectorAll(".schedule-item").forEach((li) => {
+    const id = li.dataset.scheduleId;
+    li.querySelector(".schedule-toggle")?.addEventListener("change", async (e) => {
+      try {
+        await api(`/api/schedules/${id}/toggle`, {
+          method: "POST",
+          body: JSON.stringify({ enabled: e.target.checked }),
+        });
+        setStatus(e.target.checked ? "Schedule enabled" : "Schedule disabled");
+        loadSchedules();
+      } catch (err) {
+        setStatus(`Could not update schedule: ${err.message}`);
+        e.target.checked = !e.target.checked;
+      }
+    });
+    li.querySelector(".schedule-delete")?.addEventListener("click", async () => {
+      try {
+        await api(`/api/schedules/${id}`, { method: "DELETE" });
+        loadSchedules();
+      } catch (err) {
+        setStatus(`Could not delete schedule: ${err.message}`);
+      }
+    });
+  });
+}
+
+function bindScheduleForm() {
+  const form = $("#schedule-create-form");
+  if (!form || form.dataset.bound) return;
+  form.dataset.bound = "1";
+  $("#schedule-runtime")?.addEventListener("change", refreshScheduleCostEstimate);
+  $("#schedule-interval")?.addEventListener("change", refreshScheduleCostEstimate);
+  $("#schedule-thread-count")?.addEventListener("input", refreshScheduleCostEstimate);
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    if (!state.projectId) return;
+    const configPath = $("#config-select")?.value;
+    if (!configPath) {
+      setStatus("Pick an fStart config on Run first.");
+      return;
+    }
+    const profiles = runProfileOrder.filter((p) => scheduleProfilesSelected.has(p));
+    const body = {
+      suite: state.suiteName || "",
+      config_path: configPath,
+      profiles,
+      thread_count: Number($("#schedule-thread-count")?.value || 1),
+      interval: $("#schedule-interval")?.value || "daily",
+      runtime: $("#schedule-runtime")?.value || "local",
+      step_label: "Verify",
+      enabled: Boolean($("#schedule-enabled")?.checked),
+    };
+    try {
+      await api(`/api/projects/${state.projectId}/schedules`, {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      setStatus("Schedule saved");
+      $("#schedule-enabled").checked = false;
+      loadSchedules();
+    } catch (err) {
+      setStatus(`Could not save schedule: ${err.message}`);
+    }
+  });
+}
+bindScheduleForm();
 
 async function runLoopStep(stepLabel, options = {}) {
   const logEl = $("#loop-log");
@@ -5625,6 +6530,8 @@ async function runBrahlCycle() {
   try {
     await captureContextSilent();
     if (logEl) logEl.textContent += `[Context] Snapshot from Build purpose.\n`;
+    let lastRunName = null;
+    let earlyGreen = false;
     for (let i = 1; i <= times; i++) {
       const label = `Loop ${i}`;
       const job = await runLoopStep(label, i === 1 ? {} : { shrinkFirst: true });
@@ -5633,17 +6540,49 @@ async function runBrahlCycle() {
         setStatus(`${label} failed — see log`);
         return;
       }
+      lastRunName = selectedRun || activeProject?.latest_run || lastRunName;
+      // Early exit when the suite is already green — go straight to BRAHL Go/No-Go
+      if (lastRunName) {
+        try {
+          const stats = await api(`/api/runs/${encodeURIComponent(lastRunName)}/stats`);
+          const fails = Number(stats.fails || 0);
+          const total = Number(stats.total_plans || 0);
+          if (total > 0 && fails === 0) {
+            earlyGreen = true;
+            if (logEl) {
+              logEl.textContent +=
+                `[${label}] All ${total} plan(s) passed — stopping Loop early (no more shrink/rerun).\n`;
+            }
+            break;
+          }
+        } catch {
+          /* continue remaining loops */
+        }
+      }
     }
-    if (verify) {
+    if (verify && !earlyGreen) {
       const job = await runLoopStep("Verify", { restoreFirst: true });
       if (!job || job.status === "failed") {
         setStatus("Verify failed — see log");
         return;
       }
+      lastRunName = selectedRun || activeProject?.latest_run || lastRunName;
+    } else if (verify && earlyGreen && lastRunName) {
+      // Restore full Run=Y before Go/No-Go report so Verify scope is intact
+      try {
+        const res = await api("/api/ypad/restore", {
+          method: "POST",
+          body: JSON.stringify({ suite_config: suiteConfigPath() }),
+        });
+        if (logEl) logEl.textContent += `[Verify] Restored Run=Y on ${res.run_y} plan(s) (skipped re-run — already green).\n`;
+        await recordCycleEvent("Restore", "Green early-exit — Run=Y restored", lastRunName);
+      } catch (e) {
+        if (logEl) logEl.textContent += `[Verify] Restore skipped: ${e.message}\n`;
+      }
     }
-    const runName = selectedRun || activeProject?.latest_run;
-    if (runName) await autoEnsureBrahlReport(runName, verify ? "Verify" : `Loop ${times}`);
-    setStatus("Loop complete — opening BRAHL");
+    const runName = lastRunName || selectedRun || activeProject?.latest_run;
+    if (runName) await autoEnsureBrahlReport(runName, earlyGreen ? "Loop (green)" : verify ? "Verify" : `Loop ${times}`);
+    setStatus(earlyGreen ? "All green — opening BRAHL Go/No-Go" : "Loop complete — opening BRAHL");
     showPhase("brahl");
     await loadBrahlPanel();
   } catch (e) {
@@ -5654,19 +6593,77 @@ async function runBrahlCycle() {
   }
 }
 
+function formatRunTimestamp(ts) {
+  if (!ts || !/^\d{8}_\d{6}$/.test(ts)) return ts || "";
+  const y = ts.slice(0, 4);
+  const mo = ts.slice(4, 6);
+  const d = ts.slice(6, 8);
+  const h = ts.slice(9, 11);
+  const mi = ts.slice(11, 13);
+  const s = ts.slice(13, 15);
+  return `${y}-${mo}-${d} ${h}:${mi}:${s}`;
+}
+
 async function loadRuns() {
-  const suite = state.suiteName || "qoa_web";
-  const { runs } = await api(`/api/runs?suite=${encodeURIComponent(suite)}`);
+  const projectSuite = state.suiteName || activeProject?.suite_name || "";
+  // Load all suites so history survives refresh; still highlight current suite first
+  const { runs } = await api(`/api/runs?suite=all`);
   const list = $("#runs-list");
   if (!list) return;
-  list.innerHTML = runs.length ? "" : `<li>No ${escapeHtml(suite)} runs yet</li>`;
-  runs.forEach((r, i) => {
-    const li = document.createElement("li");
-    li.innerHTML = `${escapeHtml(r.name)}<span class="meta">${r.passes}/${r.total_plans ?? r.passes + r.fails} pass · ${r.fails} fail</span>`;
-    li.onclick = () => selectRun(r.name, li, r);
-    list.appendChild(li);
-    if (i === 0) selectRun(r.name, li, r);
+  if (!runs.length) {
+    list.innerHTML = `<li>No runs yet</li>`;
+    return;
+  }
+  const bySuite = {};
+  runs.forEach((r) => {
+    const key = r.suite || "other";
+    (bySuite[key] ||= []).push(r);
   });
+  const suiteOrder = Object.keys(bySuite).sort((a, b) => {
+    if (projectSuite && a === projectSuite) return -1;
+    if (projectSuite && b === projectSuite) return 1;
+    return a.localeCompare(b);
+  });
+  list.innerHTML = "";
+  let firstLi = null;
+  let firstRun = null;
+  suiteOrder.forEach((suite, si) => {
+    const group = document.createElement("li");
+    group.className = "runs-suite-group";
+    const open = !projectSuite || suite === projectSuite || si === 0;
+    group.innerHTML = `<details ${open ? "open" : ""}><summary>${escapeHtml(suite)} <span class="meta">${bySuite[suite].length} run(s)</span></summary><ul class="runs-suite-children"></ul></details>`;
+    const childUl = group.querySelector(".runs-suite-children");
+    bySuite[suite].forEach((r) => {
+      const li = document.createElement("li");
+      const when = formatRunTimestamp(r.timestamp);
+      li.innerHTML =
+        `<span class="run-name">${escapeHtml(r.name)}</span>` +
+        `<span class="meta">${when ? escapeHtml(when) + " · " : ""}${r.passes}/${r.total_plans ?? r.passes + r.fails} pass · ${r.fails} fail</span>`;
+      li.onclick = (ev) => {
+        ev.stopPropagation();
+        selectRun(r.name, li, r);
+      };
+      childUl.appendChild(li);
+      if (!firstLi) {
+        firstLi = li;
+        firstRun = r;
+      }
+    });
+    list.appendChild(group);
+  });
+  // Prefer latest run for current project suite
+  const preferred = projectSuite
+    ? runs.find((r) => r.suite === projectSuite)
+    : firstRun;
+  if (preferred) {
+    const preferLi =
+      [...list.querySelectorAll(".runs-suite-children li")].find((el) =>
+        el.textContent.includes(preferred.name)
+      ) || firstLi;
+    if (preferLi) selectRun(preferred.name, preferLi, preferred);
+  } else if (firstLi && firstRun) {
+    selectRun(firstRun.name, firstLi, firstRun);
+  }
 }
 
 async function selectRun(name, li, run) {
@@ -5674,7 +6671,7 @@ async function selectRun(name, li, run) {
   lastAnalyzeMarkdown = "";
   renderAiMarkdown($("#analyze-ai-result"), "");
   renderAiMarkdown($("#heal-ai-result"), "");
-  $$("#runs-list li").forEach((el) => el.classList.remove("selected"));
+  $$("#runs-list .runs-suite-children li").forEach((el) => el.classList.remove("selected"));
   if (li) li.classList.add("selected");
   try {
     const failures = await fetchRunFailures(name);
@@ -5710,7 +6707,7 @@ async function selectRun(name, li, run) {
   }
 }
 
-async function startRun(stepLabel, { parallel = false } = {}) {
+async function startRun(stepLabel) {
   if (!state.projectId) {
     alert("Select a project on Build first.");
     return null;
@@ -5718,26 +6715,38 @@ async function startRun(stepLabel, { parallel = false } = {}) {
   const paths = selectedFstartPaths();
   const configPath = paths[0] || $("#config-select")?.value;
   if (!configPath) {
-    alert("No fStart config for this project — click New to create one.");
+    alert("No fStart config for this project yet — one is created automatically once a suite exists.");
     return null;
   }
-  const useParallel = parallel && paths.length > 1;
+  const profiles = selectedRunProfiles();
+  if (!profiles.length) {
+    alert("Select at least one Run profile (Smoke, UI, API, …).");
+    return null;
+  }
+  const threads = runThreadCount();
   const isCycle = stepLabel.startsWith("Loop") || stepLabel === "Verify";
   const logEl = isCycle ? $("#loop-log") : $("#run-log");
-  if (stepLabel === "Run" || stepLabel === "Run parallel") {
+  if (stepLabel === "Run") {
     if (logEl) logEl.textContent = "";
     const post = $("#run-post-actions");
     if (post) post.hidden = true;
+    const batchRows = $("#run-batch-rows");
+    if (batchRows) {
+      batchRows.hidden = true;
+      batchRows.innerHTML = "";
+    }
   }
   const runBtn = $("#btn-run");
-  const paraBtn = $("#btn-run-parallel");
   if (runBtn) runBtn.disabled = true;
-  if (paraBtn) paraBtn.disabled = true;
   const progress = $("#progress-bar");
   if (progress) progress.style.width = "10%";
-  const body = useParallel
-    ? { config_paths: paths, parallel: true, step_label: stepLabel || "Run parallel" }
-    : { config_path: configPath, step_label: stepLabel };
+  // Parallel execution is derived only from Threads > 1 + 2+ profiles — never a separate control.
+  const body = {
+    config_path: configPath,
+    step_label: stepLabel,
+    profiles,
+    thread_count: threads,
+  };
   const job = await api("/api/jobs", {
     method: "POST",
     body: JSON.stringify(body),
@@ -5747,6 +6756,13 @@ async function startRun(stepLabel, { parallel = false } = {}) {
     pollTimer = setInterval(async () => {
       try {
         const j = await api(`/api/jobs/${job.job_id}`);
+        const liveName = j.output_dir && !String(j.output_dir).includes("zDash_batch_")
+          ? String(j.output_dir).replace(/\\/g, "/").split("/").pop()
+          : (j.run_dirs || [])[0]?.replace(/\\/g, "/").split("/").pop();
+        if (liveName) {
+          liveRunStatus.runName = liveName;
+          liveRunStatus.status = j.status;
+        }
         if (logEl) {
           const engineLog = (j.log_lines || []).join("\n");
           if (isCycle) {
@@ -5758,7 +6774,6 @@ async function startRun(stepLabel, { parallel = false } = {}) {
           } else {
             logEl.textContent = engineLog;
           }
-          // Keep console pinned to latest lines while the run streams
           logEl.scrollTop = logEl.scrollHeight;
         }
         if (j.status === "completed" || j.status === "failed") {
@@ -5769,11 +6784,15 @@ async function startRun(stepLabel, { parallel = false } = {}) {
           if (progress) progress.style.width = j.status === "completed" ? "100%" : "60%";
           const batchDash =
             j.batch_dashboard || (String(j.output_dir || "").includes("zDash_batch_") ? j.output_dir : null);
+          const allRunDirs = (j.run_dirs || [])
+            .map((d) => String(d).replace(/\\/g, "/").split("/").pop())
+            .filter(Boolean);
+          const isBatch = allRunDirs.length > 1 || Boolean(batchDash);
           let runName = null;
           if (j.output_dir && !String(j.output_dir).includes("zDash_batch_")) {
             runName = j.output_dir.replace(/\\/g, "/").split("/").pop();
-          } else if (j.run_dirs?.length) {
-            runName = String(j.run_dirs[0]).replace(/\\/g, "/").split("/").pop();
+          } else if (allRunDirs.length) {
+            runName = allRunDirs[0];
           }
           if (runName && state.projectId) {
             await api(`/api/projects/${state.projectId}`, {
@@ -5785,13 +6804,34 @@ async function startRun(stepLabel, { parallel = false } = {}) {
           }
           loadRuns();
           await refreshActiveProject();
-          if ((stepLabel === "Run" || stepLabel === "Run parallel") && j.status === "completed") {
+          if (stepLabel === "Run" && j.status === "completed") {
             await showRunPostActions(runName, batchDash);
-            setStatus(batchDash ? "Batch complete — open batch zDash" : "Run complete — review in Analyze or open zDash");
+            if (isBatch) {
+              await renderBatchRunRows(allRunDirs, batchDash);
+              setStatus(`Batch complete — ${allRunDirs.length} job(s), one zDash each`);
+            } else {
+              setStatus("Run complete — review in Analyze or open zDash");
+            }
           }
           if (j.status === "completed" && runName) {
-            if (stepLabel === "Verify" || stepLabel.startsWith("Loop")) {
-              await autoEnsureBrahlReport(runName, stepLabel);
+            if (stepLabel === "Verify" || stepLabel.startsWith("Loop") || stepLabel === "Run") {
+              if (isBatch && state.projectId && allRunDirs.length) {
+                try {
+                  await api(`/api/projects/${state.projectId}/brahl/reports/batch`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                      run_names: allRunDirs,
+                      source: isAiOn() ? "automation" : "automation_ai",
+                      batch_dashboard: batchDash || null,
+                      job_id: j.job_id,
+                    }),
+                  });
+                } catch {
+                  /* non-fatal */
+                }
+              } else {
+                await autoEnsureBrahlReport(runName, stepLabel);
+              }
               if ($("#panel-brahl")?.classList.contains("active")) await loadBrahlPanel();
             }
           }
@@ -5852,60 +6892,6 @@ async function openFstartEditor() {
   }
 }
 
-async function openFstartNew() {
-  const suite = state.suiteName;
-  if (!suite) return;
-  let data;
-  try {
-    data = await api(`/api/configs?suite=${encodeURIComponent(suite)}`);
-  } catch {
-    return;
-  }
-  if (!data.configs?.length) {
-    try {
-      const created = await api("/api/configs", {
-        method: "POST",
-        body: JSON.stringify({ suite_name: suite, variant: "verify" }),
-      });
-      await loadConfigsForSuite();
-      fstartEditorPath = created.path;
-      $("#fstart-modal-title").textContent = "New fStart config";
-      $("#fstart-modal-path").textContent = created.path;
-      $("#fstart-json-editor").value = JSON.stringify(created.content, null, 2);
-      $("#fstart-delete").hidden = false;
-      $("#fstart-json-error").hidden = true;
-      $("#fstart-modal").hidden = false;
-      return;
-    } catch (e) {
-      setStatus(e.message);
-      return;
-    }
-  }
-  const hasSmoke = data.configs.some((c) => c.toLowerCase().includes("smoke"));
-  const suffix = hasSmoke ? "custom" : "smoke";
-  fstartEditorPath = `f/fStart/${suite}_${suffix}.json`;
-  const template = data.template || {
-    configs: [`y/${suite}/${suite}.json`],
-    thread_count: 1,
-    timeout: 10,
-    headless: false,
-    debug: false,
-    tags: [],
-    capture: {
-      image: "on_fail",
-      video: "off",
-      video_fps: 2,
-      subdir: "",
-    },
-  };
-  $("#fstart-modal-title").textContent = "New fStart config";
-  $("#fstart-modal-path").textContent = fstartEditorPath;
-  $("#fstart-json-editor").value = JSON.stringify(template, null, 2);
-  $("#fstart-delete").hidden = true;
-  $("#fstart-json-error").hidden = true;
-  $("#fstart-modal").hidden = false;
-}
-
 async function saveFstartEditor() {
   const errEl = $("#fstart-json-error");
   const raw = $("#fstart-json-editor")?.value || "";
@@ -5959,11 +6945,27 @@ async function loadConfigsForSuite() {
   const runBtn = $("#btn-run");
   if (!suite || !sel) return;
   try {
+    await loadRunProfiles();
     const data = await api(`/api/configs?suite=${encodeURIComponent(suite)}`);
-    const configs = data.configs || [];
+    let configs = data.configs || [];
+    let preferred = data.default && configs.includes(data.default) ? data.default : configs[0];
+    if (!configs.length) {
+      // One fStart per suite is expected — create it silently instead of a manual "New" step.
+      try {
+        const hasSmoke = false;
+        const created = await api("/api/configs", {
+          method: "POST",
+          body: JSON.stringify({ suite_name: suite, variant: hasSmoke ? "custom" : "smoke" }),
+        });
+        const retry = await api(`/api/configs?suite=${encodeURIComponent(suite)}`);
+        configs = retry.configs || [];
+        preferred = created.path && configs.includes(created.path) ? created.path : configs[0];
+      } catch {
+        /* fall through to empty state */
+      }
+    }
     if (configs.length) {
       sel.innerHTML = configs.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-      const preferred = data.default && configs.includes(data.default) ? data.default : configs[0];
       sel.value = preferred;
       renderFstartChips(configs, preferred);
       if (hint) hint.hidden = true;
@@ -5975,8 +6977,6 @@ async function loadConfigsForSuite() {
       fstartPrimary = null;
       if (hint) hint.hidden = false;
       if (runBtn) runBtn.disabled = true;
-      const para = $("#btn-run-parallel");
-      if (para) para.disabled = true;
     }
   } catch {
     sel.innerHTML = '<option value="">— error —</option>';
@@ -6009,7 +7009,6 @@ $("#topbar-project-select")?.addEventListener("change", (e) => {
 });
 $("#client-empty-add")?.addEventListener("click", createNewProject);
 $("#btn-fstart-edit")?.addEventListener("click", openFstartEditor);
-$("#btn-fstart-new")?.addEventListener("click", openFstartNew);
 $("#fstart-save")?.addEventListener("click", saveFstartEditor);
 $("#fstart-delete")?.addEventListener("click", deleteFstartEditor);
 $("#fstart-cancel")?.addEventListener("click", closeFstartModal);
@@ -6155,36 +7154,32 @@ document.addEventListener("keydown", (e) => {
 });
 $("#btn-join-hitl")?.addEventListener("click", joinHitl);
 $("#btn-hitl-submit")?.addEventListener("click", submitHitlReport);
-$("#btn-hunt-start")?.addEventListener("click", startHuntRecording);
 $("#btn-hunt-stop")?.addEventListener("click", stopHuntRecording);
-$("#btn-hunt-audio")?.addEventListener("click", startHuntAudioNote);
 $("#btn-hunt-add-issue")?.addEventListener("click", addHuntIssueFromForm);
-$("#btn-hunt-screenshot")?.addEventListener("click", () => $("#hunt-screenshot-file")?.click());
-$("#hunt-screenshot-file")?.addEventListener("change", (e) => {
-  const f = e.target.files?.[0];
-  if (f) attachHuntScreenshot(f);
-  e.target.value = "";
-});
-$("#btn-improve-ypads")?.addEventListener("click", () => {
-  showPhase("build");
-  const cov = $("#build-automation");
-  cov?.scrollIntoView({ behavior: "smooth", block: "start" });
-  if (!ypadState.editMode) toggleYpadEdit();
-});
-$("#btn-goto-coverage")?.addEventListener("click", () => {
-  $("#build-automation")?.scrollIntoView({ behavior: "smooth", block: "start" });
-});
+bindEvidenceMenu();
 $("#btn-heal-edit-ypad")?.addEventListener("click", () => {
   showPhase("build");
   const cov = $("#build-automation");
   cov?.scrollIntoView({ behavior: "smooth", block: "start" });
   if (!ypadState.editMode) toggleYpadEdit();
 });
+$("#btn-ypad-snapshot")?.addEventListener("click", createYpadSnapshot);
+$("#ypad-show-table")?.addEventListener("click", () => {
+  ypadState.showTable = !ypadState.showTable;
+  renderYpadExplorer();
+});
+$("#ypad-page-prev")?.addEventListener("click", () => {
+  ypadState.page = Math.max(0, ypadState.page - 1);
+  renderYpadExplorer();
+});
+$("#ypad-page-next")?.addEventListener("click", () => {
+  ypadState.page += 1;
+  renderYpadExplorer();
+});
 $("#btn-heal-rerun")?.addEventListener("click", () => showPhase("run"));
 $("#btn-loop-open-build")?.addEventListener("click", () => showPhase("build"));
 $("#btn-loop-run")?.addEventListener("click", runBrahlCycle);
 $("#btn-run")?.addEventListener("click", () => startRun("Run"));
-$("#btn-run-parallel")?.addEventListener("click", () => startRun("Run parallel", { parallel: true }));
 $("#btn-shrink-plans")?.addEventListener("click", shrinkPlans);
 $("#btn-restore-plans")?.addEventListener("click", restorePlans);
 $("#btn-refresh-runs")?.addEventListener("click", loadRuns);

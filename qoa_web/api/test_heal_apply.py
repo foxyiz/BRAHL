@@ -14,6 +14,32 @@ def test_extract_patches():
     assert patches[0]["set"]["Expected"] == "ok"
 
 
+def test_extract_patches_bare_json():
+    md = '## Heal\n\n{"patches":[{"sheet":"actions","match":{"PlanId":"P1","StepId":"1"},"set":{"Input":"x"},"class":"T1"}]}'
+    patches = heal_apply.extract_patches_from_markdown(md)
+    assert len(patches) == 1
+    assert patches[0]["set"]["Input"] == "x"
+
+
+def test_run_flag_blocked():
+    suite = "y/Math/Math.json"
+    data = read_ypad_sheet(suite, "plans")
+    row = next(r for r in data["rows"] if (r.get("Run") or "").upper() == "Y")
+    patches = [
+        {
+            "sheet": "y1Plans",
+            "match": {"PlanId": row.get("PlanId")},
+            "set": {"Run": "N", "Tags": row.get("Tags") or "Smoke"},
+            "class": "T1",
+        }
+    ]
+    prev = heal_apply.apply_heal_patches(suite, patches, dry_run=True)
+    for c in prev["changes"]:
+        if c.get("status") in ("would_apply", "applied"):
+            assert "Run" not in (c.get("after") or {})
+            assert "Tags" in (c.get("after") or {})
+
+
 def test_dry_run_apply_math():
     suite = "y/Math/Math.json"
     assert resolve_repo(suite).is_file()

@@ -13,11 +13,17 @@ FoXYiZ/z/2025*/
 FoXYiZ/z/brahl_*
 FoXYiZ/z/*_zResults*
 FoXYiZ/z/*_zDash*
+FoXYiZ/z/zDash_batch*
 z/2026*/
 z/2025*/
 z/brahl_*
 z/*_zResults*
 z/*_zDash*
+z/zDash_batch*
+
+# Ephemeral per-profile run configs (generated at Run time)
+FoXYiZ/f/fStart/.runtime/
+f/fStart/.runtime/
 
 # Cleaner / lean-out archives (safe to delete or move entire archive/ out of KK)
 archive/
@@ -37,6 +43,7 @@ Thumbs.db
 
 # Secrets
 .env
+FoXYiZ/f/.env
 *.pem
 **/yD_Secure.csv
 

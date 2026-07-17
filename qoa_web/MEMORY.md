@@ -1,31 +1,29 @@
-# qoa_web v1.4 — Agent memory (read this first)
+# qoa_web — Agent memory (read this first)
 
-**Status:** desktop BRAHL UI over **FoXYiZ/** (`f` `x` `y` `z` `pyUtils`). **AI:** optional BYOK. **Run/Loop:** engine only.
+**Status:** BRAHL Arena over **FoXYiZ/** (`f` `x` `y` `z` `pyUtils`). **AI:** optional BYOK. **Run/Loop:** engine only.
 
-**App:** http://127.0.0.1:8765/welcome · **Arena:** `/app` · **Admin:** `/admin`
+**App:** http://127.0.0.1:8765/welcome · **Arena:** `/app?demo=1` · **Admin:** `/admin`
 
-**Today:** [../todaysummary.md](../todaysummary.md) · **AI cost:** `Docs/BRAHL_DESKTOP_BYOK.md` · meter: `qoa_web/data/ai_usage.json`
+**Today:** [../todaysummary.md](../todaysummary.md) · **Next session:** [../NEXT.md](../NEXT.md)
 
-**Handoff:** [Docs/HANDOFF.md](../Docs/HANDOFF.md) · [FoXYiZ/FoXYiZ_Readme.md](../FoXYiZ/FoXYiZ_Readme.md) · [Docs/README.md](../Docs/README.md)
+**Handoff:** [Docs/HANDOFF.md](../Docs/HANDOFF.md) · [FoXYiZ/f/fStart_SCOPE.md](../FoXYiZ/f/fStart_SCOPE.md)
 
 ---
 
-## In scope (only touch these unless user says otherwise)
+## In scope
 
 | Path | Purpose |
 |------|---------|
-| `qoa_web/web/` | index, app.js, admin, welcome, signin, themes |
-| `qoa_web/api/` | main, runner, paths (`FOXYIZ_ROOT`), projects, ypad, suite_docs, ai_*, admin_* |
-| `FoXYiZ/y/Math/`, `FoXYiZ/y/nalanda_app/` | Lean suites for Loop/Verify/Heal |
-| `FoXYiZ/f/fStart_Math.json`, `…nalanda…` | Primary smoke configs |
-| `FoXYiZ/pyUtils/` | cleaner, persona sync, zBatchDash |
+| `qoa_web/web/` | Arena UI (`app.js`, `role-copy.js`, themes) |
+| `qoa_web/api/` | main, runner (`RUN_PROFILES`), paths, projects, ypad, ai_* |
+| `FoXYiZ/y/{Math,nalanda_app,qoa_web,qoa_web_live}/` | Suites (one folder = one project) |
+| `FoXYiZ/f/fStart/{suite}.json` | **One fStart per app** (not per tag) |
+| `FoXYiZ/pyUtils/` | orchestrate, cleaner, journey regen |
 
 ## Out of scope
 
-- `archive/**` — never add to context
-- `FoXYiZ/z/**` — zResults / zDash / artifacts (huge)
-- Fat journey CSVs pasted into chat
-- `qoa_web/data/projects.json` unless seed-data work
+- `archive/**` · `FoXYiZ/f/fStart/archive/**` · `FoXYiZ/z/**`
+- Fat journey CSVs in chat · secrets / `.env`
 
 ---
 
@@ -34,38 +32,37 @@
 ```powershell
 cd c:\006\FXYZ\KK
 python qoa_web/run_local.py
-# Arena bypass: /app?demo=1
-
-python FoXYiZ\f\fEngine2.py --config f\fStart_Math.json
-python FoXYiZ\pyUtils\cleaner.py --apply
+python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json
 ```
 
-Restart server after API/UI changes.
+Restart `run_local` after API/UI changes (`reload=False`). Hard-refresh browser.
 
 ---
 
-## Avatars
+## fStart model (2026-07-16)
 
-**Creator** · **QA Hunter** · **Nalanda** — [qoa_userDoc.md](./qoa_userDoc.md). Personas: [Docs/test-user-data/](../Docs/test-user-data/).
-
----
-
-## FoXYiZ heal rules
-
-- **Expected** = exact string match; empty = presence only
-- No `xWaitFor` — use xGetText/xClick/xNavigate
-- After `xReuse`, parent plan must navigate (base_url or profile_url)
-- Heal one failing plan at a time; re-run lean smoke
+- File: `f/fStart/{suite}.json` + required `capture`
+- Arena: Run profiles Smoke→Manual · Threads · job overrides via `.runtime/`
+- Engine: `thread_count>1` + 2+ tags → fan-out ([`fOrchestrate.py`](../FoXYiZ/pyUtils/fOrchestrate.py))
 
 ---
 
-## Docs (lean)
+## Heal rules
+
+- **Expected** = exact match; empty = presence only
+- Apply never flips `Run` flags — Shrink/Restore does
+- Heal one failing plan; re-smoke
+
+---
+
+## Docs
 
 | Doc | Use |
 |-----|-----|
-| [../todaysummary.md](../todaysummary.md) | Today's key changes |
+| [../NEXT.md](../NEXT.md) | Resume todos |
+| [../todaysummary.md](../todaysummary.md) | Latest session |
 | [Docs/HANDOFF.md](../Docs/HANDOFF.md) | Bootstrap |
-| [Docs/DEPLOY.md](../Docs/DEPLOY.md) | VPS / launch checklist |
+| [FoXYiZ/f/fStart_SCOPE.md](../FoXYiZ/f/fStart_SCOPE.md) | fStart + profiles |
 | [Docs/BRAHL.md](../Docs/BRAHL.md) | Full BRAHL |
-| [qoa_userDoc.md](./qoa_userDoc.md) | Users & arenas |
-| [CHANGELOG.md](./CHANGELOG.md) | Version history |
+| [CHANGELOG.md](./CHANGELOG.md) | Versions |

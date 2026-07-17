@@ -2,31 +2,25 @@
 
 ## user_ai_docs/
 
-Optional end-user markdown for the arena `.md` drawer (`manifest.json` + `*.md`). Caps in `api/ai_docs.py`.
+Optional markdown for the arena `.md` drawer. Caps in `api/ai_docs.py`.
 
 ## projects.json
 
-Runtime workspace metadata: chat, budget, HITL, BRAHL links.
+Runtime metadata: chat, budget, HITL, BRAHL links. Reset: `python FoXYiZ/pyUtils/reset_demo_data.py`.
 
-- **API:** `qoa_web/api/projects.py`
-- **Reset:** `python FoXYiZ/pyUtils/reset_demo_data.py`
+## Suites ↔ fStart
 
-## invites.json · nalanda.json · presence.json
+| Suite | yPAD | fStart (canonical) |
+|-------|------|--------------------|
+| Math | `FoXYiZ/y/Math/` | `f/fStart/Math.json` |
+| nalanda_app | `FoXYiZ/y/nalanda_app/` | `f/fStart/nalanda_app.json` |
+| qoa_web | `FoXYiZ/y/qoa_web/` | `f/fStart/qoa_web.json` |
+| qoa_web_live | `FoXYiZ/y/qoa_web_live/` | `f/fStart/qoa_web_live.json` |
 
-Invite GTM, Nalanda community, Admin presence heartbeat.
-
-## Suites
-
-| Suite | Path | Smoke |
-|-------|------|-------|
-| Math | `FoXYiZ/y/Math/` | `f/fStart_Math.json` |
-| nalanda_app | `FoXYiZ/y/nalanda_app/` | `f/fStart_nalanda_app_smoke.json` |
-| qoa_web_live | `FoXYiZ/y/qoa_web_live/` | gate configs under `FoXYiZ/f/` |
+Old per-tag JSONs: `FoXYiZ/f/fStart/archive/`. See [`f/fStart_SCOPE.md`](../../FoXYiZ/f/fStart_SCOPE.md).
 
 ## Personas
 
 | Output | Source | Regenerate |
 |--------|--------|------------|
 | `qoa_web/web/profiles.js` | `Docs/test-user-data/` | `python FoXYiZ/pyUtils/sync_personas.py` |
-
-Edit persona JSON under `Docs/test-user-data/`, then sync. See [Docs/test-user-data/README.md](../../Docs/test-user-data/README.md).
