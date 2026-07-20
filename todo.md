@@ -33,12 +33,18 @@ Set these on the server (never commit real secrets):
 
 ## 4. Payments (Stripe)
 
-Pricing UI is ready; charges need live Stripe wiring.
+**Code is ready** (Checkout, webhooks, wallet apply, Customer Portal, pending claim). You only need host keys.
 
 - [ ] Stripe account + products/prices (Hunter $5 / $20 / $50, Creator wallet $50+)
-- [ ] Host: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_*` as needed
+- [ ] Host: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, optional `STRIPE_PRICE_MEMBERSHIP`
+- [ ] Enable **Customer portal** in Stripe Dashboard (cancel / payment method / invoices)
 - [ ] Webhook → `https://brahl.qaonair.com/api/billing/webhook`
-- [ ] Test Checkout end-to-end; confirm wallet / membership updates after pay
+  - Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
+    `customer.subscription.updated`, `customer.subscription.deleted`
+- [ ] Test while signed in: subscribe, top up, apply portable wallet → project, Manage subscription
+  - Hunter AI → `users` membership fields (+ period end)
+  - Creator top-up → `creator_wallet_usd` or selected project `budget_usd`
+  - Ledger: `qoa_web/data/billing_ledger.json`
 
 ## 5. Cloud Run (FoXYiZ on AWS)
 
@@ -65,4 +71,4 @@ Without this, Run/Loop on the website won’t use the team EC2 worker.
 
 ## Already done (don’t redo)
 
-Landing, pricing page, guest/demo testing mode, Google OAuth code path, signup/login UI, mobile polish, Admin open-for-test, Stripe scaffold, Heal Apply, live Run console, deploy docs.
+Landing, pricing page, guest/demo testing mode, Google OAuth code path, signup/login UI, mobile polish, Admin open-for-test, Stripe Checkout + webhook entitlements (keys on host), Heal Apply, live Run console, deploy docs.

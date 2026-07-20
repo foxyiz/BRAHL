@@ -18,7 +18,7 @@ After a break: hard-refresh Arena (`Ctrl+F5`), restart `run_local` if API change
 |----------|------|
 | P1 | Optional: retag yPAD to only Smoke/UI/API/… (map still works) |
 | P1 | `qoa_web_live` journey has **0 API-tagged** plans — add coverage or remap |
-| P2 | Deploy / EC2 / Stripe / OAuth ([todo.md](todo.md)) |
+| P2 | Deploy / EC2 / Stripe keys on host ([todo.md](todo.md) §4 — billing code ready) |
 | P2 | Cloud multi-user sync for schedules/evidence (schema is ready) |
 
 ## Latest smoke

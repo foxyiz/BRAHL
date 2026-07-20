@@ -132,6 +132,20 @@ def get_usage_snapshot(
         glob = dict(store.get("global") or _empty_bucket())
 
     user_cap = DEFAULT_USER_MONTHLY_TOKEN_CAP
+    membership_tier = None
+    if user_id:
+        try:
+            import auth as auth_store
+            from pricing import hunter_ai_token_cap
+
+            user = auth_store.get_user(user_id)
+            if user and user.get("membership_active"):
+                membership_tier = float(user.get("hunter_ai_tier_usd") or 0)
+                tier_cap = hunter_ai_token_cap(membership_tier)
+                if tier_cap:
+                    user_cap = max(user_cap, int(tier_cap))
+        except Exception:
+            pass
     proj_cap = DEFAULT_PROJECT_TOKEN_SOFT_CAP
     user_left = max(0, user_cap - int(user_month.get("total_tokens") or 0))
     proj_left = max(0, proj_cap - int(proj_all.get("total_tokens") or 0))
@@ -141,6 +155,7 @@ def get_usage_snapshot(
         "month": month,
         "model": os.environ.get("OPENAI_MODEL", "gpt-4o-mini") if is_ai_available() else None,
         "available": is_ai_available(),
+        "membership_tier_usd": membership_tier,
         "user": {
             "id": user_id,
             "month": user_month,

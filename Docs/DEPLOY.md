@@ -38,9 +38,13 @@ KK/ → push main → GitHub BRAHL → (~6h) → brahl.qaonair.com Arena
 | `QOA_ALLOW_DEMO` | As agreed for `/app?demo=1` |
 | `OPENAI_API_KEY` | Optional AI — prefer `FoXYiZ/f/.env` or host secret |
 | `QOA_AI_HOSTED` | Optional platform-key mode |
-| `STRIPE_SECRET_KEY` | Optional — enables `/pricing` Checkout (`sk_…`) |
-| `STRIPE_WEBHOOK_SECRET` | Optional — verifies `/api/billing/webhook` |
-| `STRIPE_PRICE_MEMBERSHIP` | Optional Stripe Price id for ~$5/mo membership |
+| `STRIPE_SECRET_KEY` | Enables `/pricing` Checkout (`sk_…`) |
+| `STRIPE_WEBHOOK_SECRET` | Verifies `/api/billing/webhook` and applies entitlements |
+| `STRIPE_PRICE_MEMBERSHIP` | Optional Stripe Price id for default $5/mo Hunter AI |
+
+Webhook events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
+`customer.subscription.updated`, `customer.subscription.deleted`.  
+Also enable **Customer portal** in Stripe Dashboard for `/api/billing/portal`.
 | `FOXYIZ_HEADLESS` | `true` on servers / EC2 |
 
 ## After each sync — smoke

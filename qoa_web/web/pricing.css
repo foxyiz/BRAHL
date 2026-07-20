@@ -227,7 +227,8 @@
   color: var(--pricing-muted);
 }
 
-.pricing-wallet-amount input {
+.pricing-wallet-amount input,
+.pricing-wallet-amount select {
   padding: 0.5rem 0.6rem;
   border-radius: 8px;
   border: 1px solid var(--pricing-line);
@@ -235,6 +236,28 @@
   color: var(--pricing-ink);
   font-size: 1rem;
   font-family: inherit;
+  max-width: 100%;
+}
+
+.pricing-entitlement {
+  margin: 0.65rem 0 0;
+  font-size: 0.78rem;
+  color: var(--pricing-muted);
+  line-height: 1.35;
+}
+
+.pricing-manage-btn {
+  margin-top: 0.55rem;
+  width: 100%;
+}
+
+.pricing-wallet-apply {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--pricing-line);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
 }
 
 .pricing-example,

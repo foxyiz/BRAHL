@@ -75,6 +75,10 @@
         <button type="button" class="tc-btn tc-btn-primary pricing-checkout-btn" data-kind="membership" id="btn-checkout-membership">
           Subscribe with Stripe
         </button>
+        <button type="button" class="tc-btn pricing-manage-btn" id="btn-billing-portal" hidden>
+          Manage subscription
+        </button>
+        <p class="pricing-entitlement" id="membership-entitlement" hidden></p>
       </article>
 
       <article class="pricing-tier" data-tier="wallet">
@@ -95,10 +99,30 @@
           <span>Top-up amount (USD)</span>
           <input type="number" id="wallet-amount" min="50" step="10" value="50" />
         </label>
+        <label class="pricing-wallet-amount" id="wallet-project-wrap" hidden>
+          <span>Credit project on Checkout (optional)</span>
+          <select id="wallet-project">
+            <option value="">Creator wallet (portable)</option>
+          </select>
+        </label>
         <button type="button" class="tc-btn tc-btn-primary pricing-checkout-btn" data-kind="wallet" id="btn-checkout-wallet">
           Top up with Stripe
         </button>
-        <p class="pricing-tier-alt"><a href="/app#cost">Wallet meter in BRAHL</a></p>
+        <div id="wallet-apply-wrap" class="pricing-wallet-apply" hidden>
+          <p class="pricing-entitlement" id="wallet-balance-note"></p>
+          <label class="pricing-wallet-amount">
+            <span>Apply portable balance to project</span>
+            <select id="wallet-apply-project"></select>
+          </label>
+          <label class="pricing-wallet-amount">
+            <span>Amount (USD)</span>
+            <input type="number" id="wallet-apply-amount" min="1" step="1" value="50" />
+          </label>
+          <button type="button" class="tc-btn tc-btn-primary" id="btn-wallet-apply">
+            Apply to project
+          </button>
+        </div>
+        <p class="pricing-tier-alt"><a href="/app#cost">Wallet meter in BRAHL</a> · <a href="/login">Sign in</a> for entitlements</p>
       </article>
 
       <article class="pricing-tier" data-tier="promoter">
