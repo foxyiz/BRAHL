@@ -1,0 +1,14 @@
+PlanId,PlanName,DesignId,Run,Tags,Output
+PReuse_NalandaApp_OpenSite,Open browser and navigate to nalanda_app,D1,N,Reuse,site_loaded
+PNalandaApp_T1_Smoke_Test_Explore_Route,Smoke Test: Explore Route,D1,Y,nalanda_app;Smoke;BRAHL;T1,case_1_ok
+PNalandaApp_T2_Smoke_Test_Learning_Path_,Smoke Test: Learning Path Access,D1,Y,nalanda_app;Smoke;BRAHL;T2,case_2_ok
+PNalandaApp_T3_Smoke_Test_Quiz_Functiona,Smoke Test: Quiz Functionality,D1,Y,nalanda_app;Smoke;BRAHL;T3,case_3_ok
+PNalandaApp_T4_Smoke_Test_AI_Tutor_Inter,Smoke Test: AI Tutor Interaction,D1,Y,nalanda_app;Smoke;BRAHL;T4,case_4_ok
+PNalandaApp_T9_Performance_Test_Load_on_,Performance Test: Load on Core Routes,D1,Y,nalanda_app;Smoke;BRAHL;T9,case_5_ok
+PNalandaApp_T10_Security_Test_User_Data_,Security Test: User Data Protection,D1,Y,nalanda_app;Smoke;BRAHL;T10,case_6_ok
+PNalandaApp_T12_Cross_Browser_Test_Core_,Cross-Browser Test: Core Routes,D1,Y,nalanda_app;Smoke;BRAHL;T12,case_7_ok
+PNalandaApp_Man_T5_Manual_UX_Test_Explore_Ro,Manual UX Test: Explore Route,D1,N,nalanda_app;Manual;T5,manual_1_ok
+PNalandaApp_Man_T6_Manual_UX_Test_Learning_P,Manual UX Test: Learning Path Navigation,D1,N,nalanda_app;Manual;T6,manual_2_ok
+PNalandaApp_Man_T7_Manual_UX_Test_Quiz_User_,Manual UX Test: Quiz User Experience,D1,N,nalanda_app;Manual;T7,manual_3_ok
+PNalandaApp_Man_T8_Manual_UX_Test_AI_Tutor_U,Manual UX Test: AI Tutor Usability,D1,N,nalanda_app;Manual;T8,manual_4_ok
+PNalandaApp_Man_T11_Accessibility_Test_Scree,Accessibility Test: Screen Reader Compatibility,D1,N,nalanda_app;Manual;T11,manual_5_ok

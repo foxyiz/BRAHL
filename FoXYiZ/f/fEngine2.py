@@ -1685,7 +1685,10 @@ def main():
 
     # Tag fan-out: thread_count > 1 with 2+ tags on one suite → orchestrator
     try:
-        _pu = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "pyUtils"))
+        if getattr(sys, "frozen", False):
+            _pu = os.path.abspath(os.path.join(sys._MEIPASS, "pyUtils"))  # type: ignore[attr-defined]
+        else:
+            _pu = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "pyUtils"))
         if _pu not in sys.path:
             sys.path.insert(0, _pu)
         import fOrchestrate  # type: ignore

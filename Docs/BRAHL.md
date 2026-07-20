@@ -1,17 +1,16 @@
 # BRAHL — KK / qoa_web quick reference
 
-> **Full skill reference** continues below (FoXYiZ lifecycle, qoa2 lessons, heal tables).
-> **Slim in-app version:** [BRAHL_PROMPT.md](./BRAHL_PROMPT.md) · **Session hygiene:** [MAINTENANCE.md](./MAINTENANCE.md)
+> **Glossary:** [terminology.md](./terminology.md) · **Slim AI:** [BRAHL_PROMPT.md](./BRAHL_PROMPT.md) · **Handoff:** [HANDOFF.md](./HANDOFF.md)
 
-**Active workspace:** KK/ · **App:** qoa_web @ http://127.0.0.1:8765 · **Suite:** `y/qoa_web_live/`
+**Active workspace:** KK/ · **Arena:** http://127.0.0.1:8765 · **Engine:** `FoXYiZ/`
 
 | Item | Value |
 |------|-------|
-| Verify config | `f/fStart/qoa_web_live.json` (Smoke) / Arena profiles |
-| Plans (Run=Y) | Gate plans in `y/qoa_web_live/` |
+| Verify configs | `f/fStart/{suite}.json` (+ optional `{suite}_deep.json`) |
+| Example deep GO | ThoughtStream · Arena `0935e530a120` · `y/thoughtstream/` |
 | Tag filter | fStart `tags` or Arena Run profiles |
-| Personas | P1–P9 in Docs/test-user-data/ → `python FoXYiZ/pyUtils/sync_personas.py` |
-| Utilities | `FoXYiZ/pyUtils/` — cleaner, dashboards |
+| Personas | P1–P9 in Docs/test-user-data/ → D1–D9 |
+| Cleanup | `python FoXYiZ/pyUtils/cleaner.py --apply` |
 | Avatars | Creator · QA Hunter · Networker |
 
 ## Loop protocol (required)
@@ -25,7 +24,7 @@ Verify   restore all Run=Y → full run → BRAHL report
 
 **Go/No-Go** and **version compare** live on the BRAHL tab (Creator). Do not weaken assertions for A1 app defects.
 
-**Reporting (all counts are plan-level, not action rows):** Run list, Analyze, and BRAHL share `plan_stats_from_zresults()` / `GET /api/runs/{run}/stats`, so `fails ≤ total_plans` everywhere. zDash links resolve the real `*_zDash.html` (e.g. `qoa_web_verify_gate_zDash.html`). Cycle history stores pass/fail snapshots and shows a **Recovered** badge; the BRAHL report has a `## Recovery trace`. **Build** = product/requirements; **BRAHL** = launch-readiness report (not duplicate Build work). Defect log: [BRAHL_DEFECTS.md](./BRAHL_DEFECTS.md).
+**Reporting (all counts are plan-level, not action rows):** Run list, Analyze, and BRAHL share `plan_stats_from_zresults()` / `GET /api/runs/{run}/stats`, so `fails ≤ total_plans` everywhere. zDash links resolve the real `*_zDash.html`. Cycle history stores pass/fail snapshots and shows a **Recovered** badge; the BRAHL report has a `## Recovery trace`. **Build** = product/requirements; **BRAHL** = launch-readiness report (not duplicate Build work).
 
 ---
 

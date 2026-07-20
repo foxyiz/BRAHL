@@ -63,17 +63,24 @@ $env:APP_BASE_URL = "https://brahl.qaonair.com"
 
 ## EC2 contract (cloud Run)
 
-Arena should start/poll FoXYiZ jobs on EC2 (not only desktop). Document the real team hook here as it lands:
+Arena starts/polls FoXYiZ jobs on EC2 when a project’s `runtime_mode` is **cloud** and the host sets worker env vars.
 
-| Concern | Decision (fill in) |
-|---------|-------------------|
-| How Arena starts a job | queue URL / SSM / SSH / HTTP worker API |
-| Auth between web ↔ EC2 | |
-| Config + suite sync on EC2 | same `main` tree; lean suites: `Math`, `nalanda_app`, `qoa_web_live` |
+| Concern | Decision |
+|---------|----------|
+| How Arena starts a job | `POST {FOXYIZ_CLOUD_WORKER_URL}/v1/jobs` ([cloud_worker.py](../qoa_web/api/cloud_worker.py)) |
+| Auth between web ↔ EC2 | Bearer `FOXYIZ_CLOUD_TOKEN` |
+| Config + suite sync on EC2 | Same `main` tree; lean suites: `Math`, `nalanda_app`, `qoa_web_live` |
 | Headless | `FOXYIZ_HEADLESS=true` |
-| Result path | `FoXYiZ/z/<run>/` visible to API or copied back |
+| Result path | Worker runs engine under `FoXYiZ/z/`; Arena polls `/v1/jobs/{id}` for status + log |
+| Worker process | `python FoXYiZ/pyUtils/cloud_worker_server.py --port 8770` |
 
-Until wired: use **desktop** Run on Creator machines; web UI still deploys via GitHub sync.
+**Arena host env:** `FOXYIZ_CLOUD_WORKER_URL`, `FOXYIZ_CLOUD_TOKEN`  
+**EC2 env:** `FOXYIZ_HEADLESS=true`, `FOXYIZ_CLOUD_TOKEN` (same token)
+
+Until wired: use **desktop/local** Run on Creator machines; web UI still deploys via GitHub sync. Full runbook: [PRODUCTION.md](./PRODUCTION.md).
+
+Env template: [qoa_web/.env.production.example](../qoa_web/.env.production.example)  
+Readiness: `python qoa_web/scripts/prod_readiness.py` · Backup: `python qoa_web/scripts/backup_data.py`
 
 ## Optional: Docker / Bluehost VPS
 

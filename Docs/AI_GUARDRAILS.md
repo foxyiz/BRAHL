@@ -8,7 +8,7 @@ Be a **thin control plane** for FoXYiZ. Maximize signal per token. Prefer script
 
 ## Always
 
-- Spell **BRAHL** and **FoXYiZ** correctly.
+- Spell **BRAHL** and **FoXYiZ** correctly ([terminology.md](./terminology.md)).
 - Scope answers to the **active project** (name, URL, purpose, latest run).
 - Use **BRAHL_PROMPT** lifecycle — do not invent new phases.
 - Truncate; use bullets; one primary next step.

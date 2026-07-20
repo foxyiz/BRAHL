@@ -1,0 +1,44 @@
+PlanId,PlanName,DesignId,Run,Tags,Output,CreatedBy,CreatedAt
+PReuse_A77_Open,Open Edge and load Atomic 77,D1,N,Reuse,site_loaded,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_HomeHero,Home hero amplified by AI + no-CC promise,D1,Y,a77;Smoke;Home;Landing,home_hero,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_BrahlLoopSection,Home THE BRAHL LOOP BUILD RUN ANALYZE HEAL LOOP,D1,Y,a77;Smoke;BRAHL;Landing,brahl_loop,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_FeatureStrip,Home feature strip Roadmap Content SEO Social,D1,Y,a77;Smoke;Atomic77;Landing,features,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_Testimonials,Home testimonials section,D1,Y,a77;Smoke;Landing,testimonials,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_Portfolio,Home portfolio Apps We Built,D1,Y,a77;Smoke;Landing,portfolio,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_PricingTiers,Pricing Free AI Build tiers + FoXYiZ copy,D1,Y,a77;Smoke;Pricing;Cost,pricing,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_Login,Login form Google email password,D1,Y,a77;Smoke;Login;Auth,login,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_Register,Register create account form,D1,Y,a77;Smoke;Register;Auth,register,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_Forgot,Forgot password send-reset form,D1,Y,a77;Smoke;Auth,forgot,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_ResetInvalid,Reset password invalid + request new link,D1,Y,a77;Smoke;Auth,reset,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_OnboardingStep1,Onboarding step1 business name industries,D1,Y,a77;Smoke;Onboarding;Landing,onboard1,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_LivePreview,Home live preview BRAHL chips New Feature PRD,D1,Y,a77;Smoke;BRAHL;Landing,preview,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_BrahlConclusion,BRAHL conclusion — guest Go/No-Go shell ready,D1,Y,a77;Smoke;BRAHL;Conclusion,brahl_conclusion,QA_Hunter+guest_arch_v4,2026-07-20T16:19:12+00:00
+PA77_Smoke_DashboardGate,Dashboard guest command center (demo shell),D1,Y,a77;Smoke;Dashboard;Guest,dash_guest,QA_Hunter+guest_arch_v4,2026-07-20T16:19:12+00:00
+PA77_Smoke_BrahlPhasesGate,Guest BRAHL Build Run Analyze Heal Loop pages open,D1,Y,a77;Smoke;Build;Run;Heal;Loop;BRAHL;Guest,phases_guest,QA_Hunter+guest_arch_v4,2026-07-20T16:19:12+00:00
+PA77_Smoke_ContentSeoGate,Guest Content Studio + SEO Intelligence open,D1,Y,a77;Smoke;Atomic77;Guest,tools_guest,QA_Hunter+guest_arch_v4,2026-07-20T16:19:12+00:00
+PA77_Smoke_SchedulerGate,Guest Social Scheduler /scheduler open,D1,Y,a77;Smoke;Atomic77;Guest,scheduler_guest,QA_Hunter+guest_arch_v4,2026-07-20T16:19:12+00:00
+PA77_Smoke_SocialLegacy404,Legacy /social-scheduler still 404,D1,Y,a77;Smoke;404;Atomic77,social_legacy_404,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Smoke_Unknown404,Unknown route shows 404 Go Home,D1,Y,a77;Smoke;404,unknown_404,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_UI_NavToPricing,Nav Pricing opens pricing page,D1,Y,a77;UI;Nav;Pricing;Shell,nav_pricing,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_UI_GetStartedToRegister,Get Started Free opens guest dashboard,D1,Y,a77;UI;Nav;Auth;Landing;Guest,nav_guest_dash,QA_Hunter+guest_arch_v4,2026-07-20T16:19:12+00:00
+PA77_UI_PortfolioFilterAi,Portfolio AI Layer filter shows Atomic 77,D1,Y,a77;UI;Landing;Nav,filter_ai,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_UI_PortfolioFilterUtility,Portfolio Utility filter shows JobPilot,D1,Y,a77;UI;Landing;Nav,filter_util,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_UI_PreviewRunModes,Preview Run shows Local Deploy Human Cloud,D1,Y,a77;UI;BRAHL;Shell,preview_run,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_UI_PricingToRegister,Pricing Choose AI path to register,D1,Y,a77;UI;Pricing;Auth;Cost,price_reg,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_UI_PricingAgentKk,Pricing Build tier mentions Agent KK,D1,Y,a77;UI;Pricing;Cost,agent_kk,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_UI_LoginCrossLinks,Login forgot + create-one links,D1,Y,a77;UI;Auth;Login,login_links,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_UI_RegisterHasConfirm,Register has confirm password + Google,D1,Y,a77;UI;Auth;Register,reg_fields,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_UI_OnboardingSelectIndustry,Onboarding select Technology industry,D1,Y,a77;UI;Onboarding;Landing,industry,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_UI_404GoHome,404 Go Home returns to landing,D1,Y,a77;UI;404;Shell,go_home,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_UI_FooterCopyright,Home footer copyright,D1,Y,a77;UI;Shell;Landing,footer,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Manual_GoogleOAuth,HITL: Continue with Google (OAuth popup),D1,N,a77;Manual;Auth;Hunt,hitl_oauth,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Manual_RegisterAndLogin,HITL: create account with real email then log in,D1,N,a77;Manual;Auth;Hunt,hitl_account,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Manual_OnboardingWizard,HITL: complete onboarding steps 1-4 and reach dashboard,D1,N,a77;Manual;Onboarding;Hunt,hitl_onboard,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Manual_DashboardTour,HITL: authenticated dashboard command center tour,D1,N,a77;Manual;Dashboard;Hunt,hitl_dash,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Manual_AiGrowthRoadmap,HITL: generate AI Growth Roadmap (AI + wallet),D1,N,a77;Manual;Atomic77;Hunt,hitl_roadmap,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Manual_ContentStudio,HITL: Content Studio generate social/blog/email,D1,N,a77;Manual;Atomic77;Hunt,hitl_content,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Manual_SocialScheduler,HITL: /scheduler Social Scheduler schedule a post after login,D1,N,a77;Manual;Atomic77;Hunt,hitl_social,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Manual_SeoIntelligence,HITL: run SEO intelligence report for a real URL,D1,N,a77;Manual;Atomic77;Hunt,hitl_seo,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Manual_BrahlInAppCycle,HITL: logged-in Build Run Analyze Heal Loop BRAHL cycle,D1,N,a77;Manual;BRAHL;Hunt,hitl_brahl,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Manual_PaidPlanCheckout,HITL: Choose AI or Build paid plan checkout/payment,D1,N,a77;Manual;Cost;Hunt,hitl_pay,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00
+PA77_Manual_AgentBroadcasts,HITL: Agent KK monitoring / omnichannel broadcasts (Build plan),D1,N,a77;Manual;Atomic77;Hunt,hitl_agent,QA_Hunter+Playwright_Edge_v3,2026-07-18T09:15:35+00:00

@@ -1,0 +1,55 @@
+Type,DataName,D1,D2,D3,D4,D5,D6,D7,D8,D9
+UI,persona_id,p1,p1,p1,p1,p1,p1,p1,p1,p1
+UI,persona_code,P1,P1,P1,P1,P1,P1,P1,P1,P1
+UI,persona_name,Ops Analyst,Quality Lead,Dispatch Coord,Ops Analyst,Ops Analyst,Ops Analyst,Ops Analyst,Ops Analyst,Ops Analyst
+UI,persona_portfolio,H1 overview KPIs,Prime/hold quality,Dispatch & pipeline,H1 overview KPIs,H1 overview KPIs,H1 overview KPIs,H1 overview KPIs,H1 overview KPIs,H1 overview KPIs
+UI,base_url,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/
+UI,home_url,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/,https://dashboardpresentation.netlify.app/
+UI,unknown_url,https://dashboardpresentation.netlify.app/no-such-xyz,https://dashboardpresentation.netlify.app/no-such-xyz,https://dashboardpresentation.netlify.app/no-such-xyz,https://dashboardpresentation.netlify.app/no-such-xyz,https://dashboardpresentation.netlify.app/no-such-xyz,https://dashboardpresentation.netlify.app/no-such-xyz,https://dashboardpresentation.netlify.app/no-such-xyz,https://dashboardpresentation.netlify.app/no-such-xyz,https://dashboardpresentation.netlify.app/no-such-xyz
+UI,api_host,https://dashboardpresentation.netlify.app,https://dashboardpresentation.netlify.app,https://dashboardpresentation.netlify.app,https://dashboardpresentation.netlify.app,https://dashboardpresentation.netlify.app,https://dashboardpresentation.netlify.app,https://dashboardpresentation.netlify.app,https://dashboardpresentation.netlify.app,https://dashboardpresentation.netlify.app
+UI,ep_home,/,/,/,/,/,/,/,/,/
+UI,ep_index,/index.html,/index.html,/index.html,/index.html,/index.html,/index.html,/index.html,/index.html,/index.html
+UI,ep_favicon,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico
+UI,ep_robots,/robots.txt,/robots.txt,/robots.txt,/robots.txt,/robots.txt,/robots.txt,/robots.txt,/robots.txt,/robots.txt
+UI,ep_unknown,/no-such-xyz,/no-such-xyz,/no-such-xyz,/no-such-xyz,/no-such-xyz,/no-such-xyz,/no-such-xyz,/no-such-xyz,/no-such-xyz
+UI,body_locator,css=body,css=body,css=body,css=body,css=body,css=body,css=body,css=body,css=body
+UI,page_title_home,Operations Overview,Operations Overview,Operations Overview,Operations Overview,Operations Overview,Operations Overview,Operations Overview,Operations Overview,Operations Overview
+UI,heading_ops,Operations Overview,Operations Overview,Operations Overview,Operations Overview,Operations Overview,Operations Overview,Operations Overview,Operations Overview,Operations Overview
+UI,text_period,PERIOD,PERIOD,PERIOD,PERIOD,PERIOD,PERIOD,PERIOD,PERIOD,PERIOD
+UI,text_h1,H1 2026,H1 2026,H1 2026,H1 2026,H1 2026,H1 2026,H1 2026,H1 2026,H1 2026
+UI,text_q1,Q1 (Jan,Q1 (Jan,Q1 (Jan,Q1 (Jan,Q1 (Jan,Q1 (Jan,Q1 (Jan,Q1 (Jan,Q1 (Jan
+UI,text_q2,Q2 (Apr,Q2 (Apr,Q2 (Apr,Q2 (Apr,Q2 (Apr,Q2 (Apr,Q2 (Apr,Q2 (Apr,Q2 (Apr
+UI,text_custom,CUSTOM RANGE,CUSTOM RANGE,CUSTOM RANGE,CUSTOM RANGE,CUSTOM RANGE,CUSTOM RANGE,CUSTOM RANGE,CUSTOM RANGE,CUSTOM RANGE
+UI,text_total_orders,TOTAL ORDERS,TOTAL ORDERS,TOTAL ORDERS,TOTAL ORDERS,TOTAL ORDERS,TOTAL ORDERS,TOTAL ORDERS,TOTAL ORDERS,TOTAL ORDERS
+UI,text_orders_h1,"1,347","1,347","1,347","1,347","1,347","1,347","1,347","1,347","1,347"
+UI,text_orders_q2,726,726,726,726,726,726,726,726,726
+UI,text_ontime,ON-TIME DISPATCH RATE,ON-TIME DISPATCH RATE,ON-TIME DISPATCH RATE,ON-TIME DISPATCH RATE,ON-TIME DISPATCH RATE,ON-TIME DISPATCH RATE,ON-TIME DISPATCH RATE,ON-TIME DISPATCH RATE,ON-TIME DISPATCH RATE
+UI,text_ontime_h1,89.1%,89.1%,89.1%,89.1%,89.1%,89.1%,89.1%,89.1%,89.1%
+UI,text_prime,PRIME QUALITY RATE,PRIME QUALITY RATE,PRIME QUALITY RATE,PRIME QUALITY RATE,PRIME QUALITY RATE,PRIME QUALITY RATE,PRIME QUALITY RATE,PRIME QUALITY RATE,PRIME QUALITY RATE
+UI,text_prime_h1,93.4%,93.4%,93.4%,93.4%,93.4%,93.4%,93.4%,93.4%,93.4%
+UI,text_fulfill,AVG FULFILLMENT TIME,AVG FULFILLMENT TIME,AVG FULFILLMENT TIME,AVG FULFILLMENT TIME,AVG FULFILLMENT TIME,AVG FULFILLMENT TIME,AVG FULFILLMENT TIME,AVG FULFILLMENT TIME,AVG FULFILLMENT TIME
+UI,text_fulfill_h1,4.3d,4.3d,4.3d,4.3d,4.3d,4.3d,4.3d,4.3d,4.3d
+UI,text_chart_volume,Order Volume & Fulfillment Trend,Order Volume & Fulfillment Trend,Order Volume & Fulfillment Trend,Order Volume & Fulfillment Trend,Order Volume & Fulfillment Trend,Order Volume & Fulfillment Trend,Order Volume & Fulfillment Trend,Order Volume & Fulfillment Trend,Order Volume & Fulfillment Trend
+UI,text_chart_pipeline,Order Pipeline Status,Order Pipeline Status,Order Pipeline Status,Order Pipeline Status,Order Pipeline Status,Order Pipeline Status,Order Pipeline Status,Order Pipeline Status,Order Pipeline Status
+UI,text_chart_dispatch,Dispatch vs Ordered Quantity,Dispatch vs Ordered Quantity,Dispatch vs Ordered Quantity,Dispatch vs Ordered Quantity,Dispatch vs Ordered Quantity,Dispatch vs Ordered Quantity,Dispatch vs Ordered Quantity,Dispatch vs Ordered Quantity,Dispatch vs Ordered Quantity
+UI,text_chart_material,Order Volume by Material Group,Order Volume by Material Group,Order Volume by Material Group,Order Volume by Material Group,Order Volume by Material Group,Order Volume by Material Group,Order Volume by Material Group,Order Volume by Material Group,Order Volume by Material Group
+UI,text_chart_production,Monthly Production Output,Monthly Production Output,Monthly Production Output,Monthly Production Output,Monthly Production Output,Monthly Production Output,Monthly Production Output,Monthly Production Output,Monthly Production Output
+UI,text_chart_hold,Hold Reason Analysis,Hold Reason Analysis,Hold Reason Analysis,Hold Reason Analysis,Hold Reason Analysis,Hold Reason Analysis,Hold Reason Analysis,Hold Reason Analysis,Hold Reason Analysis
+UI,text_chart_quality,Prime Quality Rate Trend,Prime Quality Rate Trend,Prime Quality Rate Trend,Prime Quality Rate Trend,Prime Quality Rate Trend,Prime Quality Rate Trend,Prime Quality Rate Trend,Prime Quality Rate Trend,Prime Quality Rate Trend
+UI,text_chart_grade,Grade Distribution,Grade Distribution,Grade Distribution,Grade Distribution,Grade Distribution,Grade Distribution,Grade Distribution,Grade Distribution,Grade Distribution
+UI,text_chart_fulfill_pipe,Order Fulfillment Pipeline,Order Fulfillment Pipeline,Order Fulfillment Pipeline,Order Fulfillment Pipeline,Order Fulfillment Pipeline,Order Fulfillment Pipeline,Order Fulfillment Pipeline,Order Fulfillment Pipeline,Order Fulfillment Pipeline
+UI,text_received,Received,Received,Received,Received,Received,Received,Received,Received,Received
+UI,text_dispatched,Dispatched,Dispatched,Dispatched,Dispatched,Dispatched,Dispatched,Dispatched,Dispatched,Dispatched
+UI,text_on_hold,On Hold,On Hold,On Hold,On Hold,On Hold,On Hold,On Hold,On Hold,On Hold
+UI,text_assistant_btn,Ask Ops Assistant,Ask Ops Assistant,Ask Ops Assistant,Ask Ops Assistant,Ask Ops Assistant,Ask Ops Assistant,Ask Ops Assistant,Ask Ops Assistant,Ask Ops Assistant
+UI,text_assistant,Ops Assistant,Ops Assistant,Ops Assistant,Ops Assistant,Ops Assistant,Ops Assistant,Ops Assistant,Ops Assistant,Ops Assistant
+UI,text_assistant_hint,"Ask about orders, dispatch, quality, production","Ask about orders, dispatch, quality, production","Ask about orders, dispatch, quality, production","Ask about orders, dispatch, quality, production","Ask about orders, dispatch, quality, production","Ask about orders, dispatch, quality, production","Ask about orders, dispatch, quality, production","Ask about orders, dispatch, quality, production","Ask about orders, dispatch, quality, production"
+UI,text_drill_month,Month,Month,Month,Month,Month,Month,Month,Month,Month
+UI,text_drill_completed,Completed,Completed,Completed,Completed,Completed,Completed,Completed,Completed,Completed
+UI,text_page_not_found,Page not found,Page not found,Page not found,Page not found,Page not found,Page not found,Page not found,Page not found,Page not found
+UI,btn_h1,xpath=//button[normalize-space()='H1 2026'],xpath=//button[normalize-space()='H1 2026'],xpath=//button[normalize-space()='H1 2026'],xpath=//button[normalize-space()='H1 2026'],xpath=//button[normalize-space()='H1 2026'],xpath=//button[normalize-space()='H1 2026'],xpath=//button[normalize-space()='H1 2026'],xpath=//button[normalize-space()='H1 2026'],xpath=//button[normalize-space()='H1 2026']
+UI,btn_q1,"xpath=//button[contains(normalize-space(),'Q1')]","xpath=//button[contains(normalize-space(),'Q1')]","xpath=//button[contains(normalize-space(),'Q1')]","xpath=//button[contains(normalize-space(),'Q1')]","xpath=//button[contains(normalize-space(),'Q1')]","xpath=//button[contains(normalize-space(),'Q1')]","xpath=//button[contains(normalize-space(),'Q1')]","xpath=//button[contains(normalize-space(),'Q1')]","xpath=//button[contains(normalize-space(),'Q1')]"
+UI,btn_q2,"xpath=//button[contains(normalize-space(),'Q2')]","xpath=//button[contains(normalize-space(),'Q2')]","xpath=//button[contains(normalize-space(),'Q2')]","xpath=//button[contains(normalize-space(),'Q2')]","xpath=//button[contains(normalize-space(),'Q2')]","xpath=//button[contains(normalize-space(),'Q2')]","xpath=//button[contains(normalize-space(),'Q2')]","xpath=//button[contains(normalize-space(),'Q2')]","xpath=//button[contains(normalize-space(),'Q2')]"
+UI,btn_total_orders,xpath=//*[normalize-space()='Total Orders'],xpath=//*[normalize-space()='Total Orders'],xpath=//*[normalize-space()='Total Orders'],xpath=//*[normalize-space()='Total Orders'],xpath=//*[normalize-space()='Total Orders'],xpath=//*[normalize-space()='Total Orders'],xpath=//*[normalize-space()='Total Orders'],xpath=//*[normalize-space()='Total Orders'],xpath=//*[normalize-space()='Total Orders']
+UI,btn_close_modal,xpath=//button[normalize-space()='✕'],xpath=//button[normalize-space()='✕'],xpath=//button[normalize-space()='✕'],xpath=//button[normalize-space()='✕'],xpath=//button[normalize-space()='✕'],xpath=//button[normalize-space()='✕'],xpath=//button[normalize-space()='✕'],xpath=//button[normalize-space()='✕'],xpath=//button[normalize-space()='✕']
+UI,btn_assistant,css=button#chatBubble,css=button#chatBubble,css=button#chatBubble,css=button#chatBubble,css=button#chatBubble,css=button#chatBubble,css=button#chatBubble,css=button#chatBubble,css=button#chatBubble

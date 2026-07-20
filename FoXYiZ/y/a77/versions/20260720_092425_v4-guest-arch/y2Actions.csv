@@ -1,0 +1,256 @@
+PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PReuse_A77_Open,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PReuse_A77_Open,2,Navigate home,xUI,xNavigate,base_url,,,Y
+PReuse_A77_Open,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PReuse_A77_Open,4,Body present,xUI,xGetText,body_locator,,,Y
+PA77_Smoke_HomeHero,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PA77_Smoke_HomeHero,2,Navigate home,xUI,xNavigate,base_url,,,Y
+PA77_Smoke_HomeHero,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PA77_Smoke_HomeHero,4,Title,xUI,xGetTitle,,,page_title_home,Y
+PA77_Smoke_HomeHero,5,Hero,xUI,xGetText,body_locator,,heading_hero,Y
+PA77_Smoke_HomeHero,6,No CC,xUI,xGetText,body_locator,,text_no_cc,Y
+PA77_Smoke_BrahlLoopSection,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_BrahlLoopSection,2,Navigate,xUI,xNavigate,base_url,,,Y
+PA77_Smoke_BrahlLoopSection,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_BrahlLoopSection,4,BRAHL LOOP,xUI,xGetText,body_locator,,heading_brahl_loop,Y
+PA77_Smoke_BrahlLoopSection,5,BUILD,xUI,xGetText,body_locator,,BUILD,Y
+PA77_Smoke_BrahlLoopSection,6,FoXYiZ mention,xUI,xGetText,body_locator,,text_foxyiz,Y
+PA77_Smoke_FeatureStrip,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_FeatureStrip,2,Navigate,xUI,xNavigate,base_url,,,Y
+PA77_Smoke_FeatureStrip,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_FeatureStrip,4,Roadmap,xUI,xGetText,body_locator,,text_feature_roadmap,Y
+PA77_Smoke_FeatureStrip,5,Content,xUI,xGetText,body_locator,,text_feature_content,Y
+PA77_Smoke_FeatureStrip,6,SEO,xUI,xGetText,body_locator,,text_feature_seo,Y
+PA77_Smoke_FeatureStrip,7,Social,xUI,xGetText,body_locator,,text_feature_social,Y
+PA77_Smoke_Testimonials,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_Testimonials,2,Navigate,xUI,xNavigate,base_url,,,Y
+PA77_Smoke_Testimonials,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_Testimonials,4,Testimonials heading,xUI,xGetText,body_locator,,heading_testimonials,Y
+PA77_Smoke_Testimonials,5,Quote present,xUI,xGetText,body_locator,,Sarah K.,Y
+PA77_Smoke_Portfolio,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_Portfolio,2,Navigate,xUI,xNavigate,base_url,,,Y
+PA77_Smoke_Portfolio,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_Portfolio,4,Portfolio heading,xUI,xGetText,body_locator,,heading_portfolio,Y
+PA77_Smoke_Portfolio,5,Atomic card,xUI,xGetText,body_locator,,Atomic 77,Y
+PA77_Smoke_Portfolio,6,QAonAir card,xUI,xGetText,body_locator,,text_qaonair,Y
+PA77_Smoke_PricingTiers,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_PricingTiers,2,Navigate,xUI,xNavigate,pricing_url,,,Y
+PA77_Smoke_PricingTiers,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_PricingTiers,4,Title,xUI,xGetTitle,,,page_title_pricing,Y
+PA77_Smoke_PricingTiers,5,Free tier,xUI,xGetText,body_locator,,text_tier_free,Y
+PA77_Smoke_PricingTiers,6,AI tier,xUI,xGetText,body_locator,,text_tier_ai,Y
+PA77_Smoke_PricingTiers,7,Build tier,xUI,xGetText,body_locator,,Choose Build,Y
+PA77_Smoke_PricingTiers,8,FoXYiZ BRAHL,xUI,xGetText,body_locator,,text_foxyiz,Y
+PA77_Smoke_Login,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_Login,2,Navigate,xUI,xNavigate,login_url,,,Y
+PA77_Smoke_Login,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_Login,4,Title,xUI,xGetTitle,,,page_title_login,Y
+PA77_Smoke_Login,5,Welcome,xUI,xGetText,body_locator,,heading_welcome,Y
+PA77_Smoke_Login,6,Google,xUI,xGetText,body_locator,,Continue with Google,Y
+PA77_Smoke_Login,7,Email field,xUI,xGetText,input_email,,,Y
+PA77_Smoke_Register,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_Register,2,Navigate,xUI,xNavigate,register_url,,,Y
+PA77_Smoke_Register,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_Register,4,Title,xUI,xGetTitle,,,page_title_register,Y
+PA77_Smoke_Register,5,Create,xUI,xGetText,body_locator,,heading_create,Y
+PA77_Smoke_Register,6,Confirm password label,xUI,xGetText,body_locator,,Confirm Password,Y
+PA77_Smoke_Forgot,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_Forgot,2,Navigate,xUI,xNavigate,forgot_url,,,Y
+PA77_Smoke_Forgot,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_Forgot,4,Heading,xUI,xGetText,body_locator,,heading_reset,Y
+PA77_Smoke_Forgot,5,Send link,xUI,xGetText,body_locator,,Send reset link,Y
+PA77_Smoke_ResetInvalid,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_ResetInvalid,2,Navigate,xUI,xNavigate,reset_url,,,Y
+PA77_Smoke_ResetInvalid,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_ResetInvalid,4,Invalid,xUI,xGetText,body_locator,,heading_invalid_reset,Y
+PA77_Smoke_ResetInvalid,5,Request new link,xUI,xGetText,body_locator,,text_reset_request,Y
+PA77_Smoke_OnboardingStep1,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_OnboardingStep1,2,Navigate,xUI,xNavigate,onboarding_url,,,Y
+PA77_Smoke_OnboardingStep1,3,Wait,xTime,xTimeWait,3,,,Y
+PA77_Smoke_OnboardingStep1,4,Heading,xUI,xGetText,body_locator,,heading_onboarding,Y
+PA77_Smoke_OnboardingStep1,5,Industry Technology,xUI,xGetText,body_locator,,Technology,Y
+PA77_Smoke_OnboardingStep1,6,Business Name label,xUI,xGetText,body_locator,,Business Name,Y
+PA77_Smoke_OnboardingStep1,7,Website optional,xUI,xGetText,body_locator,,Website URL,Y
+PA77_Smoke_LivePreview,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_LivePreview,2,Navigate,xUI,xNavigate,base_url,,,Y
+PA77_Smoke_LivePreview,3,Wait,xTime,xTimeWait,3,,,Y
+PA77_Smoke_LivePreview,4,BRAHL preview nav,xUI,xGetText,body_locator,,BRAHL,Y
+PA77_Smoke_LivePreview,5,New Feature chip,xUI,xGetText,body_locator,,text_preview_slice,Y
+PA77_Smoke_LivePreview,6,PRD chip,xUI,xGetText,body_locator,,PRD,Y
+PA77_Smoke_LivePreview,7,Tests chip,xUI,xGetText,body_locator,,Tests,Y
+PA77_Smoke_LivePreview,8,Marketing chip,xUI,xGetText,body_locator,,Marketing,Y
+PA77_Smoke_SocialLegacy404,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_SocialLegacy404,2,Navigate,xUI,xNavigate,social_bad_url,,,Y
+PA77_Smoke_SocialLegacy404,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_SocialLegacy404,4,404,xUI,xGetText,body_locator,,heading_404,Y
+PA77_Smoke_SocialLegacy404,5,Page not found,xUI,xGetText,body_locator,,Page Not Found,Y
+PA77_Smoke_Unknown404,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_Unknown404,2,Navigate,xUI,xNavigate,unknown_url,,,Y
+PA77_Smoke_Unknown404,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_Unknown404,4,404,xUI,xGetText,body_locator,,heading_404,Y
+PA77_Smoke_Unknown404,5,Go Home,xUI,xGetText,body_locator,,Go Home,Y
+PA77_UI_NavToPricing,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PA77_UI_NavToPricing,2,Navigate home,xUI,xNavigate,base_url,,,Y
+PA77_UI_NavToPricing,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PA77_UI_NavToPricing,4,Go pricing URL,xUI,xNavigate,pricing_url,,,Y
+PA77_UI_NavToPricing,5,Wait,xTime,xTimeWait,2,,,Y
+PA77_UI_NavToPricing,6,Pricing heading,xUI,xGetText,body_locator,,heading_pricing,Y
+PA77_UI_PortfolioFilterAi,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PA77_UI_PortfolioFilterAi,2,Navigate home,xUI,xNavigate,base_url,,,Y
+PA77_UI_PortfolioFilterAi,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PA77_UI_PortfolioFilterAi,4,Click AI Layer,xUI,xClick,btn_filter_ai,,,Y
+PA77_UI_PortfolioFilterAi,5,Wait,xTime,xTimeWait,1,,,Y
+PA77_UI_PortfolioFilterAi,6,Atomic still listed,xUI,xGetText,body_locator,,Atomic 77,Y
+PA77_UI_PortfolioFilterAi,7,AI Layer active filter,xUI,xGetText,body_locator,,AI Layer,Y
+PA77_UI_PortfolioFilterUtility,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PA77_UI_PortfolioFilterUtility,2,Navigate home,xUI,xNavigate,base_url,,,Y
+PA77_UI_PortfolioFilterUtility,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PA77_UI_PortfolioFilterUtility,4,Utility filter chip,xUI,xGetText,body_locator,,Utility,Y
+PA77_UI_PortfolioFilterUtility,5,Experimental filter chip,xUI,xGetText,body_locator,,Experimental,Y
+PA77_UI_PortfolioFilterUtility,6,Marketplace filter chip,xUI,xGetText,body_locator,,Marketplace,Y
+PA77_UI_PreviewRunModes,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PA77_UI_PreviewRunModes,2,Navigate home,xUI,xNavigate,base_url,,,Y
+PA77_UI_PreviewRunModes,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PA77_UI_PreviewRunModes,4,Click a slice copy,xUI,xGetText,body_locator,,Click a slice,Y
+PA77_UI_PreviewRunModes,5,SEO Content chip,xUI,xGetText,body_locator,,SEO Content,Y
+PA77_UI_PreviewRunModes,6,Branding chip,xUI,xGetText,body_locator,,Branding,Y
+PA77_UI_PreviewRunModes,7,Run phase in loop,xUI,xGetText,body_locator,,"automation, agents",Y
+PA77_UI_PricingToRegister,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_UI_PricingToRegister,2,Navigate,xUI,xNavigate,pricing_url,,,Y
+PA77_UI_PricingToRegister,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_UI_PricingToRegister,4,Choose AI visible,xUI,xGetText,body_locator,,Choose AI,Y
+PA77_UI_PricingToRegister,5,Register URL,xUI,xNavigate,register_url,,,Y
+PA77_UI_PricingToRegister,6,Wait,xTime,xTimeWait,2,,,Y
+PA77_UI_PricingToRegister,7,On register,xUI,xGetText,body_locator,,heading_create,Y
+PA77_UI_PricingAgentKk,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_UI_PricingAgentKk,2,Navigate,xUI,xNavigate,pricing_url,,,Y
+PA77_UI_PricingAgentKk,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_UI_PricingAgentKk,4,Agent KK,xUI,xGetText,body_locator,,text_agent_kk,Y
+PA77_UI_PricingAgentKk,5,Omnichannel,xUI,xGetText,body_locator,,Omnichannel,Y
+PA77_UI_LoginCrossLinks,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_UI_LoginCrossLinks,2,Navigate,xUI,xNavigate,login_url,,,Y
+PA77_UI_LoginCrossLinks,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_UI_LoginCrossLinks,4,Forgot link text,xUI,xGetText,body_locator,,Forgot password?,Y
+PA77_UI_LoginCrossLinks,5,Create one,xUI,xGetText,body_locator,,Create one,Y
+PA77_UI_LoginCrossLinks,6,Open forgot,xUI,xNavigate,forgot_url,,,Y
+PA77_UI_LoginCrossLinks,7,Wait forgot,xTime,xTimeWait,2,,,Y
+PA77_UI_LoginCrossLinks,8,Reset form,xUI,xGetText,body_locator,,heading_reset,Y
+PA77_UI_RegisterHasConfirm,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_UI_RegisterHasConfirm,2,Navigate,xUI,xNavigate,register_url,,,Y
+PA77_UI_RegisterHasConfirm,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_UI_RegisterHasConfirm,4,Confirm,xUI,xGetText,body_locator,,Confirm Password,Y
+PA77_UI_RegisterHasConfirm,5,Google,xUI,xGetText,body_locator,,Continue with Google,Y
+PA77_UI_RegisterHasConfirm,6,Password fields,xUI,xGetText,input_password,,,Y
+PA77_UI_OnboardingSelectIndustry,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_UI_OnboardingSelectIndustry,2,Navigate,xUI,xNavigate,onboarding_url,,,Y
+PA77_UI_OnboardingSelectIndustry,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_UI_OnboardingSelectIndustry,4,Click Technology,xUI,xClick,btn_technology,,,Y
+PA77_UI_OnboardingSelectIndustry,5,Wait,xTime,xTimeWait,1,,,Y
+PA77_UI_OnboardingSelectIndustry,6,Still onboarding,xUI,xGetText,body_locator,,heading_onboarding,Y
+PA77_UI_404GoHome,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_UI_404GoHome,2,Navigate,xUI,xNavigate,unknown_url,,,Y
+PA77_UI_404GoHome,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_UI_404GoHome,4,Click Go Home,xUI,xClick,btn_go_home,,,Y
+PA77_UI_404GoHome,5,Wait home,xTime,xTimeWait,3,,,Y
+PA77_UI_404GoHome,6,Hero back,xUI,xGetText,body_locator,,heading_hero,Y
+PA77_UI_FooterCopyright,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PA77_UI_FooterCopyright,2,Navigate home,xUI,xNavigate,base_url,,,Y
+PA77_UI_FooterCopyright,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PA77_UI_FooterCopyright,4,Copyright,xUI,xGetText,body_locator,,All rights reserved,Y
+PA77_UI_FooterCopyright,5,Growth CTA,xUI,xGetText,body_locator,,heading_growth,Y
+PA77_Manual_GoogleOAuth,1,Hunter: exercise Google OAuth on login/register,xUI,xOpenBrowser,edge,,,N
+PA77_Manual_GoogleOAuth,2,Load app,xUI,xNavigate,base_url,,,N
+PA77_Manual_GoogleOAuth,3,Capture evidence in Arena hunt,xTime,xTimeWait,1,,,N
+PA77_Manual_RegisterAndLogin,1,Hunter: register with real email and log in,xUI,xOpenBrowser,edge,,,N
+PA77_Manual_RegisterAndLogin,2,Load app,xUI,xNavigate,base_url,,,N
+PA77_Manual_RegisterAndLogin,3,Capture evidence in Arena hunt,xTime,xTimeWait,1,,,N
+PA77_Manual_OnboardingWizard,1,Hunter: finish onboarding steps 2-4 to dashboard,xUI,xOpenBrowser,edge,,,N
+PA77_Manual_OnboardingWizard,2,Load app,xUI,xNavigate,base_url,,,N
+PA77_Manual_OnboardingWizard,3,Capture evidence in Arena hunt,xTime,xTimeWait,1,,,N
+PA77_Manual_DashboardTour,1,Hunter: tour authenticated dashboard,xUI,xOpenBrowser,edge,,,N
+PA77_Manual_DashboardTour,2,Load app,xUI,xNavigate,base_url,,,N
+PA77_Manual_DashboardTour,3,Capture evidence in Arena hunt,xTime,xTimeWait,1,,,N
+PA77_Manual_AiGrowthRoadmap,1,Hunter: generate AI Growth Roadmap,xUI,xOpenBrowser,edge,,,N
+PA77_Manual_AiGrowthRoadmap,2,Load app,xUI,xNavigate,base_url,,,N
+PA77_Manual_AiGrowthRoadmap,3,Capture evidence in Arena hunt,xTime,xTimeWait,1,,,N
+PA77_Manual_ContentStudio,1,Hunter: Content Studio create content,xUI,xOpenBrowser,edge,,,N
+PA77_Manual_ContentStudio,2,Load app,xUI,xNavigate,base_url,,,N
+PA77_Manual_ContentStudio,3,Capture evidence in Arena hunt,xTime,xTimeWait,1,,,N
+PA77_Manual_SocialScheduler,1,Hunter: locate Social Scheduler and schedule post,xUI,xOpenBrowser,edge,,,N
+PA77_Manual_SocialScheduler,2,Load app,xUI,xNavigate,base_url,,,N
+PA77_Manual_SocialScheduler,3,Capture evidence in Arena hunt,xTime,xTimeWait,1,,,N
+PA77_Manual_SeoIntelligence,1,Hunter: SEO report for real site,xUI,xOpenBrowser,edge,,,N
+PA77_Manual_SeoIntelligence,2,Load app,xUI,xNavigate,base_url,,,N
+PA77_Manual_SeoIntelligence,3,Capture evidence in Arena hunt,xTime,xTimeWait,1,,,N
+PA77_Manual_BrahlInAppCycle,1,Hunter: full in-app BRAHL phases logged-in,xUI,xOpenBrowser,edge,,,N
+PA77_Manual_BrahlInAppCycle,2,Load app,xUI,xNavigate,base_url,,,N
+PA77_Manual_BrahlInAppCycle,3,Capture evidence in Arena hunt,xTime,xTimeWait,1,,,N
+PA77_Manual_PaidPlanCheckout,1,Hunter: paid plan checkout AI or Build,xUI,xOpenBrowser,edge,,,N
+PA77_Manual_PaidPlanCheckout,2,Load app,xUI,xNavigate,base_url,,,N
+PA77_Manual_PaidPlanCheckout,3,Capture evidence in Arena hunt,xTime,xTimeWait,1,,,N
+PA77_Manual_AgentBroadcasts,1,Hunter: Agent KK / broadcasts if entitled,xUI,xOpenBrowser,edge,,,N
+PA77_Manual_AgentBroadcasts,2,Load app,xUI,xNavigate,base_url,,,N
+PA77_Manual_AgentBroadcasts,3,Capture evidence in Arena hunt,xTime,xTimeWait,1,,,N
+PA77_Smoke_DashboardGate,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_DashboardGate,2,Navigate dashboard,xUI,xNavigate,dashboard_url,,,Y
+PA77_Smoke_DashboardGate,3,Wait,xTime,xTimeWait,3,,,Y
+PA77_Smoke_DashboardGate,4,Title,xUI,xGetTitle,,,page_title_dashboard,Y
+PA77_Smoke_DashboardGate,5,Guest chip,xUI,xGetText,body_locator,,text_guest,Y
+PA77_Smoke_DashboardGate,6,Command center,xUI,xGetText,body_locator,,text_command_center,Y
+PA77_Smoke_DashboardGate,7,Cost meter,xUI,xGetText,body_locator,,text_cost_meter,Y
+PA77_Smoke_BrahlPhasesGate,1,Open,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_BrahlPhasesGate,2,Build,xUI,xNavigate,build_url,,,Y
+PA77_Smoke_BrahlPhasesGate,3,Wait build,xTime,xTimeWait,2,,,Y
+PA77_Smoke_BrahlPhasesGate,4,Build guest shell,xUI,xGetText,body_locator,,text_guest,Y
+PA77_Smoke_BrahlPhasesGate,5,Thought Capture,xUI,xGetText,body_locator,,text_thought_capture,Y
+PA77_Smoke_BrahlPhasesGate,6,Run,xUI,xNavigate,run_url,,,Y
+PA77_Smoke_BrahlPhasesGate,7,Wait run,xTime,xTimeWait,2,,,Y
+PA77_Smoke_BrahlPhasesGate,8,Local Engine,xUI,xGetText,body_locator,,text_local_engine,Y
+PA77_Smoke_BrahlPhasesGate,9,Analyze,xUI,xNavigate,analyze_url,,,Y
+PA77_Smoke_BrahlPhasesGate,10,Wait analyze,xTime,xTimeWait,2,,,Y
+PA77_Smoke_BrahlPhasesGate,11,Analyze defects copy,xUI,xGetText,body_locator,,text_analyze_defects,Y
+PA77_Smoke_BrahlPhasesGate,12,Heal,xUI,xNavigate,heal_url,,,Y
+PA77_Smoke_BrahlPhasesGate,13,Wait heal,xTime,xTimeWait,2,,,Y
+PA77_Smoke_BrahlPhasesGate,14,Heal Fix Plan,xUI,xGetText,body_locator,,text_heal_fix_plan,Y
+PA77_Smoke_BrahlPhasesGate,15,Loop,xUI,xNavigate,loop_url,,,Y
+PA77_Smoke_BrahlPhasesGate,16,Wait loop,xTime,xTimeWait,2,,,Y
+PA77_Smoke_BrahlPhasesGate,17,Confirm Sprint,xUI,xGetText,body_locator,,text_confirm_sprint,Y
+PA77_Smoke_BrahlPhasesGate,18,BRAHL page,xUI,xNavigate,brahl_url,,,Y
+PA77_Smoke_BrahlPhasesGate,19,Wait brahl,xTime,xTimeWait,2,,,Y
+PA77_Smoke_BrahlPhasesGate,20,Holistic Report,xUI,xGetText,body_locator,,text_holistic_report,Y
+PA77_Smoke_ContentSeoGate,1,Open,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_ContentSeoGate,2,Content Pascal,xUI,xNavigate,content_url,,,Y
+PA77_Smoke_ContentSeoGate,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_ContentSeoGate,4,Content Studio,xUI,xGetText,body_locator,,text_content_studio_h,Y
+PA77_Smoke_ContentSeoGate,5,Guest shell,xUI,xGetText,body_locator,,text_guest,Y
+PA77_Smoke_ContentSeoGate,6,Content lower,xUI,xNavigate,content_lower_url,,,Y
+PA77_Smoke_ContentSeoGate,7,Wait lower,xTime,xTimeWait,1,,,Y
+PA77_Smoke_ContentSeoGate,8,Content lower studio,xUI,xGetText,body_locator,,text_content_studio_h,Y
+PA77_Smoke_ContentSeoGate,9,SEO,xUI,xNavigate,seo_url,,,Y
+PA77_Smoke_ContentSeoGate,10,Wait seo,xTime,xTimeWait,2,,,Y
+PA77_Smoke_ContentSeoGate,11,SEO Intelligence,xUI,xGetText,body_locator,,text_seo_intel,Y
+PA77_Smoke_SchedulerGate,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_SchedulerGate,2,Navigate,xUI,xNavigate,scheduler_url,,,Y
+PA77_Smoke_SchedulerGate,3,Wait,xTime,xTimeWait,2,,,Y
+PA77_Smoke_SchedulerGate,4,Title,xUI,xGetTitle,,,page_title_scheduler,Y
+PA77_Smoke_SchedulerGate,5,Social Scheduler,xUI,xGetText,body_locator,,text_social_sched,Y
+PA77_Smoke_SchedulerGate,6,Guest shell,xUI,xGetText,body_locator,,text_guest,Y
+PA77_UI_GetStartedToRegister,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PA77_UI_GetStartedToRegister,2,Navigate home,xUI,xNavigate,base_url,,,Y
+PA77_UI_GetStartedToRegister,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PA77_UI_GetStartedToRegister,4,Click Get Started Free,xUI,xClick,btn_get_started_free,,,Y
+PA77_UI_GetStartedToRegister,5,Wait dash,xTime,xTimeWait,3,,,Y
+PA77_UI_GetStartedToRegister,6,Guest chip,xUI,xGetText,body_locator,,text_guest,Y
+PA77_UI_GetStartedToRegister,7,Command center,xUI,xGetText,body_locator,,text_command_center,Y
+PA77_Smoke_BrahlConclusion,1,Open site,xReuse,PReuse_A77_Open,,,,Y
+PA77_Smoke_BrahlConclusion,2,Landing BRAHL loop,xUI,xNavigate,base_url,,,Y
+PA77_Smoke_BrahlConclusion,3,Wait home,xTime,xTimeWait,2,,,Y
+PA77_Smoke_BrahlConclusion,4,THE BRAHL LOOP,xUI,xGetText,body_locator,,heading_brahl_loop,Y
+PA77_Smoke_BrahlConclusion,5,In-app BRAHL,xUI,xNavigate,brahl_url,,,Y
+PA77_Smoke_BrahlConclusion,6,Wait brahl,xTime,xTimeWait,3,,,Y
+PA77_Smoke_BrahlConclusion,7,Guest shell,xUI,xGetText,body_locator,,text_guest,Y
+PA77_Smoke_BrahlConclusion,8,Holistic Report,xUI,xGetText,body_locator,,text_holistic_report,Y
+PA77_Smoke_BrahlConclusion,9,Active client demo,xUI,xGetText,body_locator,,text_active_client,Y
+PA77_Smoke_BrahlConclusion,10,Login still available,xUI,xNavigate,login_url,,,Y
+PA77_Smoke_BrahlConclusion,11,Wait login,xTime,xTimeWait,2,,,Y
+PA77_Smoke_BrahlConclusion,12,Auth form,xUI,xGetText,body_locator,,heading_welcome,Y

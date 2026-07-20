@@ -1,0 +1,1238 @@
+PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PReuse_J_P1_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P1_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P1_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P1_Shell_Client,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PJ_P1_Nav_build_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Nav_build_cli,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Nav_build_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_build_cli,4,Verify Build nav label,xUI,xGetText,nav_build_btn,,Build,y
+PJ_P1_Nav_run_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Nav_run_cli,2,Click Run tab,xUI,xClick,nav_run_btn,,,y
+PJ_P1_Nav_run_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_run_cli,4,Verify Run nav label,xUI,xGetText,nav_run_btn,,Run,y
+PJ_P1_Nav_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Nav_analyze_cli,2,Click Analyze tab,xUI,xClick,nav_analyze_btn,,,y
+PJ_P1_Nav_analyze_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_analyze_cli,4,Verify Analyze nav label,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PJ_P1_Nav_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Nav_heal_cli,2,Click Heal tab,xUI,xClick,nav_heal_btn,,,y
+PJ_P1_Nav_heal_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_heal_cli,4,Verify Heal nav label,xUI,xGetText,nav_heal_btn,,Heal,y
+PJ_P1_Nav_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Nav_loop_cli,2,Click Loop tab,xUI,xClick,nav_loop_btn,,,y
+PJ_P1_Nav_loop_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_loop_cli,4,Verify Loop nav label,xUI,xGetText,nav_loop_btn,,Loop,y
+PJ_P1_Nav_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Nav_brahl_cli,2,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PJ_P1_Nav_brahl_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_brahl_cli,4,Verify BRAHL nav label,xUI,xGetText,nav_brahl_btn,,BRAHL,y
+PJ_P1_Nav_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Nav_atomic77_cli,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P1_Nav_atomic77_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_atomic77_cli,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P1_Nav_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Nav_cost_cli,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P1_Nav_cost_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_cost_cli,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PReuse_J_P1_Shell_Networker,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P1_Shell_Networker,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P1_Shell_Networker,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P1_Shell_Networker,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P1_Shell_Networker,5,Select Networker avatar,xUI,xClick,avatar_networker_bar_btn,,,y
+PReuse_J_P1_Shell_Networker,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Networker,,,,y
+PJ_P1_Nav_atomic77_net,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P1_Nav_atomic77_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_atomic77_net,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P1_Nav_cost_net,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Networker,,,,y
+PJ_P1_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P1_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PJ_P1_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Networker,,,,y
+PJ_P1_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P1_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P1_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
+PReuse_J_P2_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P2_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P2_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P2_Shell_Client,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PJ_P2_Nav_build_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Nav_build_cli,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Nav_build_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_build_cli,4,Verify Build nav label,xUI,xGetText,nav_build_btn,,Build,y
+PJ_P2_Nav_run_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Nav_run_cli,2,Click Run tab,xUI,xClick,nav_run_btn,,,y
+PJ_P2_Nav_run_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_run_cli,4,Verify Run nav label,xUI,xGetText,nav_run_btn,,Run,y
+PJ_P2_Nav_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Nav_analyze_cli,2,Click Analyze tab,xUI,xClick,nav_analyze_btn,,,y
+PJ_P2_Nav_analyze_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_analyze_cli,4,Verify Analyze nav label,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PJ_P2_Nav_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Nav_heal_cli,2,Click Heal tab,xUI,xClick,nav_heal_btn,,,y
+PJ_P2_Nav_heal_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_heal_cli,4,Verify Heal nav label,xUI,xGetText,nav_heal_btn,,Heal,y
+PJ_P2_Nav_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Nav_loop_cli,2,Click Loop tab,xUI,xClick,nav_loop_btn,,,y
+PJ_P2_Nav_loop_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_loop_cli,4,Verify Loop nav label,xUI,xGetText,nav_loop_btn,,Loop,y
+PJ_P2_Nav_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Nav_brahl_cli,2,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PJ_P2_Nav_brahl_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_brahl_cli,4,Verify BRAHL nav label,xUI,xGetText,nav_brahl_btn,,BRAHL,y
+PJ_P2_Nav_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Nav_atomic77_cli,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P2_Nav_atomic77_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_atomic77_cli,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P2_Nav_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Nav_cost_cli,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P2_Nav_cost_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_cost_cli,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PReuse_J_P2_Shell_Consultant,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P2_Shell_Consultant,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P2_Shell_Consultant,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P2_Shell_Consultant,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P2_Shell_Consultant,5,Select QA Hunter avatar,xUI,xClick,avatar_hitl_bar_btn,,,y
+PReuse_J_P2_Shell_Consultant,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_build_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Nav_build_con,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Nav_build_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_build_con,4,Verify Build nav label,xUI,xGetText,nav_build_btn,,Build,y
+PJ_P2_Nav_run_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Nav_run_con,2,Click Run tab,xUI,xClick,nav_run_btn,,,y
+PJ_P2_Nav_run_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_run_con,4,Verify Run nav label,xUI,xGetText,nav_run_btn,,Run,y
+PJ_P2_Nav_analyze_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Nav_analyze_con,2,Click Analyze tab,xUI,xClick,nav_analyze_btn,,,y
+PJ_P2_Nav_analyze_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_analyze_con,4,Verify Analyze nav label,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PJ_P2_Nav_heal_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Nav_heal_con,2,Click Heal tab,xUI,xClick,nav_heal_btn,,,y
+PJ_P2_Nav_heal_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_heal_con,4,Verify Heal nav label,xUI,xGetText,nav_heal_btn,,Heal,y
+PJ_P2_Nav_loop_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Nav_loop_con,2,Click Loop tab,xUI,xClick,nav_loop_btn,,,y
+PJ_P2_Nav_loop_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_loop_con,4,Verify Loop nav label,xUI,xGetText,nav_loop_btn,,Loop,y
+PJ_P2_Nav_brahl_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Nav_brahl_con,2,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PJ_P2_Nav_brahl_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_brahl_con,4,Verify BRAHL nav label,xUI,xGetText,nav_brahl_btn,,BRAHL,y
+PJ_P2_Nav_atomic77_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Nav_atomic77_con,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P2_Nav_atomic77_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_atomic77_con,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P2_Nav_cost_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Nav_cost_con,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P2_Nav_cost_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_cost_con,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PReuse_J_P2_Shell_Networker,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P2_Shell_Networker,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P2_Shell_Networker,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P2_Shell_Networker,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P2_Shell_Networker,5,Select Networker avatar,xUI,xClick,avatar_networker_bar_btn,,,y
+PReuse_J_P2_Shell_Networker,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Networker,,,,y
+PJ_P2_Nav_atomic77_net,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P2_Nav_atomic77_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_atomic77_net,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P2_Nav_cost_net,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Networker,,,,y
+PJ_P2_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P2_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PJ_P2_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Networker,,,,y
+PJ_P2_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P2_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P2_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
+PReuse_J_P3_Shell_Consultant,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P3_Shell_Consultant,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P3_Shell_Consultant,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P3_Shell_Consultant,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P3_Shell_Consultant,5,Select QA Hunter avatar,xUI,xClick,avatar_hitl_bar_btn,,,y
+PReuse_J_P3_Shell_Consultant,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_build_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Nav_build_con,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PJ_P3_Nav_build_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_build_con,4,Verify Build nav label,xUI,xGetText,nav_build_btn,,Build,y
+PJ_P3_Nav_run_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Nav_run_con,2,Click Run tab,xUI,xClick,nav_run_btn,,,y
+PJ_P3_Nav_run_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_run_con,4,Verify Run nav label,xUI,xGetText,nav_run_btn,,Run,y
+PJ_P3_Nav_analyze_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Nav_analyze_con,2,Click Analyze tab,xUI,xClick,nav_analyze_btn,,,y
+PJ_P3_Nav_analyze_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_analyze_con,4,Verify Analyze nav label,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PJ_P3_Nav_heal_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Nav_heal_con,2,Click Heal tab,xUI,xClick,nav_heal_btn,,,y
+PJ_P3_Nav_heal_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_heal_con,4,Verify Heal nav label,xUI,xGetText,nav_heal_btn,,Heal,y
+PJ_P3_Nav_loop_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Nav_loop_con,2,Click Loop tab,xUI,xClick,nav_loop_btn,,,y
+PJ_P3_Nav_loop_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_loop_con,4,Verify Loop nav label,xUI,xGetText,nav_loop_btn,,Loop,y
+PJ_P3_Nav_brahl_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Nav_brahl_con,2,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PJ_P3_Nav_brahl_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_brahl_con,4,Verify BRAHL nav label,xUI,xGetText,nav_brahl_btn,,BRAHL,y
+PJ_P3_Nav_atomic77_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Nav_atomic77_con,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P3_Nav_atomic77_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_atomic77_con,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P3_Nav_cost_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Nav_cost_con,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P3_Nav_cost_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_cost_con,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PReuse_J_P3_Shell_Networker,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P3_Shell_Networker,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P3_Shell_Networker,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P3_Shell_Networker,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P3_Shell_Networker,5,Select Networker avatar,xUI,xClick,avatar_networker_bar_btn,,,y
+PReuse_J_P3_Shell_Networker,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Networker,,,,y
+PJ_P3_Nav_atomic77_net,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P3_Nav_atomic77_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_atomic77_net,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P3_Nav_cost_net,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Networker,,,,y
+PJ_P3_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P3_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PJ_P3_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Networker,,,,y
+PJ_P3_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P3_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P3_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
+PReuse_J_P4_Shell_Consultant,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P4_Shell_Consultant,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P4_Shell_Consultant,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P4_Shell_Consultant,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P4_Shell_Consultant,5,Select QA Hunter avatar,xUI,xClick,avatar_hitl_bar_btn,,,y
+PReuse_J_P4_Shell_Consultant,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_build_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Nav_build_con,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PJ_P4_Nav_build_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_build_con,4,Verify Build nav label,xUI,xGetText,nav_build_btn,,Build,y
+PJ_P4_Nav_run_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Nav_run_con,2,Click Run tab,xUI,xClick,nav_run_btn,,,y
+PJ_P4_Nav_run_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_run_con,4,Verify Run nav label,xUI,xGetText,nav_run_btn,,Run,y
+PJ_P4_Nav_analyze_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Nav_analyze_con,2,Click Analyze tab,xUI,xClick,nav_analyze_btn,,,y
+PJ_P4_Nav_analyze_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_analyze_con,4,Verify Analyze nav label,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PJ_P4_Nav_heal_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Nav_heal_con,2,Click Heal tab,xUI,xClick,nav_heal_btn,,,y
+PJ_P4_Nav_heal_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_heal_con,4,Verify Heal nav label,xUI,xGetText,nav_heal_btn,,Heal,y
+PJ_P4_Nav_loop_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Nav_loop_con,2,Click Loop tab,xUI,xClick,nav_loop_btn,,,y
+PJ_P4_Nav_loop_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_loop_con,4,Verify Loop nav label,xUI,xGetText,nav_loop_btn,,Loop,y
+PJ_P4_Nav_brahl_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Nav_brahl_con,2,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PJ_P4_Nav_brahl_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_brahl_con,4,Verify BRAHL nav label,xUI,xGetText,nav_brahl_btn,,BRAHL,y
+PJ_P4_Nav_atomic77_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Nav_atomic77_con,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P4_Nav_atomic77_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_atomic77_con,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P4_Nav_cost_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Nav_cost_con,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P4_Nav_cost_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_cost_con,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PReuse_J_P4_Shell_Networker,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P4_Shell_Networker,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P4_Shell_Networker,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P4_Shell_Networker,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P4_Shell_Networker,5,Select Networker avatar,xUI,xClick,avatar_networker_bar_btn,,,y
+PReuse_J_P4_Shell_Networker,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Networker,,,,y
+PJ_P4_Nav_atomic77_net,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P4_Nav_atomic77_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_atomic77_net,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P4_Nav_cost_net,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Networker,,,,y
+PJ_P4_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P4_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PJ_P4_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Networker,,,,y
+PJ_P4_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P4_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P4_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
+PReuse_J_P5_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P5_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P5_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P5_Shell_Client,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PJ_P5_Nav_build_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Nav_build_cli,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PJ_P5_Nav_build_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_build_cli,4,Verify Build nav label,xUI,xGetText,nav_build_btn,,Build,y
+PJ_P5_Nav_run_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Nav_run_cli,2,Click Run tab,xUI,xClick,nav_run_btn,,,y
+PJ_P5_Nav_run_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_run_cli,4,Verify Run nav label,xUI,xGetText,nav_run_btn,,Run,y
+PJ_P5_Nav_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Nav_analyze_cli,2,Click Analyze tab,xUI,xClick,nav_analyze_btn,,,y
+PJ_P5_Nav_analyze_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_analyze_cli,4,Verify Analyze nav label,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PJ_P5_Nav_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Nav_heal_cli,2,Click Heal tab,xUI,xClick,nav_heal_btn,,,y
+PJ_P5_Nav_heal_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_heal_cli,4,Verify Heal nav label,xUI,xGetText,nav_heal_btn,,Heal,y
+PJ_P5_Nav_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Nav_loop_cli,2,Click Loop tab,xUI,xClick,nav_loop_btn,,,y
+PJ_P5_Nav_loop_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_loop_cli,4,Verify Loop nav label,xUI,xGetText,nav_loop_btn,,Loop,y
+PJ_P5_Nav_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Nav_brahl_cli,2,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PJ_P5_Nav_brahl_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_brahl_cli,4,Verify BRAHL nav label,xUI,xGetText,nav_brahl_btn,,BRAHL,y
+PJ_P5_Nav_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Nav_atomic77_cli,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P5_Nav_atomic77_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_atomic77_cli,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P5_Nav_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Nav_cost_cli,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P5_Nav_cost_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_cost_cli,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PReuse_J_P5_Shell_Networker,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P5_Shell_Networker,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P5_Shell_Networker,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P5_Shell_Networker,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P5_Shell_Networker,5,Select Networker avatar,xUI,xClick,avatar_networker_bar_btn,,,y
+PReuse_J_P5_Shell_Networker,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Networker,,,,y
+PJ_P5_Nav_atomic77_net,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P5_Nav_atomic77_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_atomic77_net,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P5_Nav_cost_net,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Networker,,,,y
+PJ_P5_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P5_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PJ_P5_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Networker,,,,y
+PJ_P5_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P5_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P5_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
+PReuse_J_P6_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P6_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P6_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P6_Shell_Client,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PJ_P6_Nav_build_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Nav_build_cli,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PJ_P6_Nav_build_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_build_cli,4,Verify Build nav label,xUI,xGetText,nav_build_btn,,Build,y
+PJ_P6_Nav_run_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Nav_run_cli,2,Click Run tab,xUI,xClick,nav_run_btn,,,y
+PJ_P6_Nav_run_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_run_cli,4,Verify Run nav label,xUI,xGetText,nav_run_btn,,Run,y
+PJ_P6_Nav_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Nav_analyze_cli,2,Click Analyze tab,xUI,xClick,nav_analyze_btn,,,y
+PJ_P6_Nav_analyze_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_analyze_cli,4,Verify Analyze nav label,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PJ_P6_Nav_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Nav_heal_cli,2,Click Heal tab,xUI,xClick,nav_heal_btn,,,y
+PJ_P6_Nav_heal_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_heal_cli,4,Verify Heal nav label,xUI,xGetText,nav_heal_btn,,Heal,y
+PJ_P6_Nav_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Nav_loop_cli,2,Click Loop tab,xUI,xClick,nav_loop_btn,,,y
+PJ_P6_Nav_loop_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_loop_cli,4,Verify Loop nav label,xUI,xGetText,nav_loop_btn,,Loop,y
+PJ_P6_Nav_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Nav_brahl_cli,2,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PJ_P6_Nav_brahl_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_brahl_cli,4,Verify BRAHL nav label,xUI,xGetText,nav_brahl_btn,,BRAHL,y
+PJ_P6_Nav_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Nav_atomic77_cli,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P6_Nav_atomic77_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_atomic77_cli,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P6_Nav_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Nav_cost_cli,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P6_Nav_cost_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_cost_cli,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PReuse_J_P6_Shell_Consultant,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P6_Shell_Consultant,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P6_Shell_Consultant,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P6_Shell_Consultant,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P6_Shell_Consultant,5,Select QA Hunter avatar,xUI,xClick,avatar_hitl_bar_btn,,,y
+PReuse_J_P6_Shell_Consultant,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_build_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Nav_build_con,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PJ_P6_Nav_build_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_build_con,4,Verify Build nav label,xUI,xGetText,nav_build_btn,,Build,y
+PJ_P6_Nav_run_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Nav_run_con,2,Click Run tab,xUI,xClick,nav_run_btn,,,y
+PJ_P6_Nav_run_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_run_con,4,Verify Run nav label,xUI,xGetText,nav_run_btn,,Run,y
+PJ_P6_Nav_analyze_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Nav_analyze_con,2,Click Analyze tab,xUI,xClick,nav_analyze_btn,,,y
+PJ_P6_Nav_analyze_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_analyze_con,4,Verify Analyze nav label,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PJ_P6_Nav_heal_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Nav_heal_con,2,Click Heal tab,xUI,xClick,nav_heal_btn,,,y
+PJ_P6_Nav_heal_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_heal_con,4,Verify Heal nav label,xUI,xGetText,nav_heal_btn,,Heal,y
+PJ_P6_Nav_loop_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Nav_loop_con,2,Click Loop tab,xUI,xClick,nav_loop_btn,,,y
+PJ_P6_Nav_loop_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_loop_con,4,Verify Loop nav label,xUI,xGetText,nav_loop_btn,,Loop,y
+PJ_P6_Nav_brahl_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Nav_brahl_con,2,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PJ_P6_Nav_brahl_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_brahl_con,4,Verify BRAHL nav label,xUI,xGetText,nav_brahl_btn,,BRAHL,y
+PJ_P6_Nav_atomic77_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Nav_atomic77_con,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P6_Nav_atomic77_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_atomic77_con,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P6_Nav_cost_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Nav_cost_con,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P6_Nav_cost_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_cost_con,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PReuse_J_P6_Shell_Networker,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P6_Shell_Networker,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P6_Shell_Networker,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P6_Shell_Networker,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P6_Shell_Networker,5,Select Networker avatar,xUI,xClick,avatar_networker_bar_btn,,,y
+PReuse_J_P6_Shell_Networker,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Networker,,,,y
+PJ_P6_Nav_atomic77_net,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P6_Nav_atomic77_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_atomic77_net,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P6_Nav_cost_net,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Networker,,,,y
+PJ_P6_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P6_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PJ_P6_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Networker,,,,y
+PJ_P6_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P6_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P6_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
+PReuse_J_P7_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P7_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P7_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P7_Shell_Client,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PJ_P7_Nav_build_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Nav_build_cli,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PJ_P7_Nav_build_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_build_cli,4,Verify Build nav label,xUI,xGetText,nav_build_btn,,Build,y
+PJ_P7_Nav_run_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Nav_run_cli,2,Click Run tab,xUI,xClick,nav_run_btn,,,y
+PJ_P7_Nav_run_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_run_cli,4,Verify Run nav label,xUI,xGetText,nav_run_btn,,Run,y
+PJ_P7_Nav_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Nav_analyze_cli,2,Click Analyze tab,xUI,xClick,nav_analyze_btn,,,y
+PJ_P7_Nav_analyze_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_analyze_cli,4,Verify Analyze nav label,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PJ_P7_Nav_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Nav_heal_cli,2,Click Heal tab,xUI,xClick,nav_heal_btn,,,y
+PJ_P7_Nav_heal_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_heal_cli,4,Verify Heal nav label,xUI,xGetText,nav_heal_btn,,Heal,y
+PJ_P7_Nav_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Nav_loop_cli,2,Click Loop tab,xUI,xClick,nav_loop_btn,,,y
+PJ_P7_Nav_loop_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_loop_cli,4,Verify Loop nav label,xUI,xGetText,nav_loop_btn,,Loop,y
+PJ_P7_Nav_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Nav_brahl_cli,2,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PJ_P7_Nav_brahl_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_brahl_cli,4,Verify BRAHL nav label,xUI,xGetText,nav_brahl_btn,,BRAHL,y
+PJ_P7_Nav_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Nav_atomic77_cli,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P7_Nav_atomic77_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_atomic77_cli,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P7_Nav_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Nav_cost_cli,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P7_Nav_cost_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_cost_cli,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PReuse_J_P7_Shell_Networker,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P7_Shell_Networker,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P7_Shell_Networker,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P7_Shell_Networker,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P7_Shell_Networker,5,Select Networker avatar,xUI,xClick,avatar_networker_bar_btn,,,y
+PReuse_J_P7_Shell_Networker,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Networker,,,,y
+PJ_P7_Nav_atomic77_net,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P7_Nav_atomic77_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_atomic77_net,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P7_Nav_cost_net,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Networker,,,,y
+PJ_P7_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P7_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PJ_P7_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Networker,,,,y
+PJ_P7_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P7_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P7_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
+PReuse_J_P8_Shell_Consultant,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P8_Shell_Consultant,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P8_Shell_Consultant,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P8_Shell_Consultant,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P8_Shell_Consultant,5,Select QA Hunter avatar,xUI,xClick,avatar_hitl_bar_btn,,,y
+PReuse_J_P8_Shell_Consultant,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_build_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Nav_build_con,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PJ_P8_Nav_build_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_build_con,4,Verify Build nav label,xUI,xGetText,nav_build_btn,,Build,y
+PJ_P8_Nav_run_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Nav_run_con,2,Click Run tab,xUI,xClick,nav_run_btn,,,y
+PJ_P8_Nav_run_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_run_con,4,Verify Run nav label,xUI,xGetText,nav_run_btn,,Run,y
+PJ_P8_Nav_analyze_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Nav_analyze_con,2,Click Analyze tab,xUI,xClick,nav_analyze_btn,,,y
+PJ_P8_Nav_analyze_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_analyze_con,4,Verify Analyze nav label,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PJ_P8_Nav_heal_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Nav_heal_con,2,Click Heal tab,xUI,xClick,nav_heal_btn,,,y
+PJ_P8_Nav_heal_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_heal_con,4,Verify Heal nav label,xUI,xGetText,nav_heal_btn,,Heal,y
+PJ_P8_Nav_loop_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Nav_loop_con,2,Click Loop tab,xUI,xClick,nav_loop_btn,,,y
+PJ_P8_Nav_loop_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_loop_con,4,Verify Loop nav label,xUI,xGetText,nav_loop_btn,,Loop,y
+PJ_P8_Nav_brahl_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Nav_brahl_con,2,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PJ_P8_Nav_brahl_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_brahl_con,4,Verify BRAHL nav label,xUI,xGetText,nav_brahl_btn,,BRAHL,y
+PJ_P8_Nav_atomic77_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Nav_atomic77_con,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P8_Nav_atomic77_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_atomic77_con,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P8_Nav_cost_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Nav_cost_con,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P8_Nav_cost_con,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_cost_con,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PReuse_J_P8_Shell_Networker,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P8_Shell_Networker,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P8_Shell_Networker,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P8_Shell_Networker,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P8_Shell_Networker,5,Select Networker avatar,xUI,xClick,avatar_networker_bar_btn,,,y
+PReuse_J_P8_Shell_Networker,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Networker,,,,y
+PJ_P8_Nav_atomic77_net,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P8_Nav_atomic77_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_atomic77_net,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P8_Nav_cost_net,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Networker,,,,y
+PJ_P8_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P8_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PJ_P8_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Networker,,,,y
+PJ_P8_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P8_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P8_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
+PReuse_J_P9_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P9_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P9_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P9_Shell_Client,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PJ_P9_Nav_build_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Nav_build_cli,2,Click Build tab,xUI,xClick,nav_build_btn,,,y
+PJ_P9_Nav_build_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_build_cli,4,Verify Build nav label,xUI,xGetText,nav_build_btn,,Build,y
+PJ_P9_Nav_run_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Nav_run_cli,2,Click Run tab,xUI,xClick,nav_run_btn,,,y
+PJ_P9_Nav_run_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_run_cli,4,Verify Run nav label,xUI,xGetText,nav_run_btn,,Run,y
+PJ_P9_Nav_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Nav_analyze_cli,2,Click Analyze tab,xUI,xClick,nav_analyze_btn,,,y
+PJ_P9_Nav_analyze_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_analyze_cli,4,Verify Analyze nav label,xUI,xGetText,nav_analyze_btn,,Analyze,y
+PJ_P9_Nav_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Nav_heal_cli,2,Click Heal tab,xUI,xClick,nav_heal_btn,,,y
+PJ_P9_Nav_heal_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_heal_cli,4,Verify Heal nav label,xUI,xGetText,nav_heal_btn,,Heal,y
+PJ_P9_Nav_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Nav_loop_cli,2,Click Loop tab,xUI,xClick,nav_loop_btn,,,y
+PJ_P9_Nav_loop_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_loop_cli,4,Verify Loop nav label,xUI,xGetText,nav_loop_btn,,Loop,y
+PJ_P9_Nav_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Nav_brahl_cli,2,Click BRAHL tab,xUI,xClick,nav_brahl_btn,,,y
+PJ_P9_Nav_brahl_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_brahl_cli,4,Verify BRAHL nav label,xUI,xGetText,nav_brahl_btn,,BRAHL,y
+PJ_P9_Nav_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Nav_atomic77_cli,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P9_Nav_atomic77_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_atomic77_cli,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P9_Nav_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Nav_cost_cli,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P9_Nav_cost_cli,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_cost_cli,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PReuse_J_P9_Shell_Networker,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P9_Shell_Networker,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P9_Shell_Networker,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P9_Shell_Networker,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P9_Shell_Networker,5,Select Networker avatar,xUI,xClick,avatar_networker_bar_btn,,,y
+PReuse_J_P9_Shell_Networker,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Networker,,,,y
+PJ_P9_Nav_atomic77_net,2,Click Atomic77 tab,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P9_Nav_atomic77_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_atomic77_net,4,Verify Atomic77 nav label,xUI,xGetText,nav_atomic77_btn,,A77,y
+PJ_P9_Nav_cost_net,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Networker,,,,y
+PJ_P9_Nav_cost_net,2,Click Cost tab,xUI,xClick,nav_cost_btn,,,y
+PJ_P9_Nav_cost_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_cost_net,4,Verify Cost nav label,xUI,xGetText,nav_cost_btn,,$,y
+PJ_P9_Nav_promote_net,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Networker,,,,y
+PJ_P9_Nav_promote_net,2,Click Promoter tab,xUI,xClick,nav_promote_btn,,,y
+PJ_P9_Nav_promote_net,3,Wait for panel,xTime,xTimeWait,2,,,y
+PJ_P9_Nav_promote_net,4,Verify Promoter nav label,xUI,xGetText,nav_promote_btn,,Promoter,y
+PJ_P1_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Head_build_cli,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web,y
+PJ_P1_Head_run_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Head_run_cli,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P1_Head_run_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Head_run_cli,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P1_Head_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Head_analyze_cli,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P1_Head_analyze_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Head_analyze_cli,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P1_Head_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Head_heal_cli,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P1_Head_heal_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Head_heal_cli,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P1_Head_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Head_loop_cli,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P1_Head_loop_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Head_loop_cli,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P1_Head_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Head_brahl_cli,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P1_Head_brahl_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Head_brahl_cli,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P1_Head_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Head_atomic77_cli,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P1_Head_atomic77_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Head_atomic77_cli,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P1_Head_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Head_cost_cli,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P1_Head_cost_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Head_cost_cli,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P1_Head_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Networker,,,,y
+PJ_P1_Head_atomic77_net,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P1_Head_atomic77_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Head_atomic77_net,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P1_Head_cost_net,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Networker,,,,y
+PJ_P1_Head_cost_net,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P1_Head_cost_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P1_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Networker,,,,y
+PJ_P1_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
+PJ_P1_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
+PJ_P2_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_build_cli,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web,y
+PJ_P2_Head_run_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Head_run_cli,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P2_Head_run_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_run_cli,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P2_Head_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Head_analyze_cli,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P2_Head_analyze_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_analyze_cli,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P2_Head_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Head_heal_cli,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P2_Head_heal_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_heal_cli,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P2_Head_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Head_loop_cli,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P2_Head_loop_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_loop_cli,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P2_Head_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Head_brahl_cli,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P2_Head_brahl_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_brahl_cli,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P2_Head_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Head_atomic77_cli,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P2_Head_atomic77_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_atomic77_cli,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P2_Head_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Head_cost_cli,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P2_Head_cost_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_cost_cli,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P2_Head_build_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Head_build_con,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Head_build_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_build_con,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web (QA Hunter),y
+PJ_P2_Head_run_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Head_run_con,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P2_Head_run_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_run_con,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P2_Head_analyze_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Head_analyze_con,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P2_Head_analyze_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_analyze_con,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P2_Head_heal_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Head_heal_con,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P2_Head_heal_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_heal_con,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P2_Head_loop_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Head_loop_con,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P2_Head_loop_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_loop_con,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P2_Head_brahl_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Head_brahl_con,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P2_Head_brahl_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_brahl_con,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P2_Head_atomic77_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Head_atomic77_con,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P2_Head_atomic77_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_atomic77_con,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P2_Head_cost_con,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Consultant,,,,y
+PJ_P2_Head_cost_con,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P2_Head_cost_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_cost_con,4,Verify wallet view,xUI,xGetText,cost_project_name_locator,,,y
+PJ_P2_Head_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Networker,,,,y
+PJ_P2_Head_atomic77_net,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P2_Head_atomic77_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_atomic77_net,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P2_Head_cost_net,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Networker,,,,y
+PJ_P2_Head_cost_net,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P2_Head_cost_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P2_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Networker,,,,y
+PJ_P2_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
+PJ_P2_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
+PReuse_J_P3_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P3_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P3_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P3_Shell_Client,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P3_Shell_Client,5,Select Creator avatar,xUI,xClick,avatar_client_bar_btn,,,y
+PReuse_J_P3_Shell_Client,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P3_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Client,,,,y
+PJ_P3_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P3_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_build_cli,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web,y
+PJ_P3_Head_run_cli,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Client,,,,y
+PJ_P3_Head_run_cli,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P3_Head_run_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_run_cli,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P3_Head_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Client,,,,y
+PJ_P3_Head_analyze_cli,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P3_Head_analyze_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_analyze_cli,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P3_Head_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Client,,,,y
+PJ_P3_Head_heal_cli,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P3_Head_heal_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_heal_cli,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P3_Head_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Client,,,,y
+PJ_P3_Head_loop_cli,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P3_Head_loop_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_loop_cli,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P3_Head_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Client,,,,y
+PJ_P3_Head_brahl_cli,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P3_Head_brahl_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_brahl_cli,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P3_Head_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Client,,,,y
+PJ_P3_Head_atomic77_cli,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P3_Head_atomic77_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_atomic77_cli,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P3_Head_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Client,,,,y
+PJ_P3_Head_cost_cli,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P3_Head_cost_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_cost_cli,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P3_Head_build_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Head_build_con,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P3_Head_build_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_build_con,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web (QA Hunter),y
+PJ_P3_Head_run_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Head_run_con,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P3_Head_run_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_run_con,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P3_Head_analyze_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Head_analyze_con,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P3_Head_analyze_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_analyze_con,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P3_Head_heal_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Head_heal_con,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P3_Head_heal_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_heal_con,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P3_Head_loop_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Head_loop_con,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P3_Head_loop_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_loop_con,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P3_Head_brahl_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Head_brahl_con,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P3_Head_brahl_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_brahl_con,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P3_Head_atomic77_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Head_atomic77_con,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P3_Head_atomic77_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_atomic77_con,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P3_Head_cost_con,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Consultant,,,,y
+PJ_P3_Head_cost_con,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P3_Head_cost_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_cost_con,4,Verify wallet view,xUI,xGetText,cost_project_name_locator,,,y
+PJ_P3_Head_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Networker,,,,y
+PJ_P3_Head_atomic77_net,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P3_Head_atomic77_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_atomic77_net,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P3_Head_cost_net,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Networker,,,,y
+PJ_P3_Head_cost_net,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P3_Head_cost_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P3_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P3_Shell_Networker,,,,y
+PJ_P3_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
+PJ_P3_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P3_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
+PReuse_J_P4_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P4_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P4_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P4_Shell_Client,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P4_Shell_Client,5,Select Creator avatar,xUI,xClick,avatar_client_bar_btn,,,y
+PReuse_J_P4_Shell_Client,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P4_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Client,,,,y
+PJ_P4_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P4_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_build_cli,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web,y
+PJ_P4_Head_run_cli,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Client,,,,y
+PJ_P4_Head_run_cli,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P4_Head_run_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_run_cli,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P4_Head_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Client,,,,y
+PJ_P4_Head_analyze_cli,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P4_Head_analyze_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_analyze_cli,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P4_Head_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Client,,,,y
+PJ_P4_Head_heal_cli,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P4_Head_heal_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_heal_cli,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P4_Head_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Client,,,,y
+PJ_P4_Head_loop_cli,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P4_Head_loop_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_loop_cli,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P4_Head_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Client,,,,y
+PJ_P4_Head_brahl_cli,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P4_Head_brahl_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_brahl_cli,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P4_Head_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Client,,,,y
+PJ_P4_Head_atomic77_cli,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P4_Head_atomic77_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_atomic77_cli,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P4_Head_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Client,,,,y
+PJ_P4_Head_cost_cli,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P4_Head_cost_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_cost_cli,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P4_Head_build_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Head_build_con,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P4_Head_build_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_build_con,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web (QA Hunter),y
+PJ_P4_Head_run_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Head_run_con,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P4_Head_run_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_run_con,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P4_Head_analyze_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Head_analyze_con,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P4_Head_analyze_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_analyze_con,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P4_Head_heal_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Head_heal_con,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P4_Head_heal_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_heal_con,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P4_Head_loop_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Head_loop_con,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P4_Head_loop_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_loop_con,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P4_Head_brahl_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Head_brahl_con,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P4_Head_brahl_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_brahl_con,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P4_Head_atomic77_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Head_atomic77_con,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P4_Head_atomic77_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_atomic77_con,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P4_Head_cost_con,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Consultant,,,,y
+PJ_P4_Head_cost_con,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P4_Head_cost_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_cost_con,4,Verify wallet view,xUI,xGetText,cost_project_name_locator,,,y
+PJ_P4_Head_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Networker,,,,y
+PJ_P4_Head_atomic77_net,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P4_Head_atomic77_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_atomic77_net,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P4_Head_cost_net,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Networker,,,,y
+PJ_P4_Head_cost_net,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P4_Head_cost_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P4_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P4_Shell_Networker,,,,y
+PJ_P4_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
+PJ_P4_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P4_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
+PJ_P5_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P5_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Head_build_cli,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web,y
+PJ_P5_Head_run_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Head_run_cli,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P5_Head_run_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Head_run_cli,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P5_Head_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Head_analyze_cli,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P5_Head_analyze_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Head_analyze_cli,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P5_Head_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Head_heal_cli,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P5_Head_heal_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Head_heal_cli,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P5_Head_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Head_loop_cli,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P5_Head_loop_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Head_loop_cli,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P5_Head_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Head_brahl_cli,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P5_Head_brahl_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Head_brahl_cli,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P5_Head_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Head_atomic77_cli,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P5_Head_atomic77_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Head_atomic77_cli,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P5_Head_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Head_cost_cli,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P5_Head_cost_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Head_cost_cli,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P5_Head_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Networker,,,,y
+PJ_P5_Head_atomic77_net,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P5_Head_atomic77_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Head_atomic77_net,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P5_Head_cost_net,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Networker,,,,y
+PJ_P5_Head_cost_net,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P5_Head_cost_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P5_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Networker,,,,y
+PJ_P5_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
+PJ_P5_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
+PJ_P6_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P6_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_build_cli,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web,y
+PJ_P6_Head_run_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Head_run_cli,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P6_Head_run_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_run_cli,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P6_Head_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Head_analyze_cli,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P6_Head_analyze_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_analyze_cli,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P6_Head_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Head_heal_cli,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P6_Head_heal_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_heal_cli,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P6_Head_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Head_loop_cli,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P6_Head_loop_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_loop_cli,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P6_Head_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Head_brahl_cli,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P6_Head_brahl_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_brahl_cli,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P6_Head_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Head_atomic77_cli,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P6_Head_atomic77_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_atomic77_cli,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P6_Head_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Client,,,,y
+PJ_P6_Head_cost_cli,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P6_Head_cost_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_cost_cli,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P6_Head_build_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Head_build_con,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P6_Head_build_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_build_con,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web (QA Hunter),y
+PJ_P6_Head_run_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Head_run_con,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P6_Head_run_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_run_con,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P6_Head_analyze_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Head_analyze_con,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P6_Head_analyze_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_analyze_con,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P6_Head_heal_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Head_heal_con,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P6_Head_heal_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_heal_con,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P6_Head_loop_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Head_loop_con,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P6_Head_loop_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_loop_con,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P6_Head_brahl_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Head_brahl_con,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P6_Head_brahl_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_brahl_con,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P6_Head_atomic77_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Head_atomic77_con,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P6_Head_atomic77_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_atomic77_con,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P6_Head_cost_con,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Consultant,,,,y
+PJ_P6_Head_cost_con,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P6_Head_cost_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_cost_con,4,Verify wallet view,xUI,xGetText,cost_project_name_locator,,,y
+PJ_P6_Head_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Networker,,,,y
+PJ_P6_Head_atomic77_net,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P6_Head_atomic77_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_atomic77_net,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P6_Head_cost_net,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Networker,,,,y
+PJ_P6_Head_cost_net,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P6_Head_cost_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P6_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P6_Shell_Networker,,,,y
+PJ_P6_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
+PJ_P6_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P6_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
+PJ_P7_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P7_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P7_Head_build_cli,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web,y
+PJ_P7_Head_run_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Head_run_cli,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P7_Head_run_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P7_Head_run_cli,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P7_Head_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Head_analyze_cli,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P7_Head_analyze_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P7_Head_analyze_cli,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P7_Head_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Head_heal_cli,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P7_Head_heal_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P7_Head_heal_cli,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P7_Head_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Head_loop_cli,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P7_Head_loop_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P7_Head_loop_cli,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P7_Head_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Head_brahl_cli,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P7_Head_brahl_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P7_Head_brahl_cli,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P7_Head_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Head_atomic77_cli,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P7_Head_atomic77_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P7_Head_atomic77_cli,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P7_Head_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Client,,,,y
+PJ_P7_Head_cost_cli,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P7_Head_cost_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P7_Head_cost_cli,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P7_Head_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Networker,,,,y
+PJ_P7_Head_atomic77_net,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P7_Head_atomic77_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P7_Head_atomic77_net,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P7_Head_cost_net,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Networker,,,,y
+PJ_P7_Head_cost_net,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P7_Head_cost_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P7_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P7_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P7_Shell_Networker,,,,y
+PJ_P7_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
+PJ_P7_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P7_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
+PReuse_J_P8_Shell_Client,1,Open site,xReuse,PReuse_qoa_web_OpenSite,,,,y
+PReuse_J_P8_Shell_Client,2,Load persona profile,xUI,xNavigate,profile_url,,,y
+PReuse_J_P8_Shell_Client,3,Wait for profile,xTime,xTimeWait,3,,,y
+PReuse_J_P8_Shell_Client,4,Verify profile chip,xUI,xGetText,profile_chip_code_locator,,persona_code,y
+PReuse_J_P8_Shell_Client,5,Select Creator avatar,xUI,xClick,avatar_client_bar_btn,,,y
+PReuse_J_P8_Shell_Client,6,Wait after avatar,xTime,xTimeWait,2,,,y
+PJ_P8_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Client,,,,y
+PJ_P8_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P8_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_build_cli,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web,y
+PJ_P8_Head_run_cli,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Client,,,,y
+PJ_P8_Head_run_cli,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P8_Head_run_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_run_cli,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P8_Head_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Client,,,,y
+PJ_P8_Head_analyze_cli,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P8_Head_analyze_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_analyze_cli,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P8_Head_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Client,,,,y
+PJ_P8_Head_heal_cli,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P8_Head_heal_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_heal_cli,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P8_Head_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Client,,,,y
+PJ_P8_Head_loop_cli,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P8_Head_loop_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_loop_cli,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P8_Head_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Client,,,,y
+PJ_P8_Head_brahl_cli,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P8_Head_brahl_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_brahl_cli,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P8_Head_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Client,,,,y
+PJ_P8_Head_atomic77_cli,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P8_Head_atomic77_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_atomic77_cli,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P8_Head_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Client,,,,y
+PJ_P8_Head_cost_cli,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P8_Head_cost_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_cost_cli,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P8_Head_build_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Head_build_con,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P8_Head_build_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_build_con,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web (QA Hunter),y
+PJ_P8_Head_run_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Head_run_con,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P8_Head_run_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_run_con,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P8_Head_analyze_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Head_analyze_con,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P8_Head_analyze_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_analyze_con,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P8_Head_heal_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Head_heal_con,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P8_Head_heal_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_heal_con,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P8_Head_loop_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Head_loop_con,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P8_Head_loop_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_loop_con,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P8_Head_brahl_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Head_brahl_con,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P8_Head_brahl_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_brahl_con,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P8_Head_atomic77_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Head_atomic77_con,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P8_Head_atomic77_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_atomic77_con,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P8_Head_cost_con,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Consultant,,,,y
+PJ_P8_Head_cost_con,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P8_Head_cost_con,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_cost_con,4,Verify wallet view,xUI,xGetText,cost_project_name_locator,,,y
+PJ_P8_Head_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Networker,,,,y
+PJ_P8_Head_atomic77_net,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P8_Head_atomic77_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_atomic77_net,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P8_Head_cost_net,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Networker,,,,y
+PJ_P8_Head_cost_net,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P8_Head_cost_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P8_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P8_Shell_Networker,,,,y
+PJ_P8_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
+PJ_P8_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P8_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
+PJ_P9_Head_build_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Head_build_cli,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P9_Head_build_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P9_Head_build_cli,4,Verify Build heading,xUI,xGetText,build_panel_title_locator,,Build — qoa_web,y
+PJ_P9_Head_run_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Head_run_cli,2,Open Run,xUI,xClick,nav_run_btn,,,y
+PJ_P9_Head_run_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P9_Head_run_cli,4,Verify Run heading,xUI,xGetText,run_heading_locator,,Run — FoXYiZ fEngine2,y
+PJ_P9_Head_analyze_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Head_analyze_cli,2,Open Analyze,xUI,xClick,nav_analyze_btn,,,y
+PJ_P9_Head_analyze_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P9_Head_analyze_cli,4,Verify Analyze heading,xUI,xGetText,analyze_heading_locator,,Analyze — z/,y
+PJ_P9_Head_heal_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Head_heal_cli,2,Open Heal,xUI,xClick,nav_heal_btn,,,y
+PJ_P9_Head_heal_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P9_Head_heal_cli,4,Verify heal control,xUI,xGetText,btn_shrink_locator,,Shrink to failures (Loop 2 prep),y
+PJ_P9_Head_loop_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Head_loop_cli,2,Open Loop,xUI,xClick,nav_loop_btn,,,y
+PJ_P9_Head_loop_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P9_Head_loop_cli,4,Verify Loop heading,xUI,xGetText,loop_heading_locator,,Loop — BRAHL cycle (FoXYiZ),y
+PJ_P9_Head_brahl_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Head_brahl_cli,2,Open BRAHL,xUI,xClick,nav_brahl_btn,,,y
+PJ_P9_Head_brahl_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P9_Head_brahl_cli,4,Verify BRAHL heading,xUI,xGetText,brahl_heading_locator,,BRAHL — cycle report,y
+PJ_P9_Head_atomic77_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Head_atomic77_cli,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P9_Head_atomic77_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P9_Head_atomic77_cli,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P9_Head_cost_cli,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Client,,,,y
+PJ_P9_Head_cost_cli,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P9_Head_cost_cli,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P9_Head_cost_cli,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P9_Head_atomic77_net,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Networker,,,,y
+PJ_P9_Head_atomic77_net,2,Open Atomic77,xUI,xClick,nav_atomic77_btn,,,y
+PJ_P9_Head_atomic77_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P9_Head_atomic77_net,4,Verify Atomic77 heading,xUI,xGetText,atomic77_heading_locator,,Atomic 77,y
+PJ_P9_Head_cost_net,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Networker,,,,y
+PJ_P9_Head_cost_net,2,Open Cost,xUI,xClick,nav_cost_btn,,,y
+PJ_P9_Head_cost_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P9_Head_cost_net,4,Verify Cost heading,xUI,xGetText,xp_heading_locator,,,y
+PJ_P9_Head_promote_net,1,Journey shell ready,xReuse,PReuse_J_P9_Shell_Networker,,,,y
+PJ_P9_Head_promote_net,2,Open Promote,xUI,xClick,nav_promote_btn,,,y
+PJ_P9_Head_promote_net,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P9_Head_promote_net,4,Verify Promote heading,xUI,xGetText,promote_heading_locator,,Promoter,y
+PJ_P1_Build_ChatInput,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Build_ChatInput,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Build_ChatInput,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Build_ChatInput,4,Verify Build chat visible,xUI,xGetText,chat_input_locator,,,y
+PJ_P1_Build_Budget,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Build_Budget,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Build_Budget,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Build_Budget,4,Open refine,xUI,xClick,build_refine_summary_locator,,,y
+PJ_P1_Build_Budget,5,Verify budget,xUI,xGetText,budget_block_locator,,Budget,y
+PJ_P1_Build_Checklist,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Build_Checklist,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Build_Checklist,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Build_Checklist,4,Verify Build checklist,xUI,xGetText,build_checklist_locator,,,y
+PJ_P1_Build_Requirement,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Build_Requirement,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Build_Requirement,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Build_Requirement,4,Verify Requirement quote,xUI,xGetText,build_requirement_locator,,,y
+PJ_P1_Build_Refine,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Build_Refine,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Build_Refine,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Build_Refine,4,Open refine,xUI,xClick,build_refine_summary_locator,,,y
+PJ_P1_Build_VersionLaunch,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Build_VersionLaunch,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Build_VersionLaunch,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Build_VersionLaunch,4,Verify Version launch,xUI,xGetText,version_launch_heading_locator,,App versions & launch compare,y
+PJ_P1_Build_BaselineBtn,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Build_BaselineBtn,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Build_BaselineBtn,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Build_BaselineBtn,4,Verify Baseline button,xUI,xGetText,version_baseline_btn_locator,,Save latest Verify as baseline (old version),y
+PJ_P1_Build_YpadTab,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Build_YpadTab,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Build_YpadTab,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Build_YpadTab,4,Verify yPAD explorer,xUI,xGetText,ypad_explorer_locator,,Y Plans,y
+PJ_P1_Build_CycleHistory,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Build_CycleHistory,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Build_CycleHistory,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Build_CycleHistory,4,Verify Cycle history,xUI,xGetText,cycle_history_locator,,,y
+PJ_P1_Build_AiToggle,1,Journey shell ready,xReuse,PReuse_J_P1_Shell_Client,,,,y
+PJ_P1_Build_AiToggle,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P1_Build_AiToggle,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P1_Build_AiToggle,4,Verify AI toggle label,xUI,xGetText,ai_toggle_label_locator,,,y
+PJ_P2_Build_ChatInput,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Build_ChatInput,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Build_ChatInput,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Build_ChatInput,4,Verify Build chat visible,xUI,xGetText,chat_input_locator,,,y
+PJ_P2_Build_Budget,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Build_Budget,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Build_Budget,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Build_Budget,4,Open refine,xUI,xClick,build_refine_summary_locator,,,y
+PJ_P2_Build_Budget,5,Verify budget,xUI,xGetText,budget_block_locator,,Budget,y
+PJ_P2_Build_Checklist,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Build_Checklist,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Build_Checklist,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Build_Checklist,4,Verify Build checklist,xUI,xGetText,build_checklist_locator,,,y
+PJ_P2_Build_Requirement,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Build_Requirement,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Build_Requirement,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Build_Requirement,4,Verify Requirement quote,xUI,xGetText,build_requirement_locator,,,y
+PJ_P2_Build_Refine,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Build_Refine,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Build_Refine,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Build_Refine,4,Open refine,xUI,xClick,build_refine_summary_locator,,,y
+PJ_P2_Build_VersionLaunch,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Build_VersionLaunch,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Build_VersionLaunch,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Build_VersionLaunch,4,Verify Version launch,xUI,xGetText,version_launch_heading_locator,,App versions & launch compare,y
+PJ_P2_Build_BaselineBtn,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Build_BaselineBtn,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Build_BaselineBtn,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Build_BaselineBtn,4,Verify Baseline button,xUI,xGetText,version_baseline_btn_locator,,Save latest Verify as baseline (old version),y
+PJ_P2_Build_YpadTab,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Build_YpadTab,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Build_YpadTab,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Build_YpadTab,4,Verify yPAD explorer,xUI,xGetText,ypad_explorer_locator,,Y Plans,y
+PJ_P2_Build_CycleHistory,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Build_CycleHistory,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Build_CycleHistory,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Build_CycleHistory,4,Verify Cycle history,xUI,xGetText,cycle_history_locator,,,y
+PJ_P2_Build_AiToggle,1,Journey shell ready,xReuse,PReuse_J_P2_Shell_Client,,,,y
+PJ_P2_Build_AiToggle,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P2_Build_AiToggle,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P2_Build_AiToggle,4,Verify AI toggle label,xUI,xGetText,ai_toggle_label_locator,,,y
+PJ_P5_Build_ChatInput,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Build_ChatInput,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P5_Build_ChatInput,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Build_ChatInput,4,Verify Build chat visible,xUI,xGetText,chat_input_locator,,,y
+PJ_P5_Build_Budget,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Build_Budget,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P5_Build_Budget,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Build_Budget,4,Open refine,xUI,xClick,build_refine_summary_locator,,,y
+PJ_P5_Build_Budget,5,Verify budget,xUI,xGetText,budget_block_locator,,Budget,y
+PJ_P5_Build_Checklist,1,Journey shell ready,xReuse,PReuse_J_P5_Shell_Client,,,,y
+PJ_P5_Build_Checklist,2,Open Build,xUI,xClick,nav_build_btn,,,y
+PJ_P5_Build_Checklist,3,Wait,xTime,xTimeWait,2,,,y
+PJ_P5_Build_Checklist,4,Verify Build checklist,xUI,xGetText,build_checklist_locator,,,y

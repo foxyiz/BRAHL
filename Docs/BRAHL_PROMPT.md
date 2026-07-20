@@ -1,7 +1,8 @@
 # BRAHL (prompt) — slim in-app AI skill
 
 **Formula:** `f(x,y)=z` — FoXYiZ engine + yPAD → `z/` results.  
-**Product:** local web UI (qoa_web) drives FoXYiZ; spells **BRAHL** / **FoXYiZ**.
+**Product:** local web UI (qoa_web) drives FoXYiZ; spells **BRAHL** / **FoXYiZ**.  
+**Glossary:** [terminology.md](./terminology.md) (**brawled** = completed this lifecycle).
 
 ## Phases (one job each)
 

@@ -1,4 +1,4 @@
-﻿const $ = (sel) => document.querySelector(sel);
+const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
 const STORAGE_AVATAR = "qoa_web_avatar";
@@ -98,7 +98,7 @@ const ypadState = {
   /** Explicit CSV source path for multi-file suites (gate vs journey). */
   source: "",
   sourceKind: "",
-  showTable: false,
+  showTable: true,
   page: 0,
   pageSize: 50,
   versions: [],
@@ -2777,6 +2777,7 @@ function renderBuildWorkspace() {
     $("#auto-pct").textContent = auto;
     $("#human-pct").textContent = 100 - auto;
     renderHitlRoster(activeProject);
+    refreshBuildBudgetStrip(Number(activeProject.budget_usd) || 0);
     $("#add-context-panel").hidden = true;
   }
   loadBuildAiStatus();
@@ -3347,6 +3348,7 @@ async function refreshArenaCostWidget() {
     if (dock && !state.suiteName) dock.hidden = true;
     el.hidden = true;
     refreshArenaYpadWidget();
+    refreshBuildBudgetStrip(0);
     return;
   }
   if (dock) dock.hidden = false;
@@ -3369,30 +3371,73 @@ async function refreshArenaCostWidget() {
     const humanEl = $("#arena-cost-human");
     const fill = $("#arena-cost-fill");
     const hint = $("#arena-cost-ai-hint");
-    if (remEl) remEl.textContent = budget ? `$${remaining.toFixed(0)}` : "No budget";
+    if (remEl) {
+      remEl.textContent = budget ? `$${remaining.toFixed(0)}` : "Set wallet";
+      remEl.title = budget ? `$${remaining.toFixed(2)} remaining of $${budget.toFixed(0)}` : "Open Build to set QA wallet";
+    }
     if (aiEl) {
       aiEl.textContent = autoPool
         ? `$${spentAi.toFixed(0)}/$${autoPool.toFixed(0)}`
-        : `$${aiUsd.toFixed(2)}`;
+        : budget
+          ? `$${aiUsd.toFixed(2)}`
+          : "—";
     }
     if (humanEl) {
       const humanPool = Number(m.human_pool_usd) || 0;
       humanEl.textContent = humanPool
         ? `$${spentHuman.toFixed(0)}/$${humanPool.toFixed(0)}`
-        : `$${spentHuman.toFixed(0)}`;
+        : budget
+          ? `$${spentHuman.toFixed(0)}`
+          : "—";
     }
     if (fill) fill.style.width = `${usedPct}%`;
     if (hint) {
       const available = Boolean(status?.available);
-      hint.textContent = available
-        ? `AI metered · ${(m.ai_usage?.total_tokens || 0).toLocaleString()} tok`
-        : "AI scripted / no key";
+      hint.textContent = !budget
+        ? "Set wallet on Build"
+        : available
+          ? `AI metered · ${(m.ai_usage?.total_tokens || 0).toLocaleString()} tok`
+          : "AI scripted / no key";
     }
+    refreshBuildBudgetStrip(budget, remaining);
   } catch {
     const remEl = $("#arena-cost-remaining");
     if (remEl) remEl.textContent = "—";
     const hint = $("#arena-cost-ai-hint");
     if (hint) hint.textContent = "Cost unavailable";
+    refreshBuildBudgetStrip(Number(activeProject?.budget_usd) || 0);
+  }
+}
+
+function refreshBuildBudgetStrip(budget = 0, remaining = null) {
+  const strip = $("#build-budget-strip");
+  const amount = $("#build-budget-amount");
+  const hint = $("#build-budget-hint");
+  if (!strip) return;
+  const show = state.avatar === "client" && !!state.projectId;
+  strip.hidden = !show;
+  if (!show) return;
+  const b = Number(budget) || 0;
+  const rem = remaining == null ? b : Number(remaining) || 0;
+  if (amount) {
+    amount.textContent = b ? `$${rem.toFixed(0)} left of $${b.toFixed(0)}` : "Not set";
+    amount.classList.toggle("is-empty", !b);
+  }
+  if (hint) {
+    hint.hidden = !!b;
+  }
+}
+
+function focusBuildBudget() {
+  showPhase("build");
+  const details = $("#build-refine-details");
+  if (details) details.open = true;
+  const strip = $("#build-budget-strip");
+  if (strip) strip.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  const input = $("#budget-usd");
+  if (input) {
+    input.focus();
+    input.select?.();
   }
 }
 
@@ -4020,7 +4065,11 @@ function renderYpadExplorer() {
   if (covChips) covChips.hidden = tab !== "plans" || ypadState.editMode;
   const designsToolbar = $("#ypad-designs-toolbar");
   if (designsToolbar) designsToolbar.hidden = true;
-  $("#ypad-toggle-edit").hidden = isEnv;
+  const editBtn = $("#ypad-toggle-edit");
+  if (editBtn) {
+    editBtn.hidden = isEnv || state.avatar !== "client";
+    editBtn.textContent = ypadState.editMode ? "Done" : "Edit";
+  }
   $("#ypad-save").hidden = !ypadState.editMode || isEnv;
   $("#ypad-filter").hidden = ypadState.editMode;
 
@@ -4253,7 +4302,7 @@ async function loadYpadVersions() {
           </li>`;
         })
         .join("")
-    : `<li class="meta">No snapshots yet — Snapshot before a big rebuild.</li>`;
+    : `<li class="meta">No snapshots yet. Live CSVs are in the table above — click Snapshot before a big rebuild.</li>`;
   list.querySelectorAll(".ypad-version-item").forEach((li) => {
     const vid = li.dataset.vid;
     li.querySelectorAll("button[data-act]").forEach((btn) => {
@@ -5935,6 +5984,7 @@ async function saveBudget() {
   await refreshActiveProject();
   renderBuildCostTeaser();
   setStatus(`Budget $${budget_usd} saved`);
+  refreshArenaCostWidget();
 }
 
 async function joinHitl() {
@@ -6741,11 +6791,14 @@ async function startRun(stepLabel) {
   const progress = $("#progress-bar");
   if (progress) progress.style.width = "10%";
   // Parallel execution is derived only from Threads > 1 + 2+ profiles — never a separate control.
+  const runtimeMode = (activeProject?.runtime_mode || "local").toLowerCase();
   const body = {
     config_path: configPath,
     step_label: stepLabel,
     profiles,
     thread_count: threads,
+    project_id: state.projectId,
+    runtime_mode: runtimeMode,
   };
   const job = await api("/api/jobs", {
     method: "POST",
@@ -7082,7 +7135,15 @@ $("#ai-docs-in-prompt")?.addEventListener("change", async () => {
     setStatus(`Prompt toggle failed: ${e.message}`);
   }
 });
-$("#arena-cost-widget")?.addEventListener("click", () => showPhase("cost"));
+$("#arena-cost-widget")?.addEventListener("click", () => {
+  const budget = Number(activeProject?.budget_usd) || 0;
+  if (!budget) {
+    focusBuildBudget();
+    return;
+  }
+  showPhase("cost");
+});
+$("#btn-build-edit-budget")?.addEventListener("click", focusBuildBudget);
 $("#arena-ypad-widget")?.addEventListener("click", () => {
   showPhase("build");
   requestAnimationFrame(() => {

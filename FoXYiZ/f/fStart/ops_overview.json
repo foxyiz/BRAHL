@@ -1,0 +1,23 @@
+{
+  "configs": [
+    "y/ops_overview/ops_overview.json"
+  ],
+  "thread_count": 1,
+  "timeout": 8,
+  "headless": false,
+  "debug": false,
+  "tags": [
+    "Smoke",
+    "UI",
+    "Edge",
+    "API",
+    "Security",
+    "Perf"
+  ],
+  "capture": {
+    "image": "on_fail",
+    "video": "off",
+    "video_fps": 2,
+    "subdir": ""
+  }
+}

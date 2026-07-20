@@ -23,11 +23,19 @@ python qoa_web/run_local.py
 
 python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json
 python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live.json
+
+# End-user exe (no Python needed):
+#   powershell -File FoXYiZ\packaging\build_exe.ps1
+#   FoXYiZ\packaging\dist\FoXYiZ_user\FoXYiZ.exe --config fStart\Math.json
 ```
 
 fStarts: **one JSON per suite** under `FoXYiZ/f/fStart/{suite}.json` — see [FoXYiZ/f/fStart_SCOPE.md](FoXYiZ/f/fStart_SCOPE.md).
 
 Run / Loop = FoXYiZ only (never the LLM). Optional AI: `OPENAI_API_KEY` in `FoXYiZ/f/.env`.
+
+## Product
+
+[PRD.md](PRD.md) — QA on Air · BRAHL · Arena · how it runs on FoXYiZ (rebuild / onboard).
 
 ## Agents
 

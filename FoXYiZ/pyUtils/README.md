@@ -11,22 +11,34 @@ python FoXYiZ\pyUtils\sync_personas.py
 python FoXYiZ\pyUtils\zBatchDash.py --name wave1 --since 20260716
 ```
 
-## Keep (active)
+## Packaging tiers
+
+| Tier | Ships with | Scripts |
+|------|------------|---------|
+| **End-user exe** (`FoXYiZ.exe`) | Bundled next to / inside exe | `_paths`, `fOrchestrate`, `xCustom`, `zBatchDash` (+ optional `fGUI`) |
+| **Architect / source** | Full KK tree | Everything below (Arena maintain, deploy, reports) |
+
+## Keep — runtime (exe + Arena Run)
 
 | Script | Why |
 |--------|-----|
 | `_paths.py` | Shared paths (`FOXYIZ_ROOT`, suites, `z/`) |
 | `fOrchestrate.py` | Tag fan-out / parallel batches (Arena + `fEngine2`) |
-| `fGUI.py` | Desktop runner GUI |
 | `xCustom.py` | End-user custom actions (`xCustom` in yPAD) |
 | `zBatchDash.py` | Multi-run HTML batch dashboard |
-| `cleaner.py` | Archive dated `z/` runs → `../archive/cleanup/` (outside KK) |
+| `fGUI.py` | Optional desktop runner GUI |
+
+## Keep — Arena / suite maintain
+
+| Script | Why |
+|--------|-----|
+| `cleaner.py` | Archive dated `z/` runs → `../archive/cleanup/` |
 | `reset_demo_data.py` | Reset Arena seed projects |
 | `sync_personas.py` | Personas: `gen_persona_ypad` + `sync_profiles_from_docs` |
 | `gen_persona_ypad.py` | Persona yPAD rows (called by sync) |
 | `sync_profiles_from_docs.py` | `profiles.js` from `Docs/test-user-data/` |
 | `scaffold_app_ypad.py` | Arena “Add challenge” yPAD scaffold (API) |
-| `patch_qoa_web_live_v1.py` | **Live suite** verify gate + locators (idempotent) |
+| `patch_qoa_web_live_v1.py` | Live suite verify gate + locators (idempotent) |
 | `gen_journey_ypad.py` | Journey library generator (`--suite qoa_web_live`) |
 | `refresh_qoa_web_live.py` | V1 patch + journey regen in one command |
 | `fix_y3_journey_locators.py` | Locator append (called by journey gen) |
@@ -42,6 +54,11 @@ python FoXYiZ\pyUtils\zBatchDash.py --name wave1 --since 20260716
 
 ## Archived one-offs
 
-Applied patches moved to `archive/pyUtils_oneoff/` (heal/fix scripts from past UI migrations).
+Moved to `archive/pyUtils_oneoff/` (not on PATH for agents):
+
+- Heal/fix scripts from past UI migrations
+- `author_a77_ypad.py`, `author_ultimate_showdown_ypad.py` (suites already under `y/a77/`, `y/ultimate_showdown/`)
+
+Broken legacy redirects that pointed at removed `u/` were deleted (`y/qoa_web/gen_*.py`, `z/zDefects.py`, `qoa_web/scripts/sync_profiles_from_docs.py`). Use `FoXYiZ/pyUtils/` instead.
 
 HTML reports and `z/*_zDash.html` run output stay out of git — see `.gitignore`.

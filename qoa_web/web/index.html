@@ -457,7 +457,6 @@
               <div class="build-header-row">
                 <h2 id="build-panel-title">Build</h2>
                 <button type="button" id="btn-build-add-context" class="icon-btn" title="New project">+</button>
-                <button type="button" id="ypad-toggle-edit" class="secondary build-edit-top" title="Edit yPAD CSV">Edit</button>
               </div>
               <p class="blurb build-one-liner">Shape the challenge yPAD — tests, steps, and data — then Run.</p>
               <p id="hunter-hero-tagline" class="hunter-hero-tagline avatar-consultant-only" hidden>
@@ -616,6 +615,15 @@
               </div>
             </section>
 
+            <section id="build-budget-strip" class="build-budget-strip avatar-client-only" hidden>
+              <div class="build-budget-summary">
+                <strong>QA wallet</strong>
+                <span id="build-budget-amount" class="build-budget-amount">Not set</span>
+                <button type="button" id="btn-build-edit-budget" class="linkish">Edit wallet</button>
+              </div>
+              <p id="build-budget-hint" class="hint build-budget-hint">Set a wallet (≥ $50) so AI / Hunter payouts can run.</p>
+            </section>
+
             <details id="build-automation" class="build-section build-collapsible" open>
               <summary class="build-collapsible-summary">Test coverage</summary>
               <div class="build-collapsible-body">
@@ -646,20 +654,13 @@
                     <input type="checkbox" id="ypad-run-y-only" />
                     Automated only (Run=Y)
                   </label>
+                  <button type="button" id="ypad-toggle-edit" class="secondary ypad-edit-btn" title="Edit this sheet CSV">Edit</button>
                   <button type="button" id="ypad-save" class="primary" hidden>Save</button>
                   <span id="ypad-meta" class="ypad-meta"></span>
                 </div>
-                <div id="ypad-versions" class="ypad-versions">
-                  <div class="ypad-versions-head">
-                    <strong>yPAD versions</strong>
-                    <button type="button" id="btn-ypad-snapshot" class="secondary">Snapshot</button>
-                  </div>
-                  <ul id="ypad-versions-list" class="ypad-versions-list"></ul>
-                  <div id="ypad-version-diff" class="ypad-version-diff" hidden></div>
-                </div>
-                <div id="ypad-table-wrap" class="ypad-table-wrap" hidden>
+                <div id="ypad-table-wrap" class="ypad-table-wrap">
                   <div class="ypad-table-controls">
-                    <button type="button" id="ypad-show-table" class="linkish">Show table</button>
+                    <button type="button" id="ypad-show-table" class="linkish">Hide table</button>
                     <span id="ypad-page-meta" class="ypad-page-meta"></span>
                     <button type="button" id="ypad-page-prev" class="secondary" hidden>Prev</button>
                     <button type="button" id="ypad-page-next" class="secondary" hidden>Next</button>
@@ -669,6 +670,17 @@
                     <tbody id="ypad-tbody"></tbody>
                   </table>
                   <p id="ypad-empty" class="empty-hint" hidden>No rows match.</p>
+                </div>
+                <div id="ypad-versions" class="ypad-versions">
+                  <div class="ypad-versions-head">
+                    <div>
+                      <strong>yPAD snapshots</strong>
+                      <span class="meta"> Restore points of the CSVs above — not a second copy of live data.</span>
+                    </div>
+                    <button type="button" id="btn-ypad-snapshot" class="secondary">Snapshot</button>
+                  </div>
+                  <ul id="ypad-versions-list" class="ypad-versions-list"></ul>
+                  <div id="ypad-version-diff" class="ypad-version-diff" hidden></div>
                 </div>
                 <div id="ypad-env-panel" class="ypad-env-panel" hidden>
                   <p class="blurb"><strong>Reference only</strong> — do not enter secrets in the browser. Copy these keys into <code>f/.env</code> on the server (or host environment) that runs FoXYiZ / BRAHL. Values below come from y3Designs + <code>f/.env.example</code>.</p>

@@ -1,0 +1,17 @@
+{
+  "input_files": {
+    "yPlans": [
+      "y/a77/y1Plans.csv"
+    ],
+    "yActions": [
+      "y/a77/y2Actions.csv"
+    ],
+    "yDesigns": [
+      "y/a77/y3Designs.csv"
+    ]
+  },
+  "name": "a77",
+  "description": "Atomic 77 — AI growth dashboard UX (a77.base44.app)",
+  "version": "1.0.0",
+  "url": "https://a77.base44.app/"
+}
