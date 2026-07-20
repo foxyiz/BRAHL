@@ -109,7 +109,7 @@ Until the worker URL is set, cloud mode fails loudly; desktop/local Run still wo
 | Check | Pass |
 |-------|------|
 | `/api/health` readiness | jwt + google (when locking) + optional stripe/cloud |
-| `qoa_web_live` Smoke | green (desktop or cloud) |
+| `qoa_web_live` Smoke | green (desktop or cloud) — against brahl: `python qoa_web/scripts/patch_live_urls.py` then smoke; restore with `--base http://127.0.0.1:8765` |
 | Guest→Google | works |
 | Stripe test charge | works (or documented deferred) |
 | Backup | `python qoa_web/scripts/backup_data.py` on a schedule |
