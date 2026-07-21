@@ -1,0 +1,70 @@
+PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PReuse_Space_Open,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PReuse_Space_Open,2,Home,xUI,xNavigate,base_url,,,Y
+PReuse_Space_Open,3,Wait,xTime,xTimeWait,3,,,Y
+PSpace_Smoke_Home,1,Open,xReuse,PReuse_Space_Open,,,,Y
+PSpace_Smoke_Home,2,Title,xUI,xGetTitle,,,page_title_home,Y
+PSpace_Smoke_Home,3,Brand,xUI,xGetText,body_locator,,text_brand,Y
+PSpace_Smoke_Home,4,Free,xUI,xGetText,body_locator,,text_free,Y
+PSpace_Smoke_Home,5,Start,xUI,xGetText,body_locator,,text_start,Y
+PSpace_Smoke_Home,6,No signup,xUI,xGetText,body_locator,,text_no_signup,Y
+PSpace_Smoke_Editor,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PSpace_Smoke_Editor,2,Editor,xUI,xNavigate,editor_url,,,Y
+PSpace_Smoke_Editor,3,Wait,xTime,xTimeWait,4,,,Y
+PSpace_Smoke_Editor,4,Title,xUI,xGetTitle,,,page_title_editor,Y
+PSpace_Smoke_Editor,5,Projects,xUI,xGetText,body_locator,,text_editor_projects,Y
+PSpace_Smoke_Editor,6,2D,xUI,xGetText,body_locator,,text_editor_2d,Y
+PSpace_Smoke_Editor,7,Symbols,xUI,xGetText,body_locator,,text_symbol,Y
+PSpace_Smoke_Floor,1,Open,xReuse,PReuse_Space_Open,,,,Y
+PSpace_Smoke_Floor,2,Floor,xUI,xNavigate,floor_url,,,Y
+PSpace_Smoke_Floor,3,Wait,xTime,xTimeWait,3,,,Y
+PSpace_Smoke_Floor,4,Heading,xUI,xGetText,body_locator,,text_floor_heading,Y
+PSpace_Smoke_Docs,1,Open,xReuse,PReuse_Space_Open,,,,Y
+PSpace_Smoke_Docs,2,Docs,xUI,xNavigate,docs_url,,,Y
+PSpace_Smoke_Docs,3,Wait,xTime,xTimeWait,3,,,Y
+PSpace_Smoke_Docs,4,How,xUI,xGetText,body_locator,,text_docs,Y
+PSpace_UI_EditorModes,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PSpace_UI_EditorModes,2,Editor,xUI,xNavigate,editor_url,,,Y
+PSpace_UI_EditorModes,3,Wait,xTime,xTimeWait,4,,,Y
+PSpace_UI_EditorModes,4,2D,xUI,xGetText,body_locator,,text_editor_2d,Y
+PSpace_UI_EditorModes,5,3D,xUI,xGetText,body_locator,,text_editor_3d,Y
+PSpace_Edge_Unknown404,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PSpace_Edge_Unknown404,2,Unknown,xUI,xNavigate,unknown_url,,,Y
+PSpace_Edge_Unknown404,3,Wait,xTime,xTimeWait,2,,,Y
+PSpace_Edge_Unknown404,4,404,xUI,xGetText,body_locator,,text_404,Y
+PSpace_API_GetHome,1,GET,xAPI,xGet,api_host;ep_home,,200,Y
+PSpace_API_Favicon,1,GET,xAPI,xGet,api_host;ep_favicon,,200,Y
+PSpace_API_Robots,1,GET,xAPI,xGet,api_host;ep_robots,,200,Y
+PSpace_API_UnknownSpa,1,GET,xAPI,xGet,api_host;ep_unknown,,200,Y
+PSpace_Manual_3DWalk,1,Open Edge,xUI,xOpenBrowser,edge,,,N
+PSpace_Manual_3DWalk,2,Editor,xUI,xNavigate,editor_url,,,N
+PSpace_Manual_3DWalk,3,Note,xUI,xGetText,body_locator,,text_editor_3d,N
+PSpace_Manual_AIImport,1,Open,xReuse,PReuse_Space_Open,,,,N
+PSpace_Manual_AIImport,2,Note,xUI,xGetText,body_locator,,text_start,N
+PSpace_Smoke_BrahlConclusion,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PSpace_Smoke_BrahlConclusion,2,Home,xUI,xNavigate,base_url,,,Y
+PSpace_Smoke_BrahlConclusion,3,Wait,xTime,xTimeWait,3,,,Y
+PSpace_Smoke_BrahlConclusion,4,Free,xUI,xGetText,body_locator,,text_free,Y
+PSpace_Smoke_BrahlConclusion,5,API,xAPI,xGet,api_host;ep_home,,200,Y
+PSpace_UI_NavPlanners,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PSpace_UI_NavPlanners,2,Home,xUI,xNavigate,base_url,,,Y
+PSpace_UI_NavPlanners,3,Wait,xTime,xTimeWait,3,,,Y
+PSpace_UI_NavPlanners,4,Floor,xUI,xGetText,body_locator,,text_floor_nav,Y
+PSpace_UI_NavPlanners,5,Room,xUI,xGetText,body_locator,,Room Planner,Y
+PSpace_UI_NavPlanners,6,Garden,xUI,xGetText,body_locator,,Garden Planner,Y
+PSpace_UI_StartDrawing,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PSpace_UI_StartDrawing,2,Home,xUI,xNavigate,base_url,,,Y
+PSpace_UI_StartDrawing,3,Wait,xTime,xTimeWait,3,,,Y
+PSpace_UI_StartDrawing,4,CTA,xUI,xGetText,body_locator,,text_start,Y
+PSpace_UI_StartDrawing,5,Example,xUI,xGetText,body_locator,,text_example,Y
+PSpace_Sec_HttpsHost,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PSpace_Sec_HttpsHost,2,Home,xUI,xNavigate,base_url,,,Y
+PSpace_Sec_HttpsHost,3,Wait,xTime,xTimeWait,3,,,Y
+PSpace_Sec_HttpsHost,4,Brand,xUI,xGetText,body_locator,,text_brand,Y
+PSpace_Perf_HomeLoad,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PSpace_Perf_HomeLoad,2,Start,xUI,xStartTimer,,,,Y
+PSpace_Perf_HomeLoad,3,Nav,xUI,xNavigate,base_url,,,Y
+PSpace_Perf_HomeLoad,4,Wait paint,xTime,xTimeWait,4,,,Y
+PSpace_Perf_HomeLoad,5,Stop,xUI,xStopTimer,elapsed,,,Y
+PSpace_Perf_HomeLoad,6,Budget,xUI,xAssertLessThan,{{step:5}};15000,,,Y
+PSpace_Perf_HomeLoad,7,Alive,xUI,xGetText,body_locator,,text_brand,Y

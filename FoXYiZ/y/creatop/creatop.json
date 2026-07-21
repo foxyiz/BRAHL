@@ -1,0 +1,17 @@
+{
+  "input_files": {
+    "yPlans": [
+      "y/creatop/y1Plans.csv"
+    ],
+    "yActions": [
+      "y/creatop/y2Actions.csv"
+    ],
+    "yDesigns": [
+      "y/creatop/y3Designs.csv"
+    ]
+  },
+  "name": "creatop",
+  "description": "Creatop Hebrew RTL studio portfolio \u2014 Smoke UI Edge API Security Perf",
+  "version": "1.0.0",
+  "url": "https://creatop.base44.app/"
+}

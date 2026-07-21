@@ -255,20 +255,22 @@ def _default_main_config_path():
 
     Development: repo layout has ``f/fStart/default.json`` relative to project root.
 
-    Frozen (PyInstaller): prefer ``fStart/default.json`` beside the executable, or
-    ``f/fStart/default.json`` when the exe lives at project root.
+    Frozen (PyInstaller onedir user package): exe lives under ``f/`` with
+    ``f/fStart/default.json`` beside it. Also accept legacy layouts where the
+    exe sat at package root with top-level ``fStart/`` or ``f/fStart/``.
     """
     if getattr(sys, 'frozen', False):
         exe_dir = os.path.abspath(os.path.dirname(sys.executable))
-        beside_exe = os.path.join(exe_dir, 'fStart', 'default.json')
-        under_f = os.path.join(exe_dir, 'f', 'fStart', 'default.json')
-        legacy = os.path.join(exe_dir, 'fStart.json')
-        if os.path.isfile(beside_exe):
-            return os.path.join('fStart', 'default.json')
-        if os.path.isfile(under_f):
-            return 'f/fStart/default.json'
-        if os.path.isfile(legacy):
-            return 'fStart.json'
+        parent = os.path.dirname(exe_dir)
+        candidates = [
+            (os.path.join(exe_dir, 'fStart', 'default.json'), os.path.join('fStart', 'default.json')),
+            (os.path.join(exe_dir, 'f', 'fStart', 'default.json'), 'f/fStart/default.json'),
+            (os.path.join(parent, 'f', 'fStart', 'default.json'), 'f/fStart/default.json'),
+            (os.path.join(exe_dir, 'fStart.json'), 'fStart.json'),
+        ]
+        for abs_path, rel_path in candidates:
+            if os.path.isfile(abs_path):
+                return rel_path
         return os.path.join('fStart', 'default.json')
     return 'f/fStart/default.json'
 
@@ -505,14 +507,15 @@ def load_config(config_path):
     """Load configuration from a JSON file."""
     resolved = config_path
     if not os.path.isabs(config_path):
-        # For exe: First check in the exe directory (user-provided configs)
+        # Frozen: search exe dir then parent (exe in f/, package root has y/)
         if getattr(sys, 'frozen', False):
-            exe_dir_path = os.path.join(os.path.dirname(sys.executable), config_path)
-            if os.path.exists(exe_dir_path):
-                resolved = exe_dir_path
-            else:
-                # Fall back to bundled resources
-                resolved = _resource_path(config_path)
+            found = None
+            for base in _frozen_data_search_bases():
+                candidate = os.path.join(base, config_path)
+                if os.path.exists(candidate):
+                    found = candidate
+                    break
+            resolved = found if found else _resource_path(config_path)
         else:
             resolved = _resource_path(config_path)
     with open(resolved, 'r') as f:

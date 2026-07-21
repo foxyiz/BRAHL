@@ -1,0 +1,20 @@
+PlanId,PlanName,DesignId,Run,Tags,Output,CreatedBy,CreatedAt
+PReuse_Creatop_Open,"Open Edge, accept cookies, load Creatop",D1,N,Reuse,site_loaded,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_Smoke_Home,Home CREATOP brand + nav,D1,Y,creatop;Smoke;Home;Landing,home_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_Smoke_Work,Work portfolio projects,D1,Y,creatop;Smoke;Work,work_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_Smoke_Services,Services מה אנחנו עושים,D1,Y,creatop;Smoke;Services,services_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_Smoke_About,About Elhanan Ashuel,D1,Y,creatop;Smoke;About,about_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_Smoke_Contact,Contact email + WhatsApp cue,D1,Y,creatop;Smoke;Contact,contact_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_Smoke_BrahlConclusion,BRAHL conclusion — Creatop shell ready,D1,Y,creatop;Smoke;BRAHL;Conclusion,brahl_conclusion,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_UI_NavRTL,RTL nav בית פרויקטים שירות,D1,Y,creatop;UI;Nav;RTL,nav_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_UI_A11y,Accessibility control visible,D1,Y,creatop;UI;A11y,a11y_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_UI_ContactEmail,Contact shows studio email,D1,Y,creatop;UI;Contact,email_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_Edge_Unknown404,Unknown path הדף לא נמצא,D1,Y,creatop;Edge;404,edge_404,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_API_GetHome,GET / 200,D1,Y,creatop;API;Home,api_home,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_API_Favicon,GET favicon 200,D1,Y,creatop;API;Favicon,api_favicon,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_API_Robots,GET robots 200,D1,Y,creatop;API;Robots,api_robots,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_API_UnknownSpa,GET unknown SPA 200,D1,Y,creatop;API;404,api_unknown,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_Sec_HttpsHost,HTTPS host,D1,Y,creatop;Security;Landing,sec_https,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_Perf_HomeLoad,Home load under 25s,D1,Y,creatop;Perf;Home,perf_home,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_Manual_DarkMode,HITL: light/dark mode toggle,D1,N,creatop;Manual;Theme,hitl_theme,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PCreatop_Manual_WhatsApp,HITL: WhatsApp contact path,D1,N,creatop;Manual;WhatsApp,hitl_wa,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00

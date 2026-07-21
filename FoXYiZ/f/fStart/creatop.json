@@ -1,15 +1,14 @@
 {
   "configs": [
-    "y/ops_overview/ops_overview.json"
+    "y/creatop/creatop.json"
   ],
   "thread_count": 1,
-  "timeout": 12,
+  "timeout": 20,
   "headless": true,
   "debug": false,
   "tags": [
     "Smoke",
     "UI",
-    "Func",
     "Edge",
     "API",
     "Security",

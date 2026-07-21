@@ -1,0 +1,19 @@
+PlanId,PlanName,DesignId,Run,Tags,Output,CreatedBy,CreatedAt
+PReuse_AppWars_Open,Open Edge and load AppWars,D1,N,Reuse,site_loaded,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_Smoke_Home,Landing Build Battle crowned,D1,Y,appwars;Smoke;Home;Landing,home_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_Smoke_EnterLogin,Enter Arena gates to login,D1,Y,appwars;Smoke;Auth;Arena,enter_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_Smoke_Support,Support help page,D1,Y,appwars;Smoke;Support,support_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_Smoke_Privacy,Privacy policy,D1,Y,appwars;Smoke;Privacy,privacy_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_Smoke_Terms,Terms and Conditions,D1,Y,appwars;Smoke;Terms,terms_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_Smoke_BrahlConclusion,BRAHL conclusion — AppWars shell ready,D1,Y,appwars;Smoke;BRAHL;Conclusion,brahl_conclusion,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_UI_ValueProps,Pressure / community / prizes,D1,Y,appwars;UI;Landing,props_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_UI_LoginGoogle,Login Continue with Google,D1,Y,appwars;UI;Auth,google_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_Edge_Soft404,Unknown path soft-falls to landing (A1 soft 404),D1,Y,appwars;Edge;404,edge_soft404,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_API_GetHome,GET / 200,D1,Y,appwars;API;Home,api_home,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_API_Favicon,GET favicon 200,D1,Y,appwars;API;Favicon,api_favicon,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_API_Robots,GET robots 200,D1,Y,appwars;API;Robots,api_robots,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_API_UnknownSpa,GET unknown SPA 200,D1,Y,appwars;API;404,api_unknown,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_Sec_HttpsHost,HTTPS host,D1,Y,appwars;Security;Landing,sec_https,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_Perf_HomeLoad,Home load under 15s,D1,Y,appwars;Perf;Home,perf_home,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_Manual_Tournament,HITL: join tournament bracket,D1,N,appwars;Manual;Tournament,hitl_tourney,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PAppWars_Manual_Vote,HITL: community vote matchup,D1,N,appwars;Manual;Vote,hitl_vote,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00

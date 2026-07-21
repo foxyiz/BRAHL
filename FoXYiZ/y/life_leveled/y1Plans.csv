@@ -1,0 +1,22 @@
+PlanId,PlanName,DesignId,Run,Tags,Output,CreatedBy,CreatedAt
+PReuse_Life_Open,"Open Edge, pick English, load LifeLeveled",D1,N,Reuse,site_loaded,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Smoke_Home,Home after English: Become + CTAs,D1,Y,life_leveled;Smoke;Home;Landing,home_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Smoke_Learn,Learn hub semester programs,D1,Y,life_leveled;Smoke;Learn,learn_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Smoke_Pricing,Pricing journey support tiers,D1,Y,life_leveled;Smoke;Pricing,pricing_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Smoke_Login,Login welcome + Google,D1,Y,life_leveled;Smoke;Login;Auth,login_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Smoke_Register,Register create account,D1,Y,life_leveled;Smoke;Register;Auth,register_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Smoke_About,About mission page,D1,Y,life_leveled;Smoke;About,about_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Smoke_Privacy,Privacy policy page,D1,Y,life_leveled;Smoke;Privacy,privacy_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Smoke_BrahlConclusion,BRAHL conclusion — LifeLeveled shell ready,D1,Y,life_leveled;Smoke;BRAHL;Conclusion,brahl_conclusion,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_UI_NavShell,Nav Learn + AI Coach + Pricing,D1,Y,life_leveled;UI;Nav;Shell,nav_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_UI_HomeCTAs,Home readiness CTAs present,D1,Y,life_leveled;UI;Home;CTA,cta_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_UI_LoginGoogle,Login Continue with Google,D1,Y,life_leveled;UI;Auth;Google,google_ok,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Edge_Unknown404,Unknown path shows Page Not Found,D1,Y,life_leveled;Edge;404,edge_404,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_API_GetHome,GET / returns 200,D1,Y,life_leveled;API;Home,api_home,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_API_Favicon,GET /favicon.ico returns 200,D1,Y,life_leveled;API;Favicon,api_favicon,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_API_Robots,GET /robots.txt returns 200,D1,Y,life_leveled;API;Robots,api_robots,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_API_UnknownSpa,GET unknown SPA route returns 200,D1,Y,life_leveled;API;404,api_unknown,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Sec_HttpsHost,App served over https,D1,Y,life_leveled;Security;Landing,sec_https,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Perf_HomeLoad,Home load under 20s after language,D1,Y,life_leveled;Perf;Home,perf_home,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Manual_AICoach,HITL: AI Coach conversation,D1,N,life_leveled;Manual;Coach;Hunt,hitl_coach,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00
+PLife_Manual_Onboarding,HITL: Build My Readiness Plan flow,D1,N,life_leveled;Manual;Onboarding;Hunt,hitl_onboard,QA_Hunter+BRAHL_Wave1,2026-07-21T06:53:40+00:00

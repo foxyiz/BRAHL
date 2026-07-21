@@ -1309,14 +1309,24 @@
         "report_path": "z/20260716_131122_Math/brahl_report.md",
         "submitted_at": "2026-07-17T03:50:13+00:00",
         "source": "automation"
+      },
+      {
+        "id": "bc636b44",
+        "run_name": "20260720_140910_Math",
+        "report_path": "z/20260720_140910_Math/brahl_report.md",
+        "submitted_at": "2026-07-21T18:26:53+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260715_232913_Math.json",
     "brahl_plan_draft": null,
-    "latest_run": "20260716_131122_Math",
+    "latest_run": "20260720_140910_Math",
     "created_at": "2026-07-14T21:50:30+00:00",
-    "updated_at": "2026-07-17T03:55:37+00:00",
+    "updated_at": "2026-07-21T18:26:53+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -1584,7 +1594,7 @@
       "total_tokens": 0,
       "usd_est": 0.0
     },
-    "ai_journey_updated_at": "2026-07-17T03:53:41+00:00",
+    "ai_journey_updated_at": "2026-07-21T18:26:53+00:00",
     "current_phase": "Run",
     "team_messages": [],
     "team_tasks": [],
@@ -1738,14 +1748,104 @@
         "batch_id": null,
         "batch_dashboard": null,
         "archived": false
+      },
+      {
+        "id": "bcd61228",
+        "run_name": "20260720_224145_ops_overview",
+        "report_path": "z/20260720_224145_ops_overview/brahl_report.md",
+        "submitted_at": "2026-07-21T06:01:03+00:00",
+        "source": "automation_ai",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      },
+      {
+        "id": "e8765a69",
+        "run_name": "20260721_103010_ops_overview",
+        "report_path": "z/20260721_103010_ops_overview/brahl_report.md",
+        "submitted_at": "2026-07-21T17:30:43+00:00",
+        "source": "automation",
+        "batch_id": "05f3611b20",
+        "batch_dashboard": "z/zDash_batch_batch_20260721_103002_45edc6.html",
+        "archived": false
+      },
+      {
+        "id": "19cf5cbd",
+        "run_name": "20260721_103110_ops_overview",
+        "report_path": "z/20260721_103110_ops_overview/brahl_report.md",
+        "submitted_at": "2026-07-21T17:31:42+00:00",
+        "source": "automation",
+        "batch_id": "2e93fcb7e0",
+        "batch_dashboard": "z/zDash_batch_batch_20260721_103108_abcaeb.html",
+        "archived": false
+      },
+      {
+        "id": "1a6a1418",
+        "run_name": "20260721_103145_ops_overview",
+        "report_path": "z/20260721_103145_ops_overview/brahl_report.md",
+        "submitted_at": "2026-07-21T17:32:10+00:00",
+        "source": "automation",
+        "batch_id": "29704754fc",
+        "batch_dashboard": "z/zDash_batch_batch_20260721_103143_0cb7cd.html",
+        "archived": false
+      },
+      {
+        "id": "0240fee1",
+        "run_name": "20260721_103214_ops_overview",
+        "report_path": "z/20260721_103214_ops_overview/brahl_report.md",
+        "submitted_at": "2026-07-21T17:32:39+00:00",
+        "source": "automation",
+        "batch_id": "724200bcd7",
+        "batch_dashboard": "z/zDash_batch_batch_20260721_103211_9f42f3.html",
+        "archived": false
+      },
+      {
+        "id": "3b6c2a16",
+        "run_name": "20260721_103246_ops_overview",
+        "report_path": "z/20260721_103246_ops_overview/brahl_report.md",
+        "submitted_at": "2026-07-21T17:33:24+00:00",
+        "source": "automation",
+        "batch_id": "be06e69241",
+        "batch_dashboard": "z/zDash_batch_batch_20260721_103243_e73cc2.html",
+        "archived": false
+      },
+      {
+        "id": "b07872df",
+        "run_name": "20260721_103554_ops_overview",
+        "report_path": "z/20260721_103554_ops_overview/brahl_report.md",
+        "submitted_at": "2026-07-21T17:36:28+00:00",
+        "source": "automation",
+        "batch_id": "8478f07630",
+        "batch_dashboard": "z/zDash_batch_batch_20260721_103551_118cbb.html",
+        "archived": false
+      },
+      {
+        "id": "bd9fdd33",
+        "run_name": "20260721_103937_ops_overview",
+        "report_path": "z/20260721_103937_ops_overview/brahl_report.md",
+        "submitted_at": "2026-07-21T17:44:26+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      },
+      {
+        "id": "a44686c4",
+        "run_name": "20260721_105151_ops_overview",
+        "report_path": "z/20260721_105151_ops_overview/brahl_report.md",
+        "submitted_at": "2026-07-21T18:12:47+00:00",
+        "source": "automation_ai",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
       }
     ],
     "ai_enabled": true,
-    "brahl_context_path": null,
+    "brahl_context_path": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260721_103107_ops_overview.json",
     "brahl_plan_draft": null,
-    "latest_run": "20260720_134823_ops_overview",
+    "latest_run": "20260721_105151_ops_overview",
     "created_at": "2026-07-20T21:26:55+00:00",
-    "updated_at": "2026-07-21T05:33:17+00:00",
+    "updated_at": "2026-07-21T18:12:48+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -1769,7 +1869,124 @@
       "tokens_est": 0,
       "user_messages": 0
     },
-    "cycle_history": [],
+    "cycle_history": [
+      {
+        "id": "efc6d049",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-21T17:36:28+00:00",
+        "run_name": "20260721_103554_ops_overview",
+        "stats": {
+          "passes": 5,
+          "fails": 2,
+          "total_plans": 7,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "a6baf7bb",
+        "step": "Verify",
+        "detail": "completed",
+        "at": "2026-07-21T17:33:24+00:00",
+        "run_name": "20260721_103246_ops_overview",
+        "stats": {
+          "passes": 5,
+          "fails": 2,
+          "total_plans": 7,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "de941df7",
+        "step": "Restore",
+        "detail": "Verify prep \u2014 all Run=Y",
+        "at": "2026-07-21T17:32:42+00:00"
+      },
+      {
+        "id": "c5e70e43",
+        "step": "Loop 3",
+        "detail": "completed",
+        "at": "2026-07-21T17:32:39+00:00",
+        "run_name": "20260721_103214_ops_overview",
+        "stats": {
+          "passes": 0,
+          "fails": 2,
+          "total_plans": 2,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "dfa4827c",
+        "step": "Shrink",
+        "detail": "Loop prep \u2014 2 plans",
+        "at": "2026-07-21T17:32:11+00:00",
+        "run_name": "20260721_103145_ops_overview",
+        "stats": {
+          "passes": 0,
+          "fails": 2,
+          "total_plans": 2,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "4534af37",
+        "step": "Loop 2",
+        "detail": "completed",
+        "at": "2026-07-21T17:32:10+00:00",
+        "run_name": "20260721_103145_ops_overview",
+        "stats": {
+          "passes": 0,
+          "fails": 2,
+          "total_plans": 2,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "2a1ea292",
+        "step": "Shrink",
+        "detail": "Loop prep \u2014 2 plans",
+        "at": "2026-07-21T17:31:43+00:00",
+        "run_name": "20260721_103110_ops_overview",
+        "stats": {
+          "passes": 5,
+          "fails": 2,
+          "total_plans": 7,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "e2659b51",
+        "step": "Loop 1",
+        "detail": "completed",
+        "at": "2026-07-21T17:31:42+00:00",
+        "run_name": "20260721_103110_ops_overview",
+        "stats": {
+          "passes": 5,
+          "fails": 2,
+          "total_plans": 7,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "5021d05a",
+        "step": "Context",
+        "detail": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260721_103107_ops_overview.json",
+        "at": "2026-07-21T17:31:07+00:00"
+      },
+      {
+        "id": "786c7762",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-21T17:30:43+00:00",
+        "run_name": "20260721_103010_ops_overview",
+        "stats": {
+          "passes": 5,
+          "fails": 2,
+          "total_plans": 7,
+          "health": "amber"
+        }
+      }
+    ],
     "hitl_stories": [],
     "hitl_invites": [],
     "change_requests": [],
@@ -1783,6 +2000,462 @@
       "usd_est": 0.0
     },
     "evidence_library": [],
-    "ai_journey_updated_at": "2026-07-21T05:33:17+00:00"
+    "ai_journey_updated_at": "2026-07-21T18:12:48+00:00",
+    "current_phase": "Run"
+  },
+  {
+    "id": "e401e44d45ca",
+    "name": "life_leveled",
+    "app_url": "https://life-leveled.base44.app/",
+    "suite_name": "life_leveled",
+    "suite_config": "y/life_leveled/life_leveled.json",
+    "purpose": "LifeLeveled life-skills platform \u2014 Smoke UI Edge API Security Perf",
+    "prompt": "LifeLeveled life-skills platform \u2014 Smoke UI Edge API Security Perf",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [
+      {
+        "id": "c6d456cd",
+        "kind": "url",
+        "label": "App URL",
+        "value": "https://life-leveled.base44.app/",
+        "added_at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "7ce22ebc",
+        "run_name": "20260720_235646_life_leveled",
+        "report_path": "z/20260720_235646_life_leveled/brahl_report.md",
+        "submitted_at": "2026-07-21T07:12:54+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "brahl_plan_draft": null,
+    "latest_run": "20260720_235646_life_leveled",
+    "created_at": "2026-07-21T07:12:54+00:00",
+    "updated_at": "2026-07-21T07:12:54+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "Ask about the latest BRAHL report, GO/NO-GO, or heals.",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "runtime_mode": "local",
+    "team_messages": [],
+    "team_tasks": [],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    },
+    "evidence_library": []
+  },
+  {
+    "id": "b2d586dccacf",
+    "name": "space_planner",
+    "app_url": "https://bulky-plan-draft-flow.base44.app/",
+    "suite_name": "space_planner",
+    "suite_config": "y/space_planner/space_planner.json",
+    "purpose": "SpacePlanner CAD/3D planner \u2014 Smoke UI Edge API Security Perf",
+    "prompt": "SpacePlanner CAD/3D planner \u2014 Smoke UI Edge API Security Perf",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [
+      {
+        "id": "80bf8c91",
+        "kind": "url",
+        "label": "App URL",
+        "value": "https://bulky-plan-draft-flow.base44.app/",
+        "added_at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "ebf40e57",
+        "run_name": "20260721_000425_space_planner",
+        "report_path": "z/20260721_000425_space_planner/brahl_report.md",
+        "submitted_at": "2026-07-21T07:12:54+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "brahl_plan_draft": null,
+    "latest_run": "20260721_000425_space_planner",
+    "created_at": "2026-07-21T07:12:54+00:00",
+    "updated_at": "2026-07-21T07:12:54+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "Ask about the latest BRAHL report, GO/NO-GO, or heals.",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "runtime_mode": "local",
+    "team_messages": [],
+    "team_tasks": [],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    },
+    "evidence_library": []
+  },
+  {
+    "id": "bbe1e455b73e",
+    "name": "haunted_castle",
+    "app_url": "https://haunted-mansion.base44.app/",
+    "suite_name": "haunted_castle",
+    "suite_config": "y/haunted_castle/haunted_castle.json",
+    "purpose": "Ziv Haunted Castle 3D game \u2014 Smoke UI Edge API Security Perf",
+    "prompt": "Ziv Haunted Castle 3D game \u2014 Smoke UI Edge API Security Perf",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [
+      {
+        "id": "c6fa6068",
+        "kind": "url",
+        "label": "App URL",
+        "value": "https://haunted-mansion.base44.app/",
+        "added_at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "4306a685",
+        "run_name": "20260721_000536_haunted_castle",
+        "report_path": "z/20260721_000536_haunted_castle/brahl_report.md",
+        "submitted_at": "2026-07-21T07:12:54+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "brahl_plan_draft": null,
+    "latest_run": "20260721_000536_haunted_castle",
+    "created_at": "2026-07-21T07:12:54+00:00",
+    "updated_at": "2026-07-21T07:12:54+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "Ask about the latest BRAHL report, GO/NO-GO, or heals.",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "runtime_mode": "local",
+    "team_messages": [],
+    "team_tasks": [],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    },
+    "evidence_library": []
+  },
+  {
+    "id": "1940029f3c30",
+    "name": "creatop",
+    "app_url": "https://creatop.base44.app/",
+    "suite_name": "creatop",
+    "suite_config": "y/creatop/creatop.json",
+    "purpose": "Creatop Hebrew RTL studio portfolio \u2014 Smoke UI Edge API Security Perf",
+    "prompt": "Creatop Hebrew RTL studio portfolio \u2014 Smoke UI Edge API Security Perf",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [
+      {
+        "id": "b23e637e",
+        "kind": "url",
+        "label": "App URL",
+        "value": "https://creatop.base44.app/",
+        "added_at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "31cf857a",
+        "run_name": "20260721_000957_creatop",
+        "report_path": "z/20260721_000957_creatop/brahl_report.md",
+        "submitted_at": "2026-07-21T07:12:54+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "brahl_plan_draft": null,
+    "latest_run": "20260721_000957_creatop",
+    "created_at": "2026-07-21T07:12:54+00:00",
+    "updated_at": "2026-07-21T07:12:54+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "Ask about the latest BRAHL report, GO/NO-GO, or heals.",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "runtime_mode": "local",
+    "team_messages": [],
+    "team_tasks": [],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    },
+    "evidence_library": []
+  },
+  {
+    "id": "9c8a0503e79d",
+    "name": "appwars",
+    "app_url": "https://appwars.base44.app/",
+    "suite_name": "appwars",
+    "suite_config": "y/appwars/appwars.json",
+    "purpose": "AppWars tournament bracket \u2014 Smoke UI Edge API Security Perf",
+    "prompt": "AppWars tournament bracket \u2014 Smoke UI Edge API Security Perf",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [
+      {
+        "id": "2408b684",
+        "kind": "url",
+        "label": "App URL",
+        "value": "https://appwars.base44.app/",
+        "added_at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "4e9d962d",
+        "run_name": "20260721_000817_appwars",
+        "report_path": "z/20260721_000817_appwars/brahl_report.md",
+        "submitted_at": "2026-07-21T07:12:54+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "brahl_plan_draft": null,
+    "latest_run": "20260721_000817_appwars",
+    "created_at": "2026-07-21T07:12:54+00:00",
+    "updated_at": "2026-07-21T07:12:54+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "Ask about the latest BRAHL report, GO/NO-GO, or heals.",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "runtime_mode": "local",
+    "team_messages": [],
+    "team_tasks": [],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-21T07:12:54+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    },
+    "evidence_library": []
   }
 ]

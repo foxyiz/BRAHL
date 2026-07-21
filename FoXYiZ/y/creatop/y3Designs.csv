@@ -1,0 +1,37 @@
+Type,DataName,D1,D2,D3,D4,D5,D6,D7,D8,D9
+UI,persona_id,p1,p1,p1,p1,p1,p1,p1,p1,p1
+UI,persona_code,P1,P1,P1,P1,P1,P1,P1,P1,P1
+UI,persona_name,Studio Visitor,Studio Visitor,Studio Visitor,Studio Visitor,Studio Visitor,Studio Visitor,Studio Visitor,Studio Visitor,Studio Visitor
+UI,persona_portfolio,Home Work Services Contact,Home Work Services Contact,Home Work Services Contact,Home Work Services Contact,Home Work Services Contact,Home Work Services Contact,Home Work Services Contact,Home Work Services Contact,Home Work Services Contact
+UI,base_url,https://creatop.base44.app/,https://creatop.base44.app/,https://creatop.base44.app/,https://creatop.base44.app/,https://creatop.base44.app/,https://creatop.base44.app/,https://creatop.base44.app/,https://creatop.base44.app/,https://creatop.base44.app/
+UI,work_url,https://creatop.base44.app/work,https://creatop.base44.app/work,https://creatop.base44.app/work,https://creatop.base44.app/work,https://creatop.base44.app/work,https://creatop.base44.app/work,https://creatop.base44.app/work,https://creatop.base44.app/work,https://creatop.base44.app/work
+UI,services_url,https://creatop.base44.app/services,https://creatop.base44.app/services,https://creatop.base44.app/services,https://creatop.base44.app/services,https://creatop.base44.app/services,https://creatop.base44.app/services,https://creatop.base44.app/services,https://creatop.base44.app/services,https://creatop.base44.app/services
+UI,about_url,https://creatop.base44.app/about,https://creatop.base44.app/about,https://creatop.base44.app/about,https://creatop.base44.app/about,https://creatop.base44.app/about,https://creatop.base44.app/about,https://creatop.base44.app/about,https://creatop.base44.app/about,https://creatop.base44.app/about
+UI,contact_url,https://creatop.base44.app/contact,https://creatop.base44.app/contact,https://creatop.base44.app/contact,https://creatop.base44.app/contact,https://creatop.base44.app/contact,https://creatop.base44.app/contact,https://creatop.base44.app/contact,https://creatop.base44.app/contact,https://creatop.base44.app/contact
+UI,blog_url,https://creatop.base44.app/blog,https://creatop.base44.app/blog,https://creatop.base44.app/blog,https://creatop.base44.app/blog,https://creatop.base44.app/blog,https://creatop.base44.app/blog,https://creatop.base44.app/blog,https://creatop.base44.app/blog,https://creatop.base44.app/blog
+UI,unknown_url,https://creatop.base44.app/no-such-xyz-brahl,https://creatop.base44.app/no-such-xyz-brahl,https://creatop.base44.app/no-such-xyz-brahl,https://creatop.base44.app/no-such-xyz-brahl,https://creatop.base44.app/no-such-xyz-brahl,https://creatop.base44.app/no-such-xyz-brahl,https://creatop.base44.app/no-such-xyz-brahl,https://creatop.base44.app/no-such-xyz-brahl,https://creatop.base44.app/no-such-xyz-brahl
+UI,api_host,https://creatop.base44.app,https://creatop.base44.app,https://creatop.base44.app,https://creatop.base44.app,https://creatop.base44.app,https://creatop.base44.app,https://creatop.base44.app,https://creatop.base44.app,https://creatop.base44.app
+UI,ep_home,/,/,/,/,/,/,/,/,/
+UI,ep_favicon,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico,/favicon.ico
+UI,ep_robots,/robots.txt,/robots.txt,/robots.txt,/robots.txt,/robots.txt,/robots.txt,/robots.txt,/robots.txt,/robots.txt
+UI,ep_unknown,/no-such-xyz-brahl,/no-such-xyz-brahl,/no-such-xyz-brahl,/no-such-xyz-brahl,/no-such-xyz-brahl,/no-such-xyz-brahl,/no-such-xyz-brahl,/no-such-xyz-brahl,/no-such-xyz-brahl
+UI,body_locator,css=body,css=body,css=body,css=body,css=body,css=body,css=body,css=body,css=body
+UI,btn_accept_cookies,"xpath=//button[contains(normalize-space(),'אשר הכל')]","xpath=//button[contains(normalize-space(),'אשר הכל')]","xpath=//button[contains(normalize-space(),'אשר הכל')]","xpath=//button[contains(normalize-space(),'אשר הכל')]","xpath=//button[contains(normalize-space(),'אשר הכל')]","xpath=//button[contains(normalize-space(),'אשר הכל')]","xpath=//button[contains(normalize-space(),'אשר הכל')]","xpath=//button[contains(normalize-space(),'אשר הכל')]","xpath=//button[contains(normalize-space(),'אשר הכל')]"
+UI,page_title_home,CREATOP,CREATOP,CREATOP,CREATOP,CREATOP,CREATOP,CREATOP,CREATOP,CREATOP
+UI,page_title_work,תיק עבודות,תיק עבודות,תיק עבודות,תיק עבודות,תיק עבודות,תיק עבודות,תיק עבודות,תיק עבודות,תיק עבודות
+UI,page_title_services,שירותי,שירותי,שירותי,שירותי,שירותי,שירותי,שירותי,שירותי,שירותי
+UI,page_title_contact,צור קשר,צור קשר,צור קשר,צור קשר,צור קשר,צור קשר,צור קשר,צור קשר,צור קשר
+UI,text_brand,CREATOP,CREATOP,CREATOP,CREATOP,CREATOP,CREATOP,CREATOP,CREATOP,CREATOP
+UI,text_home_nav,בית,בית,בית,בית,בית,בית,בית,בית,בית
+UI,text_work_nav,פרויקטים,פרויקטים,פרויקטים,פרויקטים,פרויקטים,פרויקטים,פרויקטים,פרויקטים,פרויקטים
+UI,text_services_nav,שירות,שירות,שירות,שירות,שירות,שירות,שירות,שירות,שירות
+UI,text_contact_nav,צור קשר,צור קשר,צור קשר,צור קשר,צור קשר,צור קשר,צור קשר,צור קשר,צור קשר
+UI,text_a11y,נגישות,נגישות,נגישות,נגישות,נגישות,נגישות,נגישות,נגישות,נגישות
+UI,text_work_heading,פרויקטים,פרויקטים,פרויקטים,פרויקטים,פרויקטים,פרויקטים,פרויקטים,פרויקטים,פרויקטים
+UI,text_services_heading,מה אנחנו עושים,מה אנחנו עושים,מה אנחנו עושים,מה אנחנו עושים,מה אנחנו עושים,מה אנחנו עושים,מה אנחנו עושים,מה אנחנו עושים,מה אנחנו עושים
+UI,text_about,אלחנן אשואל,אלחנן אשואל,אלחנן אשואל,אלחנן אשואל,אלחנן אשואל,אלחנן אשואל,אלחנן אשואל,אלחנן אשואל,אלחנן אשואל
+UI,text_contact,בואו נדבר,בואו נדבר,בואו נדבר,בואו נדבר,בואו נדבר,בואו נדבר,בואו נדבר,בואו נדבר,בואו נדבר
+UI,text_email,stcreatop@gmail.com,stcreatop@gmail.com,stcreatop@gmail.com,stcreatop@gmail.com,stcreatop@gmail.com,stcreatop@gmail.com,stcreatop@gmail.com,stcreatop@gmail.com,stcreatop@gmail.com
+UI,text_blog,בלוג,בלוג,בלוג,בלוג,בלוג,בלוג,בלוג,בלוג,בלוג
+UI,text_404,הדף לא נמצא,הדף לא נמצא,הדף לא נמצא,הדף לא נמצא,הדף לא נמצא,הדף לא נמצא,הדף לא נמצא,הדף לא נמצא,הדף לא נמצא
+UI,text_view_projects,לצפייה בפרויקטים,לצפייה בפרויקטים,לצפייה בפרויקטים,לצפייה בפרויקטים,לצפייה בפרויקטים,לצפייה בפרויקטים,לצפייה בפרויקטים,לצפייה בפרויקטים,לצפייה בפרויקטים

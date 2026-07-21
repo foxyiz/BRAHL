@@ -76,29 +76,225 @@ POps_Smoke_HomeOverview,7,Custom,xUI,xGetText,body_locator,,text_custom,Y
 POps_UI_CustomRange,1,Open,xReuse,PReuse_Ops_Open,,,,Y
 POps_UI_CustomRange,2,Custom,xUI,xGetText,body_locator,,text_custom,Y
 POps_UI_CustomRange,3,to,xUI,xGetText,body_locator,,to,Y
-POps_Smoke_OpsAssistant,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
-POps_Smoke_OpsAssistant,2,Home,xUI,xNavigate,base_url,,,Y
-POps_Smoke_OpsAssistant,3,Wait,xTime,xTimeWait,3,,,Y
-POps_Smoke_OpsAssistant,4,Open chat,xUI,xClick,btn_assistant,,,Y
-POps_Smoke_OpsAssistant,5,Wait panel,xTime,xTimeWait,2,,,Y
-POps_Smoke_OpsAssistant,6,Panel,xUI,xGetText,body_locator,,text_assistant,Y
-POps_Smoke_OpsAssistant,7,Hint,xUI,xGetText,body_locator,,text_assistant_hint,Y
-POps_UI_OpsAssistantPanel,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
-POps_UI_OpsAssistantPanel,2,Home,xUI,xNavigate,base_url,,,Y
-POps_UI_OpsAssistantPanel,3,Wait,xTime,xTimeWait,3,,,Y
-POps_UI_OpsAssistantPanel,4,Open,xUI,xClick,btn_assistant,,,Y
-POps_UI_OpsAssistantPanel,5,Wait,xTime,xTimeWait,2,,,Y
-POps_UI_OpsAssistantPanel,6,Title,xUI,xGetText,body_locator,,text_assistant,Y
-POps_UI_OpsAssistantPanel,7,How many,xUI,xGetText,body_locator,,How many orders?,Y
-POps_UI_DrillTotalOrders,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
-POps_UI_DrillTotalOrders,2,Home,xUI,xNavigate,base_url,,,Y
-POps_UI_DrillTotalOrders,3,Wait,xTime,xTimeWait,3,,,Y
-POps_UI_DrillTotalOrders,4,Open card,xUI,xClick,btn_total_orders,,,Y
-POps_UI_DrillTotalOrders,5,Wait modal,xTime,xTimeWait,2,,,Y
-POps_UI_DrillTotalOrders,6,Month col,xUI,xGetText,body_locator,,text_drill_month,Y
-POps_UI_DrillTotalOrders,7,Completed,xUI,xGetText,body_locator,,text_drill_completed,Y
 POps_Sec_HttpsHost,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
 POps_Sec_HttpsHost,2,Home,xUI,xNavigate,base_url,,,Y
 POps_Sec_HttpsHost,3,Wait,xTime,xTimeWait,3,,,Y
 POps_Sec_HttpsHost,4,Ops,xUI,xGetText,body_locator,,heading_ops,Y
 POps_Sec_HttpsHost,5,Orders,xUI,xGetText,body_locator,,text_orders_h1,Y
+POps_Smoke_OpsAssistant,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Smoke_OpsAssistant,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Smoke_OpsAssistant,3,Wait,xTime,xTimeWait,4,,,Y
+POps_Smoke_OpsAssistant,4,Open chat,xUI,xClick,btn_assistant,,,Y
+POps_Smoke_OpsAssistant,5,Wait panel,xTime,xTimeWait,3,,,Y
+POps_Smoke_OpsAssistant,6,Panel,xUI,xGetText,chat_panel_locator,,text_assistant,Y
+POps_Smoke_OpsAssistant,7,Hint,xUI,xGetText,chat_panel_locator,,text_assistant_hint,Y
+POps_UI_OpsAssistantPanel,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_OpsAssistantPanel,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_OpsAssistantPanel,3,Wait,xTime,xTimeWait,4,,,Y
+POps_UI_OpsAssistantPanel,4,Open,xUI,xClick,btn_assistant,,,Y
+POps_UI_OpsAssistantPanel,5,Wait,xTime,xTimeWait,3,,,Y
+POps_UI_OpsAssistantPanel,6,Title,xUI,xGetText,chat_panel_locator,,text_assistant,Y
+POps_UI_OpsAssistantPanel,7,How many,xUI,xGetText,chat_panel_locator,,How many orders?,Y
+POps_UI_DrillTotalOrders,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_DrillTotalOrders,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_DrillTotalOrders,3,Wait,xTime,xTimeWait,4,,,Y
+POps_UI_DrillTotalOrders,4,Open card,xUI,xClick,btn_total_orders,,,Y
+POps_UI_DrillTotalOrders,5,Wait modal,xTime,xTimeWait,3,,,Y
+POps_UI_DrillTotalOrders,6,Month col,xUI,xGetText,drill_modal_locator,,text_drill_month,Y
+POps_UI_DrillTotalOrders,7,Completed,xUI,xGetText,drill_modal_locator,,text_drill_completed,Y
+POps_Func_PeriodQ1Orders,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Func_PeriodQ1Orders,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Func_PeriodQ1Orders,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Func_PeriodQ1Orders,4,Q1,xUI,xClick,btn_q1,,,Y
+POps_Func_PeriodQ1Orders,5,Wait,xTime,xTimeWait,2,,,Y
+POps_Func_PeriodQ1Orders,6,Orders,xUI,xGetText,body_locator,,text_orders_q1,Y
+POps_Func_PeriodQ1OnTime,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Func_PeriodQ1OnTime,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Func_PeriodQ1OnTime,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Func_PeriodQ1OnTime,4,Q1,xUI,xClick,btn_q1,,,Y
+POps_Func_PeriodQ1OnTime,5,Wait,xTime,xTimeWait,2,,,Y
+POps_Func_PeriodQ1OnTime,6,OnTime,xUI,xGetText,body_locator,,text_ontime_q1,Y
+POps_Func_PeriodQ1Prime,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Func_PeriodQ1Prime,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Func_PeriodQ1Prime,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Func_PeriodQ1Prime,4,Q1,xUI,xClick,btn_q1,,,Y
+POps_Func_PeriodQ1Prime,5,Wait,xTime,xTimeWait,2,,,Y
+POps_Func_PeriodQ1Prime,6,Prime,xUI,xGetText,body_locator,,text_prime_q1,Y
+POps_Func_PeriodQ1Fulfill,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Func_PeriodQ1Fulfill,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Func_PeriodQ1Fulfill,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Func_PeriodQ1Fulfill,4,Q1,xUI,xClick,btn_q1,,,Y
+POps_Func_PeriodQ1Fulfill,5,Wait,xTime,xTimeWait,2,,,Y
+POps_Func_PeriodQ1Fulfill,6,Fulfill,xUI,xGetText,body_locator,,text_fulfill_q1,Y
+POps_Func_PeriodQ2OnTime,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Func_PeriodQ2OnTime,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Func_PeriodQ2OnTime,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Func_PeriodQ2OnTime,4,Q2,xUI,xClick,btn_q2,,,Y
+POps_Func_PeriodQ2OnTime,5,Wait,xTime,xTimeWait,2,,,Y
+POps_Func_PeriodQ2OnTime,6,OnTime,xUI,xGetText,body_locator,,text_ontime_q2,Y
+POps_Func_PeriodQ2Prime,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Func_PeriodQ2Prime,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Func_PeriodQ2Prime,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Func_PeriodQ2Prime,4,Q2,xUI,xClick,btn_q2,,,Y
+POps_Func_PeriodQ2Prime,5,Wait,xTime,xTimeWait,2,,,Y
+POps_Func_PeriodQ2Prime,6,Prime,xUI,xGetText,body_locator,,text_prime_q2,Y
+POps_Func_PeriodQ2Fulfill,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Func_PeriodQ2Fulfill,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Func_PeriodQ2Fulfill,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Func_PeriodQ2Fulfill,4,Q2,xUI,xClick,btn_q2,,,Y
+POps_Func_PeriodQ2Fulfill,5,Wait,xTime,xTimeWait,2,,,Y
+POps_Func_PeriodQ2Fulfill,6,Fulfill,xUI,xGetText,body_locator,,text_fulfill_q2,Y
+POps_Func_PeriodCycle,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Func_PeriodCycle,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Func_PeriodCycle,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Func_PeriodCycle,4,Q1,xUI,xClick,btn_q1,,,Y
+POps_Func_PeriodCycle,5,Wait,xTime,xTimeWait,2,,,Y
+POps_Func_PeriodCycle,6,Q1 orders,xUI,xGetText,body_locator,,text_orders_q1,Y
+POps_Func_PeriodCycle,7,Q2,xUI,xClick,btn_q2,,,Y
+POps_Func_PeriodCycle,8,Wait,xTime,xTimeWait,2,,,Y
+POps_Func_PeriodCycle,9,Q2 orders,xUI,xGetText,body_locator,,text_orders_q2,Y
+POps_Func_PeriodCycle,10,H1,xUI,xClick,btn_h1,,,Y
+POps_Func_PeriodCycle,11,Wait,xTime,xTimeWait,2,,,Y
+POps_Func_PeriodCycle,12,H1 orders,xUI,xGetText,body_locator,,text_orders_h1,Y
+POps_UI_DrillOnTime,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_DrillOnTime,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_DrillOnTime,3,Wait,xTime,xTimeWait,4,,,Y
+POps_UI_DrillOnTime,4,Open card,xUI,xClick,btn_kpi_ontime,,,Y
+POps_UI_DrillOnTime,5,Wait,xTime,xTimeWait,3,,,Y
+POps_UI_DrillOnTime,6,Title,xUI,xGetText,drill_modal_locator,,text_drill_ontime_title,Y
+POps_UI_DrillOnTime,7,Target,xUI,xGetText,drill_modal_locator,,text_modal_92_target,Y
+POps_UI_DrillPrime,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_DrillPrime,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_DrillPrime,3,Wait,xTime,xTimeWait,4,,,Y
+POps_UI_DrillPrime,4,Open card,xUI,xClick,btn_kpi_prime,,,Y
+POps_UI_DrillPrime,5,Wait,xTime,xTimeWait,3,,,Y
+POps_UI_DrillPrime,6,Title,xUI,xGetText,drill_modal_locator,,text_drill_prime_title,Y
+POps_UI_DrillPrime,7,Quality,xUI,xGetText,drill_modal_locator,,text_modal_quality,Y
+POps_UI_DrillFulfill,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_DrillFulfill,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_DrillFulfill,3,Wait,xTime,xTimeWait,4,,,Y
+POps_UI_DrillFulfill,4,Open card,xUI,xClick,btn_kpi_fulfill,,,Y
+POps_UI_DrillFulfill,5,Wait,xTime,xTimeWait,3,,,Y
+POps_UI_DrillFulfill,6,Title,xUI,xGetText,drill_modal_locator,,text_drill_fulfill_title,Y
+POps_UI_DrillFulfill,7,Body,xUI,xGetText,drill_modal_locator,,text_modal_fulfill,Y
+POps_UI_DrillClose,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_DrillClose,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_DrillClose,3,Wait,xTime,xTimeWait,4,,,Y
+POps_UI_DrillClose,4,Open,xUI,xClick,btn_total_orders,,,Y
+POps_UI_DrillClose,5,Wait,xTime,xTimeWait,2,,,Y
+POps_UI_DrillClose,6,Modal,xUI,xGetText,drill_modal_locator,,text_drill_orders_title,Y
+POps_UI_DrillClose,7,Close,xUI,xClick,btn_close_modal,,,Y
+POps_UI_DrillClose,8,Wait,xTime,xTimeWait,2,,,Y
+POps_UI_DrillClose,9,Home,xUI,xGetText,body_locator,,heading_ops,Y
+POps_UI_ChartVolume,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_ChartVolume,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_ChartVolume,3,Wait,xTime,xTimeWait,3,,,Y
+POps_UI_ChartVolume,4,Open chart,xUI,xClick,btn_chart_volume,,,Y
+POps_UI_ChartVolume,5,Wait,xTime,xTimeWait,2,,,Y
+POps_UI_ChartVolume,6,Modal,xUI,xGetText,drill_modal_locator,,text_modal_intake_rate,Y
+POps_UI_ChartPipeline,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_ChartPipeline,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_ChartPipeline,3,Wait,xTime,xTimeWait,3,,,Y
+POps_UI_ChartPipeline,4,Open chart,xUI,xClick,btn_chart_pipeline,,,Y
+POps_UI_ChartPipeline,5,Wait,xTime,xTimeWait,2,,,Y
+POps_UI_ChartPipeline,6,Modal,xUI,xGetText,drill_modal_locator,,text_modal_pipeline,Y
+POps_UI_ChartHold,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_ChartHold,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_ChartHold,3,Wait,xTime,xTimeWait,3,,,Y
+POps_UI_ChartHold,4,Open chart,xUI,xClick,btn_chart_hold,,,Y
+POps_UI_ChartHold,5,Wait,xTime,xTimeWait,2,,,Y
+POps_UI_ChartHold,6,Modal,xUI,xGetText,drill_modal_locator,,text_modal_hold,Y
+POps_UI_ChartGrade,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_ChartGrade,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_ChartGrade,3,Wait,xTime,xTimeWait,3,,,Y
+POps_UI_ChartGrade,4,Open chart,xUI,xClick,btn_chart_grade,,,Y
+POps_UI_ChartGrade,5,Wait,xTime,xTimeWait,2,,,Y
+POps_UI_ChartGrade,6,Modal,xUI,xGetText,drill_modal_locator,,text_modal_grade,Y
+POps_UI_ChartMaterial,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_ChartMaterial,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_ChartMaterial,3,Wait,xTime,xTimeWait,3,,,Y
+POps_UI_ChartMaterial,4,Open chart,xUI,xClick,btn_chart_material,,,Y
+POps_UI_ChartMaterial,5,Wait,xTime,xTimeWait,2,,,Y
+POps_UI_ChartMaterial,6,Modal,xUI,xGetText,drill_modal_locator,,text_modal_material,Y
+POps_UI_ChartDispatchMt,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_ChartDispatchMt,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_ChartDispatchMt,3,Wait,xTime,xTimeWait,3,,,Y
+POps_UI_ChartDispatchMt,4,Open chart,xUI,xClick,btn_chart_dispatch,,,Y
+POps_UI_ChartDispatchMt,5,Wait,xTime,xTimeWait,2,,,Y
+POps_UI_ChartDispatchMt,6,Modal,xUI,xGetText,drill_modal_locator,,text_modal_dispatch_mt,Y
+POps_Func_PipelineStages,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Func_PipelineStages,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Func_PipelineStages,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Func_PipelineStages,4,InProd,xUI,xGetText,body_locator,,text_in_production,Y
+POps_Func_PipelineStages,5,QC,xUI,xGetText,body_locator,,text_qc_cleared,Y
+POps_Func_Targets,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Func_Targets,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Func_Targets,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Func_Targets,4,92,xUI,xGetText,body_locator,,text_target_92,Y
+POps_Func_Targets,5,3.5d,xUI,xGetText,body_locator,,text_target_35,Y
+POps_Func_ShellCopy,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Func_ShellCopy,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Func_ShellCopy,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Func_ShellCopy,4,Hint,xUI,xGetText,body_locator,,text_drill_hint,Y
+POps_Func_ShellCopy,5,Period,xUI,xGetText,body_locator,,text_full_period,Y
+POps_Func_ShellCopy,6,Dispatched,xUI,xGetText,body_locator,,text_dispatched_h1,Y
+POps_Func_ShellCopy,7,Attention,xUI,xGetText,body_locator,,text_needs_attention,Y
+POps_UI_CustomDateInputs,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_CustomDateInputs,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_CustomDateInputs,3,Wait,xTime,xTimeWait,3,,,Y
+POps_UI_CustomDateInputs,4,Label,xUI,xGetText,body_locator,,text_custom,Y
+POps_UI_CustomDateInputs,5,to,xUI,xGetText,body_locator,,to,Y
+POps_UI_AssistantChipReply,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_AssistantChipReply,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_AssistantChipReply,3,Wait,xTime,xTimeWait,4,,,Y
+POps_UI_AssistantChipReply,4,Open,xUI,xClick,btn_assistant,,,Y
+POps_UI_AssistantChipReply,5,Wait,xTime,xTimeWait,2,,,Y
+POps_UI_AssistantChipReply,6,Chip,xUI,xClick,btn_chip_orders,,,Y
+POps_UI_AssistantChipReply,7,Wait reply,xTime,xTimeWait,3,,,Y
+POps_UI_AssistantChipReply,8,Reply,xUI,xGetText,chat_panel_locator,,text_assistant_reply,Y
+POps_UI_AssistantChipReply,9,Phrase,xUI,xGetText,chat_panel_locator,,text_assistant_reply_phrase,Y
+POps_UI_AssistantMoreChips,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_UI_AssistantMoreChips,2,Home,xUI,xNavigate,base_url,,,Y
+POps_UI_AssistantMoreChips,3,Wait,xTime,xTimeWait,4,,,Y
+POps_UI_AssistantMoreChips,4,Open,xUI,xClick,btn_assistant,,,Y
+POps_UI_AssistantMoreChips,5,Wait,xTime,xTimeWait,2,,,Y
+POps_UI_AssistantMoreChips,6,Quality,xUI,xGetText,chat_panel_locator,,text_chip_quality,Y
+POps_UI_AssistantMoreChips,7,Hold,xUI,xGetText,chat_panel_locator,,text_chip_hold,Y
+POps_Edge_TrailingSlash,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Edge_TrailingSlash,2,Home,xUI,xNavigate,home_url,,,Y
+POps_Edge_TrailingSlash,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Edge_TrailingSlash,4,Heading,xUI,xGetText,body_locator,,heading_ops,Y
+POps_Edge_Q1EmptyChartsSafe,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Edge_Q1EmptyChartsSafe,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Edge_Q1EmptyChartsSafe,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Edge_Q1EmptyChartsSafe,4,Q1,xUI,xClick,btn_q1,,,Y
+POps_Edge_Q1EmptyChartsSafe,5,Wait,xTime,xTimeWait,2,,,Y
+POps_Edge_Q1EmptyChartsSafe,6,Volume,xUI,xGetText,body_locator,,text_chart_volume,Y
+POps_Edge_Q1EmptyChartsSafe,7,Hold,xUI,xGetText,body_locator,,text_chart_hold,Y
+POps_API_ManifestMissing,1,GET,xAPI,xGet,api_host;ep_manifest,,404,Y
+POps_API_SitemapMissing,1,GET,xAPI,xGet,api_host;ep_sitemap,,404,Y
+POps_Sec_NoHttpDowngrade,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Sec_NoHttpDowngrade,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Sec_NoHttpDowngrade,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Sec_NoHttpDowngrade,4,Orders,xUI,xGetText,body_locator,,text_orders_h1,Y
+POps_Sec_NoHttpDowngrade,5,API,xAPI,xGet,api_host;ep_home,,200,Y
+POps_Perf_PeriodQ2,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Perf_PeriodQ2,2,Start,xUI,xStartTimer,,,,Y
+POps_Perf_PeriodQ2,3,Home,xUI,xNavigate,base_url,,,Y
+POps_Perf_PeriodQ2,4,Wait,xTime,xTimeWait,2,,,Y
+POps_Perf_PeriodQ2,5,Q2,xUI,xClick,btn_q2,,,Y
+POps_Perf_PeriodQ2,6,Wait,xTime,xTimeWait,2,,,Y
+POps_Perf_PeriodQ2,7,Stop,xUI,xStopTimer,elapsed,,,Y
+POps_Perf_PeriodQ2,8,Budget,xUI,xAssertLessThan,{{step:7}};12000,,,Y
+POps_Perf_PeriodQ2,9,Alive,xUI,xGetText,body_locator,,text_orders_q2,Y
+POps_Manual_DrillAllKpis,1,Open,xReuse,PReuse_Ops_Open,,,,N
+POps_Manual_DrillAllKpis,2,Note,xUI,xGetText,body_locator,,text_drill_hint,N
+POps_Manual_AssistantMic,1,Open,xReuse,PReuse_Ops_Open,,,,N
+POps_Manual_AssistantMic,2,Open chat,xUI,xClick,btn_assistant,,,N
+POps_Manual_AssistantMic,3,Chips,xUI,xGetText,chat_panel_locator,,text_assistant,N
+POps_Smoke_BrahlDeepConclusion,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+POps_Smoke_BrahlDeepConclusion,2,Home,xUI,xNavigate,base_url,,,Y
+POps_Smoke_BrahlDeepConclusion,3,Wait,xTime,xTimeWait,3,,,Y
+POps_Smoke_BrahlDeepConclusion,4,Orders,xUI,xGetText,body_locator,,text_orders_h1,Y
+POps_Smoke_BrahlDeepConclusion,5,Pipeline,xUI,xGetText,body_locator,,text_in_production,Y
+POps_Smoke_BrahlDeepConclusion,6,API,xAPI,xGet,api_host;ep_home,,200,Y
