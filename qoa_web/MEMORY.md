@@ -2,11 +2,11 @@
 
 **Status:** BRAHL Arena over **FoXYiZ/** (`f` `x` `y` `z` `pyUtils`). **AI:** optional BYOK. **Run/Loop:** engine only.
 
+**Spellings:** [Docs/terminology.md](../Docs/terminology.md) — **BRAHL** · **FoXYiZ** · **brawled** · yPAD · GO/NO-GO.
+
 **App:** http://127.0.0.1:8765/welcome · **Arena:** `/app?demo=1` · **Admin:** `/admin`
 
-**Today:** [../todaysummary.md](../todaysummary.md) · **Next session:** [../NEXT.md](../NEXT.md)
-
-**Handoff:** [Docs/HANDOFF.md](../Docs/HANDOFF.md) · [FoXYiZ/f/fStart_SCOPE.md](../FoXYiZ/f/fStart_SCOPE.md)
+**Today:** [../todaysummary.md](../todaysummary.md) · **Next:** [../NEXT.md](../NEXT.md) · **Handoff:** [Docs/HANDOFF.md](../Docs/HANDOFF.md)
 
 ---
 
@@ -14,16 +14,17 @@
 
 | Path | Purpose |
 |------|---------|
-| `qoa_web/web/` | Arena UI (`app.js`, `role-copy.js`, themes) |
-| `qoa_web/api/` | main, runner (`RUN_PROFILES`), paths, projects, ypad, ai_* |
-| `FoXYiZ/y/{Math,nalanda_app,qoa_web,qoa_web_live}/` | Suites (one folder = one project) |
-| `FoXYiZ/f/fStart/{suite}.json` | **One fStart per app** (not per tag) |
-| `FoXYiZ/pyUtils/` | orchestrate, cleaner, journey regen |
+| `qoa_web/web/` | Arena UI |
+| `qoa_web/api/` | runner, projects, ypad, ai_* |
+| `FoXYiZ/y/<suite>/` | Suites (thoughtstream, a77, Math, qoa_web_live, …) |
+| `FoXYiZ/f/fStart/{suite}.json` | One fStart per app (+ optional `{suite}_deep.json` for tag lanes) |
+| `FoXYiZ/pyUtils/` | cleaner (`--keep-latest`), orchestrate |
+| `Docs/` | terminology · HANDOFF · BRAHL_PROMPT · rules |
 
 ## Out of scope
 
-- `archive/**` · `FoXYiZ/f/fStart/archive/**` · `FoXYiZ/z/**`
-- Fat journey CSVs in chat · secrets / `.env`
+- `archive/**` · `FoXYiZ/f/fStart/archive/**` · bulk `FoXYiZ/z/**` in chat
+- Fat journey CSVs in prompts · secrets / `.env`
 
 ---
 
@@ -32,19 +33,13 @@
 ```powershell
 cd c:\006\FXYZ\KK
 python qoa_web/run_local.py
-python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/thoughtstream.json
+python FoXYiZ\f\fEngine2.py --config f/fStart/thoughtstream_deep.json
 python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json
+python FoXYiZ\pyUtils\cleaner.py --apply
 ```
 
-Restart `run_local` after API/UI changes (`reload=False`). Hard-refresh browser.
-
----
-
-## fStart model (2026-07-16)
-
-- File: `f/fStart/{suite}.json` + required `capture`
-- Arena: Run profiles Smoke→Manual · Threads · job overrides via `.runtime/`
-- Engine: `thread_count>1` + 2+ tags → fan-out ([`fOrchestrate.py`](../FoXYiZ/pyUtils/fOrchestrate.py))
+Restart `run_local` after API/UI changes. Hard-refresh browser.
 
 ---
 
@@ -52,17 +47,25 @@ Restart `run_local` after API/UI changes (`reload=False`). Hard-refresh browser.
 
 - **Expected** = exact match; empty = presence only
 - Apply never flips `Run` flags — Shrink/Restore does
-- Heal one failing plan; re-smoke
+- Heal one failing plan; re-smoke / re-deep that tag lane
+- Never weaken **A1** (app defect) to force green
 
 ---
 
-## Docs
+## Latest product gate (ThoughtStream)
+
+- Deep **49/49** · BRAHL **GO** · Arena project `0935e530a120`
+- Snapshot `y/thoughtstream/versions/*_v3-deep-regression`
+
+---
+
+## Docs map
 
 | Doc | Use |
 |-----|-----|
+| [Docs/terminology.md](../Docs/terminology.md) | Shared vocabulary |
 | [../NEXT.md](../NEXT.md) | Resume todos |
 | [../todaysummary.md](../todaysummary.md) | Latest session |
 | [Docs/HANDOFF.md](../Docs/HANDOFF.md) | Bootstrap |
-| [FoXYiZ/f/fStart_SCOPE.md](../FoXYiZ/f/fStart_SCOPE.md) | fStart + profiles |
 | [Docs/BRAHL.md](../Docs/BRAHL.md) | Full BRAHL |
 | [CHANGELOG.md](./CHANGELOG.md) | Versions |

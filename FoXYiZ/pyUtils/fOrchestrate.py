@@ -23,12 +23,17 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
-FOXYIZ_ROOT = Path(__file__).resolve().parents[1]
-PYUTILS_DIR = Path(__file__).resolve().parent
+from _paths import FOXYIZ_ROOT, PYUTILS_DIR, Z_DIR  # type: ignore[import-not-found]
+
 F_DIR = FOXYIZ_ROOT / "f"
-Z_DIR = FOXYIZ_ROOT / "z"
-ENGINE = F_DIR / "fEngine2.py"
+# Dev: python f/fEngine2.py · Frozen: re-exec FoXYiZ.exe / Foxyiz.exe
+ENGINE = Path(sys.executable) if getattr(sys, "frozen", False) else (F_DIR / "fEngine2.py")
 OUTPUT_DIR_RE = re.compile(r"Output Directory:\s*(.+)")
+
+
+def _ensure_f_dir() -> Path:
+    F_DIR.mkdir(parents=True, exist_ok=True)
+    return F_DIR
 
 
 def _load_fstart(path: Path) -> dict[str, Any]:
@@ -60,9 +65,16 @@ def _write_temp_fstart(base: dict[str, Any], tag: str, batch_id: str) -> Path:
     data = dict(base)
     data["tags"] = [tag]
     data["thread_count"] = 1
-    tmp = F_DIR / f"_orch_{batch_id}_{re.sub(r'[^a-zA-Z0-9_-]', '_', tag)[:40]}.json"
+    tmp = _ensure_f_dir() / f"_orch_{batch_id}_{re.sub(r'[^a-zA-Z0-9_-]', '_', tag)[:40]}.json"
     tmp.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     return tmp
+
+
+def _engine_cmd(config_rel: str) -> list[str]:
+    """Command to run one suite: python fEngine2.py … or FoXYiZ.exe …"""
+    if getattr(sys, "frozen", False):
+        return [str(ENGINE), "--config", config_rel]
+    return [sys.executable, str(ENGINE), "--config", config_rel]
 
 
 def _run_engine_config(config_rel: str, label: str = "") -> dict[str, Any]:
@@ -79,8 +91,9 @@ def _run_engine_config(config_rel: str, label: str = "") -> dict[str, Any]:
         }
     env = os.environ.copy()
     env["FOXYIZ_ORCHESTRATED"] = "1"
+    rel = str(cfg_path.relative_to(FOXYIZ_ROOT)).replace("\\", "/")
     proc = subprocess.run(
-        [sys.executable, str(ENGINE), "--config", str(cfg_path.relative_to(FOXYIZ_ROOT))],
+        _engine_cmd(rel),
         cwd=str(FOXYIZ_ROOT),
         capture_output=True,
         text=True,

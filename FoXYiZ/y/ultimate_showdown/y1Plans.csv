@@ -1,0 +1,21 @@
+PlanId,PlanName,DesignId,Run,Tags,Output,CreatedBy,CreatedAt
+PReuse_UltimateShowdown_Open,Open Edge and load Ultimate Showdown,D1,N,Reuse,site_loaded,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Smoke_Home,Home loads with battle CTAs,D1,Y,ultimate_showdown;Smoke;Home;Landing,home_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Smoke_StartBattle,START BATTLE opens Game matchup,D1,Y,ultimate_showdown;Smoke;Game;Battle,battle_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Smoke_Leaderboard,Leaderboard ranks and filters,D1,Y,ultimate_showdown;Smoke;Leaderboard,lb_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Smoke_About,About explains how to play,D1,Y,ultimate_showdown;Smoke;About,about_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Smoke_Contact,Contact form fields present,D1,Y,ultimate_showdown;Smoke;Contact,contact_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Smoke_Privacy,Privacy policy page,D1,Y,ultimate_showdown;Smoke;Privacy,privacy_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Smoke_Login,Login welcome + guest/google options,D1,Y,ultimate_showdown;Smoke;Login;Auth,login_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Smoke_Register,Register create-account form,D1,Y,ultimate_showdown;Smoke;Register;Auth,register_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Smoke_Archive404,Unknown archive route shows 404,D1,Y,ultimate_showdown;Smoke;404,archive_404_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_UI_HomeNav,Home CTAs: Categories / Challenge / Collection / Elo,D1,Y,ultimate_showdown;UI;Home;Nav,home_nav_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_UI_GameCorners,Game shows RED and BLUE corners,D1,Y,ultimate_showdown;UI;Game;Matchup,corners_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_UI_BottomNav,Bottom nav HOME SCORES COLLECT ELO,D1,Y,ultimate_showdown;UI;Nav;Shell,bottom_nav_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_UI_LeaderboardTabs,Leaderboard BEST STREAK and ALL TIME,D1,Y,ultimate_showdown;UI;Leaderboard;Tabs,lb_tabs_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_UI_CollectionGate,Collection redirects to login gate,D1,Y,ultimate_showdown;UI;Collection;Auth,collection_gate_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_UI_GuestContinue,Continue as Guest from login,D1,Y,ultimate_showdown;UI;Auth;Guest,guest_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_UI_FooterLinks,Footer About Contact Privacy links,D1,Y,ultimate_showdown;UI;Footer,footer_ok,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Manual_PickWinner,Manual: pick a corner and complete a simulation,D1,N,ultimate_showdown;Manual;Game;Hunt,manual_fight,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Manual_Oracle,Manual: open ORACLE lifeline and dismiss,D1,N,ultimate_showdown;Manual;Game;Oracle,manual_oracle,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00
+PUS_Manual_ChallengeFriend,Manual: challenge a friend flow,D1,N,ultimate_showdown;Manual;Social,manual_challenge,QA_Hunter+Playwright_Edge,2026-07-17T18:14:31+00:00

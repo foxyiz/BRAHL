@@ -1,0 +1,22 @@
+{
+  "configs": [
+    "y/thoughtstream/thoughtstream.json"
+  ],
+  "thread_count": 1,
+  "timeout": 8,
+  "headless": true,
+  "debug": false,
+  "tags": [
+    "Func",
+    "Edge",
+    "Security",
+    "API",
+    "Perf"
+  ],
+  "capture": {
+    "image": "on_fail",
+    "video": "off",
+    "video_fps": 2,
+    "subdir": ""
+  }
+}

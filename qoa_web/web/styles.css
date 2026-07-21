@@ -2966,10 +2966,25 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
 button.secondary {
-  width: 100%;
   background: transparent;
   border: 1px dashed var(--surface2);
   color: var(--muted);
+}
+
+.form-row button.secondary,
+.budget-block button.secondary,
+.project-sidebar button.secondary,
+.phase-action-bar button.secondary,
+.build-change-section > button.secondary,
+.version-launch-grid ~ .form-row.actions button.secondary {
+  width: 100%;
+}
+
+.ypad-toolbar button.secondary,
+.ypad-versions-head button.secondary,
+.ypad-table-controls button.secondary,
+.build-header-row button.secondary {
+  width: auto;
 }
 
 .chat-thread {
@@ -3654,8 +3669,32 @@ button.secondary {
   flex-wrap: wrap;
 }
 
-.build-edit-top {
-  margin-left: auto;
+.build-budget-strip {
+  margin: 0.75rem 0 1rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--surface2);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.build-budget-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.build-budget-amount.is-empty {
+  color: var(--muted);
+}
+
+.build-budget-hint {
+  margin: 0.35rem 0 0;
+}
+
+.ypad-toolbar .ypad-edit-btn {
+  margin-left: 0.25rem;
+  white-space: nowrap;
 }
 
 .build-one-liner {

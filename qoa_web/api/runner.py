@@ -593,18 +593,26 @@ def start_run(
     tags: list[str] | None = None,
     thread_count: int | None = None,
     profiles: list[str] | None = None,
+    runtime_mode: str | None = None,
 ) -> Job:
     """Start one fStart. Optional profiles/tags/thread_count override via runtime JSON.
 
     Multi-profile + thread_count>1 → one worker per profile (parallel batch).
     Otherwise → single engine process (OR filter), or engine tag fan-out if
     thread_count>1 and 2+ raw tags.
+
+    runtime_mode=cloud → POST to FOXYIZ_CLOUD_WORKER_URL (EC2 worker) when configured.
     """
     clean_profiles = [p for p in (profiles or []) if (p or "").strip()]
     tc = max(1, int(thread_count)) if thread_count is not None else None
+    mode = (runtime_mode or "local").strip().lower()
+    if mode not in ("local", "cloud", "desktop"):
+        mode = "local"
+    if mode == "desktop":
+        mode = "local"
 
     # Parallel by profile: Smoke+API with thread_count=2 → two jobs
-    if len(clean_profiles) >= 2 and tc is not None and tc > 1:
+    if len(clean_profiles) >= 2 and tc is not None and tc > 1 and mode == "local":
         runtime_paths: list[str] = []
         for prof in clean_profiles:
             runtime_paths.append(
@@ -632,6 +640,43 @@ def start_run(
         job.started_at = time.time()
         runtime_rel: str | None = None
         try:
+            if mode == "cloud":
+                import cloud_worker as cw
+
+                if not cw.cloud_configured():
+                    job.status = "failed"
+                    job.log_lines.append(
+                        "[ERROR] runtime_mode=cloud but FOXYIZ_CLOUD_WORKER_URL is unset"
+                    )
+                    return
+                job.log_lines.append("[i] Dispatching to FOXYIZ_CLOUD_WORKER_URL …")
+                remote = cw.submit_job(
+                    config_path=config_path,
+                    step_label=step_label,
+                    tags=tags,
+                    thread_count=tc,
+                    profiles=clean_profiles or None,
+                )
+                remote_id = remote.get("remote_job_id") or remote.get("job_id")
+                job.log_lines.append(f"[i] Cloud job: {remote_id}")
+                # Poll until terminal
+                for _ in range(3600):
+                    time.sleep(2)
+                    st = cw.poll_job(str(remote_id))
+                    for line in st.get("log_lines") or []:
+                        if line not in job.log_lines:
+                            job.log_lines.append(line)
+                    if st.get("output_dir"):
+                        job.output_dir = st["output_dir"]
+                    status = (st.get("status") or "").lower()
+                    if status in ("completed", "failed"):
+                        job.return_code = st.get("return_code")
+                        job.status = status
+                        return
+                job.status = "failed"
+                job.log_lines.append("[ERROR] cloud job poll timeout")
+                return
+
             use_override = tags is not None or tc is not None or bool(clean_profiles)
             if use_override:
                 runtime_rel = materialize_runtime_fstart(
@@ -1101,9 +1146,15 @@ def generate_brahl_report_md(
 2. Re-run BRAHL: Step 0 (purpose + context) → Loop 1 → Verify with same fStart config.
 3. Expected: Verify green; do not weaken assertions to force green.
 
+## Conclusion
+
+{"**GO** — Verify is green; automation for this scope is ready to publish." if fails == 0 and total > 0 else "**NO-GO** — Verify has failures; heal yPAD (or document A1 defects) before launch readiness."}
+Health: **{health}** · {passes}/{total} plans passed · step `{step_label}`.
+
 ## Verdict
 
 {chr(10).join(verdict_checks)}
+- [{'x' if fails == 0 and total > 0 else ' '}] Conclusion: {'GO' if fails == 0 and total > 0 else 'NO-GO'}
 
 **Dashboard:** `{dash}`
 **BRAHL report:** `z/{run_name}/brahl_report.md`

@@ -52,7 +52,11 @@ class FoXYiZGui:
         self._poll_output()
 
     def _default_executable_path(self) -> Path:
+        root = self.f_dir.parent
         candidates = [
+            root / "FoXYiZ.exe",
+            root / "Foxyiz.exe",
+            self.f_dir / "FoXYiZ.exe",
             self.f_dir / "Foxyiz.exe",
             self.f_dir / "foxyiz.exe",
             self.f_dir / "Foxyiz",
@@ -61,7 +65,7 @@ class FoXYiZGui:
         for path in candidates:
             if path.exists():
                 return path
-        return self.f_dir / "Foxyiz.exe"
+        return root / "FoXYiZ.exe"
 
     def _build_ui(self) -> None:
         frm_top = ttk.Frame(self.root, padding=10)

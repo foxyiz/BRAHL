@@ -31,6 +31,8 @@ archive/
 # Engine binary (rebuild locally; ship via release artifact for cloud)
 FoXYiZ/f/Foxyiz2.exe
 f/Foxyiz2.exe
+FoXYiZ/packaging/_build/
+FoXYiZ/packaging/dist/
 
 # IDE
 .idea/

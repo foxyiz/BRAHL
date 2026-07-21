@@ -1051,14 +1051,24 @@
         "batch_id": null,
         "batch_dashboard": null,
         "archived": false
+      },
+      {
+        "id": "cabbebc2",
+        "run_name": "20260716_223731_qoa_web_live",
+        "report_path": "z/20260716_223731_qoa_web_live/brahl_report.md",
+        "submitted_at": "2026-07-20T21:10:02+00:00",
+        "source": "automation_ai",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
       }
     ],
     "ai_enabled": true,
     "brahl_context_path": null,
     "brahl_plan_draft": null,
-    "latest_run": "20260716_223256_qoa_web_live",
+    "latest_run": "20260716_223731_qoa_web_live",
     "created_at": "2026-07-14T21:14:07+00:00",
-    "updated_at": "2026-07-17T05:38:20+00:00",
+    "updated_at": "2026-07-20T21:10:46+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -1136,7 +1146,7 @@
       "completion_tokens": 19,
       "updated_at": "2026-07-15T19:56:46+00:00"
     },
-    "ai_journey_updated_at": "2026-07-17T05:38:20+00:00",
+    "ai_journey_updated_at": "2026-07-20T21:10:46+00:00",
     "team_messages": [],
     "team_tasks": [],
     "current_phase": "Run",
@@ -1682,5 +1692,97 @@
       "usd_est": 0.0
     },
     "evidence_library": []
+  },
+  {
+    "id": "2ea9761274bb",
+    "name": "ops_overview",
+    "app_url": "https://dashboardpresentation.netlify.app/",
+    "suite_name": "ops_overview",
+    "suite_config": "y/ops_overview/ops_overview.json",
+    "purpose": "Operations Overview dashboard \u2014 Smoke UI Edge API Security Perf",
+    "prompt": "Operations Overview dashboard \u2014 Smoke UI Edge API Security Perf",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [
+      {
+        "id": "de5cca31",
+        "kind": "url",
+        "label": "App URL",
+        "value": "https://dashboardpresentation.netlify.app/",
+        "added_at": "2026-07-20T21:26:55+00:00"
+      }
+    ],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-20T21:26:55+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "be476c33",
+        "run_name": "20260720_134823_ops_overview",
+        "report_path": "z/20260720_134823_ops_overview/brahl_report.md",
+        "submitted_at": "2026-07-20T21:26:55+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "brahl_plan_draft": null,
+    "latest_run": "20260720_134823_ops_overview",
+    "created_at": "2026-07-20T21:26:55+00:00",
+    "updated_at": "2026-07-21T05:33:17+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
+        "at": "2026-07-20T21:26:55+00:00"
+      }
+    ],
+    "team_messages": [],
+    "team_tasks": [],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-20T21:26:55+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "runtime_mode": "local",
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    },
+    "evidence_library": [],
+    "ai_journey_updated_at": "2026-07-21T05:33:17+00:00"
   }
 ]

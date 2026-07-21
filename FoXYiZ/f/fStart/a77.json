@@ -1,0 +1,18 @@
+{
+  "configs": [
+    "y/a77/a77.json"
+  ],
+  "thread_count": 1,
+  "timeout": 5,
+  "headless": true,
+  "debug": false,
+  "tags": [
+    "Smoke"
+  ],
+  "capture": {
+    "image": "on_fail",
+    "video": "off",
+    "video_fps": 2,
+    "subdir": ""
+  }
+}

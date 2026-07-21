@@ -58,7 +58,7 @@ import suite_docs as suite_docs_store
 import schedules as schedules_store
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
-APP_VERSION = "1.3.0"
+APP_VERSION = "1.4.0"
 
 app = FastAPI(title="qoa_web", description="BRAHL web — FoXYiZ local API", version=APP_VERSION)
 
@@ -72,6 +72,7 @@ def _run_due_schedules_once() -> None:
                 step_label=sched.get("step_label") or "Verify",
                 thread_count=sched.get("thread_count") or 1,
                 profiles=sched.get("profiles") or None,
+                runtime_mode=sched.get("runtime") or "local",
             )
         except Exception:
             schedules_store.mark_schedule_ran(sched["id"], None, None)
@@ -111,6 +112,18 @@ def _scheduler_loop() -> None:
 
 @app.on_event("startup")
 def _startup() -> None:
+    # Load qoa_web/.env into process env if present (production host convenience).
+    env_file = WEB_DIR.parent / ".env"
+    if env_file.is_file():
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, val = line.partition("=")
+            key = key.strip()
+            val = val.strip().strip('"').strip("'")
+            if key and key not in os.environ:
+                os.environ[key] = val
     auth_store.init_db()
     threading.Thread(target=_scheduler_loop, daemon=True).start()
 
@@ -201,6 +214,8 @@ class RunRequest(BaseModel):
     tags: list[str] | None = None
     thread_count: int | None = None
     profiles: list[str] | None = None
+    runtime_mode: str | None = None
+    project_id: str | None = None
 
 
 class ContextRequest(BaseModel):
@@ -744,8 +759,41 @@ def version() -> dict[str, str]:
 
 
 @app.get("/api/health")
-def health() -> dict[str, str]:
-    return {"status": "ok", "service": "qoa_web", "version": APP_VERSION, "root": str(KK_ROOT)}
+def health() -> dict[str, Any]:
+    """Liveness + production readiness (no secret values)."""
+    import billing as billing_mod
+    import cloud_worker as cw
+
+    google_id = bool((os.environ.get("GOOGLE_CLIENT_ID") or "").strip())
+    google_secret = bool((os.environ.get("GOOGLE_CLIENT_SECRET") or "").strip())
+    jwt = (os.environ.get("JWT_SECRET") or "").strip()
+    demo = auth_store.demo_allowed()
+    auth_required = os.environ.get("QOA_AUTH_REQUIRED", "0").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    admin_open = os.environ.get("QOA_ADMIN_OPEN", "1").strip() not in ("0", "false", "False", "no")
+    stripe = billing_mod.billing_status()
+    cloud = cw.cloud_status()
+    return {
+        "status": "ok",
+        "service": "qoa_web",
+        "version": APP_VERSION,
+        "root": str(KK_ROOT),
+        "app_base_url": (os.environ.get("APP_BASE_URL") or "").strip() or None,
+        "readiness": {
+            "jwt_secret_set": bool(jwt) and jwt != "qoa-dev-change-me-in-production",
+            "google_oauth_configured": google_id and google_secret,
+            "demo_allowed": demo,
+            "auth_required": auth_required,
+            "admin_open": admin_open,
+            "stripe_configured": bool(stripe.get("configured")),
+            "cloud_worker_configured": bool(cloud.get("configured")),
+            "cloud_worker_reachable": bool(cloud.get("reachable")),
+            "openai_key_set": bool((os.environ.get("OPENAI_API_KEY") or "").strip()),
+        },
+    }
 
 
 @app.post("/api/auth/register")
@@ -1769,8 +1817,21 @@ def run_profiles() -> dict[str, Any]:
 @app.post("/api/jobs")
 def create_job(body: RunRequest) -> dict[str, Any]:
     """Start FoXYiZ fEngine2 / orchestrator — Run/Loop execution path (no AI)."""
+    runtime_mode = (body.runtime_mode or "").strip().lower() or None
+    if not runtime_mode and body.project_id:
+        proj = project_store.get_project(body.project_id)
+        if proj:
+            runtime_mode = (proj.get("runtime_mode") or "local").strip().lower()
+    if not runtime_mode:
+        runtime_mode = "local"
+
     paths = [p for p in (body.config_paths or []) if p]
     if len(paths) > 1 or (len(paths) == 1 and body.parallel and not body.profiles and not body.tags):
+        if runtime_mode == "cloud":
+            raise HTTPException(
+                400,
+                "Cloud runtime supports single-config jobs; set thread_count/profiles on one fStart instead of batch.",
+            )
         try:
             job = start_batch(
                 paths or [body.config_path],
@@ -1786,6 +1847,7 @@ def create_job(body: RunRequest) -> dict[str, Any]:
         tags=body.tags,
         thread_count=body.thread_count,
         profiles=body.profiles,
+        runtime_mode=runtime_mode,
     )
     return job.to_dict()
 

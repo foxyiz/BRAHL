@@ -1,0 +1,214 @@
+PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PReuse_TS_Open,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PReuse_TS_Open,2,Navigate home,xUI,xNavigate,base_url,,,Y
+PReuse_TS_Open,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PReuse_TS_Open,4,Body present,xUI,xGetText,body_locator,,,Y
+PTS_Smoke_HomeCapture,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PTS_Smoke_HomeCapture,2,Navigate home,xUI,xNavigate,base_url,,,Y
+PTS_Smoke_HomeCapture,3,Wait,xTime,xTimeWait,3,,,Y
+PTS_Smoke_HomeCapture,4,Title,xUI,xGetTitle,,,page_title_home,Y
+PTS_Smoke_HomeCapture,5,Capture heading,xUI,xGetText,body_locator,,heading_capture,Y
+PTS_Smoke_HomeCapture,6,Tap to record,xUI,xGetText,body_locator,,text_tap_record,Y
+PTS_Smoke_HomeCapture,7,Voice mode,xUI,xGetText,body_locator,,text_voice,Y
+PTS_Smoke_HomeCapture,8,Screen mode,xUI,xGetText,body_locator,,text_screen,Y
+PTS_Smoke_HomeCapture,9,Try samples CTA,xUI,xGetText,body_locator,,text_try_samples,Y
+PTS_Smoke_IdeasLibrary,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_IdeasLibrary,2,Go ideas,xUI,xNavigate,ideas_url,,,Y
+PTS_Smoke_IdeasLibrary,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_IdeasLibrary,4,Title,xUI,xGetTitle,,,page_title_ideas,Y
+PTS_Smoke_IdeasLibrary,5,Library heading,xUI,xGetText,body_locator,,heading_ideas,Y
+PTS_Smoke_IdeasLibrary,6,Empty state,xUI,xGetText,body_locator,,text_no_ideas,Y
+PTS_Smoke_Dashboard,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_Dashboard,2,Go dashboard,xUI,xNavigate,dashboard_url,,,Y
+PTS_Smoke_Dashboard,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_Dashboard,4,Title,xUI,xGetTitle,,,page_title_dashboard,Y
+PTS_Smoke_Dashboard,5,Dashboard heading,xUI,xGetText,body_locator,,heading_dashboard,Y
+PTS_Smoke_Dashboard,6,Total Ideas,xUI,xGetText,body_locator,,text_total_ideas,Y
+PTS_Smoke_Dashboard,7,No data yet,xUI,xGetText,body_locator,,text_no_data,Y
+PTS_Smoke_Login,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_Login,2,Go login,xUI,xNavigate,login_url,,,Y
+PTS_Smoke_Login,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_Login,4,Title,xUI,xGetTitle,,,page_title_login,Y
+PTS_Smoke_Login,5,Welcome,xUI,xGetText,body_locator,,heading_welcome,Y
+PTS_Smoke_Login,6,Google,xUI,xGetText,body_locator,,Continue with Google,Y
+PTS_Smoke_Login,7,Email field,xUI,xGetText,input_email,,,Y
+PTS_Smoke_Register,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_Register,2,Go register,xUI,xNavigate,register_url,,,Y
+PTS_Smoke_Register,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_Register,4,Title,xUI,xGetTitle,,,page_title_register,Y
+PTS_Smoke_Register,5,Create,xUI,xGetText,body_locator,,heading_create,Y
+PTS_Smoke_Register,6,Confirm password,xUI,xGetText,body_locator,,Confirm Password,Y
+PTS_Smoke_Forgot,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_Forgot,2,Go forgot,xUI,xNavigate,forgot_url,,,Y
+PTS_Smoke_Forgot,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_Forgot,4,Heading,xUI,xGetText,body_locator,,heading_reset,Y
+PTS_Smoke_Forgot,5,Send link,xUI,xGetText,body_locator,,Send reset link,Y
+PTS_Smoke_ResetInvalid,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_ResetInvalid,2,Go reset,xUI,xNavigate,reset_url,,,Y
+PTS_Smoke_ResetInvalid,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_ResetInvalid,4,Invalid,xUI,xGetText,body_locator,,heading_invalid_reset,Y
+PTS_Smoke_ResetInvalid,5,Request new link,xUI,xGetText,body_locator,,Request a new link,Y
+PTS_Smoke_BottomNav,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PTS_Smoke_BottomNav,2,Home,xUI,xNavigate,base_url,,,Y
+PTS_Smoke_BottomNav,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_BottomNav,4,Capture label,xUI,xGetText,body_locator,,Capture,Y
+PTS_Smoke_BottomNav,5,Ideas label,xUI,xGetText,body_locator,,Ideas,Y
+PTS_Smoke_BottomNav,6,Dashboard label,xUI,xGetText,body_locator,,Dashboard,Y
+PTS_Smoke_Integrate,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_Integrate,2,Go integrate,xUI,xNavigate,integrate_url,,,Y
+PTS_Smoke_Integrate,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_Integrate,4,Title,xUI,xGetTitle,,,page_title_integrate,Y
+PTS_Smoke_Integrate,5,Integrate heading,xUI,xGetText,body_locator,,heading_integrate,Y
+PTS_Smoke_Integrate,6,Quick Start,xUI,xGetText,body_locator,,text_quick_start,Y
+PTS_Smoke_Integrate,7,embed.js,xUI,xGetText,body_locator,,text_embed_js,Y
+PTS_Smoke_Integrate,8,init API,xUI,xGetText,body_locator,,text_init_api,Y
+PTS_Smoke_Docs,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_Docs,2,Go docs,xUI,xNavigate,docs_url,,,Y
+PTS_Smoke_Docs,3,Wait,xTime,xTimeWait,3,,,Y
+PTS_Smoke_Docs,4,Title,xUI,xGetTitle,,,page_title_docs,Y
+PTS_Smoke_Docs,5,Documentation,xUI,xGetText,body_locator,,heading_documentation,Y
+PTS_Smoke_Docs,6,AI Integrations,xUI,xGetText,body_locator,,text_ai_integrations,Y
+PTS_Smoke_Docs,7,InvokeLLM,xUI,xGetText,body_locator,,text_invoke_llm,Y
+PTS_Smoke_Docs,8,TranscribeAudio,xUI,xGetText,body_locator,,text_transcribe,Y
+PTS_Smoke_Docs,9,Routes table Capture,xUI,xGetText,body_locator,,text_route_capture,Y
+PTS_Smoke_EmbedGate,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_EmbedGate,2,Go embed,xUI,xNavigate,embed_url,,,Y
+PTS_Smoke_EmbedGate,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_EmbedGate,4,Title,xUI,xGetTitle,,,page_title_embed,Y
+PTS_Smoke_EmbedGate,5,Sign in to capture,xUI,xGetText,body_locator,,heading_sign_in_capture,Y
+PTS_Smoke_EmbedGate,6,Need account,xUI,xGetText,body_locator,,text_need_account,Y
+PTS_Smoke_PublicViewPrivate,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_PublicViewPrivate,2,Go private view,xUI,xNavigate,view_private_url,,,Y
+PTS_Smoke_PublicViewPrivate,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_PublicViewPrivate,4,Not public,xUI,xGetText,body_locator,,text_not_public,Y
+PTS_Smoke_404,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_404,2,Unknown,xUI,xNavigate,unknown_url,,,Y
+PTS_Smoke_404,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_404,4,404,xUI,xGetText,body_locator,,heading_404,Y
+PTS_Smoke_404,5,Go Home,xUI,xGetText,body_locator,,Go Home,Y
+PTS_Smoke_BrahlConclusion,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_Smoke_BrahlConclusion,2,Capture,xUI,xNavigate,base_url,,,Y
+PTS_Smoke_BrahlConclusion,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_Smoke_BrahlConclusion,4,Capture ready,xUI,xGetText,body_locator,,heading_capture,Y
+PTS_Smoke_BrahlConclusion,5,Docs,xUI,xNavigate,docs_url,,,Y
+PTS_Smoke_BrahlConclusion,6,Wait docs,xTime,xTimeWait,2,,,Y
+PTS_Smoke_BrahlConclusion,7,Docs AI,xUI,xGetText,body_locator,,text_ai_integrations,Y
+PTS_Smoke_BrahlConclusion,8,Integrate,xUI,xNavigate,integrate_url,,,Y
+PTS_Smoke_BrahlConclusion,9,Wait integrate,xTime,xTimeWait,2,,,Y
+PTS_Smoke_BrahlConclusion,10,SDK ready,xUI,xGetText,body_locator,,text_embed_js,Y
+PTS_Smoke_BrahlConclusion,11,Login still,xUI,xNavigate,login_url,,,Y
+PTS_Smoke_BrahlConclusion,12,Wait login,xTime,xTimeWait,2,,,Y
+PTS_Smoke_BrahlConclusion,13,Auth form,xUI,xGetText,body_locator,,heading_welcome,Y
+PTS_UI_BrandThoughtCapture,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PTS_UI_BrandThoughtCapture,2,Home,xUI,xNavigate,base_url,,,Y
+PTS_UI_BrandThoughtCapture,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_BrandThoughtCapture,4,Brand,xUI,xGetText,body_locator,,ThoughtCapture,Y
+PTS_UI_NavToIdeas,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PTS_UI_NavToIdeas,2,Home,xUI,xNavigate,base_url,,,Y
+PTS_UI_NavToIdeas,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_NavToIdeas,4,Ideas URL,xUI,xNavigate,ideas_url,,,Y
+PTS_UI_NavToIdeas,5,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_NavToIdeas,6,Library,xUI,xGetText,body_locator,,heading_ideas,Y
+PTS_UI_NavToDashboard,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PTS_UI_NavToDashboard,2,Home,xUI,xNavigate,base_url,,,Y
+PTS_UI_NavToDashboard,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_NavToDashboard,4,Dash URL,xUI,xNavigate,dashboard_url,,,Y
+PTS_UI_NavToDashboard,5,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_NavToDashboard,6,Insights,xUI,xGetText,body_locator,,text_insights,Y
+PTS_UI_IdeasEmptyCopy,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_UI_IdeasEmptyCopy,2,Ideas,xUI,xNavigate,ideas_url,,,Y
+PTS_UI_IdeasEmptyCopy,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_IdeasEmptyCopy,4,Start capturing,xUI,xGetText,body_locator,,Start capturing,Y
+PTS_UI_DashboardStats,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_UI_DashboardStats,2,Dash,xUI,xNavigate,dashboard_url,,,Y
+PTS_UI_DashboardStats,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_DashboardStats,4,Total Ideas,xUI,xGetText,body_locator,,text_total_ideas,Y
+PTS_UI_DashboardStats,5,Recordings,xUI,xGetText,body_locator,,Recordings,Y
+PTS_UI_DashboardStats,6,Unique Tags,xUI,xGetText,body_locator,,Unique Tags,Y
+PTS_UI_TrySamplesAi,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PTS_UI_TrySamplesAi,2,Home,xUI,xNavigate,base_url,,,Y
+PTS_UI_TrySamplesAi,3,Wait,xTime,xTimeWait,3,,,Y
+PTS_UI_TrySamplesAi,4,Click Try samples,xUI,xClick,btn_try_samples,,,Y
+PTS_UI_TrySamplesAi,5,Wait seed,xTime,xTimeWait,4,,,Y
+PTS_UI_TrySamplesAi,6,Recent ideas,xUI,xGetText,body_locator,,text_recent_ideas,Y
+PTS_UI_TrySamplesAi,7,AI sample title,xUI,xGetText,body_locator,,text_sample_ai_writing,Y
+PTS_UI_TrySamplesAi,8,Remote work sample,xUI,xGetText,body_locator,,text_sample_remote,Y
+PTS_UI_LoginCrossLinks,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_UI_LoginCrossLinks,2,Login,xUI,xNavigate,login_url,,,Y
+PTS_UI_LoginCrossLinks,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_LoginCrossLinks,4,Forgot,xUI,xGetText,body_locator,,Forgot password?,Y
+PTS_UI_LoginCrossLinks,5,Create one,xUI,xGetText,body_locator,,Create one,Y
+PTS_UI_RegisterConfirm,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_UI_RegisterConfirm,2,Register,xUI,xNavigate,register_url,,,Y
+PTS_UI_RegisterConfirm,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_RegisterConfirm,4,Confirm,xUI,xGetText,body_locator,,Confirm Password,Y
+PTS_UI_RegisterConfirm,5,Google,xUI,xGetText,body_locator,,Continue with Google,Y
+PTS_UI_404GoHome,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_UI_404GoHome,2,Unknown,xUI,xNavigate,unknown_url,,,Y
+PTS_UI_404GoHome,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_404GoHome,4,Go Home,xUI,xClick,btn_go_home,,,Y
+PTS_UI_404GoHome,5,Wait home,xTime,xTimeWait,3,,,Y
+PTS_UI_404GoHome,6,Capture back,xUI,xGetText,body_locator,,heading_capture,Y
+PTS_Manual_MicRecord,1,HITL mic + transcription,xUI,xOpenBrowser,edge,,,N
+PTS_Manual_MicRecord,2,Load app,xUI,xNavigate,base_url,,,N
+PTS_Manual_MicRecord,3,Capture evidence,xTime,xTimeWait,1,,,N
+PTS_Manual_ScreenRecord,1,HITL screen capture,xUI,xOpenBrowser,edge,,,N
+PTS_Manual_ScreenRecord,2,Load app,xUI,xNavigate,base_url,,,N
+PTS_Manual_ScreenRecord,3,Capture evidence,xTime,xTimeWait,1,,,N
+PTS_Manual_TextCaptureAi,1,HITL text + InvokeLLM,xUI,xOpenBrowser,edge,,,N
+PTS_Manual_TextCaptureAi,2,Load app,xUI,xNavigate,base_url,,,N
+PTS_Manual_TextCaptureAi,3,Capture evidence,xTime,xTimeWait,1,,,N
+PTS_Manual_GoogleOAuth,1,HITL Google OAuth,xUI,xOpenBrowser,edge,,,N
+PTS_Manual_GoogleOAuth,2,Load app,xUI,xNavigate,base_url,,,N
+PTS_Manual_GoogleOAuth,3,Capture evidence,xTime,xTimeWait,1,,,N
+PTS_Manual_RegisterLogin,1,HITL register/login,xUI,xOpenBrowser,edge,,,N
+PTS_Manual_RegisterLogin,2,Load app,xUI,xNavigate,base_url,,,N
+PTS_Manual_RegisterLogin,3,Capture evidence,xTime,xTimeWait,1,,,N
+PTS_Manual_SaveIdeaPersist,1,HITL persist signed-in,xUI,xOpenBrowser,edge,,,N
+PTS_Manual_SaveIdeaPersist,2,Load app,xUI,xNavigate,base_url,,,N
+PTS_Manual_SaveIdeaPersist,3,Capture evidence,xTime,xTimeWait,1,,,N
+PTS_Manual_PublicShareLive,1,HITL public share,xUI,xOpenBrowser,edge,,,N
+PTS_Manual_PublicShareLive,2,Load app,xUI,xNavigate,base_url,,,N
+PTS_Manual_PublicShareLive,3,Capture evidence,xTime,xTimeWait,1,,,N
+PTS_Manual_EmbedSdkHost,1,HITL embed SDK host,xUI,xOpenBrowser,edge,,,N
+PTS_Manual_EmbedSdkHost,2,Load app,xUI,xNavigate,base_url,,,N
+PTS_Manual_EmbedSdkHost,3,Capture evidence,xTime,xTimeWait,1,,,N
+PTS_Manual_FileUploadExtract,1,HITL file extract AI,xUI,xOpenBrowser,edge,,,N
+PTS_Manual_FileUploadExtract,2,Load app,xUI,xNavigate,base_url,,,N
+PTS_Manual_FileUploadExtract,3,Capture evidence,xTime,xTimeWait,1,,,N
+PTS_UI_HeaderIntegrateDocs,1,Open site,xReuse,PReuse_TS_Open,,,,Y
+PTS_UI_HeaderIntegrateDocs,2,Integrate URL,xUI,xNavigate,integrate_url,,,Y
+PTS_UI_HeaderIntegrateDocs,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_HeaderIntegrateDocs,4,Integrate page,xUI,xGetText,body_locator,,heading_integrate,Y
+PTS_UI_HeaderIntegrateDocs,5,Docs URL,xUI,xNavigate,docs_url,,,Y
+PTS_UI_HeaderIntegrateDocs,6,Wait docs,xTime,xTimeWait,2,,,Y
+PTS_UI_HeaderIntegrateDocs,7,Documentation,xUI,xGetText,body_locator,,heading_documentation,Y
+PTS_UI_SampleIdeaAiDetail,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PTS_UI_SampleIdeaAiDetail,2,Home,xUI,xNavigate,base_url,,,Y
+PTS_UI_SampleIdeaAiDetail,3,Wait,xTime,xTimeWait,3,,,Y
+PTS_UI_SampleIdeaAiDetail,4,Ideas library,xUI,xNavigate,ideas_url,,,Y
+PTS_UI_SampleIdeaAiDetail,5,Wait ideas,xTime,xTimeWait,3,,,Y
+PTS_UI_SampleIdeaAiDetail,6,Open AI idea,xUI,xClick,btn_sample_ai_idea,,,Y
+PTS_UI_SampleIdeaAiDetail,7,Wait detail,xTime,xTimeWait,4,,,Y
+PTS_UI_SampleIdeaAiDetail,8,KEY POINTS,xUI,xGetText,body_locator,,text_key_points,Y
+PTS_UI_SampleIdeaAiDetail,9,RESEARCH,xUI,xGetText,body_locator,,text_research,Y
+PTS_UI_SampleIdeaAiDetail,10,TRANSCRIPTION,xUI,xGetText,body_locator,,text_transcription,Y
+PTS_UI_SampleIdeaAiDetail,11,Augment,xUI,xGetText,body_locator,,text_ai_augment,Y
+PTS_UI_ShareShowsViewLink,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PTS_UI_ShareShowsViewLink,2,Home,xUI,xNavigate,base_url,,,Y
+PTS_UI_ShareShowsViewLink,3,Wait,xTime,xTimeWait,3,,,Y
+PTS_UI_ShareShowsViewLink,4,Ideas library,xUI,xNavigate,ideas_url,,,Y
+PTS_UI_ShareShowsViewLink,5,Wait ideas,xTime,xTimeWait,3,,,Y
+PTS_UI_ShareShowsViewLink,6,Open AI idea,xUI,xClick,btn_sample_ai_idea,,,Y
+PTS_UI_ShareShowsViewLink,7,Wait detail,xTime,xTimeWait,3,,,Y
+PTS_UI_ShareShowsViewLink,8,Share,xUI,xClick,btn_share,,,Y
+PTS_UI_ShareShowsViewLink,9,Wait share,xTime,xTimeWait,2,,,Y
+PTS_UI_ShareShowsViewLink,10,view path,xUI,xGetText,body_locator,,text_view_path,Y
+PTS_UI_ShareShowsViewLink,11,Unshare,xUI,xGetText,body_locator,,Unshare,Y
+PTS_UI_SettingsGuest,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PTS_UI_SettingsGuest,2,Home,xUI,xNavigate,base_url,,,Y
+PTS_UI_SettingsGuest,3,Wait,xTime,xTimeWait,2,,,Y
+PTS_UI_SettingsGuest,4,Settings title btn,xUI,xClick,btn_settings,,,Y
+PTS_UI_SettingsGuest,5,Wait panel,xTime,xTimeWait,2,,,Y
+PTS_UI_SettingsGuest,6,Guest mode,xUI,xGetText,body_locator,,text_guest_mode,Y
+PTS_UI_SettingsGuest,7,Sign in save,xUI,xGetText,body_locator,,text_sign_in_save,Y

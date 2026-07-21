@@ -1,0 +1,4 @@
+{
+    "note":  "Product routes now guest-open; gates need rewrite",
+    "label":  "v3-before-guest-arch"
+}

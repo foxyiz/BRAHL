@@ -33,7 +33,18 @@ def _version_id(label: str = "") -> str:
     return f"{stamp}_{slug}" if slug else stamp
 
 
-def list_versions(suite_config: str) -> dict[str, Any]:
+def _suite_has_live_csvs(suite_config: str) -> bool:
+    for sheet in SHEETS:
+        try:
+            if _resolve_sheet_paths(suite_config, sheet):
+                return True
+        except FileNotFoundError:
+            continue
+    return False
+
+
+def list_versions(suite_config: str, *, ensure_baseline: bool = True) -> dict[str, Any]:
+    """List immutable snapshots. When live CSVs exist and versions/ is empty, seed an initial snapshot."""
     root = _versions_root(suite_config)
     items: list[dict[str, Any]] = []
     if root.is_dir():
@@ -50,6 +61,18 @@ def list_versions(suite_config: str) -> dict[str, Any]:
             data["id"] = data.get("id") or d.name
             data["path"] = repo_rel(d).replace("\\", "/")
             items.append(data)
+    if ensure_baseline and not items and _suite_has_live_csvs(suite_config):
+        try:
+            create_snapshot(
+                suite_config,
+                label="initial",
+                author="system",
+                source_build="auto-baseline",
+            )
+        except (OSError, ValueError, FileNotFoundError):
+            pass
+        else:
+            return list_versions(suite_config, ensure_baseline=False)
     return {"suite_config": suite_config, "versions": items, "count": len(items)}
 
 

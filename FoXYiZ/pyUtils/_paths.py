@@ -2,13 +2,30 @@
 
 FOXYIZ_ROOT = parent (engine: f x y z pyUtils)
 KK_ROOT     = FoXYiZ parent (qoa_web, Docs, archive)
+
+Frozen (FoXYiZ.exe): FOXYIZ_ROOT is the folder that contains ``y/``
+(exe directory, or its parent when the exe lives under ``f/``).
 """
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
-FOXYIZ_ROOT = Path(__file__).resolve().parent.parent
+
+def _resolve_foxyiz_root() -> Path:
+    if getattr(sys, "frozen", False):
+        exe_dir = Path(sys.executable).resolve().parent
+        if (exe_dir / "y").is_dir():
+            return exe_dir
+        parent = exe_dir.parent
+        if parent != exe_dir and (parent / "y").is_dir():
+            return parent
+        return exe_dir
+    return Path(__file__).resolve().parent.parent
+
+
+FOXYIZ_ROOT = _resolve_foxyiz_root()
 KK_ROOT = FOXYIZ_ROOT.parent
 FXYZ_ROOT = KK_ROOT.parent  # sibling of KK/ — large archives live here
 PYUTILS_DIR = Path(__file__).resolve().parent
