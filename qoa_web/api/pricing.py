@@ -7,11 +7,31 @@ from typing import Any
 # Free: anyone. Hunter AI plans: $5 / $20 / $50. Creator wallet: $50+.
 MEMBERSHIP_USD_PER_MONTH = 5.0  # default Hunter AI tier (compat)
 HUNTER_AI_TIERS_USD = (5.0, 20.0, 50.0)
+# Hosted AI monthly token caps by Hunter AI subscription tier
+HUNTER_AI_TOKEN_CAPS: dict[float, int] = {
+    5.0: 500_000,
+    20.0: 2_000_000,
+    50.0: 5_000_000,
+}
 CREATOR_WALLET_MIN_USD = 50.0
 PLATFORM_FEE_PCT = 5
 ADMIN_OPS_PCT = 10
 PROMOTER_SHARE_PCT = 5  # from Creator deposits and from Hunter earnings
 PAYOUT_THRESHOLD_USD = 100.0
+
+
+def hunter_ai_token_cap(tier_usd: float | None) -> int | None:
+    """Return hosted monthly token cap for an active Hunter AI tier, or None if free."""
+    if tier_usd is None:
+        return None
+    tier = float(tier_usd)
+    if tier in HUNTER_AI_TOKEN_CAPS:
+        return HUNTER_AI_TOKEN_CAPS[tier]
+    # nearest known tier
+    if tier <= 0:
+        return None
+    closest = min(HUNTER_AI_TIERS_USD, key=lambda t: abs(t - tier))
+    return HUNTER_AI_TOKEN_CAPS.get(closest)
 
 
 def split_deposit(budget_usd: float, automation_pct: int = 50, human_pct: int = 50) -> dict[str, Any]:

@@ -188,6 +188,14 @@ def _auth_user(request: Request) -> dict[str, Any] | None:
     return auth_store.user_from_request(request.headers.get("Authorization"))
 
 
+def _claim_billing_after_auth(user: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Apply any pending Stripe entitlements waiting on this email."""
+    import billing
+
+    claimed, refreshed = billing.claim_pending_entitlements(user)
+    return refreshed, claimed
+
+
 def _require_project(project_id: str, request: Request) -> dict[str, Any]:
     project = project_store.get_project(project_id)
     if not project:
@@ -807,8 +815,9 @@ def auth_register(body: AuthRegisterRequest) -> dict[str, Any]:
         )
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
+    user, claimed = _claim_billing_after_auth(user)
     token = auth_store.create_token(user)
-    return {"user": user, "token": token}
+    return {"user": user, "token": token, "billing_claimed": claimed}
 
 
 @app.post("/api/auth/login")
@@ -816,8 +825,9 @@ def auth_login(body: AuthLoginRequest) -> dict[str, Any]:
     user = auth_store.authenticate_user(body.email, body.password)
     if not user:
         raise HTTPException(401, "Invalid email or password")
+    user, claimed = _claim_billing_after_auth(user)
     token = auth_store.create_token(user)
-    return {"user": user, "token": token}
+    return {"user": user, "token": token, "billing_claimed": claimed}
 
 
 @app.get("/api/auth/providers")
@@ -858,6 +868,7 @@ def auth_google_callback(
         user = auth_store.login_with_google_profile(info)
     except ValueError as exc:
         return RedirectResponse(f"/login?oauth_error={urllib_quote(str(exc))}", status_code=302)
+    user, _claimed = _claim_billing_after_auth(user)
     token = auth_store.create_token(user)
     dest = "/signup" if not user.get("profile_complete") else (next_path if next_path != "/login" else "/app")
     sep = "&" if "?" in dest else "?"
@@ -876,8 +887,9 @@ def auth_social(body: AuthSocialRequest) -> dict[str, Any]:
         user = auth_store.social_login_or_register(body.provider, body.email, body.name)
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
+    user, claimed = _claim_billing_after_auth(user)
     token = auth_store.create_token(user)
-    return {"user": user, "token": token, "needs_profile": not user.get("profile_complete")}
+    return {"user": user, "token": token, "needs_profile": not user.get("profile_complete"), "billing_claimed": claimed}
 
 
 @app.get("/api/auth/me")
@@ -885,7 +897,8 @@ def auth_me(request: Request) -> dict[str, Any]:
     user = auth_store.user_from_request(request.headers.get("Authorization"))
     if not user:
         raise HTTPException(401, "Not authenticated")
-    return {"user": user}
+    user, claimed = _claim_billing_after_auth(user)
+    return {"user": user, "billing_claimed": claimed}
 
 
 @app.patch("/api/auth/me")
@@ -1918,6 +1931,7 @@ class CheckoutRequest(BaseModel):
     kind: str = Field(..., description="membership | wallet")
     amount_usd: float | None = None
     customer_email: str | None = None
+    project_id: str | None = None
 
 
 @app.get("/api/billing/status")
@@ -1927,15 +1941,101 @@ def billing_status() -> dict[str, Any]:
     return billing.billing_status()
 
 
-@app.post("/api/billing/checkout")
-def billing_checkout(body: CheckoutRequest) -> dict[str, Any]:
+@app.get("/api/billing/me")
+def billing_me(request: Request) -> dict[str, Any]:
+    """Return current user's membership + Creator wallet entitlements."""
     import billing
+
+    user = _auth_user(request)
+    claimed: list[dict[str, Any]] = []
+    if user:
+        user, claimed = _claim_billing_after_auth(user)
+    out = billing.entitlements_for_user(user)
+    out["claimed"] = claimed
+    if user:
+        # Optional project list for wallet top-up / apply targeting
+        owned = [
+            {"id": p.get("id"), "name": p.get("name"), "budget_usd": float(p.get("budget_usd") or 0)}
+            for p in project_store.list_client_projects(owner_user_id=user["id"])
+            if project_store.user_owns_project(p, user)
+        ]
+        out["projects"] = owned[:50]
+    return out
+
+
+@app.post("/api/billing/checkout")
+def billing_checkout(request: Request, body: CheckoutRequest) -> dict[str, Any]:
+    import billing
+
+    user = _auth_user(request)
+    if not user:
+        raise HTTPException(401, "Sign in required to start Checkout")
+    email = (body.customer_email or "").strip().lower() or None
+    email = email or (user.get("email") or "").strip().lower() or None
+    project_id = (body.project_id or "").strip() or None
+    if project_id:
+        project = project_store.get_project(project_id)
+        if not project:
+            raise HTTPException(404, "Project not found")
+        if not project_store.user_owns_project(project, user):
+            raise HTTPException(403, "Only the project owner can fund this project wallet")
 
     try:
         return billing.create_checkout_session(
             body.kind,
             amount_usd=body.amount_usd,
-            customer_email=body.customer_email,
+            customer_email=email,
+            user_id=user["id"],
+            project_id=project_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(503, str(exc)) from exc
+
+
+class WalletApplyRequest(BaseModel):
+    project_id: str
+    amount_usd: float | None = None
+
+
+@app.post("/api/billing/wallet/apply")
+def billing_wallet_apply(request: Request, body: WalletApplyRequest) -> dict[str, Any]:
+    """Move portable Creator wallet balance onto an owned project budget."""
+    import billing
+
+    user = _auth_user(request)
+    if not user:
+        raise HTTPException(401, "Sign in required")
+    try:
+        return billing.apply_creator_wallet_to_project(
+            user,
+            project_id=body.project_id,
+            amount_usd=body.amount_usd,
+        )
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+
+
+class PortalRequest(BaseModel):
+    return_path: str | None = "/pricing"
+
+
+@app.post("/api/billing/portal")
+def billing_portal(request: Request, body: PortalRequest | None = None) -> dict[str, Any]:
+    """Open Stripe Customer Portal (cancel, payment method, invoices)."""
+    import billing
+
+    user = _auth_user(request)
+    if not user:
+        raise HTTPException(401, "Sign in required")
+    # Refresh user so stripe_customer_id is current
+    user = auth_store.get_user(user["id"]) or user
+    return_path = (body.return_path if body else None) or "/pricing"
+    try:
+        return billing.create_billing_portal_session(
+            user,
+            return_path=return_path,
         )
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
@@ -1945,7 +2045,7 @@ def billing_checkout(body: CheckoutRequest) -> dict[str, Any]:
 
 @app.post("/api/billing/webhook")
 async def billing_webhook(request: Request) -> dict[str, Any]:
-    """Stripe webhook scaffold — verifies signature when STRIPE_WEBHOOK_SECRET is set."""
+    """Stripe webhook — verifies signature and applies membership / wallet entitlements."""
     import billing
 
     payload = await request.body()

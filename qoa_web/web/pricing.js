@@ -2,12 +2,21 @@
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => Array.from(document.querySelectorAll(sel));
   const statusEl = $("#pricing-status");
+  const STORAGE_AUTH_TOKEN = "qoa_auth_token";
   let hunterTierUsd = 5;
+  let entitlements = { authenticated: false, projects: [] };
 
   function setStatus(msg, isErr) {
     if (!statusEl) return;
     statusEl.textContent = msg || "";
     statusEl.classList.toggle("err", Boolean(isErr));
+  }
+
+  function authHeaders() {
+    const headers = { "Content-Type": "application/json" };
+    const token = localStorage.getItem(STORAGE_AUTH_TOKEN);
+    if (token) headers.Authorization = `Bearer ${token}`;
+    return headers;
   }
 
   function escapeHtml(s) {
@@ -20,7 +29,7 @@
 
   async function api(path, opts = {}) {
     const res = await fetch(path, {
-      headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
+      headers: { ...authHeaders(), ...(opts.headers || {}) },
       ...opts,
     });
     const data = await res.json().catch(() => ({}));
@@ -40,6 +49,22 @@
       chip.classList.toggle("active", on);
       chip.setAttribute("aria-pressed", on ? "true" : "false");
     });
+  }
+
+  function fillProjectSelect(select, projects, includePortable) {
+    if (!select) return;
+    const opts = [];
+    if (includePortable) {
+      opts.push('<option value="">Creator wallet (portable)</option>');
+    }
+    (projects || []).forEach((p) => {
+      opts.push(
+        `<option value="${escapeHtml(p.id)}">${escapeHtml(p.name || p.id)} · $${Number(
+          p.budget_usd || 0
+        ).toFixed(0)}</option>`
+      );
+    });
+    select.innerHTML = opts.join("");
   }
 
   function renderPricing(p) {
@@ -133,7 +158,8 @@
       note.hidden = false;
       if (st.configured) {
         note.classList.remove("warn");
-        note.textContent = "Stripe is configured — Hunter AI and wallet top-up open Checkout.";
+        note.textContent =
+          "Stripe is configured — subscribe or top up; webhooks unlock membership and wallet credits.";
       } else {
         note.classList.add("warn");
         note.textContent =
@@ -151,11 +177,93 @@
     }
   }
 
+  async function loadEntitlements() {
+    const el = $("#membership-entitlement");
+    const wrap = $("#wallet-project-wrap");
+    const select = $("#wallet-project");
+    const portalBtn = $("#btn-billing-portal");
+    const applyWrap = $("#wallet-apply-wrap");
+    try {
+      const me = await api("/api/billing/me");
+      entitlements = me;
+      if (Array.isArray(me.claimed) && me.claimed.length) {
+        setStatus(me.claimed.map((c) => c.message || "Entitlement claimed").join(" · "));
+      }
+      if (!me.authenticated) {
+        if (el) {
+          el.hidden = false;
+          el.textContent = "Sign in before Checkout so your plan is linked to your account.";
+        }
+        if (wrap) wrap.hidden = true;
+        if (portalBtn) portalBtn.hidden = true;
+        if (applyWrap) applyWrap.hidden = true;
+        return me;
+      }
+      if (el) {
+        el.hidden = false;
+        if (me.membership_active) {
+          el.textContent =
+            `Active: Hunter AI $${Number(me.hunter_ai_tier_usd || 0).toFixed(0)}/mo` +
+            (me.membership_period_end
+              ? ` · period ends ${String(me.membership_period_end).slice(0, 10)}`
+              : "");
+        } else if (me.membership_status) {
+          el.textContent = `Membership status: ${me.membership_status}`;
+        } else {
+          el.textContent =
+            `Signed in · Creator wallet $${Number(me.creator_wallet_usd || 0).toFixed(0)}` +
+            " · pick a plan below to subscribe.";
+        }
+      }
+      if (portalBtn) {
+        portalBtn.hidden = !me.can_manage_subscription;
+      }
+      const projects = Array.isArray(me.projects) ? me.projects : [];
+      if (wrap && select && projects.length) {
+        wrap.hidden = false;
+        fillProjectSelect(select, projects, true);
+      } else if (wrap) {
+        wrap.hidden = true;
+      }
+
+      const bal = Number(me.creator_wallet_usd || 0);
+      if (applyWrap && bal > 0 && projects.length) {
+        applyWrap.hidden = false;
+        const note = $("#wallet-balance-note");
+        if (note) note.textContent = `Portable Creator wallet: $${bal.toFixed(2)}`;
+        fillProjectSelect($("#wallet-apply-project"), projects, false);
+        const amt = $("#wallet-apply-amount");
+        if (amt) {
+          amt.max = String(bal);
+          amt.value = String(Math.floor(bal));
+        }
+      } else if (applyWrap) {
+        applyWrap.hidden = true;
+      }
+      return me;
+    } catch {
+      if (el) {
+        el.hidden = false;
+        el.textContent = "Sign in before Checkout so entitlements land on your account.";
+      }
+      if (portalBtn) portalBtn.hidden = true;
+      if (applyWrap) applyWrap.hidden = true;
+      return { authenticated: false };
+    }
+  }
+
   async function startCheckout(kind) {
     setStatus("");
+    const token = localStorage.getItem(STORAGE_AUTH_TOKEN);
+    if (!token) {
+      setStatus("Sign in first so Stripe can unlock your membership or wallet after payment.", true);
+      return;
+    }
     const body = { kind };
     if (kind === "wallet") {
       body.amount_usd = Number($("#wallet-amount")?.value || 50);
+      const projectId = ($("#wallet-project")?.value || "").trim();
+      if (projectId) body.project_id = projectId;
     } else if (kind === "membership") {
       body.amount_usd = hunterTierUsd;
     }
@@ -188,6 +296,52 @@
     }
   }
 
+  async function openBillingPortal() {
+    setStatus("");
+    const btn = $("#btn-billing-portal");
+    if (btn) btn.disabled = true;
+    try {
+      const data = await api("/api/billing/portal", {
+        method: "POST",
+        body: JSON.stringify({ return_path: "/pricing" }),
+      });
+      if (data.url) {
+        setStatus("Opening Stripe Customer Portal…");
+        window.location.href = data.url;
+        return;
+      }
+      setStatus(data.message || "Billing portal unavailable.", true);
+    } catch (e) {
+      setStatus(e.message || "Could not open billing portal", true);
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  async function applyWalletToProject() {
+    setStatus("");
+    const projectId = ($("#wallet-apply-project")?.value || "").trim();
+    const amount = Number($("#wallet-apply-amount")?.value || 0);
+    if (!projectId) {
+      setStatus("Choose a project to fund.", true);
+      return;
+    }
+    const btn = $("#btn-wallet-apply");
+    if (btn) btn.disabled = true;
+    try {
+      const data = await api("/api/billing/wallet/apply", {
+        method: "POST",
+        body: JSON.stringify({ project_id: projectId, amount_usd: amount }),
+      });
+      setStatus(data.message || "Wallet applied to project.");
+      await loadEntitlements();
+    } catch (e) {
+      setStatus(e.message || "Could not apply wallet", true);
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
   async function boot() {
     try {
       const data = await api("/api/pricing");
@@ -196,16 +350,22 @@
       setStatus(`Could not load pricing rules: ${e.message}`, true);
     }
     await loadBillingStatus();
+    await loadEntitlements();
 
     $("#btn-checkout-membership")?.addEventListener("click", () => startCheckout("membership"));
     $("#btn-checkout-wallet")?.addEventListener("click", () => startCheckout("wallet"));
+    $("#btn-billing-portal")?.addEventListener("click", () => openBillingPortal());
+    $("#btn-wallet-apply")?.addEventListener("click", () => applyWalletToProject());
     $$(".pricing-tier-chip").forEach((chip) => {
       chip.addEventListener("click", () => setHunterTier(chip.dataset.tierUsd));
     });
 
     const params = new URLSearchParams(location.search);
     if (params.get("checkout") === "success") {
-      setStatus("Checkout completed — thank you. Entitlements unlock when webhooks are wired.");
+      setStatus(
+        "Checkout completed — thank you. Your membership or wallet updates when Stripe confirms payment."
+      );
+      await loadEntitlements();
     } else if (params.get("checkout") === "cancel") {
       setStatus("Checkout canceled.", true);
     }

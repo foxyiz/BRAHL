@@ -12,6 +12,12 @@ Vocabulary: [Docs/terminology.md](Docs/terminology.md) · Runbook: [Docs/PRODUCT
 
 **Note:** `https://brahl.qaonair.com` was **unreachable** from this network at push time (`Unable to connect`). Ops must bring the web box up / fix DNS, then continue host env steps.
 
+| Priority | Item |
+|----------|------|
+| P1 | Optional: retag yPAD to only Smoke/UI/API/… (map still works) |
+| P1 | `qoa_web_live` journey has **0 API-tagged** plans — add coverage or remap |
+| P2 | Deploy / EC2 / Stripe keys on host ([todo.md](todo.md) §4 — billing code ready) |
+| P2 | Cloud multi-user sync for schedules/evidence (schema is ready) |
 ## Host ops (do on the server — secrets stay off git)
 
 1. Sync/deploy `main` to the web box

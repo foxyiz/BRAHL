@@ -239,6 +239,13 @@ def init_db() -> None:
             ("social_provider", "TEXT DEFAULT ''"),
             ("social_id", "TEXT DEFAULT ''"),
             ("profile_complete", "INTEGER DEFAULT 0"),
+            # Stripe / billing entitlements
+            ("hunter_ai_tier_usd", "REAL DEFAULT 0"),
+            ("membership_status", "TEXT DEFAULT ''"),
+            ("stripe_customer_id", "TEXT DEFAULT ''"),
+            ("stripe_subscription_id", "TEXT DEFAULT ''"),
+            ("membership_period_end", "TEXT DEFAULT ''"),
+            ("creator_wallet_usd", "REAL DEFAULT 0"),
         ):
             _ensure_column(conn, "users", col, decl)
         # Allow social users without password
@@ -351,6 +358,9 @@ def _row_to_user(row: sqlite3.Row) -> dict[str, Any]:
     name = (row["name"] if "name" in keys else "") or ""
     if not name:
         name = f"{first} {last}".strip()
+    membership_status = (row["membership_status"] if "membership_status" in keys else "") or ""
+    hunter_tier = float(row["hunter_ai_tier_usd"] or 0) if "hunter_ai_tier_usd" in keys else 0.0
+    creator_wallet = float(row["creator_wallet_usd"] or 0) if "creator_wallet_usd" in keys else 0.0
     return {
         "id": row["id"],
         "email": row["email"],
@@ -367,6 +377,15 @@ def _row_to_user(row: sqlite3.Row) -> dict[str, Any]:
         "social_provider": (row["social_provider"] if "social_provider" in keys else "") or "",
         "profile_complete": bool(row["profile_complete"]) if "profile_complete" in keys else True,
         "created_at": row["created_at"],
+        "hunter_ai_tier_usd": hunter_tier,
+        "membership_status": membership_status,
+        "membership_active": membership_status == "active" and hunter_tier > 0,
+        "stripe_customer_id": (row["stripe_customer_id"] if "stripe_customer_id" in keys else "") or "",
+        "stripe_subscription_id": (row["stripe_subscription_id"] if "stripe_subscription_id" in keys else "")
+        or "",
+        "membership_period_end": (row["membership_period_end"] if "membership_period_end" in keys else "")
+        or "",
+        "creator_wallet_usd": round(creator_wallet, 2),
     }
 
 
@@ -579,6 +598,115 @@ def get_user(user_id: str) -> dict[str, Any] | None:
     init_db()
     with _connect() as conn:
         row = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+    return _row_to_user(row) if row else None
+
+
+def apply_membership_entitlement(
+    user_id: str,
+    *,
+    tier_usd: float,
+    status: str = "active",
+    stripe_customer_id: str | None = None,
+    stripe_subscription_id: str | None = None,
+    period_end: str | None = None,
+) -> dict[str, Any]:
+    """Persist Hunter AI subscription entitlement after Stripe Checkout / subscription events."""
+    init_db()
+    user = get_user(user_id)
+    if not user:
+        raise ValueError(f"User not found: {user_id}")
+    status = (status or "active").strip().lower()
+    if status not in ("active", "canceled", "past_due", "incomplete", "trialing", "unpaid"):
+        status = "active"
+    tier = float(tier_usd or 0)
+    if status == "active" and tier <= 0:
+        raise ValueError("Active membership requires a positive Hunter AI tier")
+    cust = (stripe_customer_id if stripe_customer_id is not None else user.get("stripe_customer_id")) or ""
+    sub = (
+        stripe_subscription_id
+        if stripe_subscription_id is not None
+        else user.get("stripe_subscription_id")
+    ) or ""
+    end = period_end if period_end is not None else (user.get("membership_period_end") or "")
+    if status in ("canceled", "unpaid") and tier < 0:
+        tier = 0.0
+    with _connect() as conn:
+        conn.execute(
+            """
+            UPDATE users SET
+                hunter_ai_tier_usd = ?,
+                membership_status = ?,
+                stripe_customer_id = ?,
+                stripe_subscription_id = ?,
+                membership_period_end = ?
+            WHERE id = ?
+            """,
+            (tier, status, str(cust), str(sub), str(end or ""), user_id),
+        )
+        conn.commit()
+    updated = get_user(user_id)
+    if not updated:
+        raise ValueError("Membership update failed")
+    return updated
+
+
+def credit_creator_wallet(user_id: str, amount_usd: float) -> dict[str, Any]:
+    """Add funds to the user's portable Creator QA wallet balance."""
+    init_db()
+    amount = float(amount_usd)
+    if amount <= 0:
+        raise ValueError("Wallet credit must be positive")
+    user = get_user(user_id)
+    if not user:
+        raise ValueError(f"User not found: {user_id}")
+    new_balance = round(float(user.get("creator_wallet_usd") or 0) + amount, 2)
+    with _connect() as conn:
+        conn.execute(
+            "UPDATE users SET creator_wallet_usd = ? WHERE id = ?",
+            (new_balance, user_id),
+        )
+        conn.commit()
+    updated = get_user(user_id)
+    if not updated:
+        raise ValueError("Wallet credit failed")
+    return updated
+
+
+def debit_creator_wallet(user_id: str, amount_usd: float) -> dict[str, Any]:
+    """Remove funds from the portable Creator QA wallet (e.g. apply to a project)."""
+    init_db()
+    amount = float(amount_usd)
+    if amount <= 0:
+        raise ValueError("Wallet debit must be positive")
+    user = get_user(user_id)
+    if not user:
+        raise ValueError(f"User not found: {user_id}")
+    balance = float(user.get("creator_wallet_usd") or 0)
+    if amount > balance + 1e-9:
+        raise ValueError(f"Insufficient Creator wallet balance (${balance:.2f})")
+    new_balance = round(balance - amount, 2)
+    with _connect() as conn:
+        conn.execute(
+            "UPDATE users SET creator_wallet_usd = ? WHERE id = ?",
+            (new_balance, user_id),
+        )
+        conn.commit()
+    updated = get_user(user_id)
+    if not updated:
+        raise ValueError("Wallet debit failed")
+    return updated
+
+
+def find_user_by_stripe_customer(customer_id: str) -> dict[str, Any] | None:
+    cid = (customer_id or "").strip()
+    if not cid:
+        return None
+    init_db()
+    with _connect() as conn:
+        row = conn.execute(
+            "SELECT * FROM users WHERE stripe_customer_id = ? LIMIT 1",
+            (cid,),
+        ).fetchone()
     return _row_to_user(row) if row else None
 
 

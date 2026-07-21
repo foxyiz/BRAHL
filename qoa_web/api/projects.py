@@ -150,6 +150,14 @@ def list_consultant_projects() -> list[dict[str, Any]]:
     ]
 
 
+def user_owns_project(project: dict[str, Any], user: dict[str, Any] | None) -> bool:
+    """True when the user is the Creator owner of the project (required for wallet funding)."""
+    if not user or not project:
+        return False
+    owner = project.get("owner_user_id")
+    return bool(owner) and owner == user.get("id")
+
+
 def user_can_access_project(project: dict[str, Any], user: dict[str, Any] | None) -> bool:
     """Owned projects require matching user; unowned (demo/legacy) stay shared."""
     owner = project.get("owner_user_id")
@@ -242,6 +250,18 @@ def create_project(body: dict[str, Any]) -> dict[str, Any]:
     projects.append(project)
     save_projects(projects)
     return project
+
+
+def credit_project_budget(project_id: str, amount_usd: float) -> dict[str, Any]:
+    """Add a Creator wallet top-up onto a project's QA budget (budget_usd)."""
+    amount = float(amount_usd)
+    if amount <= 0:
+        raise ValueError("Budget credit must be positive")
+    project = get_project(project_id)
+    if not project:
+        raise ValueError(f"Project not found: {project_id}")
+    new_budget = round(float(project.get("budget_usd") or 0) + amount, 2)
+    return update_project(project_id, {"budget_usd": new_budget})
 
 
 def update_project(project_id: str, patch: dict[str, Any]) -> dict[str, Any]:

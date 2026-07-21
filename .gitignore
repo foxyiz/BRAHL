@@ -49,5 +49,9 @@ FoXYiZ/f/.env
 *.pem
 **/yD_Secure.csv
 
+# Runtime billing / auth (local host)
+qoa_web/data/billing_ledger.json
+qoa_web/data/users.db
+
 # Cursor
 .cursor/

@@ -8,6 +8,14 @@ Optional markdown for the arena `.md` drawer. Caps in `api/ai_docs.py`.
 
 Runtime metadata: chat, budget, HITL, BRAHL links. Reset: `python FoXYiZ/pyUtils/reset_demo_data.py`.
 
+## billing_ledger.json
+
+Stripe payment audit / idempotency log (created at runtime). Do not commit secrets; entries reference session/event ids only.
+
+## users.db
+
+Accounts + Hunter AI membership fields + Creator wallet balance (`creator_wallet_usd`).
+
 ## Suites ↔ fStart
 
 | Suite | yPAD | fStart (canonical) |
