@@ -15,8 +15,12 @@ python FoXYiZ\pyUtils\zBatchDash.py --name wave1 --since 20260716
 
 | Tier | Ships with | Scripts |
 |------|------------|---------|
-| **End-user exe** (`FoXYiZ.exe`) | Bundled next to / inside exe | `_paths`, `fOrchestrate`, `xCustom`, `zBatchDash` (+ optional `fGUI`) |
-| **Architect / source** | Full KK tree | Everything below (Arena maintain, deploy, reports) |
+| **End-user package root** (`dist/FoXYiZ_user/pyUtils/`) | Editable Analyze/Heal helpers only | `_paths`, `cleaner`, `yVisualizer`, `zDefects`, `zBatchDash` |
+| **Frozen exe** (`f/_internal/`) | Opaque runtime (not for editing) | engine + bundled `_paths` / `fOrchestrate` / `xCustom` / `zBatchDash` |
+| **Architect / source** (`FoXYiZ/pyUtils/`) | Full KK tree | Everything below (Arena maintain, deploy, reports) |
+
+**Dist rule:** no `fEngine2.py` or `xActions.py` as shippable source. Run = `FoXYiZ.exe`. Any Python users edit = `pyUtils/` only.
+
 
 ## Keep — runtime (exe + Arena Run)
 

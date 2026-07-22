@@ -1,0 +1,156 @@
+PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PReuse_Konfiga_Open,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PReuse_Konfiga_Open,2,Home,xUI,xNavigate,base_url,,,Y
+PReuse_Konfiga_Open,3,Wait,xTime,xTimeWait,4,,,Y
+PKonf_Smoke_Home,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Smoke_Home,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_Smoke_Home,3,Wait,xTime,xTimeWait,4,,,Y
+PKonf_Smoke_Home,4,Title,xUI,xGetTitle,,,page_title_home,Y
+PKonf_Smoke_Home,5,Brand,xUI,xGetText,body_locator,,text_brand,Y
+PKonf_Smoke_Home,6,Hero,xUI,xGetText,body_locator,,text_hero,Y
+PKonf_Smoke_Home,7,Launch,xUI,xGetText,body_locator,,text_launching,Y
+PKonf_Smoke_Features,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Smoke_Features,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_Smoke_Features,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_Smoke_Features,4,Features URL,xUI,xNavigate,features_url,,,Y
+PKonf_Smoke_Features,5,Wait,xTime,xTimeWait,2,,,Y
+PKonf_Smoke_Features,6,Features,xUI,xGetText,body_locator,,text_features,Y
+PKonf_Smoke_Features,7,Config,xUI,xGetText,body_locator,,text_config,Y
+PKonf_Smoke_CapabilityCards,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Smoke_CapabilityCards,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_Smoke_CapabilityCards,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_Smoke_CapabilityCards,4,Features URL,xUI,xNavigate,features_url,,,Y
+PKonf_Smoke_CapabilityCards,5,Wait,xTime,xTimeWait,2,,,Y
+PKonf_Smoke_CapabilityCards,6,Orch,xUI,xGetText,body_locator,,text_orchestration,Y
+PKonf_Smoke_CapabilityCards,7,Evo,xUI,xGetText,body_locator,,text_evolution,Y
+PKonf_Smoke_CapabilityCards,8,Deploy,xUI,xGetText,body_locator,,text_deploy,Y
+PKonf_Smoke_CapabilityCards,9,Proto,xUI,xGetText,body_locator,,text_prototyping,Y
+PKonf_Smoke_CapabilityCards,10,Sec,xUI,xGetText,body_locator,,text_security,Y
+PKonf_Smoke_Workflow,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Smoke_Workflow,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_Smoke_Workflow,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_Smoke_Workflow,4,How URL,xUI,xNavigate,how_url,,,Y
+PKonf_Smoke_Workflow,5,Wait,xTime,xTimeWait,2,,,Y
+PKonf_Smoke_Workflow,6,Workflow,xUI,xGetText,body_locator,,text_workflow,Y
+PKonf_Smoke_Workflow,7,S1,xUI,xGetText,body_locator,,text_step1,Y
+PKonf_Smoke_Workflow,8,Step2,xUI,xClick,step_btn_2,,,Y
+PKonf_Smoke_Workflow,9,Wait,xTime,xTimeWait,1,,,Y
+PKonf_Smoke_Workflow,10,S2,xUI,xGetText,body_locator,,text_step2,Y
+PKonf_Smoke_Workflow,11,Step3,xUI,xClick,step_btn_3,,,Y
+PKonf_Smoke_Workflow,12,Wait,xTime,xTimeWait,1,,,Y
+PKonf_Smoke_Workflow,13,S3,xUI,xGetText,body_locator,,text_step3,Y
+PKonf_Smoke_Workflow,14,Step4,xUI,xClick,step_btn_4,,,Y
+PKonf_Smoke_Workflow,15,Wait,xTime,xTimeWait,1,,,Y
+PKonf_Smoke_Workflow,16,S4,xUI,xGetText,body_locator,,text_step4,Y
+PKonf_Smoke_Workflow,17,Step5,xUI,xClick,step_btn_5,,,Y
+PKonf_Smoke_Workflow,18,Wait,xTime,xTimeWait,1,,,Y
+PKonf_Smoke_Workflow,19,S5,xUI,xGetText,body_locator,,text_step5,Y
+PKonf_Smoke_AgentFramework,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Smoke_AgentFramework,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_Smoke_AgentFramework,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_Smoke_AgentFramework,4,Features URL,xUI,xNavigate,features_url,,,Y
+PKonf_Smoke_AgentFramework,5,Wait,xTime,xTimeWait,2,,,Y
+PKonf_Smoke_AgentFramework,6,Scroll1,xUI,xSendKeys,key_page_down,,,Y
+PKonf_Smoke_AgentFramework,7,Wait,xTime,xTimeWait,1,,,Y
+PKonf_Smoke_AgentFramework,8,Scroll2,xUI,xSendKeys,key_page_down,,,Y
+PKonf_Smoke_AgentFramework,9,Wait,xTime,xTimeWait,1,,,Y
+PKonf_Smoke_AgentFramework,10,Scroll3,xUI,xSendKeys,key_page_down,,,Y
+PKonf_Smoke_AgentFramework,11,Wait,xTime,xTimeWait,1,,,Y
+PKonf_Smoke_AgentFramework,12,Scroll4,xUI,xSendKeys,key_page_down,,,Y
+PKonf_Smoke_AgentFramework,13,Wait,xTime,xTimeWait,1,,,Y
+PKonf_Smoke_AgentFramework,14,FW,xUI,xGetText,body_locator,,text_framework,Y
+PKonf_Smoke_AgentFramework,15,DataMind,xUI,xGetText,body_locator,,text_datamind,Y
+PKonf_Smoke_AgentFramework,16,Support,xUI,xGetText,body_locator,,text_support,Y
+PKonf_Smoke_AgentFramework,17,Guardian,xUI,xGetText,body_locator,,text_guardian,Y
+PKonf_Smoke_NavCTAs,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Smoke_NavCTAs,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_Smoke_NavCTAs,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_Smoke_NavCTAs,4,Create,xUI,xGetText,body_locator,,text_create_agent,Y
+PKonf_Smoke_NavCTAs,5,Start,xUI,xGetText,body_locator,,text_start_building,Y
+PKonf_Smoke_NavCTAs,6,SignIn,xUI,xGetText,body_locator,,text_sign_in,Y
+PKonf_Smoke_BrahlConclusion,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Smoke_BrahlConclusion,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_Smoke_BrahlConclusion,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_Smoke_BrahlConclusion,4,Hero,xUI,xGetText,body_locator,,text_hero,Y
+PKonf_Smoke_BrahlConclusion,5,API,xAPI,xGet,api_host;ep_home,,200,Y
+PKonf_UI_FeaturesAnchor,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_UI_FeaturesAnchor,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_UI_FeaturesAnchor,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_UI_FeaturesAnchor,4,Features URL,xUI,xNavigate,features_url,,,Y
+PKonf_UI_FeaturesAnchor,5,Wait,xTime,xTimeWait,2,,,Y
+PKonf_UI_FeaturesAnchor,6,Heading,xUI,xGetText,body_locator,,text_features,Y
+PKonf_UI_HowAnchor,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_UI_HowAnchor,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_UI_HowAnchor,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_UI_HowAnchor,4,How URL,xUI,xNavigate,how_url,,,Y
+PKonf_UI_HowAnchor,5,Wait,xTime,xTimeWait,2,,,Y
+PKonf_UI_HowAnchor,6,Workflow,xUI,xGetText,body_locator,,text_workflow,Y
+PKonf_UI_FormAnchor,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_UI_FormAnchor,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_UI_FormAnchor,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_UI_FormAnchor,4,Form URL,xUI,xNavigate,form_url,,,Y
+PKonf_UI_FormAnchor,5,Wait,xTime,xTimeWait,2,,,Y
+PKonf_UI_FormAnchor,6,Build,xUI,xGetText,body_locator,,text_build_agent,Y
+PKonf_UI_CapabilitySecurity,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_UI_CapabilitySecurity,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_UI_CapabilitySecurity,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_UI_CapabilitySecurity,4,Features URL,xUI,xNavigate,features_url,,,Y
+PKonf_UI_CapabilitySecurity,5,Wait,xTime,xTimeWait,2,,,Y
+PKonf_UI_CapabilitySecurity,6,Sec,xUI,xGetText,body_locator,,text_security,Y
+PKonf_UI_AgentCards,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_UI_AgentCards,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_UI_AgentCards,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_UI_AgentCards,4,Features URL,xUI,xNavigate,features_url,,,Y
+PKonf_UI_AgentCards,5,Wait,xTime,xTimeWait,2,,,Y
+PKonf_UI_AgentCards,6,Scroll1,xUI,xSendKeys,key_page_down,,,Y
+PKonf_UI_AgentCards,7,Wait,xTime,xTimeWait,1,,,Y
+PKonf_UI_AgentCards,8,Scroll2,xUI,xSendKeys,key_page_down,,,Y
+PKonf_UI_AgentCards,9,Wait,xTime,xTimeWait,1,,,Y
+PKonf_UI_AgentCards,10,Scroll3,xUI,xSendKeys,key_page_down,,,Y
+PKonf_UI_AgentCards,11,Wait,xTime,xTimeWait,1,,,Y
+PKonf_UI_AgentCards,12,Scroll4,xUI,xSendKeys,key_page_down,,,Y
+PKonf_UI_AgentCards,13,Wait,xTime,xTimeWait,1,,,Y
+PKonf_UI_AgentCards,14,DataMind,xUI,xGetText,body_locator,,text_datamind,Y
+PKonf_UI_AgentCards,15,Support,xUI,xGetText,body_locator,,text_support,Y
+PKonf_UI_AgentCards,16,Guardian,xUI,xGetText,body_locator,,text_guardian,Y
+PKonf_Edge_Unknown404,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Edge_Unknown404,2,Unknown,xUI,xNavigate,unknown_url,,,Y
+PKonf_Edge_Unknown404,3,Wait,xTime,xTimeWait,2,,,Y
+PKonf_Edge_Unknown404,4,404,xUI,xGetText,body_locator,,text_404,Y
+PKonf_Edge_Unknown404,5,Sorry,xUI,xGetText,body_locator,,text_404_sorry,Y
+PKonf_Edge_CreateAgent404,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Edge_CreateAgent404,2,Create,xUI,xNavigate,create_url,,,Y
+PKonf_Edge_CreateAgent404,3,Wait,xTime,xTimeWait,2,,,Y
+PKonf_Edge_CreateAgent404,4,404,xUI,xGetText,body_locator,,text_404,Y
+PKonf_Edge_Framework404,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Edge_Framework404,2,FW,xUI,xNavigate,framework_url,,,Y
+PKonf_Edge_Framework404,3,Wait,xTime,xTimeWait,2,,,Y
+PKonf_Edge_Framework404,4,404,xUI,xGetText,body_locator,,text_404,Y
+PKonf_Edge_Login404,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Edge_Login404,2,Login,xUI,xNavigate,login_url,,,Y
+PKonf_Edge_Login404,3,Wait,xTime,xTimeWait,2,,,Y
+PKonf_Edge_Login404,4,404,xUI,xGetText,body_locator,,text_404,Y
+PKonf_Edge_Upload404,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Edge_Upload404,2,Upload,xUI,xNavigate,upload_url,,,Y
+PKonf_Edge_Upload404,3,Wait,xTime,xTimeWait,2,,,Y
+PKonf_Edge_Upload404,4,404,xUI,xGetText,body_locator,,text_404,Y
+PKonf_API_GetHome,1,GET,xAPI,xGet,api_host;ep_home,,200,Y
+PKonf_API_FaviconMissing,1,GET,xAPI,xGet,api_host;ep_favicon,,404,Y
+PKonf_API_RobotsMissing,1,GET,xAPI,xGet,api_host;ep_robots,,404,Y
+PKonf_API_Unknown404,1,GET,xAPI,xGet,api_host;ep_unknown,,404,Y
+PKonf_API_ManifestMissing,1,GET,xAPI,xGet,api_host;ep_manifest,,404,Y
+PKonf_Sec_HttpsHost,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Sec_HttpsHost,2,Home,xUI,xNavigate,base_url,,,Y
+PKonf_Sec_HttpsHost,3,Wait,xTime,xTimeWait,3,,,Y
+PKonf_Sec_HttpsHost,4,Hero,xUI,xGetText,body_locator,,text_hero,Y
+PKonf_Perf_HomeLoad,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PKonf_Perf_HomeLoad,2,Start,xUI,xStartTimer,,,,Y
+PKonf_Perf_HomeLoad,3,Nav,xUI,xNavigate,base_url,,,Y
+PKonf_Perf_HomeLoad,4,Wait,xTime,xTimeWait,3,,,Y
+PKonf_Perf_HomeLoad,5,Stop,xUI,xStopTimer,elapsed,,,Y
+PKonf_Perf_HomeLoad,6,Budget,xUI,xAssertLessThan,{{step:5}};15000,,,Y
+PKonf_Perf_HomeLoad,7,Alive,xUI,xGetText,body_locator,,text_hero,Y
+PKonf_Manual_AgentCreator,1,Open,xReuse,PReuse_Konfiga_Open,,,,N
+PKonf_Manual_AgentCreator,2,Note,xUI,xGetText,body_locator,,text_hero,N
+PKonf_Manual_TryDeploy,1,Open,xReuse,PReuse_Konfiga_Open,,,,N
+PKonf_Manual_TryDeploy,2,Note,xUI,xGetText,body_locator,,text_datamind,N

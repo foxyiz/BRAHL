@@ -77,6 +77,102 @@ def _safe_console_print(text):
             safe = safe.replace(src, dst)
         print(safe.encode('ascii', errors='replace').decode('ascii'), flush=True)
 
+
+class _TeeIO:
+    """Mirror writes to the real stream and a run log file (zlogs.txt)."""
+
+    def __init__(self, primary, log_fp):
+        self._primary = primary
+        self._log = log_fp
+
+    def write(self, data):
+        if data is None:
+            return 0
+        try:
+            self._primary.write(data)
+        except Exception:
+            pass
+        try:
+            self._log.write(data)
+            self._log.flush()
+        except Exception:
+            pass
+        return len(data)
+
+    def flush(self):
+        try:
+            self._primary.flush()
+        except Exception:
+            pass
+        try:
+            self._log.flush()
+        except Exception:
+            pass
+
+    def isatty(self):
+        try:
+            return bool(self._primary.isatty())
+        except Exception:
+            return False
+
+    def __getattr__(self, name):
+        return getattr(self._primary, name)
+
+
+def _append_flat_zlogs(suite_name, output_dir, passed=None, failed=None, total_time=None):
+    """Append a one-line index entry to package-root ``z/zlogs.txt``."""
+    try:
+        flat = os.path.join(_results_z_root(), "zlogs.txt")
+        ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        parts = [ts, suite_name, output_dir]
+        if passed is not None and failed is not None:
+            parts.append(f"pass={passed}")
+            parts.append(f"fail={failed}")
+        if total_time is not None:
+            parts.append(f"secs={total_time:.1f}")
+        with open(flat, "a", encoding="utf-8") as f:
+            f.write(" | ".join(str(p) for p in parts) + "\n")
+    except Exception:
+        pass
+
+
+def _start_zlogs(output_dir, suite_name):
+    """Open ``z/<run>/zlogs.txt`` and tee stdout/stderr into it. Returns restore fn."""
+    log_path = os.path.join(output_dir, "zlogs.txt")
+    log_fp = open(log_path, "w", encoding="utf-8", errors="replace")
+    header = (
+        f"FoXYiZ zlogs — suite={suite_name}\n"
+        f"started={datetime.now().isoformat(timespec='seconds')}\n"
+        f"output_dir={output_dir}\n"
+        f"{'=' * 60}\n"
+    )
+    try:
+        log_fp.write(header)
+        log_fp.flush()
+    except Exception:
+        pass
+    old_out, old_err = sys.stdout, sys.stderr
+    sys.stdout = _TeeIO(old_out, log_fp)
+    sys.stderr = _TeeIO(old_err, log_fp)
+
+    def _restore():
+        try:
+            sys.stdout = old_out
+            sys.stderr = old_err
+        except Exception:
+            pass
+        try:
+            log_fp.write(f"\n{'=' * 60}\nended={datetime.now().isoformat(timespec='seconds')}\n")
+            log_fp.flush()
+        except Exception:
+            pass
+        try:
+            log_fp.close()
+        except Exception:
+            pass
+
+    return log_path, _restore
+
 def print_status(message, status="INFO"):
     """Print status messages with formatting (always flush for Arena live console)."""
     status_symbols = {
@@ -1367,11 +1463,10 @@ def _execute_single_ypad_suite(config_index, total_configs, config_path, main_co
     except Exception:
         pass
 
-    print_header(f"Processing Test Suite {config_index}/{total_configs}")
-
     try:
         ypad_config = load_config(config_path)
     except FileNotFoundError:
+        print_header(f"Processing Test Suite {config_index}/{total_configs}")
         print_status(f"yPAD config not found: {config_path}", "ERROR")
         return
     ypad_name = os.path.splitext(os.path.basename(config_path))[0]
@@ -1383,165 +1478,177 @@ def _execute_single_ypad_suite(config_index, total_configs, config_path, main_co
     if debug_mode:
         os.makedirs(os.path.join(output_dir, "_debug"), exist_ok=True)
 
-    print_status(f"Test Suite: {ypad_name}", "INFO")
-    print_status(f"Output Directory: {output_dir}", "INFO")
+    # Tee console into z/<run>/zlogs.txt for BRAHL Analyze
+    zlogs_path, restore_zlogs = _start_zlogs(output_dir, ypad_name)
+    passed_plans = failed_plans = None
+    total_time = None
 
-    # Load plans and filter by Run=Y (load all plan files and concatenate)
-    y1_plans_list = []
-    for plan_file in ypad_config['input_files']['yPlans']:
-        try:
-            df = load_csv(plan_file)
-            y1_plans_list.append(df)
-            print_status(f"Loaded plan file: {os.path.basename(plan_file)} ({len(df)} plans)", "INFO")
-        except Exception as e:
-            print_status(f"Failed to load plan file {plan_file}: {str(e)}", "ERROR")
-    if y1_plans_list:
-        y1_plans = pd.concat(y1_plans_list, ignore_index=True)
-        print_status(f"Total plans loaded: {len(y1_plans)} from {len(y1_plans_list)} file(s)", "INFO")
-    else:
-        print_status("No plan files could be loaded", "ERROR")
-        return
+    try:
+        print_header(f"Processing Test Suite {config_index}/{total_configs}")
+        print_status(f"Test Suite: {ypad_name}", "INFO")
+        print_status(f"Output Directory: {output_dir}", "INFO")
+        print_status(f"Run log: {zlogs_path}", "INFO")
 
-    # Check if 'Run' column exists (case-insensitive check)
-    run_column = None
-    for col in y1_plans.columns:
-        cleaned_col = col.strip().strip('"').strip("'")
-        if cleaned_col.lower() == 'run':
-            run_column = col
-            break
-
-    if run_column is None:
-        available_columns = ', '.join([f"'{col}'" for col in y1_plans.columns.tolist()])
-        print_status(f"Error: 'Run' column not found in y1Plans.csv", "ERROR")
-        print_status(f"Available columns: {available_columns}", "ERROR")
-        print_status(f"CSV file: {ypad_config['input_files']['yPlans'][0]}", "ERROR")
-        print_status(f"Number of columns: {len(y1_plans.columns)}", "ERROR")
-        return
-
-    plans_to_run = y1_plans[y1_plans[run_column] == 'Y']
-
-    tags_config = main_config.get("tags", [])
-    if tags_config is None:
-        tags_config = []
-    elif isinstance(tags_config, str):
-        tags_config = [tags_config] if tags_config.strip() else []
-    elif not isinstance(tags_config, list):
-        tags_config = []
-
-    tags_column = None
-    for col in y1_plans.columns:
-        cleaned_col = col.strip().strip('"').strip("'")
-        if cleaned_col.lower() == 'tags':
-            tags_column = col
-            break
-
-    if tags_column and tags_config:
-        tags_lower = [str(tag).strip().lower() for tag in tags_config if tag]
-        if 'all' in tags_lower:
-            print_status("Tag filter: 'All' specified - running all plans", "INFO")
+        # Load plans and filter by Run=Y (load all plan files and concatenate)
+        y1_plans_list = []
+        for plan_file in ypad_config['input_files']['yPlans']:
+            try:
+                df = load_csv(plan_file)
+                y1_plans_list.append(df)
+                print_status(f"Loaded plan file: {os.path.basename(plan_file)} ({len(df)} plans)", "INFO")
+            except Exception as e:
+                print_status(f"Failed to load plan file {plan_file}: {str(e)}", "ERROR")
+        if y1_plans_list:
+            y1_plans = pd.concat(y1_plans_list, ignore_index=True)
+            print_status(f"Total plans loaded: {len(y1_plans)} from {len(y1_plans_list)} file(s)", "INFO")
         else:
-            def tag_matches(row):
-                plan_tags_raw = str(row[tags_column]).strip().lower() if pd.notna(row[tags_column]) else ""
-                plan_tags = [t.strip().strip('"').strip("'") for t in plan_tags_raw.split(';') if t.strip()]
-                return any(tag_lower in plan_tags for tag_lower in tags_lower)
+            print_status("No plan files could be loaded", "ERROR")
+            return
 
-            plans_to_run = plans_to_run[plans_to_run.apply(tag_matches, axis=1)]
-            if len(tags_lower) > 0:
-                print_status(f"Tag filter: Running plans with tags: {', '.join(tags_config)}", "INFO")
-    elif tags_config and not tags_column:
-        print_status("Warning: Tags specified but 'Tags' column not found in y1Plans.csv - running all plans", "WARNING")
+        # Check if 'Run' column exists (case-insensitive check)
+        run_column = None
+        for col in y1_plans.columns:
+            cleaned_col = col.strip().strip('"').strip("'")
+            if cleaned_col.lower() == 'run':
+                run_column = col
+                break
 
-    print_status(f"Found {len(plans_to_run)} plans to execute", "INFO")
+        if run_column is None:
+            available_columns = ', '.join([f"'{col}'" for col in y1_plans.columns.tolist()])
+            print_status(f"Error: 'Run' column not found in y1Plans.csv", "ERROR")
+            print_status(f"Available columns: {available_columns}", "ERROR")
+            print_status(f"CSV file: {ypad_config['input_files']['yPlans'][0]}", "ERROR")
+            print_status(f"Number of columns: {len(y1_plans.columns)}", "ERROR")
+            return
 
-    if len(plans_to_run) == 0:
-        print_status("No plans marked for execution (Run=Y)", "WARNING")
-        return
+        plans_to_run = y1_plans[y1_plans[run_column] == 'Y']
 
-    all_results = []
-    for plan_index, (_, plan_row) in enumerate(plans_to_run.iterrows(), 1):
-        plan_args = (plan_row, ypad_config, output_dir, timeout, plan_index, len(plans_to_run))
-        results = process_plan(plan_args)
-        all_results.extend(results)
-        print_progress(plan_index, len(plans_to_run), "plans")
+        tags_config = main_config.get("tags", [])
+        if tags_config is None:
+            tags_config = []
+        elif isinstance(tags_config, str):
+            tags_config = [tags_config] if tags_config.strip() else []
+        elif not isinstance(tags_config, list):
+            tags_config = []
 
-    print()
+        tags_column = None
+        for col in y1_plans.columns:
+            cleaned_col = col.strip().strip('"').strip("'")
+            if cleaned_col.lower() == 'tags':
+                tags_column = col
+                break
 
-    print_status("Generating results and dashboard...", "INFO")
-    df = pd.DataFrame(all_results)
-    df.to_csv(os.path.join(output_dir, f"{ypad_name}_zResults.csv"), index=False)
-    suite_url = ypad_config.get('url') if isinstance(ypad_config, dict) else None
-    run_meta = {
-        'tags': tags_config,
-        'thread_count': main_config.get('thread_count', 1),
-        'timeout': timeout,
-        'headless': main_config.get('headless', False),
-        'capture': main_config.get('capture') or xActions.get_capture_config(),
-        'wall_clock_seconds': time.time() - start_time,
-        'suite_url': suite_url,
-    }
-    generate_dashboard(df, output_dir, ypad_name, plans_df=plans_to_run, run_meta=run_meta)
+        if tags_column and tags_config:
+            tags_lower = [str(tag).strip().lower() for tag in tags_config if tag]
+            if 'all' in tags_lower:
+                print_status("Tag filter: 'All' specified - running all plans", "INFO")
+            else:
+                def tag_matches(row):
+                    plan_tags_raw = str(row[tags_column]).strip().lower() if pd.notna(row[tags_column]) else ""
+                    plan_tags = [t.strip().strip('"').strip("'") for t in plan_tags_raw.split(';') if t.strip()]
+                    return any(tag_lower in plan_tags for tag_lower in tags_lower)
 
-    try:
-        removed = cleanup_empty_directories(output_dir)
-        if removed > 0:
-            print_status(f"Cleaned up {removed} empty directory(ies)", "INFO")
-    except Exception as e:
-        logger.debug(f"Failed to clean up empty directories: {str(e)}")
+                plans_to_run = plans_to_run[plans_to_run.apply(tag_matches, axis=1)]
+                if len(tags_lower) > 0:
+                    print_status(f"Tag filter: Running plans with tags: {', '.join(tags_config)}", "INFO")
+        elif tags_config and not tags_column:
+            print_status("Warning: Tags specified but 'Tags' column not found in y1Plans.csv - running all plans", "WARNING")
 
-    try:
-        err_csv = os.path.join(output_dir, "_errors.csv")
-        if os.path.exists(err_csv):
-            print_status(f"Error summary saved: {err_csv}", "WARNING")
-    except Exception:
-        pass
+        print_status(f"Found {len(plans_to_run)} plans to execute", "INFO")
 
-    total_plans = len(plans_to_run)
-    plan_results = df.groupby('PlanId').agg({
-        'Result': lambda x: 'Pass' if (x == 'Pass').all() else 'Fail'
-    }).reset_index()
+        if len(plans_to_run) == 0:
+            print_status("No plans marked for execution (Run=Y)", "WARNING")
+            return
 
-    passed_plans = len(plan_results[plan_results['Result'] == 'Pass'])
-    failed_plans = len(plan_results[plan_results['Result'] == 'Fail'])
-    total_time = time.time() - start_time
+        all_results = []
+        for plan_index, (_, plan_row) in enumerate(plans_to_run.iterrows(), 1):
+            plan_args = (plan_row, ypad_config, output_dir, timeout, plan_index, len(plans_to_run))
+            results = process_plan(plan_args)
+            all_results.extend(results)
+            print_progress(plan_index, len(plans_to_run), "plans")
 
-    dashboard_path = os.path.join(output_dir, f"{ypad_name}_zDash.html")
+        print()
 
-    summary_stats = {
-        'total_plans': total_plans,
-        'passed': passed_plans,
-        'failed': failed_plans,
-        'total_time': total_time,
-        'output_dir': output_dir,
-        'dashboard_path': dashboard_path
-    }
+        print_status("Generating results and dashboard...", "INFO")
+        df = pd.DataFrame(all_results)
+        df.to_csv(os.path.join(output_dir, f"{ypad_name}_zResults.csv"), index=False)
+        suite_url = ypad_config.get('url') if isinstance(ypad_config, dict) else None
+        run_meta = {
+            'tags': tags_config,
+            'thread_count': main_config.get('thread_count', 1),
+            'timeout': timeout,
+            'headless': main_config.get('headless', False),
+            'capture': main_config.get('capture') or xActions.get_capture_config(),
+            'wall_clock_seconds': time.time() - start_time,
+            'suite_url': suite_url,
+        }
+        generate_dashboard(df, output_dir, ypad_name, plans_df=plans_to_run, run_meta=run_meta)
 
-    print_summary(summary_stats)
-    print_status(f"Test suite '{ypad_name}' completed successfully!", "SUCCESS")
+        try:
+            removed = cleanup_empty_directories(output_dir)
+            if removed > 0:
+                print_status(f"Cleaned up {removed} empty directory(ies)", "INFO")
+        except Exception as e:
+            logger.debug(f"Failed to clean up empty directories: {str(e)}")
 
-    try:
-        if hasattr(xActions, 'UIActionHandler'):
-            if hasattr(xActions.UIActionHandler, '_shared_driver') and xActions.UIActionHandler._shared_driver:
-                try:
-                    xActions.UIActionHandler._shared_driver.quit()
-                except Exception:
-                    pass
-                xActions.UIActionHandler._shared_driver = None
-            if getattr(xActions.UIActionHandler, '_chrome_user_data_dir', None):
-                try:
-                    shutil.rmtree(xActions.UIActionHandler._chrome_user_data_dir, ignore_errors=True)
-                except Exception:
-                    pass
-                xActions.UIActionHandler._chrome_user_data_dir = None
+        try:
+            err_csv = os.path.join(output_dir, "_errors.csv")
+            if os.path.exists(err_csv):
+                print_status(f"Error summary saved: {err_csv}", "WARNING")
+        except Exception:
+            pass
 
-            if hasattr(xActions.UIActionHandler, '_thread_local'):
-                if hasattr(xActions.UIActionHandler._thread_local, 'driver') and xActions.UIActionHandler._thread_local.driver:
+        total_plans = len(plans_to_run)
+        plan_results = df.groupby('PlanId').agg({
+            'Result': lambda x: 'Pass' if (x == 'Pass').all() else 'Fail'
+        }).reset_index()
+
+        passed_plans = len(plan_results[plan_results['Result'] == 'Pass'])
+        failed_plans = len(plan_results[plan_results['Result'] == 'Fail'])
+        total_time = time.time() - start_time
+
+        dashboard_path = os.path.join(output_dir, f"{ypad_name}_zDash.html")
+
+        summary_stats = {
+            'total_plans': total_plans,
+            'passed': passed_plans,
+            'failed': failed_plans,
+            'total_time': total_time,
+            'output_dir': output_dir,
+            'dashboard_path': dashboard_path
+        }
+
+        print_summary(summary_stats)
+        print_status(f"Run log saved: {zlogs_path}", "INFO")
+        print_status(f"Test suite '{ypad_name}' completed successfully!", "SUCCESS")
+
+        try:
+            if hasattr(xActions, 'UIActionHandler'):
+                if hasattr(xActions.UIActionHandler, '_shared_driver') and xActions.UIActionHandler._shared_driver:
                     try:
-                        xActions.UIActionHandler._thread_local.driver.quit()
+                        xActions.UIActionHandler._shared_driver.quit()
                     except Exception:
                         pass
-                    xActions.UIActionHandler._thread_local.driver = None
-    except Exception:
-        pass
+                    xActions.UIActionHandler._shared_driver = None
+                if getattr(xActions.UIActionHandler, '_chrome_user_data_dir', None):
+                    try:
+                        shutil.rmtree(xActions.UIActionHandler._chrome_user_data_dir, ignore_errors=True)
+                    except Exception:
+                        pass
+                    xActions.UIActionHandler._chrome_user_data_dir = None
+
+                if hasattr(xActions.UIActionHandler, '_thread_local'):
+                    if hasattr(xActions.UIActionHandler._thread_local, 'driver') and xActions.UIActionHandler._thread_local.driver:
+                        try:
+                            xActions.UIActionHandler._thread_local.driver.quit()
+                        except Exception:
+                            pass
+                        xActions.UIActionHandler._thread_local.driver = None
+        except Exception:
+            pass
+    finally:
+        restore_zlogs()
+        _append_flat_zlogs(ypad_name, output_dir, passed_plans, failed_plans, total_time)
 
 
 def run_ypad_suite_worker(args):

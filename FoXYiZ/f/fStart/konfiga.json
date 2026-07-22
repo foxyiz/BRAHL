@@ -1,0 +1,23 @@
+{
+  "configs": [
+    "y/konfiga/konfiga.json"
+  ],
+  "thread_count": 1,
+  "timeout": 15,
+  "headless": true,
+  "debug": false,
+  "tags": [
+    "Smoke",
+    "UI",
+    "Edge",
+    "API",
+    "Security",
+    "Perf"
+  ],
+  "capture": {
+    "image": "on_fail",
+    "video": "off",
+    "video_fps": 2,
+    "subdir": ""
+  }
+}

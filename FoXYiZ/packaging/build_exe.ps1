@@ -7,8 +7,9 @@
 #   f/fStart/                     run configs
 #   x/xCapa.csv                   action capability catalog (reference)
 #   y/<suite>/                    editable yPAD
-#   z/                            results
-#   Docs/                         BRAHL + terminology + how-to
+#   z/                            results (+ per-run zlogs.txt)
+#   _pyUtils/                     BRAHL helpers (Python required)
+#   _Docs/                        BRAHL · FoXYiZ · QAonAir (+ _deprecated/)
 
 $ErrorActionPreference = "Stop"
 $Packaging = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -49,7 +50,9 @@ foreach ($d in @(
   (Join-Path $UserDist "x"),
   (Join-Path $UserDist "y\Math"),
   (Join-Path $UserDist "z"),
-  (Join-Path $UserDist "Docs")
+  (Join-Path $UserDist "_pyUtils"),
+  (Join-Path $UserDist "_Docs"),
+  (Join-Path $UserDist "_Docs\_deprecated")
 )) {
   New-Item -ItemType Directory -Path $d -Force | Out-Null
 }
@@ -80,12 +83,51 @@ Copy-Item (Join-Path $FoXYiZ "y\Math\y1Plans.csv") (Join-Path $UserDist "y\Math\
 Copy-Item (Join-Path $FoXYiZ "y\Math\y2Actions.csv") (Join-Path $UserDist "y\Math\y2Actions.csv") -Force
 Copy-Item (Join-Path $FoXYiZ "y\Math\y3Designs.csv") (Join-Path $UserDist "y\Math\y3Designs.csv") -Force
 
-# Package docs (self-contained — no KK/Docs required at runtime)
-Copy-Item (Join-Path $DocsSrc "BRAHL.md") (Join-Path $UserDist "Docs\BRAHL.md") -Force
-Copy-Item (Join-Path $DocsSrc "terminology.md") (Join-Path $UserDist "Docs\terminology.md") -Force
-Copy-Item (Join-Path $DocsSrc "DISTRIBUTION.md") (Join-Path $UserDist "Docs\DISTRIBUTION.md") -Force
-Copy-Item (Join-Path $DocsSrc "USER_GUIDE.md") (Join-Path $UserDist "Docs\USER_GUIDE.md") -Force
-Copy-Item (Join-Path $Packaging "README.md") (Join-Path $UserDist "Docs\PACKAGING.md") -Force
+# _pyUtils — BRAHL post-run helpers only (no fEngine2 / xActions source).
+$pyUtilsSrc = Join-Path $FoXYiZ "pyUtils"
+$pyUtilsDst = Join-Path $UserDist "_pyUtils"
+$pyUtilsShip = @(
+  "_paths.py",
+  "cleaner.py",
+  "yVisualizer.py",
+  "zDefects.py",
+  "zBatchDash.py"
+)
+foreach ($script in $pyUtilsShip) {
+  $src = Join-Path $pyUtilsSrc $script
+  if (Test-Path $src) {
+    Copy-Item $src (Join-Path $pyUtilsDst $script) -Force
+  }
+}
+$pyUtilsReadme = @"
+# _pyUtils (packaged)
+
+The only **editable Python** in this distributable. Run uses ``f\FoXYiZ.exe``.
+
+Docs: ``_Docs\FoXYiZ.md`` · ``_Docs\BRAHL.md`` · ``_Docs\QAonAir.md``
+
+``````powershell
+python _pyUtils\cleaner.py
+python _pyUtils\yVisualizer.py
+python _pyUtils\zDefects.py
+python _pyUtils\zBatchDash.py --name mybatch --since 20260721
+``````
+"@
+Set-Content -Path (Join-Path $pyUtilsDst "README.md") -Value $pyUtilsReadme -Encoding UTF8
+
+# Seed empty flat zlogs index (engine appends on each run)
+Set-Content -Path (Join-Path $UserDist "z\zlogs.txt") -Value "# FoXYiZ zlogs index — one line per suite run`r`n" -Encoding UTF8
+
+# _Docs — primary project docs only (BRAHL · FoXYiZ · QAonAir)
+$docsDst = Join-Path $UserDist "_Docs"
+foreach ($doc in @("README.md", "BRAHL.md", "FoXYiZ.md", "QAonAir.md")) {
+  Copy-Item (Join-Path $DocsSrc $doc) (Join-Path $docsDst $doc) -Force
+}
+$depSrc = Join-Path $DocsSrc "_deprecated"
+$depDst = Join-Path $docsDst "_deprecated"
+if (Test-Path $depSrc) {
+  Copy-Item (Join-Path $depSrc "*") $depDst -Force
+}
 
 $readme = @"
 FoXYiZ — end-user package
@@ -96,22 +138,27 @@ Formula:  f(x, y) = z
 Quick start (from this folder):
   .\f\FoXYiZ.exe --config f\fStart\Math.json
 
-Or double-click / bare run (uses f\fStart\default.json -> Math Smoke):
+Or bare run (f\fStart\default.json -> Math Smoke):
   .\f\FoXYiZ.exe
 
 Layout:
-  f\FoXYiZ.exe      engine bootloader
-  f\_internal\      REQUIRED runtime libs (do not delete / move alone)
-  f\fStart\         run configs (JSON) — edit these
-  x\xCapa.csv       action catalog — what you can put in y2Actions
-  y\<suite>\        yPAD plans / actions / designs (CSV) — edit these
-  z\                run results (created automatically)
-  Docs\             BRAHL, terminology, distribution notes
+  f\FoXYiZ.exe + f\_internal\   engine (both required)
+  f\fStart\                     run configs
+  x\xCapa.csv                   action catalog
+  y\<suite>\                    yPAD suites
+  z\                            results + zlogs
+  _pyUtils\                     Analyze helpers (optional Python)
+  _Docs\                        BRAHL · FoXYiZ · QAonAir
 
-IMPORTANT: FoXYiZ.exe will NOT run without f\_internal\ beside it.
-Ship the whole FoXYiZ_user folder (or zip it). Never ship the .exe alone.
+Docs (primary):
+  _Docs\README.md     index + skill map
+  _Docs\BRAHL.md      lifecycle skill
+  _Docs\FoXYiZ.md     engine / package skill
+  _Docs\QAonAir.md    marketplace / Arena skill
 
-Read next: Docs\USER_GUIDE.md · Docs\BRAHL.md · Docs\DISTRIBUTION.md
+Deprecated generics: _Docs\_deprecated\ (do not extend).
+
+IMPORTANT: Never ship FoXYiZ.exe without f\_internal\.
 "@
 Set-Content -Path (Join-Path $UserDist "README.txt") -Value $readme -Encoding UTF8
 
