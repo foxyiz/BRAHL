@@ -15,9 +15,8 @@ python FoXYiZ\pyUtils\zBatchDash.py --name wave1 --since 20260716
 
 | Tier | Ships with | Scripts |
 |------|------------|---------|
-| **End-user package root** (`dist/FoXYiZ_user/pyUtils/`) | Editable Analyze/Heal helpers only | `_paths`, `cleaner`, `yVisualizer`, `zDefects`, `zBatchDash` |
-| **Frozen exe** (`f/_internal/`) | Opaque runtime (not for editing) | engine + bundled `_paths` / `fOrchestrate` / `xCustom` / `zBatchDash` |
-| **Architect / source** (`FoXYiZ/pyUtils/`) | Full KK tree | Everything below (Arena maintain, deploy, reports) |
+| **End-user package root** (`dist/FoXYiZ_user/pyUtils/` or `_pyUtils/`) | Editable Analyze/Heal helpers only | `_paths`, `cleaner`, `yVisualizer`, `zDefects`, `zBatchDash` |
+| **Architect** | Full tree | + `site_shot_author.py` / `site_shot_roll.py` (Capture suites → GIF/filmstrip), Arena maintain, … |
 
 **Dist rule:** no `fEngine2.py` or `xActions.py` as shippable source. Run = `FoXYiZ.exe`. Any Python users edit = `pyUtils/` only.
 
@@ -47,7 +46,8 @@ python FoXYiZ\pyUtils\zBatchDash.py --name wave1 --since 20260716
 | `refresh_qoa_web_live.py` | V1 patch + journey regen in one command |
 | `fix_y3_journey_locators.py` | Locator append (called by journey gen) |
 | `patch_ypad_urls.py` | Post-deploy URL swap for prod smoke |
-| `export_demo_bundle.py` | Demo zip for deploy handoff |
+| `site_shot_author.py` | Generate Capture screenshot yPAD from known routes or `--crawl` |
+| `site_shot_roll.py` | PNG sequence → animated GIF + film-strip PNG |
 
 ## Optional reports
 

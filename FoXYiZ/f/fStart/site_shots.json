@@ -1,0 +1,21 @@
+{
+  "configs": [
+    "y/site_shots/site_shots.json"
+  ],
+  "thread_count": 1,
+  "timeout": 15,
+  "headless": true,
+  "debug": false,
+  "tags": [
+    "Capture",
+    "Smoke"
+  ],
+  "capture": {
+    "image": "on_fail",
+    "video": "off",
+    "video_fps": 2,
+    "subdir": "",
+    "overlay": "on",
+    "overlay_ms": 250
+  }
+}

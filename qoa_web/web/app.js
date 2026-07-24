@@ -56,12 +56,11 @@ maybeApplyProfileFromQuery();
 })();
 
 (function redirectIfNoAccess() {
-  const path = location.pathname.replace(/\/$/, "") || "/";
-  if (path !== "/app" && path !== "/index.html") return;
-  if (window.QoaInviteGate && !window.QoaInviteGate.isInviteTrialValid()) {
-    location.replace("/welcome");
-  }
+  /* KK2 desktop: no invite/welcome gate */
 })();
+
+const DESKTOP_MODE = true;
+let desktopWorkspace = null;
 
 let pollTimer = null;
 let selectedRun = null;
@@ -89,6 +88,7 @@ const ypadState = {
   tab: "plans",
   data: null,
   editMode: false,
+  editorDirty: false,
   filter: "",
   selectedIndex: -1,
   insights: null,
@@ -186,6 +186,10 @@ function showPhase(name) {
   }
   if (name === "analyze" && selectedRun && isAiOn()) {
     /* user can click AI analyze or we leave prior result visible */
+  }
+  if (name === "run") {
+    loadRunRecent();
+    refreshRunCaptureStrip();
   }
   if (["nalanda", "atomic77", "promoter", "cost"].includes(name)) {
     try {
@@ -1153,6 +1157,153 @@ function zDashHref(dashboardRelPath) {
   return null;
 }
 
+const CAPTURE_DEFAULTS = {
+  image: "on_fail",
+  video: "off",
+  video_fps: 2,
+  subdir: "",
+  overlay: "off",
+  overlay_ms: 250,
+};
+
+function readCaptureForm() {
+  return {
+    image: $("#cap-image")?.value || CAPTURE_DEFAULTS.image,
+    video: $("#cap-video")?.value || CAPTURE_DEFAULTS.video,
+    video_fps: Math.max(1, Math.min(10, Number($("#cap-video-fps")?.value || 2))),
+    subdir: ($("#cap-subdir")?.value || "").trim(),
+    overlay: $("#cap-overlay")?.value || CAPTURE_DEFAULTS.overlay,
+    overlay_ms: Math.max(0, Math.min(3000, Number($("#cap-overlay-ms")?.value || 250))),
+  };
+}
+
+function fillCaptureForm(capture) {
+  const c = { ...CAPTURE_DEFAULTS, ...(capture && typeof capture === "object" ? capture : {}) };
+  if ($("#cap-image")) $("#cap-image").value = c.image || "on_fail";
+  if ($("#cap-video")) $("#cap-video").value = c.video || "off";
+  if ($("#cap-video-fps")) $("#cap-video-fps").value = String(c.video_fps ?? 2);
+  if ($("#cap-subdir")) $("#cap-subdir").value = c.subdir || "";
+  if ($("#cap-overlay")) $("#cap-overlay").value = c.overlay || "off";
+  if ($("#cap-overlay-ms")) $("#cap-overlay-ms").value = String(c.overlay_ms ?? 250);
+}
+
+function applyCaptureFormToJson() {
+  const editor = $("#fstart-json-editor");
+  if (!editor) return;
+  let parsed;
+  try {
+    parsed = JSON.parse(editor.value || "{}");
+  } catch {
+    return;
+  }
+  parsed.capture = readCaptureForm();
+  editor.value = JSON.stringify(parsed, null, 2);
+}
+
+function syncCaptureFormFromJson() {
+  const editor = $("#fstart-json-editor");
+  if (!editor) return;
+  try {
+    const parsed = JSON.parse(editor.value || "{}");
+    fillCaptureForm(parsed.capture);
+  } catch {
+    /* ignore while typing invalid JSON */
+  }
+}
+
+function formatCaptureSummary(capture) {
+  const c = { ...CAPTURE_DEFAULTS, ...(capture || {}) };
+  return `image=${c.image} · video=${c.video} · overlay=${c.overlay}`;
+}
+
+async function refreshRunCaptureStrip() {
+  const strip = $("#run-capture-strip");
+  const summary = $("#run-capture-summary");
+  const path = $("#config-select")?.value;
+  if (!strip || !summary) return;
+  if (!path || !runProfilesUiCapable) {
+    strip.hidden = true;
+    return;
+  }
+  try {
+    const data = await api(`/api/configs/content?path=${encodeURIComponent(path)}`);
+    summary.textContent = formatCaptureSummary(data.content?.capture);
+    strip.hidden = false;
+  } catch {
+    strip.hidden = true;
+  }
+}
+
+let shotsModalRun = null;
+
+function closeShotsModal() {
+  const modal = $("#shots-modal");
+  if (modal) modal.hidden = true;
+  shotsModalRun = null;
+}
+
+async function openShotsModal(runName) {
+  if (!runName) return;
+  shotsModalRun = runName;
+  const modal = $("#shots-modal");
+  const grid = $("#shots-modal-grid");
+  const meta = $("#shots-modal-meta");
+  if (!modal || !grid) return;
+  modal.hidden = false;
+  grid.innerHTML = `<p class="hint">Loading…</p>`;
+  if (meta) meta.textContent = runName;
+  try {
+    const arts = await api(`/api/runs/${encodeURIComponent(runName)}/artifacts`);
+    const items = [...(arts.overlay_shots || []), ...(arts.screenshots || [])];
+    if (!items.length) {
+      grid.innerHTML = `<p class="hint">No PNGs in this run.</p>`;
+      return;
+    }
+    grid.innerHTML = items
+      .map(
+        (it) =>
+          `<a class="shot-card" href="${escapeHtml(it.url)}" target="_blank" title="${escapeHtml(it.path)}">` +
+          `<img src="${escapeHtml(it.url)}" alt="${escapeHtml(it.name || "")}" loading="lazy" />` +
+          `<span>${escapeHtml(it.name || it.path)}</span></a>`
+      )
+      .join("");
+  } catch (e) {
+    grid.innerHTML = `<p class="form-error">${escapeHtml(e.message)}</p>`;
+  }
+}
+
+function renderArtifactActionsHtml(arts, { asButtons = true } = {}) {
+  if (!arts) return "";
+  const bits = [];
+  if (arts.visual_playback?.url) {
+    bits.push(
+      `<a href="${escapeHtml(arts.visual_playback.url)}" target="_blank" class="secondary link-btn sm">Visual playback</a>`
+    );
+  }
+  const shotCount = (arts.counts?.screenshots || 0) + (arts.counts?.overlays || 0);
+  if (shotCount > 0 && asButtons) {
+    bits.push(
+      `<button type="button" class="secondary link-btn sm js-open-shots" data-run="${escapeHtml(arts.run_name)}">Screenshots (${shotCount})</button>`
+    );
+  }
+  if (arts.gif?.url) {
+    bits.push(`<a href="${escapeHtml(arts.gif.url)}" target="_blank" class="secondary link-btn sm">GIF</a>`);
+  }
+  if (arts.filmstrip?.url) {
+    bits.push(
+      `<a href="${escapeHtml(arts.filmstrip.url)}" target="_blank" class="secondary link-btn sm">Filmstrip</a>`
+    );
+  }
+  return bits.join(" ");
+}
+
+function bindArtifactActionClicks(root) {
+  if (!root) return;
+  root.querySelectorAll(".js-open-shots").forEach((btn) => {
+    btn.addEventListener("click", () => openShotsModal(btn.getAttribute("data-run")));
+  });
+}
+
 async function showRunPostActions(runName, batchDashboard) {
   const wrap = $("#run-post-actions");
   if (!wrap) return;
@@ -1165,6 +1316,13 @@ async function showRunPostActions(runName, batchDashboard) {
   wrap.hidden = false;
   const link = $("#run-zdash-link");
   const batchLink = $("#run-batch-zdash-link");
+  const makeRoll = $("#run-make-roll-btn");
+  const artLinks = $("#run-artifact-links");
+  const rollHint = $("#run-roll-hint");
+  if (makeRoll) makeRoll.hidden = true;
+  if (artLinks) artLinks.innerHTML = "";
+  if (rollHint) rollHint.hidden = true;
+
   if (batchLink) {
     if (hasBatch) {
       const path = String(batchDashboard).replace(/\\/g, "/");
@@ -1184,15 +1342,101 @@ async function showRunPostActions(runName, batchDashboard) {
       } catch {
         /* stats not ready */
       }
-      if (href) {
-        link.href = href;
-        link.hidden = false;
-      } else {
-        link.hidden = true;
+      if (!href) {
+        href = `/api/files/z/${encodeURIComponent(runName)}/${encodeURIComponent(runName.split("_").slice(2).join("_") || "suite")}_zDash.html`;
+        try {
+          const arts = await api(`/api/runs/${encodeURIComponent(runName)}/artifacts`);
+          if (arts.dashboard?.url) href = arts.dashboard.url;
+        } catch {
+          /* keep guess */
+        }
       }
+      link.href = href;
+      link.hidden = false;
+      link.textContent = "Open zDash";
     } else {
       link.hidden = true;
     }
+  }
+
+  if (hasRun) {
+    try {
+      const arts = await api(`/api/runs/${encodeURIComponent(runName)}/artifacts`);
+      const shotCount = (arts.counts?.screenshots || 0) + (arts.counts?.overlays || 0);
+      if (artLinks) {
+        artLinks.innerHTML = renderArtifactActionsHtml(arts, { asButtons: true });
+        bindArtifactActionClicks(artLinks);
+      }
+      if (makeRoll && shotCount > 0) {
+        makeRoll.hidden = false;
+        makeRoll.textContent = arts.gif ? "Remake film roll" : "Make film roll";
+        makeRoll.onclick = async () => {
+          makeRoll.disabled = true;
+          setStatus("Building film roll into zDash…");
+          try {
+            await api(`/api/runs/${encodeURIComponent(runName)}/filmstrip`, { method: "POST", body: "{}" });
+            setStatus("Film roll ready — open GIF / Filmstrip / zDash");
+            await showRunPostActions(runName, batchDashboard);
+          } catch (e) {
+            setStatus(`Film roll failed: ${e.message}`);
+          } finally {
+            makeRoll.disabled = false;
+          }
+        };
+      } else if (rollHint && shotCount === 0) {
+        rollHint.hidden = false;
+        rollHint.textContent =
+          "No PNGs in this run — set Capture image=on (or on_fail with failures) to enable film roll.";
+      }
+    } catch {
+      /* artifacts optional */
+    }
+  }
+  await loadRunRecent();
+}
+
+async function loadRunRecent() {
+  const wrap = $("#run-recent");
+  const list = $("#run-recent-list");
+  if (!wrap || !list) return;
+  const suite = state.suiteName || "";
+  if (!suite) {
+    wrap.hidden = true;
+    return;
+  }
+  try {
+    const { runs } = await api(`/api/runs?suite=${encodeURIComponent(suite)}`);
+    const rows = (runs || []).slice(0, 8);
+    if (!rows.length) {
+      wrap.hidden = true;
+      list.innerHTML = "";
+      return;
+    }
+    list.innerHTML = rows
+      .map((r) => {
+        const when = formatRunTimestamp(r.timestamp);
+        const dash = zDashHref(r.dashboard);
+        const dashBtn = dash
+          ? `<a href="${escapeHtml(dash)}" target="_blank" class="linkish">zDash</a>`
+          : "";
+        return (
+          `<li><span class="run-name">${escapeHtml(r.name)}</span>` +
+          `<span class="meta">${when ? escapeHtml(when) + " · " : ""}${r.passes}/${r.total_plans ?? "?"} pass · ${r.fails} fail</span>` +
+          `${dashBtn}` +
+          `<button type="button" class="linkish js-run-analyze" data-run="${escapeHtml(r.name)}">Analyze</button></li>`
+        );
+      })
+      .join("");
+    list.querySelectorAll(".js-run-analyze").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selectedRun = btn.getAttribute("data-run");
+        showPhase("analyze");
+        loadRuns();
+      });
+    });
+    wrap.hidden = false;
+  } catch {
+    wrap.hidden = true;
   }
 }
 
@@ -1202,6 +1446,14 @@ const fstartMetaCache = {};
 const RUN_PROFILE_DEFAULT = ["Smoke", "UI", "API", "Performance", "Security", "Manual"];
 let runProfileOrder = [...RUN_PROFILE_DEFAULT];
 let runProfilesSelected = new Set(["Smoke"]);
+let runProfilesUiCapable = true;
+let runProfileCounts = {};
+/** Suite-native Tags (same vocabulary as Build). When non-empty, these drive the job filter. */
+let runTagOrder = [];
+let runTagsSelected = new Set();
+let runTagCounts = {};
+/** profile id → raw RUN_PROFILES tag list from API */
+let runPresetMap = {};
 
 function fstartChipLabel(path) {
   return (path || "")
@@ -1216,6 +1468,49 @@ function selectedFstartPaths() {
 
 function selectedRunProfiles() {
   return runProfileOrder.filter((p) => runProfilesSelected.has(p));
+}
+
+function selectedRunTags() {
+  if (runTagOrder.length) {
+    return runTagOrder.filter((t) => runTagsSelected.has(t));
+  }
+  // Fallback when API has no suite tags: expand preset profiles client-side
+  return expandProfilesToTags(selectedRunProfiles());
+}
+
+function expandProfilesToTags(profiles) {
+  const tags = [];
+  const seen = new Set();
+  for (const name of profiles || []) {
+    let mapped = [...(runPresetMap[name] || [name])];
+    if (mapped.includes("Nav") && !mapped.includes("Navigation")) mapped.push("Navigation");
+    if (name === "Smoke" && !mapped.includes("Capture")) mapped.push("Capture");
+    for (const t of mapped) {
+      if (!t || seen.has(t)) continue;
+      seen.add(t);
+      tags.push(t);
+    }
+  }
+  return tags;
+}
+
+function expandPresetToSuiteTags(profileId) {
+  const mapped = expandProfilesToTags([profileId]);
+  if (!runTagOrder.length) return mapped;
+  const inv = new Map(runTagOrder.map((t) => [t.toLowerCase(), t]));
+  const out = [];
+  const seen = new Set();
+  for (const t of mapped) {
+    const hit = inv.get(String(t).toLowerCase());
+    if (hit && !seen.has(hit)) {
+      seen.add(hit);
+      out.push(hit);
+    }
+  }
+  // Also accept exact profile name as a suite tag (e.g. Auth is not in Smoke map)
+  const self = inv.get(String(profileId).toLowerCase());
+  if (self && !seen.has(self)) out.push(self);
+  return out;
 }
 
 function runThreadCount() {
@@ -1233,10 +1528,14 @@ function syncConfigSelectFromChips() {
   }
   updateRunParallelEnabled();
   const runBtn = $("#btn-run");
-  if (runBtn) runBtn.disabled = selectedFstartPaths().length < 1 || selectedRunProfiles().length < 1;
+  const canRun =
+    selectedFstartPaths().length >= 1 &&
+    (runTagOrder.length ? runTagsSelected.size >= 1 : selectedRunProfiles().length >= 1);
+  if (runBtn) runBtn.disabled = !canRun;
+  refreshRunCaptureStrip();
 }
 
-/** Parallel execution is derived only from Threads > 1 + 2+ profiles — no separate control. */
+/** Parallel execution is derived only from Threads > 1 + 2+ tags/profiles — no separate control. */
 function updateRunParallelEnabled() {
   refreshFstartFanoutHint();
 }
@@ -1244,34 +1543,102 @@ function updateRunParallelEnabled() {
 async function refreshFstartFanoutHint() {
   const hint = $("#fstart-fanout-hint");
   if (!hint) return;
-  const profiles = selectedRunProfiles();
+  const tags = selectedRunTags();
   const threads = runThreadCount();
-  if (!profiles.length) {
+  if (!tags.length) {
     hint.hidden = true;
     return;
   }
-  if (threads > 1 && profiles.length >= 2) {
-    const workers = Math.min(threads, profiles.length);
-    hint.textContent = `${threads} threads · ${profiles.join("+")} → ${profiles.length} jobs, ${workers} at a time`;
+  if (threads > 1 && tags.length >= 2) {
+    const workers = Math.min(threads, tags.length);
+    hint.textContent = `${threads} threads · tags ${tags.join("+")} → up to ${tags.length} jobs, ${workers} at a time`;
     hint.hidden = false;
   } else {
-    hint.textContent = `thread_count ${threads} · profiles: ${profiles.join(", ")} (OR filter when threads=1)`;
+    hint.textContent = `thread_count ${threads} · tags: ${tags.join(", ")} (OR filter when threads=1)`;
     hint.hidden = false;
   }
+}
+
+function renderRunTagChips() {
+  const row = $("#run-tag-row");
+  if (!row) return;
+  if (!runTagOrder.length) {
+    row.innerHTML = `<span class="hint">No suite tags — use presets below.</span>`;
+    return;
+  }
+  runTagsSelected = new Set([...runTagsSelected].filter((t) => runTagOrder.includes(t)));
+  if (!runTagsSelected.size) {
+    const smokeTags = expandPresetToSuiteTags("Smoke");
+    if (smokeTags.length) smokeTags.forEach((t) => runTagsSelected.add(t));
+    else runTagsSelected.add(runTagOrder[0]);
+  }
+  row.innerHTML = runTagOrder
+    .map((t) => {
+      const n = runTagCounts[t];
+      const label = n != null ? `${t} (${n})` : t;
+      return `<button type="button" class="fstart-chip run-tag-chip${runTagsSelected.has(t) ? " selected" : ""}" data-tag="${escapeHtml(t)}">${escapeHtml(label)}</button>`;
+    })
+    .join("");
+  row.querySelectorAll(".run-tag-chip").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const name = btn.dataset.tag;
+      if (runTagsSelected.has(name)) {
+        if (runTagsSelected.size > 1) runTagsSelected.delete(name);
+      } else {
+        runTagsSelected.add(name);
+      }
+      row.querySelectorAll(".run-tag-chip").forEach((b) => {
+        b.classList.toggle("selected", runTagsSelected.has(b.dataset.tag));
+      });
+      syncPresetChipHighlight();
+      syncConfigSelectFromChips();
+    });
+  });
+}
+
+function syncPresetChipHighlight() {
+  const row = $("#run-profile-row");
+  if (!row || !runTagOrder.length) return;
+  const selectedLower = new Set([...runTagsSelected].map((t) => t.toLowerCase()));
+  row.querySelectorAll(".run-profile-chip").forEach((b) => {
+    const expanded = expandPresetToSuiteTags(b.dataset.profile);
+    const active =
+      expanded.length > 0 && expanded.every((t) => selectedLower.has(t.toLowerCase()));
+    b.classList.toggle("selected", active);
+    if (active) runProfilesSelected.add(b.dataset.profile);
+    else runProfilesSelected.delete(b.dataset.profile);
+  });
 }
 
 function renderRunProfileChips() {
   const row = $("#run-profile-row");
   if (!row) return;
+  runProfilesSelected = new Set([...runProfilesSelected].filter((p) => runProfileOrder.includes(p)));
+  if (!runProfilesSelected.size && runProfileOrder.length && !runTagOrder.length) {
+    runProfilesSelected.add(runProfileOrder.includes("Smoke") ? "Smoke" : runProfileOrder[0]);
+  }
   row.innerHTML = runProfileOrder
-    .map(
-      (p) =>
-        `<button type="button" class="fstart-chip run-profile-chip${runProfilesSelected.has(p) ? " selected" : ""}" data-profile="${escapeHtml(p)}">${escapeHtml(p)}</button>`
-    )
+    .map((p) => {
+      const n = runProfileCounts[p];
+      const label = n != null ? `${p} (${n})` : p;
+      return `<button type="button" class="fstart-chip run-profile-chip${runProfilesSelected.has(p) ? " selected" : ""}" data-profile="${escapeHtml(p)}" title="Preset: select matching suite tags">${escapeHtml(label)}</button>`;
+    })
     .join("");
   row.querySelectorAll(".run-profile-chip").forEach((btn) => {
     btn.addEventListener("click", () => {
       const name = btn.dataset.profile;
+      if (runTagOrder.length) {
+        const expanded = expandPresetToSuiteTags(name);
+        if (!expanded.length) {
+          setStatus(`Preset ${name}: no matching suite tags`);
+          return;
+        }
+        runTagsSelected = new Set(expanded);
+        renderRunTagChips();
+        syncPresetChipHighlight();
+        syncConfigSelectFromChips();
+        return;
+      }
       if (runProfilesSelected.has(name)) {
         if (runProfilesSelected.size > 1) runProfilesSelected.delete(name);
       } else {
@@ -1283,6 +1650,7 @@ function renderRunProfileChips() {
       syncConfigSelectFromChips();
     });
   });
+  if (runTagOrder.length) syncPresetChipHighlight();
   const thr = $("#run-thread-count");
   if (thr && !thr.dataset.bound) {
     thr.dataset.bound = "1";
@@ -1293,12 +1661,43 @@ function renderRunProfileChips() {
 
 async function loadRunProfiles() {
   try {
-    const data = await api("/api/run-profiles");
-    if (Array.isArray(data.order) && data.order.length) runProfileOrder = data.order;
+    const suite = state.suiteName || "";
+    const q = suite ? `?suite=${encodeURIComponent(suite)}` : "";
+    const data = await api(`/api/run-profiles${q}`);
+    if (Array.isArray(data.order) && data.order.length) {
+      runProfileOrder = data.order;
+    } else if (Array.isArray(data.profiles)) {
+      runProfileOrder = data.profiles.map((p) => p.id || p).filter(Boolean);
+    }
+    runProfileCounts = {};
+    runPresetMap = {};
+    if (Array.isArray(data.profiles)) {
+      data.profiles.forEach((p) => {
+        if (p?.id) {
+          runProfileCounts[p.id] = p.plan_count;
+          runPresetMap[p.id] = Array.isArray(p.tags) ? p.tags : [];
+        }
+      });
+    } else if (data.profiles && typeof data.profiles === "object") {
+      Object.entries(data.profiles).forEach(([k, v]) => {
+        runPresetMap[k] = Array.isArray(v) ? v : [];
+      });
+    }
+    runTagOrder = [];
+    runTagCounts = {};
+    if (Array.isArray(data.tags) && data.tags.length) {
+      runTagOrder = data.tags.map((t) => t.id).filter(Boolean);
+      data.tags.forEach((t) => {
+        if (t?.id) runTagCounts[t.id] = t.plan_count;
+      });
+    }
+    runProfilesUiCapable = data.ui_capable !== false;
   } catch {
     /* keep defaults */
   }
+  renderRunTagChips();
   renderRunProfileChips();
+  await refreshRunCaptureStrip();
 }
 
 function renderFstartChips(configs, preferred) {
@@ -1342,7 +1741,7 @@ async function loadAppVersion() {
   try {
     const d = await api("/api/version");
     const foot = $("#footer-version");
-    if (foot) foot.textContent = `qoa_web v${d.version} · Arena`;
+    if (foot) foot.textContent = `KK2 BRAHL v${d.version}`;
   } catch {
     /* keep static footer */
   }
@@ -1378,12 +1777,18 @@ function renderCycleHistory() {
 function updateHealHint() {
   const hint = $("#heal-run-hint");
   if (!hint) return;
-  if (!activeProject?.latest_run) {
+  const runName = selectedRun || activeProject?.latest_run;
+  if (!runName) {
     hint.textContent =
-      "Select a run in Analyze. AI Apply edits Input/Expected/locators only — never Run flags. Shrink (below) is for Loop prep.";
+      "Select a run in Analyze (or complete a Run first). AI Apply edits Input/Expected/locators only — never Run flags. Shrink (below) is for Loop prep.";
     return;
   }
-  hint.textContent = `Last run: ${activeProject.latest_run} — Apply = CSV field patches · Shrink = Run=Y on failures only (Restore undoes it).`;
+  const src = selectedRun ? "selected" : "latest";
+  hint.textContent = `Using ${src} run: ${runName} — Apply = CSV field patches · Shrink = Run=Y on failures only (Restore undoes it).`;
+}
+
+function effectiveRunName() {
+  return selectedRun || activeProject?.latest_run || null;
 }
 
 async function recordCycleEvent(step, detail, runName) {
@@ -3414,9 +3819,9 @@ function refreshBuildBudgetStrip(budget = 0, remaining = null) {
   const amount = $("#build-budget-amount");
   const hint = $("#build-budget-hint");
   if (!strip) return;
-  const show = state.avatar === "client" && !!state.projectId;
-  strip.hidden = !show;
-  if (!show) return;
+  // Mid-page wallet removed — use dock / $ tab only
+  strip.hidden = true;
+  strip.setAttribute("aria-hidden", "true");
   const b = Number(budget) || 0;
   const rem = remaining == null ? b : Number(remaining) || 0;
   if (amount) {
@@ -4034,9 +4439,13 @@ function getYpadDisplayRows() {
       rows = rows.filter((r) => {
         const pid = (r.PlanId || "").trim();
         if (pid.startsWith("PReuse_")) return false;
-        const tags = (r.Tags || "").toLowerCase();
+        const tags = (r.Tags || "")
+          .toLowerCase()
+          .split(";")
+          .map((t) => t.trim())
+          .filter(Boolean);
         const run = (r.Run || "").trim().toUpperCase();
-        return tags.split(/[;,\s]+/).includes("manual") || run === "N";
+        return tags.includes("manual") || run === "N";
       });
     }
   }
@@ -4059,7 +4468,8 @@ function renderYpadExplorer() {
   });
   const isEnv = tab === "env";
   $("#ypad-env-panel").hidden = !isEnv || ypadState.editMode;
-  $("#ypad-csv-editor").hidden = !ypadState.editMode || isEnv;
+  const editor = $("#ypad-csv-editor");
+  if (editor) editor.hidden = !ypadState.editMode || isEnv;
   $("#ypad-run-y-wrap").hidden = true;
   const covChips = $("#ypad-coverage-chips");
   if (covChips) covChips.hidden = tab !== "plans" || ypadState.editMode;
@@ -4072,6 +4482,23 @@ function renderYpadExplorer() {
   }
   $("#ypad-save").hidden = !ypadState.editMode || isEnv;
   $("#ypad-filter").hidden = ypadState.editMode;
+
+  let banner = $("#ypad-edit-banner");
+  if (ypadState.editMode && !isEnv) {
+    if (!banner) {
+      banner = document.createElement("p");
+      banner.id = "ypad-edit-banner";
+      banner.className = "ypad-edit-banner";
+      const explorer = $("#ypad-explorer");
+      const toolbar = explorer?.querySelector(".ypad-toolbar");
+      if (toolbar) toolbar.insertAdjacentElement("afterend", banner);
+      else explorer?.prepend(banner);
+    }
+    banner.hidden = false;
+    banner.textContent = "Editing full sheet — Save to keep Run/Tags changes, or Done to leave.";
+  } else if (banner) {
+    banner.hidden = true;
+  }
 
   if (data?.paths?.length) {
     const srcHint =
@@ -4089,7 +4516,10 @@ function renderYpadExplorer() {
   }
 
   if (ypadState.editMode && data) {
-    $("#ypad-csv-editor").value = rowsToCsv(data.headers || [], data.rows || []);
+    if (!ypadState.editorDirty || !editor?.value?.trim()) {
+      editor.value = rowsToCsv(data.headers || [], data.rows || []);
+      ypadState.editorDirty = false;
+    }
     return;
   }
 
@@ -4129,27 +4559,73 @@ function renderYpadExplorer() {
 
   const thead = $("#ypad-thead");
   const tbody = $("#ypad-tbody");
+  const showRunToggle = tab === "plans" && state.avatar === "client";
   thead.innerHTML = `<tr>${cols
     .map((c) => `<th title="${escapeHtml(c)}">${escapeHtml(labels[c] || c)}</th>`)
-    .join("")}</tr>`;
+    .join("")}${showRunToggle ? "<th>Toggle</th>" : ""}</tr>`;
   tbody.innerHTML = rows
     .map((row, idx) => {
       const run = (row.Run || "").trim().toUpperCase();
       const cls = tab === "plans" ? (run === "Y" ? "run-y" : run === "N" ? "run-n" : "") : "";
       const sel = idx === ypadState.selectedIndex ? " selected" : "";
+      const toggle =
+        showRunToggle
+          ? `<td><button type="button" class="ypad-run-toggle ${run === "Y" ? "run-y-btn" : "run-n-btn"}" data-plan="${escapeHtml(row.PlanId || "")}" data-run="${run === "Y" ? "N" : "Y"}">${run === "Y" ? "Set N" : "Set Y"}</button></td>`
+          : "";
       return `<tr class="${cls}${sel}" data-idx="${idx}">${cols
         .map((c) => `<td title="${escapeHtml(row[c] || "")}">${escapeHtml(row[c] || "")}</td>`)
-        .join("")}</tr>`;
+        .join("")}${toggle}</tr>`;
     })
     .join("");
   $("#ypad-empty").hidden = rows.length > 0;
   tbody.querySelectorAll("tr").forEach((tr) => {
-    tr.addEventListener("click", () => {
+    tr.addEventListener("click", (ev) => {
+      if (ev.target.closest(".ypad-run-toggle")) return;
       ypadState.selectedIndex = parseInt(tr.dataset.idx, 10);
       openYpadDrawer(rows[ypadState.selectedIndex]);
       renderYpadExplorer();
     });
   });
+  tbody.querySelectorAll(".ypad-run-toggle").forEach((btn) => {
+    btn.addEventListener("click", async (ev) => {
+      ev.stopPropagation();
+      const planId = btn.getAttribute("data-plan");
+      const next = btn.getAttribute("data-run");
+      await togglePlanRunFlag(planId, next);
+    });
+  });
+}
+
+async function togglePlanRunFlag(planId, nextRun) {
+  if (!state.suiteName || !planId || !ypadState.data?.rows) return;
+  const rows = ypadState.data.rows.map((r) => ({ ...r }));
+  const hit = rows.find((r) => (r.PlanId || "").trim() === planId.trim());
+  if (!hit) {
+    setStatus(`Plan ${planId} not found`);
+    return;
+  }
+  hit.Run = nextRun;
+  const headers = ypadState.data.headers || Object.keys(hit);
+  const paths = ypadState.data?.paths || [];
+  const multi = !!ypadState.data?.multi_file || paths.length > 1;
+  const source =
+    ypadState.source ||
+    (paths.length === 1 ? paths[0] : "") ||
+    (ypadState.data?.sources?.length === 1 ? ypadState.data.sources[0].path : "");
+  if (multi && !source) {
+    setStatus("Pick a Gate/Journey source chip before toggling Run on multi-file suites.");
+    return;
+  }
+  try {
+    await api(`/api/suites/${encodeURIComponent(state.suiteName)}/ypad/plans`, {
+      method: "PUT",
+      body: JSON.stringify({ headers, rows, ...(source ? { source } : {}) }),
+    });
+    setStatus(`${planId} → Run=${nextRun}`);
+    await loadYpadSheet("plans");
+  } catch (e) {
+    setStatus(String(e.message || e));
+  }
 }
 
 function openYpadDrawer(row) {
@@ -4181,7 +4657,47 @@ function closeYpadDrawer(rerender = true) {
   if (drawer) drawer.hidden = true;
   if (backdrop) backdrop.hidden = true;
   ypadState.selectedIndex = -1;
-  if (rerender) renderYpadExplorer();
+  // Never wipe CSV editor while editing
+  if (rerender && !ypadState.editMode) renderYpadExplorer();
+}
+
+function toggleYpadEdit() {
+  if (ypadState.tab === "env") return;
+  const paths = ypadState.data?.paths || [];
+  const multi = !!ypadState.data?.multi_file || paths.length > 1;
+  if (!ypadState.editMode && multi && !ypadState.source && paths.length !== 1) {
+    setStatus("Pick a Gate or Journey source chip before editing multi-file yPAD sheets.");
+    return;
+  }
+  if (ypadState.editMode && ypadState.editorDirty) {
+    if (!confirm("Discard unsaved CSV edits?")) return;
+  }
+  ypadState.editMode = !ypadState.editMode;
+  if (ypadState.editMode) {
+    ypadState.coverageFilter = "all";
+    ypadState.editorDirty = false;
+    closeYpadDrawer(false);
+    $$("#ypad-coverage-chips .ypad-cov-chip").forEach((c) => {
+      c.classList.toggle("active", c.dataset.ypadCov === "all");
+    });
+  } else {
+    ypadState.editorDirty = false;
+  }
+  renderYpadExplorer();
+  if (ypadState.editMode) {
+    const ed = $("#ypad-csv-editor");
+    if (ed) {
+      ed.hidden = false;
+      ed.focus();
+      if (!ed.dataset.dirtyBound) {
+        ed.dataset.dirtyBound = "1";
+        ed.addEventListener("input", () => {
+          ypadState.editorDirty = true;
+        });
+      }
+    }
+    setStatus("Edit mode — change Run/Tags in CSV, then Save");
+  }
 }
 
 function renderYpadSourceChips(data) {
@@ -4230,18 +4746,6 @@ function renderYpadSourceChips(data) {
   });
 }
 
-function toggleYpadEdit() {
-  if (ypadState.tab === "env") return;
-  const paths = ypadState.data?.paths || [];
-  const multi = !!ypadState.data?.multi_file || paths.length > 1;
-  if (!ypadState.editMode && multi && !ypadState.source && paths.length !== 1) {
-    setStatus("Pick a Gate or Journey source chip before editing multi-file yPAD sheets.");
-    return;
-  }
-  ypadState.editMode = !ypadState.editMode;
-  renderYpadExplorer();
-}
-
 async function saveYpadSheet() {
   if (!state.suiteName || ypadState.tab === "env") return;
   const parsed = csvToRows($("#ypad-csv-editor").value);
@@ -4273,6 +4777,7 @@ async function saveYpadSheet() {
     return;
   }
   ypadState.editMode = false;
+  ypadState.editorDirty = false;
   await loadYpadSheet(ypadState.tab);
   const label = ypadState.tab === "plans" ? "1Plans" : ypadState.tab === "actions" ? "2Actions" : "3Designs";
   setStatus(`Saved y${label}.csv${source ? ` → ${source}` : ""}`);
@@ -6032,7 +6537,13 @@ async function submitHitlReport() {
 }
 
 async function runAnalyzeAi() {
-  if (!state.projectId || !selectedRun || !isAiOn()) return;
+  const runName = effectiveRunName();
+  if (!state.projectId || !isAiOn()) return;
+  if (!runName) {
+    setStatus("Analyze AI: select a run first");
+    return;
+  }
+  selectedRun = runName;
   const el = $("#analyze-ai-result");
   if (el) {
     el.hidden = false;
@@ -6041,7 +6552,7 @@ async function runAnalyzeAi() {
   }
   try {
     const data = await api(
-      `/api/projects/${state.projectId}/runs/${encodeURIComponent(selectedRun)}/analyze-ai`,
+      `/api/projects/${state.projectId}/runs/${encodeURIComponent(runName)}/analyze-ai`,
       { method: "POST", body: "{}" }
     );
     lastAnalyzeMarkdown = data.markdown || "";
@@ -6054,7 +6565,18 @@ async function runAnalyzeAi() {
 }
 
 async function runHealAi() {
-  if (!state.projectId || !selectedRun || !isAiOn()) return;
+  const runName = effectiveRunName();
+  if (!state.projectId || !isAiOn()) return;
+  if (!runName) {
+    setStatus("Heal AI: select a run in Analyze (or complete a Run) first");
+    const el = $("#heal-ai-result");
+    if (el) {
+      el.hidden = false;
+      renderAiMarkdown(el, "No run selected — open Analyze and pick a run, or Run the suite first.");
+    }
+    return;
+  }
+  selectedRun = runName;
   const el = $("#heal-ai-result");
   const applyBtn = $("#btn-heal-apply");
   const applyHint = $("#heal-apply-hint");
@@ -6071,7 +6593,7 @@ async function runHealAi() {
   }
   try {
     const data = await api(
-      `/api/projects/${state.projectId}/runs/${encodeURIComponent(selectedRun)}/heal-suggest`,
+      `/api/projects/${state.projectId}/runs/${encodeURIComponent(runName)}/heal-suggest`,
       {
         method: "POST",
         body: JSON.stringify({ rca_markdown: lastAnalyzeMarkdown }),
@@ -6194,10 +6716,11 @@ async function applyHealPatches() {
 }
 
 async function shrinkPlans() {
-  const runName = selectedRun || activeProject?.latest_run;
+  const runName = effectiveRunName();
   const logEl = $("#heal-log");
   if (!runName) {
     logEl.textContent = "Select a run in Analyze first.";
+    setStatus("Shrink: need a prior run");
     return;
   }
   const ok = confirm(
@@ -6218,9 +6741,12 @@ async function shrinkPlans() {
     if (res.ok) {
       await recordCycleEvent("Shrink", `Run=Y on ${res.run_y} plans`, runName);
       setStatus(`Shrunk to ${res.run_y} failing plan(s) — Restore before full Verify`);
+    } else {
+      setStatus(`Shrink skipped: ${res.error || "no failures"}`);
     }
   } catch (e) {
     logEl.textContent = `Error: ${e.message}`;
+    setStatus(`Shrink error: ${e.message}`);
   }
 }
 
@@ -6280,7 +6806,37 @@ function failureIssueLabel(f) {
   return info || action || "—";
 }
 
-function failureRowsHtml(failures) {
+function linkifyFailureOutput(raw, runName) {
+  if (!raw) return "";
+  if (!runName) return escapeHtml(raw);
+  const s = String(raw);
+  const re = /((?:screenshot:\s*)?[^\s<>"|]+\.png)/gi;
+  let last = 0;
+  let out = "";
+  let m;
+  while ((m = re.exec(s))) {
+    out += escapeHtml(s.slice(last, m.index));
+    const token = m[1];
+    let rel = token.replace(/^screenshot:\s*/i, "").replace(/\\/g, "/");
+    const zPref = `z/${runName}/`;
+    const zi = rel.toLowerCase().indexOf(zPref.toLowerCase());
+    if (zi >= 0) rel = rel.slice(zi + zPref.length);
+    else if (rel.startsWith("/")) rel = rel.replace(/^\/+/, "");
+    const url =
+      `/api/files/z/${encodeURIComponent(runName)}/` +
+      rel
+        .split("/")
+        .filter(Boolean)
+        .map((p) => encodeURIComponent(p))
+        .join("/");
+    out += `<a href="${url}" target="_blank" class="linkish">${escapeHtml(token)}</a>`;
+    last = m.index + m[0].length;
+  }
+  out += escapeHtml(s.slice(last));
+  return out;
+}
+
+function failureRowsHtml(failures, runName) {
   if (!failures.length) {
     return `<tr><td colspan="6">No failures</td></tr>`;
   }
@@ -6293,7 +6849,7 @@ function failureRowsHtml(failures) {
         `<td>${escapeHtml(failureIssueLabel(f))}</td>` +
         `<td class="fail-cell">${escapeHtml(f.input || "")}</td>` +
         `<td class="fail-cell">${escapeHtml(f.expected || "")}</td>` +
-        `<td class="fail-cell">${escapeHtml(f.output || "")}</td>` +
+        `<td class="fail-cell">${linkifyFailureOutput(f.output || "", runName)}</td>` +
         `</tr>`
     )
     .join("");
@@ -6308,7 +6864,7 @@ async function fetchRunFailures(runName) {
 async function refreshHealFailures() {
   const tbody = $("#heal-failures-body");
   if (!tbody) return;
-  const runName = selectedRun || activeProject?.latest_run;
+  const runName = effectiveRunName();
   updateHealHint();
   if (!runName) {
     tbody.innerHTML = `<tr><td colspan="6">Select a run in Analyze first.</td></tr>`;
@@ -6316,7 +6872,7 @@ async function refreshHealFailures() {
   }
   try {
     const failures = await fetchRunFailures(runName);
-    tbody.innerHTML = failureRowsHtml(failures);
+    tbody.innerHTML = failureRowsHtml(failures, runName);
   } catch (e) {
     tbody.innerHTML = `<tr><td colspan="6">${escapeHtml(e.message)}</td></tr>`;
   }
@@ -6519,9 +7075,10 @@ async function runLoopStep(stepLabel, options = {}) {
     }
   }
   if (options.shrinkFirst) {
-    const runName = selectedRun || activeProject?.latest_run;
+    const runName = effectiveRunName();
     if (!runName) {
       if (logEl) logEl.textContent += `[${stepLabel}] Need a prior run to shrink to failures.\n`;
+      setStatus(`${stepLabel}: need a prior run to shrink`);
       return null;
     }
     try {
@@ -6532,11 +7089,13 @@ async function runLoopStep(stepLabel, options = {}) {
       if (res.ok) {
         if (logEl) logEl.textContent += `[${stepLabel}] Shrunk to ${res.run_y} failure(s).\n`;
         await recordCycleEvent("Shrink", `Loop prep — ${res.run_y} plans`, runName);
-      } else if (logEl) {
-        logEl.textContent += `[${stepLabel}] ${res.error || "Shrink skipped"}\n`;
+      } else {
+        if (logEl) logEl.textContent += `[${stepLabel}] ${res.error || "Shrink skipped"}\n`;
+        setStatus(`${stepLabel}: shrink skipped — ${res.error || "no failures"}`);
       }
     } catch (e) {
       if (logEl) logEl.textContent += `[${stepLabel}] Shrink error: ${e.message}\n`;
+      setStatus(`Shrink error: ${e.message}`);
       return null;
     }
   }
@@ -6591,6 +7150,14 @@ async function runBrahlCycle() {
         return;
       }
       lastRunName = selectedRun || activeProject?.latest_run || lastRunName;
+      await refreshHealFailures();
+      if (lastRunName) {
+        try {
+          await showRunPostActions(lastRunName, null);
+        } catch {
+          /* optional */
+        }
+      }
       // Early exit when the suite is already green — go straight to BRAHL Go/No-Go
       if (lastRunName) {
         try {
@@ -6726,16 +7293,33 @@ async function selectRun(name, li, run) {
   try {
     const failures = await fetchRunFailures(name);
     const tbody = $("#failures-body");
-    if (tbody) tbody.innerHTML = failureRowsHtml(failures);
+    if (tbody) tbody.innerHTML = failureRowsHtml(failures, name);
     const healBody = $("#heal-failures-body");
-    if (healBody) healBody.innerHTML = failureRowsHtml(failures);
+    if (healBody) healBody.innerHTML = failureRowsHtml(failures, name);
   } catch (e) {
     const tbody = $("#failures-body");
     if (tbody) tbody.innerHTML = `<tr><td colspan="6">${escapeHtml(e.message)}</td></tr>`;
   }
-  const dashHref = zDashHref(run?.dashboard);
+  let dashHref = zDashHref(run?.dashboard);
+  const artWrap = $("#analyze-artifacts");
+  if (artWrap) {
+    artWrap.hidden = true;
+    artWrap.innerHTML = "";
+    try {
+      const arts = await api(`/api/runs/${encodeURIComponent(name)}/artifacts`);
+      if (!dashHref && arts.dashboard?.url) dashHref = arts.dashboard.url;
+      const html = renderArtifactActionsHtml(arts, { asButtons: true });
+      if (html) {
+        artWrap.innerHTML = html;
+        artWrap.hidden = false;
+        bindArtifactActionClicks(artWrap);
+      }
+    } catch {
+      /* artifacts optional */
+    }
+  }
   $("#dash-link").innerHTML = dashHref
-    ? `<a href="${dashHref}" target="_blank">Open zDash</a>`
+    ? `<a href="${dashHref}" target="_blank" class="primary link-btn">Open zDash</a> <span class="hint">— results, playback, screens, logs</span>`
     : '<span class="empty-hint">No zDash for this run yet.</span>';
   updateHealHint();
   if (state.projectId) {
@@ -6768,9 +7352,9 @@ async function startRun(stepLabel) {
     alert("No fStart config for this project yet — one is created automatically once a suite exists.");
     return null;
   }
-  const profiles = selectedRunProfiles();
-  if (!profiles.length) {
-    alert("Select at least one Run profile (Smoke, UI, API, …).");
+  const tags = selectedRunTags();
+  if (!tags.length) {
+    alert("Select at least one Run tag (or a Smoke/UI preset).");
     return null;
   }
   const threads = runThreadCount();
@@ -6790,12 +7374,12 @@ async function startRun(stepLabel) {
   if (runBtn) runBtn.disabled = true;
   const progress = $("#progress-bar");
   if (progress) progress.style.width = "10%";
-  // Parallel execution is derived only from Threads > 1 + 2+ profiles — never a separate control.
   const runtimeMode = (activeProject?.runtime_mode || "local").toLowerCase();
+  // Suite-native tags drive the OR filter. Omit profiles so runtime fStart uses tags as-is.
   const body = {
     config_path: configPath,
     step_label: stepLabel,
-    profiles,
+    tags,
     thread_count: threads,
     project_id: state.projectId,
     runtime_mode: runtimeMode,
@@ -6857,13 +7441,17 @@ async function startRun(stepLabel) {
           }
           loadRuns();
           await refreshActiveProject();
-          if (stepLabel === "Run" && j.status === "completed") {
-            await showRunPostActions(runName, batchDash);
-            if (isBatch) {
-              await renderBatchRunRows(allRunDirs, batchDash);
-              setStatus(`Batch complete — ${allRunDirs.length} job(s), one zDash each`);
-            } else {
-              setStatus("Run complete — review in Analyze or open zDash");
+          if (j.status === "completed" && runName) {
+            if (stepLabel === "Run" || stepLabel === "Verify" || stepLabel.startsWith("Loop")) {
+              await showRunPostActions(runName, batchDash);
+            }
+            if (stepLabel === "Run") {
+              if (isBatch) {
+                await renderBatchRunRows(allRunDirs, batchDash);
+                setStatus(`Batch complete — ${allRunDirs.length} job(s), one zDash each`);
+              } else {
+                setStatus("Run complete — review in Analyze or open zDash");
+              }
             }
           }
           if (j.status === "completed" && runName) {
@@ -6937,6 +7525,7 @@ async function openFstartEditor() {
     $("#fstart-modal-title").textContent = "Edit fStart config";
     $("#fstart-modal-path").textContent = data.path;
     $("#fstart-json-editor").value = JSON.stringify(data.content, null, 2);
+    fillCaptureForm(data.content?.capture);
     $("#fstart-delete").hidden = false;
     $("#fstart-json-error").hidden = true;
     $("#fstart-modal").hidden = false;
@@ -6947,6 +7536,7 @@ async function openFstartEditor() {
 
 async function saveFstartEditor() {
   const errEl = $("#fstart-json-error");
+  applyCaptureFormToJson();
   const raw = $("#fstart-json-editor")?.value || "";
   let parsed;
   try {
@@ -6958,6 +7548,7 @@ async function saveFstartEditor() {
     }
     return;
   }
+  parsed.capture = readCaptureForm();
   const path = fstartEditorPath || $("#fstart-modal-path")?.textContent?.trim();
   if (!path) return;
   try {
@@ -6969,6 +7560,7 @@ async function saveFstartEditor() {
     await loadConfigsForSuite();
     const sel = $("#config-select");
     if (sel) sel.value = path.replace(/\\/g, "/");
+    await refreshRunCaptureStrip();
     setStatus(`Saved ${path}`);
   } catch (e) {
     if (errEl) {
@@ -7031,6 +7623,7 @@ async function loadConfigsForSuite() {
       if (hint) hint.hidden = false;
       if (runBtn) runBtn.disabled = true;
     }
+    await refreshRunCaptureStrip();
   } catch {
     sel.innerHTML = '<option value="">— error —</option>';
     if (runBtn) runBtn.disabled = true;
@@ -7038,19 +7631,107 @@ async function loadConfigsForSuite() {
 }
 
 function initAvatarGate() {
-  state.profile = typeof getActiveProfile === "function" ? getActiveProfile() : null;
-  applyProfileUI();
-  bindAvatarControls();
-  bindTopbarRoleSelect();
-  let avatar = state.avatar;
-  const authUser = getAuthUser();
-  if (!avatar && authUser?.role === "qa_hunter") avatar = "consultant";
-  if (!avatar && authUser) avatar = "client";
-  if (!avatar) {
-    $("#avatar-gate").hidden = false;
+  // Desktop: always QA Hunter workflow with Build edit rights (client avatar)
+  state.avatar = "client";
+  localStorage.setItem(STORAGE_AVATAR, "client");
+  const gate = $("#avatar-gate");
+  if (gate) gate.hidden = true;
+  setAvatar("client");
+}
+
+async function refreshWorkspaceChrome() {
+  const wrap = $("#topbar-workspace");
+  const label = $("#topbar-workspace-label");
+  try {
+    const data = await api("/api/workspace");
+    desktopWorkspace = data.bound ? data.workspace : null;
+    if (wrap) wrap.hidden = false;
+    if (label) {
+      if (data.bound) {
+        label.textContent = data.short_label || data.workspace?.slug || "bound";
+        label.title = data.workspace?.local_path || "";
+      } else {
+        label.textContent = "not set";
+        label.title = "Bind a GitHub or local repo";
+      }
+    }
+    return Boolean(data.bound);
+  } catch {
+    if (wrap) wrap.hidden = false;
+    if (label) label.textContent = "—";
+    return false;
+  }
+}
+
+function showWorkspaceGate(show) {
+  const gate = $("#workspace-gate");
+  if (!gate) return;
+  gate.hidden = !show;
+  const err = $("#workspace-gate-error");
+  if (err) {
+    err.hidden = true;
+    err.textContent = "";
+  }
+}
+
+async function bindWorkspaceFromGate(source) {
+  const err = $("#workspace-gate-error");
+  const cloneBtn = $("#btn-workspace-clone");
+  const localBtn = $("#btn-workspace-local");
+  if (err) {
+    err.hidden = true;
+    err.textContent = "";
+  }
+  const body =
+    source === "github"
+      ? {
+          source: "github",
+          repo_url: ($("#workspace-repo-url")?.value || "").trim(),
+          default_branch: ($("#workspace-branch")?.value || "").trim() || null,
+        }
+      : {
+          source: "local",
+          local_path: ($("#workspace-local-path")?.value || "").trim(),
+        };
+  if (source === "github" && !body.repo_url) {
+    if (err) {
+      err.hidden = false;
+      err.textContent = "Paste a GitHub URL first.";
+    }
     return;
   }
-  setAvatar(avatar);
+  if (source === "local" && !body.local_path) {
+    if (err) {
+      err.hidden = false;
+      err.textContent = "Enter a local folder path.";
+    }
+    return;
+  }
+  if (cloneBtn) cloneBtn.disabled = true;
+  if (localBtn) localBtn.disabled = true;
+  setStatus(source === "github" ? "Cloning repo…" : "Binding folder…");
+  try {
+    await api("/api/workspace", { method: "POST", body: JSON.stringify(body) });
+    showWorkspaceGate(false);
+    await refreshWorkspaceChrome();
+    setStatus("Workspace bound — continue on Build");
+    showPhase("build");
+  } catch (e) {
+    if (err) {
+      err.hidden = false;
+      err.textContent = e.message || String(e);
+    }
+    setStatus(`Workspace failed: ${e.message}`);
+  } finally {
+    if (cloneBtn) cloneBtn.disabled = false;
+    if (localBtn) localBtn.disabled = false;
+  }
+}
+
+function initWorkspaceGate() {
+  $("#btn-workspace-clone")?.addEventListener("click", () => bindWorkspaceFromGate("github"));
+  $("#btn-workspace-local")?.addEventListener("click", () => bindWorkspaceFromGate("local"));
+  $("#btn-workspace-change")?.addEventListener("click", () => showWorkspaceGate(true));
 }
 
 $$(".phase-btn").forEach((btn) => {
@@ -7065,6 +7746,12 @@ $("#btn-fstart-edit")?.addEventListener("click", openFstartEditor);
 $("#fstart-save")?.addEventListener("click", saveFstartEditor);
 $("#fstart-delete")?.addEventListener("click", deleteFstartEditor);
 $("#fstart-cancel")?.addEventListener("click", closeFstartModal);
+$("#btn-run-capture-edit")?.addEventListener("click", openFstartEditor);
+$("#shots-modal-close")?.addEventListener("click", closeShotsModal);
+$("#fstart-json-editor")?.addEventListener("change", syncCaptureFormFromJson);
+["cap-image", "cap-video", "cap-video-fps", "cap-subdir", "cap-overlay", "cap-overlay-ms"].forEach((id) => {
+  $(`#${id}`)?.addEventListener("change", applyCaptureFormToJson);
+});
 $("#planner-chat-form")?.addEventListener("submit", sendPlannerChat);
 $("#planner-mic")?.addEventListener("click", togglePlannerMic);
 $("#planner-create")?.addEventListener("click", () => finishPlannerCreate(false));
@@ -7237,7 +7924,10 @@ $("#ypad-page-next")?.addEventListener("click", () => {
   ypadState.page += 1;
   renderYpadExplorer();
 });
-$("#btn-heal-rerun")?.addEventListener("click", () => showPhase("run"));
+$("#btn-heal-rerun")?.addEventListener("click", async () => {
+  showPhase("run");
+  await startRun("Run");
+});
 $("#btn-loop-open-build")?.addEventListener("click", () => showPhase("build"));
 $("#btn-loop-run")?.addEventListener("click", runBrahlCycle);
 $("#btn-run")?.addEventListener("click", () => startRun("Run"));
@@ -7260,22 +7950,24 @@ $$(".phase-marker").forEach((dot) => {
 });
 
 initAvatarGate();
-initUserMenu();
-initPresenceHeartbeat();
-initPromoterPanel();
+initWorkspaceGate();
+(async function bootDesktopWorkspace() {
+  const bound = await refreshWorkspaceChrome();
+  if (!bound) showWorkspaceGate(true);
+})();
+// Marketplace chrome disabled on desktop
+function initUserMenu() {}
+function initPresenceHeartbeat() {}
+function initPromoterPanel() {}
 restoreDraftRequirementIfNeeded();
 (function initAuthRole() {
-  const u = getAuthUser();
-  if (!u || state.avatar) return;
-  if (u.role === "qa_hunter") setAvatar("consultant");
-  else setAvatar("client");
+  /* desktop: no auth role sync */
 })();
 window.QoaTheme?.initTheme?.();
 window.addEventListener("qoa-theme-change", () => {
   updateVisualRewardRail();
-  if (state.phase === "cost") loadCostPanel();
   const title = $("#app-title");
-  if (title) title.textContent = "BRAHL Web — f(x,y)=z";
+  if (title) title.textContent = "KK2 BRAHL Desktop";
 });
 applyAvatarLabelsToDom();
 applyAvatarModeNav();
@@ -7289,10 +7981,9 @@ setInterval(checkHealth, 15000);
 (function applyDeepLinkPhase() {
   const raw = (location.hash || "").replace(/^#/, "").trim().toLowerCase();
   if (!raw) return;
-  const allowed = new Set(["build", "run", "analyze", "heal", "loop", "brahl", "nalanda", "atomic77", "promoter", "cost"]);
+  const allowed = new Set(["build", "run", "analyze", "heal", "loop", "brahl"]);
   if (!allowed.has(raw)) return;
   const go = () => showPhase(raw);
-  // Wait a tick so suites/avatar init settle
   setTimeout(go, 200);
   window.addEventListener("hashchange", () => {
     const h = (location.hash || "").replace(/^#/, "").trim().toLowerCase();

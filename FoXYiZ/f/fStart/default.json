@@ -1,6 +1,6 @@
 {
   "configs": [
-    "y/qoa2/qoa2.json"
+    "y/Math/Math.json"
   ],
   "thread_count": 1,
   "timeout": 10,

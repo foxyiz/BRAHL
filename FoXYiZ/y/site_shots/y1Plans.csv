@@ -1,0 +1,13 @@
+PlanId,PlanName,DesignId,Run,Tags,Output,CreatedBy,CreatedAt
+PShot_Home,Screenshot home,D1,Y,site_shots;Capture;Smoke;home,shot_home,site_shot_author,2026-07-22T17:34:47+00:00
+PShot_Ideas,Screenshot ideas,D1,Y,site_shots;Capture;Smoke;ideas,shot_ideas,site_shot_author,2026-07-22T17:34:47+00:00
+PShot_Dashboard,Screenshot dashboard,D1,Y,site_shots;Capture;Smoke;dashboard,shot_dashboard,site_shot_author,2026-07-22T17:34:47+00:00
+PShot_Integrate,Screenshot integrate,D1,Y,site_shots;Capture;Smoke;integrate,shot_integrate,site_shot_author,2026-07-22T17:34:47+00:00
+PShot_Docs,Screenshot docs,D1,Y,site_shots;Capture;Smoke;docs,shot_docs,site_shot_author,2026-07-22T17:34:47+00:00
+PShot_Login,Screenshot login,D1,Y,site_shots;Capture;Smoke;login,shot_login,site_shot_author,2026-07-22T17:34:47+00:00
+PShot_Register,Screenshot register,D1,Y,site_shots;Capture;Smoke;register,shot_register,site_shot_author,2026-07-22T17:34:47+00:00
+PShot_ForgotPassword,Screenshot forgot_password,D1,Y,site_shots;Capture;Smoke;forgot_password,shot_forgot_password,site_shot_author,2026-07-22T17:34:47+00:00
+PShot_ResetPassword,Screenshot reset_password,D1,Y,site_shots;Capture;Smoke;reset_password,shot_reset_password,site_shot_author,2026-07-22T17:34:47+00:00
+PShot_Embed,Screenshot embed,D1,Y,site_shots;Capture;Smoke;embed,shot_embed,site_shot_author,2026-07-22T17:34:47+00:00
+PShot_ViewPrivate,Screenshot view_private,D1,Y,site_shots;Capture;Smoke;view_private,shot_view_private,site_shot_author,2026-07-22T17:34:47+00:00
+PShot_Unknown404,Screenshot unknown_404,D1,Y,site_shots;Capture;Smoke;unknown_404,shot_unknown_404,site_shot_author,2026-07-22T17:34:47+00:00

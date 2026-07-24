@@ -14,16 +14,18 @@ import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote as urllib_quote
 
 from paths import (
-    ENGINE,
     F_DIR,
     FOXYIZ_ROOT,
     KK_ROOT,
     PYUTILS_DIR,
     Y_DIR,
     Z_DIR,
+    engine_cmd,
     repo_rel,
+    resolve_engine,
     resolve_repo,
 )
 
@@ -72,6 +74,8 @@ DEFAULT_CAPTURE = {
     "video": "off",
     "video_fps": 2,
     "subdir": "",
+    "overlay": "off",
+    "overlay_ms": 250,
 }
 
 
@@ -243,12 +247,135 @@ def expand_run_profiles(profiles: list[str] | None) -> list[str]:
     seen: set[str] = set()
     for raw in profiles:
         name = (raw or "").strip()
-        mapped = RUN_PROFILES.get(name) or ([name] if name else [])
+        mapped = list(RUN_PROFILES.get(name) or ([name] if name else []))
+        # qoa_web / A77 use Navigation; profile map historically said Nav
+        if "Nav" in mapped and "Navigation" not in mapped:
+            mapped.append("Navigation")
+        if name == "Smoke" and "Capture" not in mapped:
+            mapped.append("Capture")
         for t in mapped:
             if t not in seen:
                 seen.add(t)
                 tags.append(t)
     return tags
+
+
+def _collect_suite_plan_tag_sets(suite_name: str) -> list[set[str]]:
+    """All plan Tags sets from y/<suite>/*Plans*.csv (lowercase)."""
+    suite_dir = Y_DIR / suite_name
+    if not suite_dir.is_dir():
+        return []
+    out: list[set[str]] = []
+    for path in sorted(suite_dir.glob("*Plans*.csv")):
+        try:
+            with path.open(encoding="utf-8-sig", newline="") as f:
+                for row in csv.DictReader(f):
+                    raw = row.get("Tags") or row.get("tags") or ""
+                    tags = {t.strip().lower() for t in str(raw).split(";") if t.strip()}
+                    if tags:
+                        out.append(tags)
+        except OSError:
+            continue
+    return out
+
+
+# Tags used only for suite-aware chip counting (exclude meta tags shared by Math etc.)
+_PROFILE_COUNT_EXTRA = {
+    "Smoke": {"capture", "smoke"},
+    "UI": {"nav", "navigation", "build", "panel", "heal", "loop", "shell", "landing", "atomic77"},
+    "API": {"api"},
+    "Performance": {"performance", "perf"},
+    "Security": {"security", "sec"},
+    "Manual": {"manual"},
+}
+
+
+def suite_tag_inventory(suite_name: str) -> list[dict[str, Any]]:
+    """Tag → plan_count from y/<suite>/*Plans*.csv (Run=Y, skip PReuse), sorted by count desc.
+
+    Same vocabulary as Build's yPAD tag cloud so Arena Run chips match what authors see.
+    """
+    suite_dir = Y_DIR / suite_name
+    if not suite_dir.is_dir():
+        return []
+    counts: dict[str, int] = {}
+    canon: dict[str, str] = {}
+    for path in sorted(suite_dir.glob("*Plans*.csv")):
+        try:
+            with path.open(encoding="utf-8-sig", newline="") as f:
+                for row in csv.DictReader(f):
+                    pid = (row.get("PlanId") or "").strip()
+                    if not pid or pid.startswith("PReuse_"):
+                        continue
+                    if (row.get("Run") or "").strip().upper() != "Y":
+                        continue
+                    raw = row.get("Tags") or row.get("tags") or ""
+                    for part in str(raw).split(";"):
+                        tag = part.strip()
+                        if not tag:
+                            continue
+                        key = tag.lower()
+                        if key not in canon:
+                            canon[key] = tag
+                        counts[key] = counts.get(key, 0) + 1
+        except OSError:
+            continue
+    items = [{"id": canon[k], "plan_count": counts[k]} for k in counts]
+    items.sort(key=lambda x: (-int(x["plan_count"]), str(x["id"]).lower()))
+    return items
+
+
+def suite_run_profiles(suite_name: str) -> dict[str, Any]:
+    """Profiles + suite-native tag inventory for Arena Run chips."""
+    tag_sets = _collect_suite_plan_tag_sets(suite_name)
+    profiles: list[dict[str, Any]] = []
+    all_tags = set().union(*tag_sets) if tag_sets else set()
+    for name in RUN_PROFILE_ORDER:
+        match = set(_PROFILE_COUNT_EXTRA.get(name, set()))
+        # Also allow exact profile tag names (lower) except noisy UI meta tags
+        for t in RUN_PROFILES.get(name) or []:
+            tl = t.lower()
+            if name == "UI" and tl in {"brahl", "analyze", "cost", "run"}:
+                continue
+            match.add(tl)
+        if "nav" in match:
+            match.add("navigation")
+        count = sum(1 for ts in tag_sets if ts & match)
+        if count <= 0:
+            continue
+        profiles.append(
+            {
+                "id": name,
+                "tags": list(RUN_PROFILES.get(name) or []),
+                "plan_count": count,
+                "mode": PROFILE_SUITE_MODE.get(name, "full"),
+            }
+        )
+    browserish = bool(
+        all_tags
+        & {
+            "capture",
+            "nav",
+            "navigation",
+            "build",
+            "panel",
+            "landing",
+            "shell",
+            "heal",
+            "loop",
+            "ui",
+        }
+    )
+    if suite_name.lower() in {"math"}:
+        browserish = False
+    return {
+        "suite": suite_name,
+        "order": [p["id"] for p in profiles],
+        "profiles": profiles,
+        "tags": suite_tag_inventory(suite_name),
+        "ui_capable": browserish,
+        "suite_mode": dict(PROFILE_SUITE_MODE),
+    }
 
 
 def _suite_mode_for_profiles(profiles: list[str] | None) -> str | None:
@@ -551,6 +678,29 @@ def list_z_runs(suite_suffix: str | None = None) -> list[dict[str, Any]]:
     return runs
 
 
+def _trim_keep_png_refs(text: str, limit: int) -> str:
+    """Truncate failure fields but keep screenshot / .png path hints when possible."""
+    raw = text or ""
+    if len(raw) <= limit:
+        return raw
+    lower = raw.lower()
+    png_i = lower.rfind(".png")
+    shot_i = lower.find("screenshot:")
+    keep_from = -1
+    if shot_i >= 0:
+        keep_from = shot_i
+    elif png_i >= 0:
+        keep_from = max(0, png_i - 120)
+        while keep_from > 0 and raw[keep_from - 1] not in " \t\n|;,":
+            keep_from -= 1
+    if keep_from >= 0:
+        tail = raw[keep_from:]
+        if len(tail) <= limit:
+            return tail if keep_from == 0 else ("…" + tail)
+        return "…" + tail[-(limit - 1) :]
+    return raw[: limit - 1] + "…"
+
+
 def load_failures(run_dir: Path) -> list[dict[str, str]]:
     results = next(run_dir.glob("*_zResults.csv"), None)
     if not results:
@@ -566,9 +716,9 @@ def load_failures(run_dir: Path) -> list[dict[str, str]]:
                     "stepId": row.get("StepId", ""),
                     "stepInfo": row.get("StepInfo", ""),
                     "actionName": row.get("ActionName", ""),
-                    "input": (row.get("Input") or "")[:200],
-                    "output": (row.get("Output") or "")[:300],
-                    "expected": (row.get("Expected") or "")[:200],
+                    "input": _trim_keep_png_refs(row.get("Input") or "", 200),
+                    "output": _trim_keep_png_refs(row.get("Output") or "", 800),
+                    "expected": _trim_keep_png_refs(row.get("Expected") or "", 200),
                 }
             )
     return out
@@ -701,9 +851,8 @@ def start_run(
                 job.log_lines.append(f"Config not found: {config_path}")
                 job.finished_at = time.time()
                 return
-            proc = _popen_engine(
-                [sys.executable, str(ENGINE), "--config", engine_rel]
-            )
+            job.log_lines.append(f"[i] Engine: {resolve_engine()}")
+            proc = _popen_engine(engine_cmd(engine_rel))
             _drain_stdout(proc, job)
             proc.wait()
             job.return_code = proc.returncode
@@ -791,6 +940,11 @@ def analyze_run(run_name: str) -> dict[str, Any]:
         "suite": _suite_from_run(run_name),
         "dashboard": None,
         "has_results": False,
+        "visual_playback": None,
+        "screenshot_count": 0,
+        "overlay_count": 0,
+        "has_filmstrip": False,
+        "has_gif": False,
     }
     if not run_dir.is_dir():
         return out
@@ -798,6 +952,12 @@ def analyze_run(run_name: str) -> dict[str, Any]:
     dash = next(run_dir.glob("*_zDash.html"), None)
     if dash:
         out["dashboard"] = repo_rel(dash)
+    arts = list_run_artifacts(run_name)
+    out["visual_playback"] = arts.get("visual_playback")
+    out["screenshot_count"] = arts.get("counts", {}).get("screenshots", 0)
+    out["overlay_count"] = arts.get("counts", {}).get("overlays", 0)
+    out["has_filmstrip"] = bool(arts.get("filmstrip"))
+    out["has_gif"] = bool(arts.get("gif"))
     if not results or not results.is_file():
         return out
     agg = plan_stats_from_zresults(results)
@@ -808,6 +968,147 @@ def analyze_run(run_name: str) -> dict[str, Any]:
     out["failures"] = agg["failures"][:25]
     out["duration_sec"] = agg["duration_sec"]
     return out
+
+
+def list_run_artifacts(run_name: str) -> dict[str, Any]:
+    """Discover zDash, visual playback, overlay/status PNGs, filmstrip/GIF under a run folder."""
+    run_dir = Z_DIR / run_name
+    out: dict[str, Any] = {
+        "run_name": run_name,
+        "visual_playback": None,
+        "visual_frames": None,
+        "dashboard": None,
+        "zlogs": None,
+        "brahl_report": None,
+        "screenshots": [],
+        "overlay_shots": [],
+        "filmstrip": None,
+        "gif": None,
+        "counts": {
+            "screenshots": 0,
+            "overlays": 0,
+            "total_png": 0,
+        },
+    }
+    if not run_dir.is_dir():
+        return out
+
+    def _file_url(rel_posix: str) -> str:
+        # Keep path segments encoded but preserve slashes for FastAPI path param
+        parts = [urllib_quote(p, safe="") for p in rel_posix.split("/") if p]
+        return f"/api/files/z/{urllib_quote(run_name, safe='')}/{'/'.join(parts)}"
+
+    dash = next(run_dir.glob("*_zDash.html"), None)
+    if dash and dash.is_file():
+        rel = dash.relative_to(run_dir).as_posix()
+        out["dashboard"] = {
+            "path": rel,
+            "url": _file_url(rel),
+            "repo": repo_rel(dash),
+        }
+
+    vp = run_dir / "visual_playback.html"
+    if vp.is_file():
+        out["visual_playback"] = {
+            "path": "visual_playback.html",
+            "url": _file_url("visual_playback.html"),
+        }
+
+    vf = run_dir / "visual_frames.jsonl"
+    if vf.is_file():
+        out["visual_frames"] = {
+            "path": "visual_frames.jsonl",
+            "url": _file_url("visual_frames.jsonl"),
+        }
+
+    zlogs = run_dir / "zlogs.txt"
+    if zlogs.is_file():
+        out["zlogs"] = {"path": "zlogs.txt", "url": _file_url("zlogs.txt")}
+
+    brahl = run_dir / "brahl_report.md"
+    if brahl.is_file():
+        out["brahl_report"] = {"path": "brahl_report.md", "url": _file_url("brahl_report.md")}
+
+    screenshots: list[dict[str, str]] = []
+    overlays: list[dict[str, str]] = []
+    for png in sorted(run_dir.rglob("*.png")):
+        if not png.is_file():
+            continue
+        rel = png.relative_to(run_dir).as_posix()
+        name_l = png.name.lower()
+        entry = {"path": rel, "url": _file_url(rel), "name": png.name}
+        if "filmstrip" in name_l:
+            out["filmstrip"] = entry
+            continue
+        if any(tag in name_l for tag in ("ov_orange", "ov_green", "ov_red")):
+            overlays.append(entry)
+        else:
+            screenshots.append(entry)
+
+    for gif in sorted(run_dir.rglob("*.gif")):
+        if gif.is_file() and ("roll" in gif.name.lower() or "site_shots" in gif.name.lower()):
+            rel = gif.relative_to(run_dir).as_posix()
+            out["gif"] = {"path": rel, "url": _file_url(rel), "name": gif.name}
+            break
+
+    out["screenshots"] = screenshots
+    out["overlay_shots"] = overlays
+    out["counts"] = {
+        "screenshots": len(screenshots),
+        "overlays": len(overlays),
+        "total_png": len(screenshots) + len(overlays) + (1 if out["filmstrip"] else 0),
+    }
+    return out
+
+
+def generate_run_filmstrip(run_name: str) -> dict[str, Any]:
+    """Run site_shot_roll.py against an existing z/ run (GIF + filmstrip)."""
+    run_dir = Z_DIR / run_name
+    if not run_dir.is_dir():
+        raise FileNotFoundError(run_name)
+    script = FOXYIZ_ROOT / "pyUtils" / "site_shot_roll.py"
+    if not script.is_file():
+        raise FileNotFoundError("FoXYiZ/pyUtils/site_shot_roll.py not found")
+    # Prefer --run with path relative to FoXYiZ
+    rel_run = f"z/{run_name}"
+    cmd = [
+        sys.executable,
+        "-u",
+        str(script),
+        "--run",
+        rel_run,
+        "--gif",
+        "--filmstrip",
+    ]
+    proc = subprocess.run(
+        cmd,
+        cwd=str(FOXYIZ_ROOT),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        env=_engine_subprocess_env(),
+        timeout=180,
+    )
+    if proc.returncode != 0:
+        err = (proc.stderr or proc.stdout or "site_shot_roll failed").strip()
+        raise RuntimeError(err[:800])
+    try:
+        from fEngine2 import refresh_zdash_artifact_links  # type: ignore
+
+        refresh_zdash_artifact_links(str(run_dir))
+    except Exception:
+        # Best-effort: engine may not be importable from api cwd
+        eng = FOXYIZ_ROOT / "f" / "fEngine2.py"
+        if eng.is_file():
+            try:
+                sys.path.insert(0, str(FOXYIZ_ROOT / "f"))
+                import fEngine2 as _fe  # type: ignore
+
+                _fe.refresh_zdash_artifact_links(str(run_dir))
+            except Exception:
+                pass
+    return list_run_artifacts(run_name)
 
 
 def plan_result_map(run_name: str) -> dict[str, str]:

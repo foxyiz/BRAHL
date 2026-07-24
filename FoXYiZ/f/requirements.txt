@@ -6,3 +6,6 @@ pyinstaller
 openpyxl
 python-dotenv
 openai
+pyautogui
+schedule
+numpy

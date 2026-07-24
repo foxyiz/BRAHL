@@ -1,5 +1,14 @@
-﻿PlanId,PlanName,DesignId,Run,Tags,Output
-Math_Addition,Verify_Math_Addition,D1;D2,Y,Math;Smoke,addition_result
-Math_Multiplication,Verify_Math_Multiplication,D1,Y,Math;Smoke,multiplication_result
-Math_Modulo,Verify_Math_Modulo,D1,Y,Math;Manual;Smoke,modulo_result
-Math_Round,Verify_Math_Round,D1,Y,Math;Manual;Smoke,round_result
+PlanId,PlanName,DesignId,Run,Tags,Output,CreatedBy,CreatedAt
+PReuse_Math_OpenSite,Open browser and navigate to math,D1,N,Reuse,site_loaded,,2026-07-22T19:08:01+00:00
+PMath_T1_Test_Addition_Functionali,Test Addition Functionality,D1,Y,math;Smoke;BRAHL;T1,case_1_ok,,2026-07-22T19:08:01+00:00
+PMath_T2_Test_Subtraction_Function,Test Subtraction Functionality,D1,Y,math;Smoke;BRAHL;T2,case_2_ok,,2026-07-22T19:08:01+00:00
+PMath_T3_Test_Multiplication_Funct,Test Multiplication Functionality,D1,Y,math;Smoke;BRAHL;T3,case_3_ok,,2026-07-22T19:08:01+00:00
+PMath_T4_Test_Division_Functionali,Test Division Functionality,D1,Y,math;Smoke;BRAHL;T4,case_4_ok,,2026-07-22T19:08:01+00:00
+PMath_T5_Test_Square_Root_Function,Test Square Root Functionality,D1,Y,math;Smoke;BRAHL;T5,case_5_ok,,2026-07-22T19:08:01+00:00
+PMath_T6_Test_Exponentiation_Funct,Test Exponentiation Functionality,D1,Y,math;Smoke;BRAHL;T6,case_6_ok,,2026-07-22T19:08:01+00:00
+PMath_T9_Test_Invalid_Input_Handli,Test Invalid Input Handling,D1,Y,math;Smoke;BRAHL;T9,case_7_ok,,2026-07-22T19:08:01+00:00
+PMath_T11_Test_Performance_of_Calc,Test Performance of Calculations,D1,Y,math;Smoke;BRAHL;T11,case_8_ok,,2026-07-22T19:08:01+00:00
+PMath_Man_T7_Test_Graphing_Linear_Func,Test Graphing Linear Functions,D1,N,math;Manual;T7,manual_1_ok,,2026-07-22T19:08:01+00:00
+PMath_Man_T8_Test_Graphing_Quadratic_F,Test Graphing Quadratic Functions,D1,N,math;Manual;T8,manual_2_ok,,2026-07-22T19:08:01+00:00
+PMath_Man_T10_Test_Mobile_Layout,Test Mobile Layout,D1,N,math;Manual;T10,manual_3_ok,,2026-07-22T19:08:01+00:00
+PMath_Man_T12_Test_User_Interface_for_,Test User Interface for Accessibility,D1,N,math;Manual;T12,manual_4_ok,,2026-07-22T19:08:01+00:00

@@ -1,22 +1,24 @@
-PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
-Math_Addition,1,Verify_Math_Addition,xMath,xAdd,v1;v2,vAdd,vAdd,n
-Math_Multiplication,1,Verify_Math_Multiplication,xMath,xMultiply,v1;v2,vMul,264,n
-Math_Power,1,Verify_Math_Power,xMath,xPower,v1;2,vPow,vPow,n
-Math_Division,1,Verify_Math_Division,xMath,xDiv,v1;v2,vDiv,vDiv,n
-Math_Area,1,Square radius,xMath,xMultiply,v1;v1,vTemp,,n
-Math_Area,2,Multiple res with pi,xMath,xMultiply,vTemp;vPi,vArea,vArea,n
-Math_SquareArea,1,Multiply side with side,xMath,xMultiply,v1;v1,vSquareArea,vSquareArea,n
-Math_TriangleArea,1,Multiply base and height,xMath,xMultiply,vBase;vHeight,vTemp,,n
-Math_TriangleArea,2,Divide by 2,xMath,xDiv,vTemp;vTwo,vTriangleArea,vTriangleArea,n
-Math_Average,1,Calculate average,xMath,xDiv,vSum;vThree,vAverage,vAverage,n
-Math_SimpleInterest,1,Multiply principal rate and time,xMath,xMultiply,vPrincipal;vRate;vTime,vTemp,,n
-Math_SimpleInterest,2,Divide by 100,xMath,xDiv,vTemp;vHundred,vSimpleInterest,vSimpleInterest,n
-Math_CylinderVolume,1,Square radius,xMath,xMultiply,vRadius;vRadius,vTempRadius,,n
-Math_CylinderVolume,2,Multiply with pi,xMath,xMultiply,vTempRadius;vPi,vTempArea,,n
-Math_CylinderVolume,3,Multiply with height,xMath,xMultiply,vTempArea;vHeight,vVolume,vVolume,n
-Math_Modulo,1,Get remainder from division,xMath,xModulo,vDividend;vDivisor,vModulo,vModulo,n
-Math_Round,1,Round the number,xMath,xRound,number_to_round;decimal_places,vRounded,vRounded,n
-Math_CompoundInterest,1,Calculate rate as decimal,xMath,xDiv,vRate;vHundred,vRateDecimal,,n
-Math_CompoundInterest,2,Add 1 to rate,xMath,xAdd,vOne;vRateDecimal,vRateFactor,,n
-Math_CompoundInterest,3,Calculate compound factor,xMath,xPower,vRateFactor;vTime,vCompoundFactor,,n
-Math_CompoundInterest,4,Calculate final amount,xMath,xMultiply,vPrincipal;vCompoundFactor,vCompoundInterest,vCompoundInterest,n
+﻿PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PReuse_Math_OpenSite,1,Open browser,xUI,xOpenBrowser,edge,,,y
+PReuse_Math_OpenSite,2,Navigate to app,xUI,xNavigate,base_url,,http://example.com,y
+PReuse_Math_OpenSite,3,Verify body present,xUI,xGetText,body_locator,,,y
+PMath_T1_Test_Addition_Functionali,1,Open site,xReuse,PReuse_Math_OpenSite,,,,y
+PMath_T1_Test_Addition_Functionali,2,Verify: Test Addition Functionality,xUI,xGetText,body_locator,,,y
+PMath_T2_Test_Subtraction_Function,1,Open site,xReuse,PReuse_Math_OpenSite,,,,y
+PMath_T2_Test_Subtraction_Function,2,Verify: Test Subtraction Functionality,xUI,xGetText,body_locator,,,y
+PMath_T3_Test_Multiplication_Funct,1,Open site,xReuse,PReuse_Math_OpenSite,,,,y
+PMath_T3_Test_Multiplication_Funct,2,Verify: Test Multiplication Functionality,xUI,xGetText,body_locator,,,y
+PMath_T4_Test_Division_Functionali,1,Open site,xReuse,PReuse_Math_OpenSite,,,,y
+PMath_T4_Test_Division_Functionali,2,Verify: Test Division Functionality,xUI,xGetText,body_locator,,,y
+PMath_T5_Test_Square_Root_Function,1,Open site,xReuse,PReuse_Math_OpenSite,,,,y
+PMath_T5_Test_Square_Root_Function,2,Verify: Test Square Root Functionality,xUI,xGetText,body_locator,,,y
+PMath_T6_Test_Exponentiation_Funct,1,Open site,xReuse,PReuse_Math_OpenSite,,,,y
+PMath_T6_Test_Exponentiation_Funct,2,Verify: Test Exponentiation Functionality,xUI,xGetText,body_locator,,,y
+PMath_T9_Test_Invalid_Input_Handli,1,Open site,xReuse,PReuse_Math_OpenSite,,,,y
+PMath_T9_Test_Invalid_Input_Handli,2,Verify: Test Invalid Input Handling,xUI,xGetText,body_locator,,,y
+PMath_T11_Test_Performance_of_Calc,1,Open site,xReuse,PReuse_Math_OpenSite,,,,y
+PMath_T11_Test_Performance_of_Calc,2,Verify: Test Performance of Calculations,xUI,xGetText,body_locator,,,y
+PMath_Man_T7_Test_Graphing_Linear_Func,1,Manual: Test Graphing Linear Functions,xUI,xGetText,body_locator,,,n
+PMath_Man_T8_Test_Graphing_Quadratic_F,1,Manual: Test Graphing Quadratic Functions,xUI,xGetText,body_locator,,,n
+PMath_Man_T10_Test_Mobile_Layout,1,Manual: Test Mobile Layout,xUI,xGetText,body_locator,,,n
+PMath_Man_T12_Test_User_Interface_for_,1,Manual: Test User Interface for Accessibility,xUI,xGetText,body_locator,,,n

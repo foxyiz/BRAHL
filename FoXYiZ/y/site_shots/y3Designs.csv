@@ -1,0 +1,42 @@
+Type,DataName,D1,D2,D3,D4,D5,D6,D7,D8,D9
+UI,persona_id,p1,p1,p1,p1,p1,p1,p1,p1,p1
+UI,persona_code,P1,P1,P1,P1,P1,P1,P1,P1,P1
+UI,persona_name,Site Shot Visitor,Site Shot Visitor,Site Shot Visitor,Site Shot Visitor,Site Shot Visitor,Site Shot Visitor,Site Shot Visitor,Site Shot Visitor,Site Shot Visitor
+UI,base_url,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/
+UI,body_locator,css=body,css=body,css=body,css=body,css=body,css=body,css=body,css=body,css=body
+UI,url_home,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/,https://jusdone.base44.app/
+UI,label_home,home,home,home,home,home,home,home,home,home
+UI,alive_home,ThoughtCapture,ThoughtCapture,ThoughtCapture,ThoughtCapture,ThoughtCapture,ThoughtCapture,ThoughtCapture,ThoughtCapture,ThoughtCapture
+UI,url_ideas,https://jusdone.base44.app/ideas,https://jusdone.base44.app/ideas,https://jusdone.base44.app/ideas,https://jusdone.base44.app/ideas,https://jusdone.base44.app/ideas,https://jusdone.base44.app/ideas,https://jusdone.base44.app/ideas,https://jusdone.base44.app/ideas,https://jusdone.base44.app/ideas
+UI,label_ideas,ideas,ideas,ideas,ideas,ideas,ideas,ideas,ideas,ideas
+UI,alive_ideas,Ideas Library,Ideas Library,Ideas Library,Ideas Library,Ideas Library,Ideas Library,Ideas Library,Ideas Library,Ideas Library
+UI,url_dashboard,https://jusdone.base44.app/dashboard,https://jusdone.base44.app/dashboard,https://jusdone.base44.app/dashboard,https://jusdone.base44.app/dashboard,https://jusdone.base44.app/dashboard,https://jusdone.base44.app/dashboard,https://jusdone.base44.app/dashboard,https://jusdone.base44.app/dashboard,https://jusdone.base44.app/dashboard
+UI,label_dashboard,dashboard,dashboard,dashboard,dashboard,dashboard,dashboard,dashboard,dashboard,dashboard
+UI,alive_dashboard,Dashboard,Dashboard,Dashboard,Dashboard,Dashboard,Dashboard,Dashboard,Dashboard,Dashboard
+UI,url_integrate,https://jusdone.base44.app/integrate,https://jusdone.base44.app/integrate,https://jusdone.base44.app/integrate,https://jusdone.base44.app/integrate,https://jusdone.base44.app/integrate,https://jusdone.base44.app/integrate,https://jusdone.base44.app/integrate,https://jusdone.base44.app/integrate,https://jusdone.base44.app/integrate
+UI,label_integrate,integrate,integrate,integrate,integrate,integrate,integrate,integrate,integrate,integrate
+UI,alive_integrate,Integrate,Integrate,Integrate,Integrate,Integrate,Integrate,Integrate,Integrate,Integrate
+UI,url_docs,https://jusdone.base44.app/docs,https://jusdone.base44.app/docs,https://jusdone.base44.app/docs,https://jusdone.base44.app/docs,https://jusdone.base44.app/docs,https://jusdone.base44.app/docs,https://jusdone.base44.app/docs,https://jusdone.base44.app/docs,https://jusdone.base44.app/docs
+UI,label_docs,docs,docs,docs,docs,docs,docs,docs,docs,docs
+UI,alive_docs,Thought,Thought,Thought,Thought,Thought,Thought,Thought,Thought,Thought
+UI,url_login,https://jusdone.base44.app/login,https://jusdone.base44.app/login,https://jusdone.base44.app/login,https://jusdone.base44.app/login,https://jusdone.base44.app/login,https://jusdone.base44.app/login,https://jusdone.base44.app/login,https://jusdone.base44.app/login,https://jusdone.base44.app/login
+UI,label_login,login,login,login,login,login,login,login,login,login
+UI,alive_login,Welcome,Welcome,Welcome,Welcome,Welcome,Welcome,Welcome,Welcome,Welcome
+UI,url_register,https://jusdone.base44.app/register,https://jusdone.base44.app/register,https://jusdone.base44.app/register,https://jusdone.base44.app/register,https://jusdone.base44.app/register,https://jusdone.base44.app/register,https://jusdone.base44.app/register,https://jusdone.base44.app/register,https://jusdone.base44.app/register
+UI,label_register,register,register,register,register,register,register,register,register,register
+UI,alive_register,Create your account,Create your account,Create your account,Create your account,Create your account,Create your account,Create your account,Create your account,Create your account
+UI,url_forgot_password,https://jusdone.base44.app/forgot-password,https://jusdone.base44.app/forgot-password,https://jusdone.base44.app/forgot-password,https://jusdone.base44.app/forgot-password,https://jusdone.base44.app/forgot-password,https://jusdone.base44.app/forgot-password,https://jusdone.base44.app/forgot-password,https://jusdone.base44.app/forgot-password,https://jusdone.base44.app/forgot-password
+UI,label_forgot_password,forgot_password,forgot_password,forgot_password,forgot_password,forgot_password,forgot_password,forgot_password,forgot_password,forgot_password
+UI,alive_forgot_password,Reset password,Reset password,Reset password,Reset password,Reset password,Reset password,Reset password,Reset password,Reset password
+UI,url_reset_password,https://jusdone.base44.app/reset-password,https://jusdone.base44.app/reset-password,https://jusdone.base44.app/reset-password,https://jusdone.base44.app/reset-password,https://jusdone.base44.app/reset-password,https://jusdone.base44.app/reset-password,https://jusdone.base44.app/reset-password,https://jusdone.base44.app/reset-password,https://jusdone.base44.app/reset-password
+UI,label_reset_password,reset_password,reset_password,reset_password,reset_password,reset_password,reset_password,reset_password,reset_password,reset_password
+UI,alive_reset_password,reset,reset,reset,reset,reset,reset,reset,reset,reset
+UI,url_embed,https://jusdone.base44.app/embed,https://jusdone.base44.app/embed,https://jusdone.base44.app/embed,https://jusdone.base44.app/embed,https://jusdone.base44.app/embed,https://jusdone.base44.app/embed,https://jusdone.base44.app/embed,https://jusdone.base44.app/embed,https://jusdone.base44.app/embed
+UI,label_embed,embed,embed,embed,embed,embed,embed,embed,embed,embed
+UI,alive_embed,Sign in,Sign in,Sign in,Sign in,Sign in,Sign in,Sign in,Sign in,Sign in
+UI,url_view_private,https://jusdone.base44.app/view/not-a-real-id,https://jusdone.base44.app/view/not-a-real-id,https://jusdone.base44.app/view/not-a-real-id,https://jusdone.base44.app/view/not-a-real-id,https://jusdone.base44.app/view/not-a-real-id,https://jusdone.base44.app/view/not-a-real-id,https://jusdone.base44.app/view/not-a-real-id,https://jusdone.base44.app/view/not-a-real-id,https://jusdone.base44.app/view/not-a-real-id
+UI,label_view_private,view_private,view_private,view_private,view_private,view_private,view_private,view_private,view_private,view_private
+UI,alive_view_private,not publicly available,not publicly available,not publicly available,not publicly available,not publicly available,not publicly available,not publicly available,not publicly available,not publicly available
+UI,url_unknown_404,https://jusdone.base44.app/no-such-xyz,https://jusdone.base44.app/no-such-xyz,https://jusdone.base44.app/no-such-xyz,https://jusdone.base44.app/no-such-xyz,https://jusdone.base44.app/no-such-xyz,https://jusdone.base44.app/no-such-xyz,https://jusdone.base44.app/no-such-xyz,https://jusdone.base44.app/no-such-xyz,https://jusdone.base44.app/no-such-xyz
+UI,label_unknown_404,unknown_404,unknown_404,unknown_404,unknown_404,unknown_404,unknown_404,unknown_404,unknown_404,unknown_404
+UI,alive_unknown_404,404,404,404,404,404,404,404,404,404
