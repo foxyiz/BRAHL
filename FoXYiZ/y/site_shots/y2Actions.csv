@@ -1,0 +1,61 @@
+PlanId,StepId,StepInfo,ActionType,ActionName,Input,Output,Expected,Critical
+PShot_Home,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_Home,2,Navigate,xUI,xNavigate,url_home,,,Y
+PShot_Home,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_Home,4,Screenshot,xCapture,xCaptureImage,label_home,,,Y
+PShot_Home,5,Alive,xUI,xGetText,body_locator,,alive_home,Y
+PShot_Ideas,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_Ideas,2,Navigate,xUI,xNavigate,url_ideas,,,Y
+PShot_Ideas,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_Ideas,4,Screenshot,xCapture,xCaptureImage,label_ideas,,,Y
+PShot_Ideas,5,Alive,xUI,xGetText,body_locator,,alive_ideas,Y
+PShot_Dashboard,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_Dashboard,2,Navigate,xUI,xNavigate,url_dashboard,,,Y
+PShot_Dashboard,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_Dashboard,4,Screenshot,xCapture,xCaptureImage,label_dashboard,,,Y
+PShot_Dashboard,5,Alive,xUI,xGetText,body_locator,,alive_dashboard,Y
+PShot_Integrate,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_Integrate,2,Navigate,xUI,xNavigate,url_integrate,,,Y
+PShot_Integrate,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_Integrate,4,Screenshot,xCapture,xCaptureImage,label_integrate,,,Y
+PShot_Integrate,5,Alive,xUI,xGetText,body_locator,,alive_integrate,Y
+PShot_Docs,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_Docs,2,Navigate,xUI,xNavigate,url_docs,,,Y
+PShot_Docs,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_Docs,4,Screenshot,xCapture,xCaptureImage,label_docs,,,Y
+PShot_Docs,5,Alive,xUI,xGetText,body_locator,,alive_docs,Y
+PShot_Login,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_Login,2,Navigate,xUI,xNavigate,url_login,,,Y
+PShot_Login,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_Login,4,Screenshot,xCapture,xCaptureImage,label_login,,,Y
+PShot_Login,5,Alive,xUI,xGetText,body_locator,,alive_login,Y
+PShot_Register,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_Register,2,Navigate,xUI,xNavigate,url_register,,,Y
+PShot_Register,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_Register,4,Screenshot,xCapture,xCaptureImage,label_register,,,Y
+PShot_Register,5,Alive,xUI,xGetText,body_locator,,alive_register,Y
+PShot_ForgotPassword,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_ForgotPassword,2,Navigate,xUI,xNavigate,url_forgot_password,,,Y
+PShot_ForgotPassword,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_ForgotPassword,4,Screenshot,xCapture,xCaptureImage,label_forgot_password,,,Y
+PShot_ForgotPassword,5,Alive,xUI,xGetText,body_locator,,alive_forgot_password,Y
+PShot_ResetPassword,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_ResetPassword,2,Navigate,xUI,xNavigate,url_reset_password,,,Y
+PShot_ResetPassword,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_ResetPassword,4,Screenshot,xCapture,xCaptureImage,label_reset_password,,,Y
+PShot_ResetPassword,5,Alive,xUI,xGetText,body_locator,,alive_reset_password,Y
+PShot_Embed,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_Embed,2,Navigate,xUI,xNavigate,url_embed,,,Y
+PShot_Embed,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_Embed,4,Screenshot,xCapture,xCaptureImage,label_embed,,,Y
+PShot_Embed,5,Alive,xUI,xGetText,body_locator,,alive_embed,Y
+PShot_ViewPrivate,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_ViewPrivate,2,Navigate,xUI,xNavigate,url_view_private,,,Y
+PShot_ViewPrivate,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_ViewPrivate,4,Screenshot,xCapture,xCaptureImage,label_view_private,,,Y
+PShot_ViewPrivate,5,Alive,xUI,xGetText,body_locator,,alive_view_private,Y
+PShot_Unknown404,1,Open Edge,xUI,xOpenBrowser,edge,,,Y
+PShot_Unknown404,2,Navigate,xUI,xNavigate,url_unknown_404,,,Y
+PShot_Unknown404,3,Wait SPA,xTime,xTimeWait,3,,,Y
+PShot_Unknown404,4,Screenshot,xCapture,xCaptureImage,label_unknown_404,,,Y
+PShot_Unknown404,5,Alive,xUI,xGetText,body_locator,,alive_unknown_404,Y

@@ -1,5 +1,0 @@
-﻿PlanId,PlanName,DesignId,Run,Tags,Output
-Math_Addition,Verify_Math_Addition,D1;D2,Y,Math;Smoke,addition_result
-Math_Multiplication,Verify_Math_Multiplication,D1,Y,Math;Smoke,multiplication_result
-Math_Modulo,Verify_Math_Modulo,D1,Y,Math;Manual;Smoke,modulo_result
-Math_Round,Verify_Math_Round,D1,Y,Math;Manual;Smoke,round_result

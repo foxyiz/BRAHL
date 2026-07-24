@@ -1,44 +1,38 @@
-# FoXYiZ · BRAHL
+Desktop BRAHL
 
-Local LCNC automation (`f(x,y)=z`) + desktop Arena for **BRAHL** (Build → Run → Analyze → Heal → Loop).
+Lean desktop tool for the QA hunter: FoXYiZ runs tests, BRAHL decides Go/No-Go.
+
+**BRAHL** is local-only.
+
+## Quick start
+
+```powershell
+cd c:\Path\To\BRAHL
+python qoa_web\run_local.py
+```
+
+Open http://127.0.0.1:8766.
+
+1. Bind your **app under test** — GitHub URL (clone into `workspaces/`) or a local folder path.
+2. Build → pick/create a challenge (yPAD under `FoXYiZ/y/`).
+3. Run → Analyze → Heal → Loop → BRAHL.
 
 ## Layout
 
 ```
-KK/
-  FoXYiZ/    f · x · y · z · pyUtils
-  qoa_web/   BRAHL Arena
-  Docs/
-  NEXT.md · todaysummary.md   ← resume here
-  archive/   retired (out of agent context)
+BRAHL/
+  FoXYiZ/          engine f, x, y (Math, site_shots, a77), empty z/, pyUtils
+  qoa_web/         slim Arena (no Account/Role/Wallet/Admin)
+  workspaces/      cloned GitHub repos
+  Docs/            BRAHL_DESKTOP_BYOK.md
 ```
 
-## Run locally
+## AI (BYOK)
 
-```powershell
-cd c:\006\FXYZ\KK
-python qoa_web/run_local.py
-# Welcome: http://127.0.0.1:8765/welcome
-# Arena:   http://127.0.0.1:8765/app?demo=1
+Set `OPENAI_API_KEY` in `FoXYiZ/f/.env` (see `.env.example`). Toggle **AI on/off** in the top bar when a project is selected.
 
-python FoXYiZ\f\fEngine2.py --config f/fStart/Math.json
-python FoXYiZ\f\fEngine2.py --config f/fStart/qoa_web_live.json
+## Workspace API
 
-# End-user exe (no Python needed):
-#   powershell -File FoXYiZ\packaging\build_exe.ps1
-#   FoXYiZ\packaging\dist\FoXYiZ_user\FoXYiZ.exe --config fStart\Math.json
-```
-
-fStarts: **one JSON per suite** under `FoXYiZ/f/fStart/{suite}.json` — see [FoXYiZ/f/fStart_SCOPE.md](FoXYiZ/f/fStart_SCOPE.md).
-
-Run / Loop = FoXYiZ only (never the LLM). Optional AI: `OPENAI_API_KEY` in `FoXYiZ/f/.env`.
-
-## Product
-
-[PRD.md](PRD.md) — QA on Air · BRAHL · Arena · how it runs on FoXYiZ (rebuild / onboard).
-
-## Agents
-
-1. [qoa_web/MEMORY.md](qoa_web/MEMORY.md)  
-2. [NEXT.md](NEXT.md) — **todos when you restart**  
-3. [todaysummary.md](todaysummary.md)
+- `GET /api/workspace` — current bind
+- `POST /api/workspace` — `{ "source":"github", "repo_url":"…" }` or `{ "source":"local", "local_path":"…" }`
+- `DELETE /api/workspace` — clear bind

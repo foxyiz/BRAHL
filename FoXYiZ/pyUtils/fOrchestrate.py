@@ -1,6 +1,6 @@
 """FoXYiZ orchestrator — tag fan-out + multi-config batches.
 
-Future FoXYiZ.exe entrypoint. Workers still run suites via fEngine2.
+Workers run suites via FoXYiZ.exe when present (else fEngine2.py).
 
 Semantics:
   - thread_count == 1: tags stay OR filter (engine default).
@@ -26,9 +26,22 @@ from typing import Any
 from _paths import FOXYIZ_ROOT, PYUTILS_DIR, Z_DIR  # type: ignore[import-not-found]
 
 F_DIR = FOXYIZ_ROOT / "f"
-# Dev: python f/fEngine2.py · Frozen: re-exec FoXYiZ.exe / Foxyiz.exe
-ENGINE = Path(sys.executable) if getattr(sys, "frozen", False) else (F_DIR / "fEngine2.py")
+ENGINE_EXE = F_DIR / "FoXYiZ.exe"
+ENGINE_PY = F_DIR / "fEngine2.py"
 OUTPUT_DIR_RE = re.compile(r"Output Directory:\s*(.+)")
+
+
+def _resolve_engine() -> Path:
+    """Prefer FoXYiZ.exe; frozen re-execs this binary; else fEngine2.py."""
+    override = (os.environ.get("FOXYIZ_ENGINE") or "").strip()
+    if override:
+        p = Path(override)
+        return p if p.is_absolute() else (FOXYIZ_ROOT / p).resolve()
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable)
+    if ENGINE_EXE.is_file():
+        return ENGINE_EXE.resolve()
+    return ENGINE_PY.resolve()
 
 
 def _ensure_f_dir() -> Path:
@@ -71,10 +84,11 @@ def _write_temp_fstart(base: dict[str, Any], tag: str, batch_id: str) -> Path:
 
 
 def _engine_cmd(config_rel: str) -> list[str]:
-    """Command to run one suite: python fEngine2.py … or FoXYiZ.exe …"""
-    if getattr(sys, "frozen", False):
-        return [str(ENGINE), "--config", config_rel]
-    return [sys.executable, str(ENGINE), "--config", config_rel]
+    """Command to run one suite: FoXYiZ.exe … or python fEngine2.py …"""
+    eng = _resolve_engine()
+    if eng.suffix.lower() == ".py":
+        return [sys.executable, str(eng), "--config", config_rel]
+    return [str(eng), "--config", config_rel]
 
 
 def _run_engine_config(config_rel: str, label: str = "") -> dict[str, Any]:

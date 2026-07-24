@@ -10,9 +10,11 @@
     "Smoke"
   ],
   "capture": {
-    "image": "on_fail",
-    "video": "off",
+    "image": "every_step",
+    "video": "plan",
     "video_fps": 2,
-    "subdir": ""
+    "subdir": "",
+    "overlay": "off",
+    "overlay_ms": 250
   }
 }

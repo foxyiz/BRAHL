@@ -8,6 +8,8 @@
 
 **Today:** [../todaysummary.md](../todaysummary.md) · **Next:** [../NEXT.md](../NEXT.md) · **Handoff:** [Docs/HANDOFF.md](../Docs/HANDOFF.md)
 
+**Capture / visual playback (Arena):** Edit fStart → Capture form (`image` / `video` / `overlay`). After Run: Visual playback, Screenshots gallery, Make film roll. API: `GET /api/runs/{run}/artifacts`, `POST /api/runs/{run}/filmstrip`.
+
 ---
 
 ## In scope

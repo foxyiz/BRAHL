@@ -36,13 +36,31 @@
           "usd_est": 0.00185
         }
       }
+    },
+    "15745c9b6515": {
+      "all": {
+        "calls": 3,
+        "prompt_tokens": 5895,
+        "completion_tokens": 398,
+        "total_tokens": 6293,
+        "usd_est": 0.002517
+      },
+      "months": {
+        "2026-07": {
+          "calls": 3,
+          "prompt_tokens": 5895,
+          "completion_tokens": 398,
+          "total_tokens": 6293,
+          "usd_est": 0.002517
+        }
+      }
     }
   },
   "global": {
-    "calls": 9,
-    "prompt_tokens": 12135,
-    "completion_tokens": 2403,
-    "total_tokens": 14538,
-    "usd_est": 0.005815
+    "calls": 13,
+    "prompt_tokens": 18283,
+    "completion_tokens": 3250,
+    "total_tokens": 21533,
+    "usd_est": 0.008613
   }
 }

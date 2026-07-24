@@ -26,10 +26,12 @@ from runner import (
     delete_fstart_config,
     ensure_brahl_report,
     expand_run_profiles,
+    generate_run_filmstrip,
     get_job,
     get_suite_detail,
     list_fstart_configs,
     list_fstart_for_suite,
+    list_run_artifacts,
     list_suites,
     list_z_runs,
     load_errors_excerpt,
@@ -38,6 +40,7 @@ from runner import (
     report_stats,
     PROFILE_SUITE_MODE,
     RUN_PROFILE_ORDER,
+    suite_run_profiles,
     RUN_PROFILES,
     start_batch,
     start_run,
@@ -56,11 +59,18 @@ import admin_panel as admin_panel_store
 import presence as presence_store
 import suite_docs as suite_docs_store
 import schedules as schedules_store
+import workspace as workspace_store
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
-APP_VERSION = "1.4.0"
+APP_VERSION = "2.0.0-desktop"
+# KK2 desktop BRAHL — no marketplace/cloud surface
+DESKTOP_MODE = os.environ.get("QOA_DESKTOP", "1").strip().lower() not in ("0", "false", "no", "off")
 
-app = FastAPI(title="qoa_web", description="BRAHL web — FoXYiZ local API", version=APP_VERSION)
+app = FastAPI(
+    title="KK2 BRAHL Desktop",
+    description="Desktop BRAHL — FoXYiZ local API (QA Hunter)",
+    version=APP_VERSION,
+)
 
 
 def _run_due_schedules_once() -> None:
@@ -760,44 +770,55 @@ def version() -> dict[str, str]:
 
 @app.get("/api/health")
 def health() -> dict[str, Any]:
-    """Liveness + production readiness (no secret values)."""
-    import billing as billing_mod
-    import cloud_worker as cw
-
-    google_id = bool((os.environ.get("GOOGLE_CLIENT_ID") or "").strip())
-    google_secret = bool((os.environ.get("GOOGLE_CLIENT_SECRET") or "").strip())
-    jwt = (os.environ.get("JWT_SECRET") or "").strip()
-    demo = auth_store.demo_allowed()
-    auth_required = os.environ.get("QOA_AUTH_REQUIRED", "0").strip().lower() in (
-        "1",
-        "true",
-        "yes",
-    )
-    admin_open = os.environ.get("QOA_ADMIN_OPEN", "1").strip() not in ("0", "false", "False", "no")
-    stripe = billing_mod.billing_status()
-    cloud = cw.cloud_status()
+    """Liveness for desktop BRAHL."""
     return {
         "status": "ok",
-        "service": "qoa_web",
+        "service": "kk2-desktop",
         "version": APP_VERSION,
+        "desktop": DESKTOP_MODE,
         "root": str(KK_ROOT),
-        "app_base_url": (os.environ.get("APP_BASE_URL") or "").strip() or None,
-        "readiness": {
-            "jwt_secret_set": bool(jwt) and jwt != "qoa-dev-change-me-in-production",
-            "google_oauth_configured": google_id and google_secret,
-            "demo_allowed": demo,
-            "auth_required": auth_required,
-            "admin_open": admin_open,
-            "stripe_configured": bool(stripe.get("configured")),
-            "cloud_worker_configured": bool(cloud.get("configured")),
-            "cloud_worker_reachable": bool(cloud.get("reachable")),
-            "openai_key_set": bool((os.environ.get("OPENAI_API_KEY") or "").strip()),
-        },
+        "openai_key_set": bool((os.environ.get("OPENAI_API_KEY") or "").strip()),
     }
+
+
+class WorkspaceBindRequest(BaseModel):
+    source: str = "local"  # local | github
+    local_path: str | None = None
+    repo_url: str | None = None
+    default_branch: str | None = None
+
+
+@app.get("/api/workspace")
+def get_workspace() -> dict[str, Any]:
+    return workspace_store.workspace_summary()
+
+
+@app.post("/api/workspace")
+def bind_workspace(body: WorkspaceBindRequest) -> dict[str, Any]:
+    """Bind app-under-test: local folder or git clone into KK2/workspaces/."""
+    try:
+        src = (body.source or "local").strip().lower()
+        if src == "github":
+            ws = workspace_store.clone_github(body.repo_url or "", body.default_branch)
+        else:
+            if not (body.local_path or "").strip():
+                raise HTTPException(400, "local_path required")
+            ws = workspace_store.bind_local(body.local_path.strip())
+        return {"ok": True, **workspace_store.workspace_summary(), "workspace": ws}
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+
+
+@app.delete("/api/workspace")
+def unbind_workspace() -> dict[str, Any]:
+    workspace_store.clear_workspace()
+    return {"ok": True, "bound": False}
 
 
 @app.post("/api/auth/register")
 def auth_register(body: AuthRegisterRequest) -> dict[str, Any]:
+    if DESKTOP_MODE:
+        raise HTTPException(404, "Auth disabled on desktop BRAHL")
     try:
         user = auth_store.register_user(
             body.email,
@@ -1615,6 +1636,32 @@ def run_failures(run_name: str) -> dict[str, Any]:
     return {"run": run_name, "failures": load_failures(run_dir)}
 
 
+@app.get("/api/runs/{run_name}/artifacts")
+def run_artifacts(run_name: str) -> dict[str, Any]:
+    """List screenshots, overlay frames, visual_playback.html, filmstrip/GIF for a z/ run."""
+    run_dir = Z_DIR / run_name
+    if not run_dir.is_dir():
+        raise HTTPException(404, f"Run not found: {run_name}")
+    return list_run_artifacts(run_name)
+
+
+@app.post("/api/runs/{run_name}/filmstrip")
+def run_filmstrip(run_name: str) -> dict[str, Any]:
+    """Generate GIF + filmstrip PNG from run screenshots (site_shot_roll)."""
+    run_dir = Z_DIR / run_name
+    if not run_dir.is_dir():
+        raise HTTPException(404, f"Run not found: {run_name}")
+    try:
+        arts = generate_run_filmstrip(run_name)
+    except FileNotFoundError as e:
+        raise HTTPException(404, str(e)) from e
+    except RuntimeError as e:
+        raise HTTPException(500, str(e)) from e
+    except Exception as e:
+        raise HTTPException(500, f"Filmstrip failed: {e}") from e
+    return {"ok": True, "artifacts": arts}
+
+
 @app.post("/api/projects/{project_id}/runs/{run_name}/analyze-ai")
 def analyze_run_ai(project_id: str, run_name: str) -> dict[str, Any]:
     import ai_assist
@@ -1805,24 +1852,40 @@ def get_cycle_history(project_id: str) -> dict[str, Any]:
 
 
 @app.get("/api/run-profiles")
-def run_profiles() -> dict[str, Any]:
-    """Ordered Run profiles, yPAD tag mappings, and suite file-set mode."""
+def run_profiles(suite: str | None = None) -> dict[str, Any]:
+    """Ordered Run profiles + suite-native tags. Pass suite= for yPAD-aware chips."""
+    if suite and suite.strip() and suite.strip() not in ("*", "all"):
+        return suite_run_profiles(suite.strip())
     return {
         "order": RUN_PROFILE_ORDER,
-        "profiles": {k: list(v) for k, v in RUN_PROFILES.items()},
+        "profiles": [
+            {
+                "id": k,
+                "tags": list(v),
+                "plan_count": None,
+                "mode": PROFILE_SUITE_MODE.get(k, "full"),
+            }
+            for k, v in RUN_PROFILES.items()
+        ],
+        "tags": [],
         "suite_mode": dict(PROFILE_SUITE_MODE),
+        "ui_capable": True,
     }
 
 
 @app.post("/api/jobs")
 def create_job(body: RunRequest) -> dict[str, Any]:
-    """Start FoXYiZ fEngine2 / orchestrator — Run/Loop execution path (no AI)."""
+    """Start FoXYiZ.exe / orchestrator — Run/Loop execution path (no AI)."""
     runtime_mode = (body.runtime_mode or "").strip().lower() or None
+    if DESKTOP_MODE:
+        runtime_mode = "local"
     if not runtime_mode and body.project_id:
         proj = project_store.get_project(body.project_id)
         if proj:
             runtime_mode = (proj.get("runtime_mode") or "local").strip().lower()
     if not runtime_mode:
+        runtime_mode = "local"
+    if DESKTOP_MODE and runtime_mode == "cloud":
         runtime_mode = "local"
 
     paths = [p for p in (body.config_paths or []) if p]
@@ -2907,6 +2970,8 @@ def about_page():
 
 @app.get("/welcome")
 def welcome_page():
+    if DESKTOP_MODE:
+        return RedirectResponse("/app", status_code=302)
     welcome_path = WEB_DIR / "welcome.html"
     if not welcome_path.is_file():
         raise HTTPException(404, "Welcome page not found")
@@ -2963,6 +3028,12 @@ def app_page():
 
 @app.get("/")
 def index():
+    # Desktop BRAHL boots straight into the Arena
+    if DESKTOP_MODE:
+        index_path = WEB_DIR / "index.html"
+        if not index_path.is_file():
+            raise HTTPException(404, "Frontend not built")
+        return _html_page(index_path)
     welcome_path = WEB_DIR / "welcome.html"
     if welcome_path.is_file():
         return _html_page(welcome_path)

@@ -45,7 +45,9 @@ Every fStart should include:
   "image": "on_fail",
   "video": "off",
   "video_fps": 2,
-  "subdir": ""
+  "subdir": "",
+  "overlay": "off",
+  "overlay_ms": 250
 }
 ```
 
@@ -55,6 +57,12 @@ Every fStart should include:
 | `video` | `off` · `on_fail` · `every_step` · `plan` | Frame sequence |
 | `video_fps` | 1–10 | Frames per second |
 | `subdir` | e.g. `captures` | Folder under plan `z/` dir |
+| `overlay` | `off` · `on` | Selenium orange/green/red element outlines + `visual_playback.html` |
+| `overlay_ms` | 0–3000 | Settle delay (ms) before overlay screenshot |
+
+Arena **Edit fStart** exposes these as form fields (JSON still available under Advanced). After a run with overlays/screenshots, **Run** / **Analyze** link Visual playback, Screenshots, and optional film roll (GIF).
+
+Explicit `xCaptureImage` yPAD steps always save a PNG regardless of `image`.
 
 ## CLI smoke
 

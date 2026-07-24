@@ -1,6 +1,6 @@
 """Optional OpenAI assist for BRAHL Build, Analyze, and Heal (when AI toggle is on).
 
-Run and Loop stay on FoXYiZ fEngine2.py — no LLM in the execution path.
+Run and Loop stay on FoXYiZ.exe — no LLM in the execution path.
 See KK/Docs/BRAHL.md and KK/Docs/FoXYiZ.md.
 
 AI cost control

@@ -117,7 +117,31 @@ _CAPTURE_CONFIG = {
     "video": "off",      # off | on_fail | every_step | plan
     "video_fps": 2,
     "subdir": "",        # optional subfolder under results_dir (e.g. "captures")
+    "overlay": "off",    # off | on — Selenium outline overlays in PNGs
+    "overlay_ms": 250,   # settle delay before overlay screenshot
 }
+
+# Last found element for fail-path red paint (also stashed on handler).
+_OVERLAY_LAST_ELEMENT = None
+
+_OVERLAY_COLORS = {
+    "identify": ("#f97316", "ID"),
+    "pass": ("#22c55e", "OK"),
+    "fail": ("#ef4444", "ERR"),
+}
+_OVERLAY_LABELS = {
+    "identify": "ov_orange",
+    "pass": "ov_green",
+    "fail": "ov_red",
+}
+_OVERLAY_INTERACT_ACTIONS = frozenset({
+    "xClick", "xType", "xSendKeys", "xHover", "xContextClick",
+    "xSelectDropdown", "xDragAndDrop", "xUploadFile",
+})
+_OVERLAY_READ_ACTIONS = frozenset({
+    "xGetText", "xIsChecked",
+})
+
 
 def _normalize_capture_mode(value, allowed, default):
     if value is None:
@@ -135,8 +159,14 @@ def set_capture_config(config: dict | None):
             "video": "off",
             "video_fps": 2,
             "subdir": "",
+            "overlay": "off",
+            "overlay_ms": 250,
         }
         return
+    try:
+        overlay_ms = max(0, min(3000, int(config.get("overlay_ms", 250) or 250)))
+    except (TypeError, ValueError):
+        overlay_ms = 250
     _CAPTURE_CONFIG = {
         "image": _normalize_capture_mode(
             config.get("image"),
@@ -150,11 +180,137 @@ def set_capture_config(config: dict | None):
         ),
         "video_fps": max(1, min(10, int(config.get("video_fps", 2) or 2))),
         "subdir": str(config.get("subdir") or "").strip().strip("/\\"),
+        "overlay": _normalize_capture_mode(config.get("overlay"), {"off", "on"}, "off"),
+        "overlay_ms": overlay_ms,
     }
 
 
 def get_capture_config() -> dict:
     return dict(_CAPTURE_CONFIG)
+
+
+def _overlay_on() -> bool:
+    return (_CAPTURE_CONFIG.get("overlay") or "off") == "on"
+
+
+def _remember_element(handler, element):
+    global _OVERLAY_LAST_ELEMENT
+    _OVERLAY_LAST_ELEMENT = element
+    try:
+        setattr(handler, "_overlay_element", element)
+    except Exception:
+        pass
+
+
+def _paint_element(driver, element, status: str):
+    """Paint Selenium element outline: identify=orange, pass=green, fail=red."""
+    if not driver or element is None:
+        return
+    color, badge = _OVERLAY_COLORS.get(status, _OVERLAY_COLORS["identify"])
+    try:
+        driver.execute_script(
+            """
+            var el = arguments[0], color = arguments[1], badge = arguments[2];
+            if (!el) return;
+            if (!el.getAttribute('data-foxyiz-prev-style')) {
+              el.setAttribute('data-foxyiz-prev-style', el.getAttribute('style') || '');
+            }
+            el.style.outline = '3px solid ' + color;
+            el.style.outlineOffset = '2px';
+            el.style.boxShadow = '0 0 0 4px ' + color + '66';
+            var old = document.getElementById('foxyiz-ov-badge');
+            if (old) old.remove();
+            var r = el.getBoundingClientRect();
+            var b = document.createElement('div');
+            b.id = 'foxyiz-ov-badge';
+            b.textContent = badge;
+            b.setAttribute('style',
+              'position:fixed;z-index:2147483647;pointer-events:none;' +
+              'left:' + Math.max(0, r.left) + 'px;top:' + Math.max(0, r.top - 18) + 'px;' +
+              'background:' + color + ';color:#fff;font:11px/16px sans-serif;' +
+              'padding:0 5px;border-radius:3px;');
+            document.documentElement.appendChild(b);
+            """,
+            element,
+            color,
+            badge,
+        )
+    except Exception as exc:
+        logger.debug("overlay paint failed: %s", exc)
+
+
+def _clear_overlay(driver, element=None):
+    if not driver:
+        return
+    try:
+        driver.execute_script(
+            """
+            var el = arguments[0];
+            var badge = document.getElementById('foxyiz-ov-badge');
+            if (badge) badge.remove();
+            if (el && el.getAttribute) {
+              var prev = el.getAttribute('data-foxyiz-prev-style');
+              if (prev !== null) {
+                if (prev) el.setAttribute('style', prev);
+                else el.removeAttribute('style');
+                el.removeAttribute('data-foxyiz-prev-style');
+              }
+            }
+            """,
+            element,
+        )
+    except Exception:
+        pass
+
+
+def _append_visual_frame(results_dir, plan_id, design_id, step_id, status, action, png_name, label):
+    """Append one JSONL frame under the suite output dir (parent of plan results_dir)."""
+    if not results_dir or not png_name:
+        return
+    try:
+        suite_dir = os.path.dirname(results_dir)
+        target = _capture_target_dir(results_dir) or results_dir
+        shot_abs = os.path.join(target, png_name)
+        rel = os.path.relpath(shot_abs, suite_dir).replace("\\", "/")
+        color = _OVERLAY_COLORS.get(status, _OVERLAY_COLORS["identify"])[0]
+        row = {
+            "t": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+            "plan": plan_id or "",
+            "design": design_id or "",
+            "step": str(step_id or ""),
+            "status": status,
+            "color": color,
+            "action": action or "",
+            "png": rel,
+            "label": label or "",
+        }
+        path = os.path.join(suite_dir, "visual_frames.jsonl")
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    except Exception as exc:
+        logger.debug("visual_frames append failed: %s", exc)
+
+
+def _overlay_status_capture(handler, results_dir, plan_id, design_id, step_id, status, action):
+    """Paint → settle → PNG → JSONL. status: identify | pass | fail."""
+    if not _overlay_on() or not handler:
+        return None
+    driver = getattr(handler, "_driver", None)
+    element = getattr(handler, "_overlay_element", None) or _OVERLAY_LAST_ELEMENT
+    if not driver:
+        return None
+    _paint_element(driver, element, status)
+    try:
+        time.sleep((_CAPTURE_CONFIG.get("overlay_ms") or 250) / 1000.0)
+    except Exception:
+        pass
+    label = _OVERLAY_LABELS.get(status, "ov_orange")
+    shot = _save_step_screenshot(driver, results_dir, plan_id, design_id, step_id, label)
+    if shot:
+        _append_visual_frame(results_dir, plan_id, design_id, step_id, status, action, shot, label)
+    if status != "fail":
+        _clear_overlay(driver, element)
+    return shot
 
 
 def set_debug_mode(enabled: bool):
@@ -217,6 +373,13 @@ def _save_error_artifacts(driver, results_dir, plan_id, design_id, step_id, err_
     err_msg = _sanitize_error_message(err_msg)
     if not results_dir:
         return err_msg
+    # Paint fail overlay before error PNG so artifacts show red
+    if _overlay_on() and driver and _OVERLAY_LAST_ELEMENT is not None:
+        try:
+            _paint_element(driver, _OVERLAY_LAST_ELEMENT, "fail")
+            time.sleep((_CAPTURE_CONFIG.get("overlay_ms") or 250) / 1000.0)
+        except Exception:
+            pass
     debug_dir = os.path.join(results_dir, "_debug") if _DEBUG_MODE else results_dir
     os.makedirs(debug_dir, exist_ok=True)
     ts = datetime.now().strftime('%H%M%S')
@@ -445,7 +608,11 @@ class UIActionHandler(ActionHandler):
         last_exception = None
         for attempt in range(retries + 1):
             try:
-                return WebDriverWait(self._driver, wait_timeout).until(condition((by_type, locator_value)))
+                element = WebDriverWait(self._driver, wait_timeout).until(condition((by_type, locator_value)))
+                if _overlay_on():
+                    _remember_element(self, element)
+                    _paint_element(self._driver, element, "identify")
+                return element
             except (TimeoutException, NoSuchElementException) as e:
                 last_exception = e
                 if attempt < retries:
@@ -2568,6 +2735,30 @@ def runAction(aT, aName, aIn, aOut=None, aExpected=None, plan_id=None, design_id
         vOut = f"Error in {aName}: {sanitized_err}"
         logger.error(f"Action failed: {aT}.{aName}: {sanitized_err}")
     time_taken = time.time() - start_time
+
+    # Color-coded overlay status PNGs (opt-in via capture.overlay)
+    if handler and aT == "xUI" and _overlay_on() and results_dir:
+        try:
+            if vRes == "Pass" and aName in _OVERLAY_INTERACT_ACTIONS:
+                shot = _overlay_status_capture(
+                    handler, results_dir, plan_id, design_id, step_id, "pass", aName
+                )
+                if shot:
+                    vOut = f"{vOut} [overlay: {shot}]"
+            elif vRes == "Pass" and aName in _OVERLAY_READ_ACTIONS:
+                shot = _overlay_status_capture(
+                    handler, results_dir, plan_id, design_id, step_id, "identify", aName
+                )
+                if shot:
+                    vOut = f"{vOut} [overlay: {shot}]"
+            elif vRes == "Fail":
+                shot = _overlay_status_capture(
+                    handler, results_dir, plan_id, design_id, step_id, "fail", aName
+                )
+                if shot:
+                    vOut = f"{vOut} [overlay: {shot}]"
+        except Exception as exc:
+            logger.debug("overlay status capture skipped: %s", exc)
 
     if handler and aT in ("xUI", "xCapture"):
         vOut = _apply_auto_capture(

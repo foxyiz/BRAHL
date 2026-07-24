@@ -4,15 +4,17 @@
   ],
   "thread_count": 1,
   "timeout": 5,
-  "headless": true,
+  "headless": false,
   "debug": false,
   "tags": [
     "Smoke"
   ],
   "capture": {
-    "image": "on_fail",
-    "video": "off",
+    "image": "every_step",
+    "video": "every_step",
     "video_fps": 2,
-    "subdir": ""
+    "subdir": "",
+    "overlay": "on",
+    "overlay_ms": 250
   }
 }

@@ -1,0 +1,26 @@
+{
+  "id": "20260724_150024_initial",
+  "label": "initial",
+  "author": "system",
+  "created_at": "2026-07-24T15:00:24+00:00",
+  "source_build": "auto-baseline",
+  "suite_config": "y/a77/a77.json",
+  "files": [
+    {
+      "sheet": "plans",
+      "source": "y/a77/y1Plans.csv",
+      "snapshot": "y/a77/versions/20260724_150024_initial/y1Plans.csv"
+    },
+    {
+      "sheet": "actions",
+      "source": "y/a77/y2Actions.csv",
+      "snapshot": "y/a77/versions/20260724_150024_initial/y2Actions.csv"
+    },
+    {
+      "sheet": "designs",
+      "source": "y/a77/y3Designs.csv",
+      "snapshot": "y/a77/versions/20260724_150024_initial/y3Designs.csv"
+    }
+  ],
+  "immutable": true
+}

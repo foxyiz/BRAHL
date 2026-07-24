@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BRAHL Web — f(x,y)=z</title>
+  <title>KK2 BRAHL Desktop</title>
   <link rel="stylesheet" href="/assets/styles.css" />
   <link rel="stylesheet" href="/assets/forms.css" />
-  <link rel="stylesheet" href="/assets/nalanda.css" />
   <link rel="stylesheet" href="/assets/themes.css" />
 </head>
 <body>
@@ -14,10 +13,15 @@
   <header class="topbar">
     <div class="topbar-row topbar-row-head">
       <div class="brand">
-        <a href="/" class="brand-home" aria-label="QA on Air home">
-          <h1 id="app-title">BRAHL Web — f(x,y)=z</h1>
+        <a href="/app" class="brand-home" aria-label="BRAHL Desktop">
+          <h1 id="app-title">KK2 BRAHL Desktop</h1>
         </a>
-        <p class="tagline" id="app-tagline">Your QA agent — FoXYiZ runs the tests · BRAHL decides Go/No-Go</p>
+        <p class="tagline" id="app-tagline">FoXYiZ runs the tests · BRAHL decides Go/No-Go</p>
+      </div>
+      <div id="topbar-workspace" class="topbar-workspace" hidden>
+        <span class="topbar-project-label">Repo</span>
+        <span id="topbar-workspace-label" class="topbar-workspace-label" title="">—</span>
+        <button type="button" id="btn-workspace-change" class="secondary fstart-action-btn" title="Change workspace">Change</button>
       </div>
       <div id="topbar-project" class="topbar-project" hidden>
         <span class="topbar-project-label">Projects</span>
@@ -25,129 +29,57 @@
         <button type="button" id="btn-topbar-add-project" class="icon-btn topbar-add-btn" title="New project">+</button>
         <span id="topbar-project-switching" class="topbar-project-switching" hidden aria-live="polite">Switching…</span>
       </div>
-      <div id="topbar-role" class="topbar-role" hidden>
-        <label class="topbar-role-label" for="topbar-role-select">Role</label>
-        <select id="topbar-role-select" aria-label="Switch role">
-          <option value="client">Creator</option>
-          <option value="consultant">QA Hunter</option>
-          <option value="promoter">Promoter</option>
-        </select>
-      </div>
       <div class="topbar-right">
         <div id="ai-toggle-wrap" class="ai-toggle-wrap" hidden>
-          <label class="ai-toggle" title="AI on: assistants guide Build and BRAHL. AI off: QA Hunters run FoXYiZ locally and upload Automation + AI reports.">
+          <label class="ai-toggle" title="AI on: assistants guide Build and BRAHL. AI off: run FoXYiZ locally.">
             <input type="checkbox" id="ai-toggle" checked />
             <span class="ai-toggle-track" aria-hidden="true"><span class="ai-toggle-thumb"></span></span>
             <span id="ai-toggle-label">AI on</span>
           </label>
-          <button type="button" id="btn-ai-docs" class="ai-md-btn" hidden title="AI context (.md) — Master for everyone + living Journey for this project">
+          <button type="button" id="btn-ai-docs" class="ai-md-btn" hidden title="Project docs (.md)">
             <span class="ai-md-dot" aria-hidden="true"></span>.md
           </button>
         </div>
-        <a
-          id="topbar-github"
-          class="topbar-github"
-          href="https://github.com/foxyiz/BRAHL"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Download BRAHL / FoXYiZ from GitHub — run locally"
-        >
-          <svg class="topbar-github-icon" viewBox="0 0 16 16" width="18" height="18" aria-hidden="true">
-            <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-          </svg>
-          <span class="topbar-github-label">GitHub</span>
-        </a>
-        <div class="user-menu-wrap">
-          <button type="button" id="user-menu-btn" class="profile-chip user-menu-trigger" title="Account menu" aria-haspopup="true" aria-expanded="false">
-            <span id="profile-chip-code" class="profile-chip-code">—</span>
-            <span id="profile-chip-name" class="profile-chip-name">Account</span>
-            <span class="user-menu-caret" aria-hidden="true">▾</span>
-          </button>
-          <div id="user-menu-dropdown" class="user-menu-dropdown" hidden role="menu">
-            <a href="/login" class="user-menu-item" role="menuitem" id="user-menu-profile">Account</a>
-            <button type="button" class="user-menu-item" role="menuitem" data-user-action="account-roles">Role guide</button>
-            <button type="button" class="user-menu-item" role="menuitem" data-user-action="promoter">Promoter</button>
-            <button type="button" class="user-menu-item" role="menuitem" data-user-action="cost">Wallet ($)</button>
-            <div class="user-menu-divider" role="separator"></div>
-            <a href="https://github.com/foxyiz/BRAHL" class="user-menu-item" role="menuitem" target="_blank" rel="noopener noreferrer">Download on GitHub</a>
-            <div class="user-menu-divider" role="separator"></div>
-            <a href="/admin" class="user-menu-item" role="menuitem" id="user-menu-admin" hidden>Admin</a>
-            <a href="/admin?scope=project" class="user-menu-item" role="menuitem" id="user-menu-project-admin" hidden>Project admin</a>
-            <a href="/login" class="user-menu-item" role="menuitem" id="user-menu-login">Log in</a>
-            <a href="/signup" class="user-menu-item" role="menuitem" id="user-menu-signup">Sign up</a>
-            <button type="button" class="user-menu-item" role="menuitem" data-user-action="signout" id="user-menu-signout" hidden>Sign out</button>
-            <div class="user-menu-divider" role="separator"></div>
-            <button type="button" class="user-menu-item user-menu-item-muted" role="menuitem" data-user-action="upcoming" disabled>Nalanda — Upcoming</button>
-            <button type="button" class="user-menu-item user-menu-item-muted" role="menuitem" data-user-action="upcoming" disabled>Atomic 77 — Upcoming</button>
-          </div>
-        </div>
       </div>
-    </div>
-    <div class="topbar-row topbar-row-controls mvp-hidden" hidden>
-      <nav class="avatar-bar mvp-hidden" aria-label="Choose avatar" hidden>
-        <button type="button" class="avatar-btn" data-avatar="client" title="Creator — Post a challenge">
-          <span class="avatar-icon">C</span>
-          <span class="avatar-label">Creator</span>
-        </button>
-        <button type="button" class="avatar-btn" data-avatar="consultant" title="QA Hunter — Join open challenges">
-          <span class="avatar-icon">H</span>
-          <span class="avatar-label">QA Hunter</span>
-        </button>
-        <button type="button" class="avatar-btn avatar-networker" data-avatar="networker" title="Nalanda — Learn, teach, discuss">
-          <span class="avatar-icon">N</span>
-          <span class="avatar-label">Nalanda</span>
-        </button>
-      </nav>
     </div>
   </header>
 
   <div id="visual-reward-rail" class="visual-reward-rail" hidden aria-hidden="true"></div>
 
-  <div id="context-strip" class="context-strip">
-    <span id="status-bar" class="status-bar">Choose a role to start the QA agent</span>
+  <div id="context-strip" class="context-strip" hidden aria-hidden="true">
+    <span id="status-bar" class="status-bar" hidden></span>
     <span id="project-banner-meta" class="project-banner-meta" hidden title="Open the yPAD widget (bottom right) for plans · steps · data"></span>
     <div id="project-banner-hitl" class="project-banner-hitl" hidden></div>
   </div>
 
   <div id="persona-tasks-strip" class="persona-badge-strip" hidden aria-hidden="true"></div>
 
-  <div id="avatar-gate" class="avatar-gate" hidden>
+  <div id="workspace-gate" class="avatar-gate" hidden>
     <div class="avatar-gate-card">
-      <div id="welcome-hero" class="welcome-hero">
-        <p id="creator-pitch" class="welcome-pitch welcome-pitch-creator">
-          <strong>Go / No-Go for launch.</strong> One standardized green-or-red health report — know if your app is prod-ready before you ship.
-          Load $20+ in credits, post a challenge, and <strong>BRAHL it</strong>.
-        </p>
-        <p id="hunter-pitch" class="welcome-pitch welcome-pitch-hunter">
-          <strong>There are ships sinking. Find and kill the bugs.</strong>
-          Use your Human (QA) + Automation + AI skills to hunt defects and save apps from premature launch.
-        </p>
+      <h2>Set your main repo</h2>
+      <p class="blurb">Bind the <strong>app under test</strong> (GitHub clone or local folder). BRAHL yPAD suites still live under FoXYiZ — this repo is your crawl/context root.</p>
+      <div class="form-row">
+        <label for="workspace-repo-url">GitHub URL</label>
+        <input type="url" id="workspace-repo-url" placeholder="https://github.com/org/app.git" />
       </div>
-      <h2>Enter the arena</h2>
-      <div class="visual-card visual-card-grid" aria-hidden="true">
-        <div class="visual-card-item"><span class="v-icon">C</span><strong>Creator</strong><span>Post · budget · BRAHL</span></div>
-        <div class="visual-card-item"><span class="v-icon">H</span><strong>QA Hunter</strong><span>Hunt · evidence · pay</span></div>
-        <div class="visual-card-item"><span class="v-icon">N</span><strong>Nalanda</strong><span>Learn · teach · discuss</span></div>
-        <div class="visual-card-item"><span class="v-icon">P</span><strong>Promoter</strong><span>Invite · grow · XP</span></div>
+      <div class="form-row">
+        <label for="workspace-branch">Branch (optional)</label>
+        <input type="text" id="workspace-branch" placeholder="main" />
       </div>
-      <p>BRAHL automation handles bulk testing. <strong>QA Hunters</strong> enrich reports with real journeys and break apps offline.</p>
-      <p class="blurb arena-oneliner">Creators throw apps into the arena. QA Hunters break them and deliver the BRAHL report.</p>
+      <p class="hint">— or —</p>
+      <div class="form-row">
+        <label for="workspace-local-path">Local folder path</label>
+        <input type="text" id="workspace-local-path" placeholder="C:\path\to\your\app" />
+      </div>
+      <p id="workspace-gate-error" class="form-error" hidden></p>
       <div class="avatar-gate-actions">
-        <button type="button" class="avatar-choice primary" data-avatar="client">
-          <strong>Creator</strong>
-          <span>Post a challenge · set budget · run BRAHL</span>
-        </button>
-        <button type="button" class="avatar-choice" data-avatar="consultant">
-          <strong>QA Hunter</strong>
-          <span>Join open challenges · upload tests · submit BRAHL reports</span>
-        </button>
-        <button type="button" class="avatar-choice" data-avatar="networker">
-          <strong>Nalanda</strong>
-          <span>Free knowledge community — learn, teach, discuss, invite friends</span>
-        </button>
+        <button type="button" id="btn-workspace-clone" class="primary">Clone GitHub repo</button>
+        <button type="button" id="btn-workspace-local" class="secondary">Use local folder</button>
       </div>
     </div>
   </div>
+
+  <div id="avatar-gate" class="avatar-gate" hidden aria-hidden="true"></div>
 
   <div id="add-project-modal" class="modal" hidden role="dialog" aria-labelledby="add-project-title" aria-modal="true">
     <div class="modal-card modal-card-planner">
@@ -199,12 +131,63 @@
     <div class="modal-card modal-card-wide">
       <h2 id="fstart-modal-title">fStart config</h2>
       <p id="fstart-modal-path" class="blurb"></p>
-      <textarea id="fstart-json-editor" class="json-editor" rows="14" spellcheck="false"></textarea>
+      <div class="capture-form" id="fstart-capture-form">
+        <h3 class="section-sub">Capture</h3>
+        <p class="hint capture-help">When FoXYiZ auto-saves screenshots/video, and whether Selenium paints orange/green/red overlays. Explicit <code>xCaptureImage</code> steps always save a PNG.</p>
+        <div class="capture-grid">
+          <label for="cap-image">Screenshots (image)
+            <select id="cap-image">
+              <option value="off">off</option>
+              <option value="on_fail">on_fail</option>
+              <option value="every_step">every_step</option>
+              <option value="on_pass">on_pass</option>
+            </select>
+          </label>
+          <label for="cap-video">Video
+            <select id="cap-video">
+              <option value="off">off</option>
+              <option value="on_fail">on_fail</option>
+              <option value="every_step">every_step</option>
+              <option value="plan">plan</option>
+            </select>
+          </label>
+          <label for="cap-video-fps">Video FPS
+            <input type="number" id="cap-video-fps" min="1" max="10" value="2" />
+          </label>
+          <label for="cap-subdir">Subdir
+            <input type="text" id="cap-subdir" placeholder="(plan folder)" />
+          </label>
+          <label for="cap-overlay">Overlay
+            <select id="cap-overlay">
+              <option value="off">off</option>
+              <option value="on">on</option>
+            </select>
+          </label>
+          <label for="cap-overlay-ms">Overlay ms
+            <input type="number" id="cap-overlay-ms" min="0" max="3000" value="250" />
+          </label>
+        </div>
+      </div>
+      <details class="fstart-json-details" open>
+        <summary>Advanced JSON</summary>
+        <textarea id="fstart-json-editor" class="json-editor" rows="12" spellcheck="false"></textarea>
+      </details>
       <p id="fstart-json-error" class="form-error" hidden></p>
       <div class="form-row actions">
         <button type="button" id="fstart-save" class="primary">Save</button>
         <button type="button" id="fstart-delete" class="secondary danger-btn">Delete</button>
         <button type="button" id="fstart-cancel" class="secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="shots-modal" class="modal" hidden role="dialog" aria-labelledby="shots-modal-title" aria-modal="true">
+    <div class="modal-card modal-card-wide">
+      <h2 id="shots-modal-title">Run screenshots</h2>
+      <p id="shots-modal-meta" class="blurb"></p>
+      <div id="shots-modal-grid" class="shots-grid"></div>
+      <div class="form-row actions">
+        <button type="button" id="shots-modal-close" class="secondary">Close</button>
       </div>
     </div>
   </div>
@@ -433,9 +416,9 @@
 
   <main class="content">
     <section id="panel-build" class="panel active" data-panel="build">
-      <div id="build-no-avatar" class="build-placeholder">
-        <h2>Build — choose an avatar</h2>
-        <p class="blurb">Creators post challenges via AI chat. QA Hunters join open challenges to enrich BRAHL offline.</p>
+      <div id="build-no-avatar" class="build-placeholder" hidden>
+        <h2>Build</h2>
+        <p class="blurb">Bind a workspace repo first, then add or select a challenge.</p>
       </div>
 
       <div id="build-client" class="build-mode" hidden>
@@ -466,8 +449,8 @@
               <p id="build-verify-summary" class="verify-summary" hidden></p>
             </header>
 
-            <section id="build-strategy" class="build-section build-strategy-section">
-              <div id="build-docs-strip" class="build-docs-strip" aria-label="Suite documents">
+            <section id="build-strategy" class="build-section build-strategy-section" hidden>
+              <div id="build-docs-strip" class="build-docs-strip" hidden aria-hidden="true">
                 <button type="button" class="build-doc-chip" data-doc="strategy" id="btn-build-doc-strategy" title="test strategy.md">
                   <span class="build-doc-chip-label">test strategy.md</span>
                 </button>
@@ -615,7 +598,7 @@
               </div>
             </section>
 
-            <section id="build-budget-strip" class="build-budget-strip avatar-client-only" hidden>
+            <section id="build-budget-strip" class="build-budget-strip avatar-client-only" hidden aria-hidden="true">
               <div class="build-budget-summary">
                 <strong>QA wallet</strong>
                 <span id="build-budget-amount" class="build-budget-amount">Not set</span>
@@ -809,9 +792,9 @@
         </div>
       </div>
       <div id="run-content">
-        <h2>Run — FoXYiZ fEngine2</h2>
+        <h2>Run — FoXYiZ.exe</h2>
         <p id="run-project-scope" class="phase-scope"></p>
-        <p class="blurb">FoXYiZ only — no AI. One fStart per suite; pick Run profiles. Smoke = gate · UI/API = journey slices when the suite has journey CSVs.</p>
+        <p class="blurb">FoXYiZ.exe only — no AI. One fStart per suite; pick suite tags (same as Build) or a Smoke/UI preset. Tags OR-filter yPAD plans.</p>
         <div class="form-row run-suite-row">
           <label>Suite</label>
           <span id="run-suite-display" class="run-suite-readonly">—</span>
@@ -826,25 +809,39 @@
           </div>
         </div>
         <div class="run-profile-block">
-          <span class="fstart-toolbar-label">Run profiles</span>
-          <div id="run-profile-row" class="fstart-chip-row run-profile-row" role="group" aria-label="Run profiles"></div>
+          <span class="fstart-toolbar-label">Run tags</span>
+          <div id="run-tag-row" class="fstart-chip-row run-tag-row" role="group" aria-label="Suite tags"></div>
+          <span class="fstart-toolbar-label run-preset-label">Presets</span>
+          <div id="run-profile-row" class="fstart-chip-row run-profile-row" role="group" aria-label="Run presets"></div>
           <label class="run-thread-label" for="run-thread-count">Threads
-            <input type="number" id="run-thread-count" min="1" max="8" value="1" title="1 = OR filter · 2+ with multiple profiles = parallel" />
+            <input type="number" id="run-thread-count" min="1" max="8" value="1" title="1 = OR filter · 2+ with multiple tags may fan out" />
           </label>
         </div>
-        <p class="hint fstart-chip-hint">Smoke → verify gate. UI/API → journey library tags (replaces archived journey fStarts). Threads &gt; 1 with 2+ profiles runs each profile in parallel — one Run derives sequential vs. parallel automatically.</p>
+        <p class="hint fstart-chip-hint">Tags match Build’s cloud. Presets (Smoke/UI/…) multi-select the matching tags. Threads &gt; 1 with 2+ tags can fan out.</p>
         <p id="fstart-fanout-hint" class="hint fstart-fanout-hint" hidden></p>
         <p id="fstart-empty-hint" class="hint" hidden>No fStart yet — one is created automatically for this project.</p>
+        <div class="capture-run-strip" id="run-capture-strip" hidden>
+          <span class="fstart-toolbar-label">Capture</span>
+          <span id="run-capture-summary" class="hint">—</span>
+          <button type="button" id="btn-run-capture-edit" class="secondary fstart-action-btn">Edit capture</button>
+        </div>
+        <p id="run-roll-hint" class="hint" hidden></p>
         <div class="phase-action-bar run-actions-row">
           <button type="button" id="btn-run" class="primary">Run</button>
           <div id="run-post-actions" class="run-post-actions" hidden>
-            <a id="run-zdash-link" href="#" target="_blank" class="secondary link-btn">View zDash</a>
-            <a id="run-batch-zdash-link" href="#" target="_blank" class="secondary link-btn" hidden>View batch zDash</a>
+            <a id="run-zdash-link" href="#" target="_blank" class="secondary link-btn">Open zDash</a>
+            <span id="run-artifact-links" class="run-artifact-links"></span>
+            <button type="button" id="run-make-roll-btn" class="secondary link-btn" hidden>Make film roll</button>
+            <a id="run-batch-zdash-link" href="#" target="_blank" class="secondary link-btn" hidden>Batch zDash</a>
           </div>
         </div>
         <div id="run-batch-rows" class="run-batch-rows" hidden></div>
         <div class="progress-wrap"><div id="progress-bar" class="progress-bar"></div></div>
         <pre id="run-log" class="log"></pre>
+        <div id="run-recent" class="run-recent" hidden>
+          <h3 class="section-sub">Recent runs</h3>
+          <ul id="run-recent-list" class="run-recent-list"></ul>
+        </div>
       </div>
     </section>
 
@@ -885,6 +882,7 @@
           </div>
         </div>
         <div id="dash-link" class="dash-link"></div>
+        <div id="analyze-artifacts" class="analyze-artifacts" hidden></div>
       </div>
     </section>
 
@@ -1452,23 +1450,16 @@
   </main>
 
   <footer class="footer">
-    <nav class="footer-links" aria-label="Site links">
-      <span id="footer-version">qoa_web · Arena</span>
-      <a href="/welcome">Invite</a>
-      <a href="/login">Log in</a>
-      <a href="/about">About</a>
-      <a href="/admin" id="footer-admin-link" class="footer-admin-link" hidden>Admin</a>
+    <nav class="footer-links" aria-label="Status">
+      <span id="footer-version">KK2 BRAHL Desktop</span>
       <a href="/api/health" target="_blank" rel="noopener">/api/health</a>
     </nav>
     <span id="health-pill" class="health-pill">checking…</span>
   </footer>
 
   <script src="/assets/profiles.js"></script>
-  <script src="/assets/invite-gate.js"></script>
   <script src="/assets/arena-labels.js"></script>
-  <script src="/assets/role-copy.js"></script>
   <script src="/assets/theme.js"></script>
-  <script src="/assets/nalanda.js"></script>
   <script src="/assets/app.js"></script>
 </body>
 </html>

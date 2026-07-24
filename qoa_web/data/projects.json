@@ -1068,7 +1068,7 @@
     "brahl_plan_draft": null,
     "latest_run": "20260716_223731_qoa_web_live",
     "created_at": "2026-07-14T21:14:07+00:00",
-    "updated_at": "2026-07-20T21:10:46+00:00",
+    "updated_at": "2026-07-22T19:09:44+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -1146,7 +1146,7 @@
       "completion_tokens": 19,
       "updated_at": "2026-07-15T19:56:46+00:00"
     },
-    "ai_journey_updated_at": "2026-07-20T21:10:46+00:00",
+    "ai_journey_updated_at": "2026-07-22T19:09:44+00:00",
     "team_messages": [],
     "team_tasks": [],
     "current_phase": "Run",
@@ -1158,8 +1158,8 @@
     "app_url": "",
     "suite_name": "Math",
     "suite_config": "y/Math/Math.json",
-    "purpose": "",
-    "prompt": "",
+    "purpose": "Test plan for Math application to ensure functionality and performance of mathematical operations.",
+    "prompt": "Test plan for Math application to ensure functionality and performance of mathematical operations.",
     "owner_avatar": "client",
     "owner_user_id": null,
     "status": "in_progress",
@@ -1319,14 +1319,128 @@
         "batch_id": null,
         "batch_dashboard": null,
         "archived": false
+      },
+      {
+        "id": "80fdac17",
+        "run_name": "20260721_123549_Math",
+        "report_path": "z/20260721_123549_Math/brahl_report.md",
+        "submitted_at": "2026-07-22T16:15:53+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      },
+      {
+        "id": "01701b57",
+        "run_name": "20260722_120901_Math",
+        "report_path": "z/20260722_120901_Math/brahl_report.md",
+        "submitted_at": "2026-07-22T19:09:12+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
       }
     ],
     "ai_enabled": true,
-    "brahl_context_path": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260715_232913_Math.json",
-    "brahl_plan_draft": null,
-    "latest_run": "20260720_140910_Math",
+    "brahl_context_path": "C:\\006\\FXYZ\\KK\\FoXYiZ\\z\\brahl_context_20260722_120805_Math.json",
+    "brahl_plan_draft": {
+      "summary": "Test plan for Math application to ensure functionality and performance of mathematical operations.",
+      "user_stories": [
+        {
+          "title": "Basic Arithmetic Operations",
+          "description": "As a user, I want to perform basic arithmetic operations (addition, subtraction, multiplication, division) so that I can solve simple math problems.",
+          "automated": true
+        },
+        {
+          "title": "Advanced Mathematical Functions",
+          "description": "As a user, I want to use advanced functions (square root, exponentiation) to solve complex equations.",
+          "automated": true
+        },
+        {
+          "title": "Graphing Functions",
+          "description": "As a user, I want to graph mathematical functions to visualize relationships between variables.",
+          "automated": false
+        },
+        {
+          "title": "User Input Validation",
+          "description": "As a user, I want to receive feedback on invalid inputs to ensure I enter correct data.",
+          "automated": true
+        },
+        {
+          "title": "Mobile Responsiveness",
+          "description": "As a user, I want the app to be responsive on mobile devices for accessibility.",
+          "automated": false
+        }
+      ],
+      "test_cases": [
+        {
+          "id": "T1",
+          "title": "Test Addition Functionality",
+          "automated": true
+        },
+        {
+          "id": "T2",
+          "title": "Test Subtraction Functionality",
+          "automated": true
+        },
+        {
+          "id": "T3",
+          "title": "Test Multiplication Functionality",
+          "automated": true
+        },
+        {
+          "id": "T4",
+          "title": "Test Division Functionality",
+          "automated": true
+        },
+        {
+          "id": "T5",
+          "title": "Test Square Root Functionality",
+          "automated": true
+        },
+        {
+          "id": "T6",
+          "title": "Test Exponentiation Functionality",
+          "automated": true
+        },
+        {
+          "id": "T7",
+          "title": "Test Graphing Linear Functions",
+          "automated": false
+        },
+        {
+          "id": "T8",
+          "title": "Test Graphing Quadratic Functions",
+          "automated": false
+        },
+        {
+          "id": "T9",
+          "title": "Test Invalid Input Handling",
+          "automated": true
+        },
+        {
+          "id": "T10",
+          "title": "Test Mobile Layout",
+          "automated": false
+        },
+        {
+          "id": "T11",
+          "title": "Test Performance of Calculations",
+          "automated": true
+        },
+        {
+          "id": "T12",
+          "title": "Test User Interface for Accessibility",
+          "automated": false
+        }
+      ],
+      "automated_count": 8,
+      "manual_count": 4,
+      "run_how": "Execute via FoXYiZ fEngine2 \u2014 low-code Tests/Steps/Test data CSVs. No Playwright."
+    },
+    "latest_run": "20260722_120901_Math",
     "created_at": "2026-07-14T21:50:30+00:00",
-    "updated_at": "2026-07-21T18:26:53+00:00",
+    "updated_at": "2026-07-23T02:17:49+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -1349,6 +1463,44 @@
       "user_messages": 0
     },
     "cycle_history": [
+      {
+        "id": "4317b368",
+        "step": "Heal",
+        "detail": "Applied 1 CSV patch(es)",
+        "at": "2026-07-22T19:11:11+00:00",
+        "run_name": "20260722_120901_Math",
+        "stats": {
+          "passes": 0,
+          "fails": 1,
+          "total_plans": 1,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "2552d123",
+        "step": "heal",
+        "detail": "Applied 1 yPAD patch(es)",
+        "at": "2026-07-22T19:11:11+00:00"
+      },
+      {
+        "id": "804c8143",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-22T19:09:11+00:00",
+        "run_name": "20260722_120901_Math",
+        "stats": {
+          "passes": 0,
+          "fails": 1,
+          "total_plans": 1,
+          "health": "amber"
+        }
+      },
+      {
+        "id": "537760a3",
+        "step": "build",
+        "detail": "Purpose updated",
+        "at": "2026-07-22T19:08:05+00:00"
+      },
       {
         "id": "2a943225",
         "step": "Run",
@@ -1582,7 +1734,43 @@
         }
       }
     ],
-    "hitl_stories": [],
+    "hitl_stories": [
+      {
+        "id": "3f5407ae",
+        "title": "Basic Arithmetic Operations",
+        "description": "As a user, I want to perform basic arithmetic operations (addition, subtraction, multiplication, division) so that I can solve simple math problems.",
+        "status": "open",
+        "created_at": "2026-07-22T19:08:01+00:00"
+      },
+      {
+        "id": "43f1c6fc",
+        "title": "Advanced Mathematical Functions",
+        "description": "As a user, I want to use advanced functions (square root, exponentiation) to solve complex equations.",
+        "status": "open",
+        "created_at": "2026-07-22T19:08:01+00:00"
+      },
+      {
+        "id": "ee0add69",
+        "title": "Graphing Functions",
+        "description": "As a user, I want to graph mathematical functions to visualize relationships between variables. [manual \u2014 QA Hunter]",
+        "status": "open",
+        "created_at": "2026-07-22T19:08:01+00:00"
+      },
+      {
+        "id": "6c2cc9f6",
+        "title": "User Input Validation",
+        "description": "As a user, I want to receive feedback on invalid inputs to ensure I enter correct data.",
+        "status": "open",
+        "created_at": "2026-07-22T19:08:01+00:00"
+      },
+      {
+        "id": "b4e393da",
+        "title": "Mobile Responsiveness",
+        "description": "As a user, I want the app to be responsive on mobile devices for accessibility. [manual \u2014 QA Hunter]",
+        "status": "open",
+        "created_at": "2026-07-22T19:08:01+00:00"
+      }
+    ],
     "hitl_invites": [],
     "change_requests": [],
     "runtime_mode": "local",
@@ -1594,8 +1782,8 @@
       "total_tokens": 0,
       "usd_est": 0.0
     },
-    "ai_journey_updated_at": "2026-07-21T18:26:53+00:00",
-    "current_phase": "Run",
+    "ai_journey_updated_at": "2026-07-23T02:17:49+00:00",
+    "current_phase": "Heal",
     "team_messages": [],
     "team_tasks": [],
     "evidence_library": []
@@ -2146,7 +2334,7 @@
     "brahl_plan_draft": null,
     "latest_run": "20260721_000425_space_planner",
     "created_at": "2026-07-21T07:12:54+00:00",
-    "updated_at": "2026-07-21T07:12:54+00:00",
+    "updated_at": "2026-07-22T16:16:02+00:00",
     "brahl_chat_messages": [
       {
         "id": "brahl-welcome",
@@ -2183,7 +2371,8 @@
       "total_tokens": 0,
       "usd_est": 0.0
     },
-    "evidence_library": []
+    "evidence_library": [],
+    "ai_journey_updated_at": "2026-07-22T16:16:02+00:00"
   },
   {
     "id": "bbe1e455b73e",
@@ -2457,5 +2646,422 @@
       "usd_est": 0.0
     },
     "evidence_library": []
+  },
+  {
+    "id": "bc3cbece3705",
+    "name": "a77",
+    "app_url": "https://a77.base44.app/",
+    "suite_name": "a77",
+    "suite_config": "y/a77/a77.json",
+    "purpose": "Atomic 77 \u2014 AI growth dashboard UX (a77.base44.app)",
+    "prompt": "Atomic 77 \u2014 AI growth dashboard UX (a77.base44.app)",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [
+      {
+        "id": "d35a4148",
+        "kind": "url",
+        "label": "App URL",
+        "value": "https://a77.base44.app/",
+        "added_at": "2026-07-22T19:18:07+00:00"
+      }
+    ],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-22T19:18:07+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "3982a8c5",
+        "run_name": "20260720_092100_a77",
+        "report_path": "z/20260720_092100_a77/brahl_report.md",
+        "submitted_at": "2026-07-22T19:18:08+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      },
+      {
+        "id": "60f8d35b",
+        "run_name": "20260722_121934_a77",
+        "report_path": "z/20260722_121934_a77/brahl_report.md",
+        "submitted_at": "2026-07-22T19:24:45+00:00",
+        "source": "automation",
+        "batch_id": "cd4c9d5e1c",
+        "batch_dashboard": "z/zDash_batch_batch_20260722_121930_ec1743.html",
+        "archived": false
+      },
+      {
+        "id": "68533e51",
+        "run_name": "20260724_203134_a77",
+        "report_path": "z/20260724_203134_a77/brahl_report.md",
+        "submitted_at": "2026-07-24T15:01:44+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "brahl_plan_draft": null,
+    "latest_run": "20260724_203134_a77",
+    "created_at": "2026-07-22T19:18:07+00:00",
+    "updated_at": "2026-07-24T15:01:44+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
+        "at": "2026-07-22T19:18:07+00:00"
+      }
+    ],
+    "team_messages": [],
+    "team_tasks": [],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-22T19:18:07+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [
+      {
+        "id": "4431fea1",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-22T19:24:38+00:00",
+        "run_name": "20260722_121934_a77",
+        "stats": {
+          "passes": 23,
+          "fails": 0,
+          "total_plans": 23,
+          "health": "green"
+        }
+      }
+    ],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "runtime_mode": "local",
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    },
+    "evidence_library": [],
+    "ai_journey_updated_at": "2026-07-24T15:01:44+00:00",
+    "current_phase": "Run"
+  },
+  {
+    "id": "54972f05e66c",
+    "name": "konfiga",
+    "app_url": "https://konfiga.com/",
+    "suite_name": "konfiga",
+    "suite_config": "y/konfiga/konfiga.json",
+    "purpose": "Konfiga AI agent platform \u2014 Smoke UI Edge API Security Perf",
+    "prompt": "Konfiga AI agent platform \u2014 Smoke UI Edge API Security Perf",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [
+      {
+        "id": "e9e424b2",
+        "kind": "url",
+        "label": "App URL",
+        "value": "https://konfiga.com/",
+        "added_at": "2026-07-23T01:31:04+00:00"
+      }
+    ],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-23T01:31:04+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "brahl_plan_draft": null,
+    "latest_run": "20260722_121934_a77",
+    "created_at": "2026-07-23T01:31:04+00:00",
+    "updated_at": "2026-07-23T02:40:07+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
+        "at": "2026-07-23T01:31:04+00:00"
+      }
+    ],
+    "team_messages": [],
+    "team_tasks": [],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-23T01:31:04+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "runtime_mode": "local",
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    },
+    "evidence_library": [],
+    "ai_journey_updated_at": "2026-07-23T02:40:07+00:00"
+  },
+  {
+    "id": "1fcef98c6d22",
+    "name": "thoughtstream",
+    "app_url": "https://jusdone.base44.app/",
+    "suite_name": "thoughtstream",
+    "suite_config": "y/thoughtstream/thoughtstream.json",
+    "purpose": "ThoughtStream deep regression v3 \u2014 Func Edge Security API Perf",
+    "prompt": "ThoughtStream deep regression v3 \u2014 Func Edge Security API Perf",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [
+      {
+        "id": "5096c3ab",
+        "kind": "url",
+        "label": "App URL",
+        "value": "https://jusdone.base44.app/",
+        "added_at": "2026-07-23T01:31:21+00:00"
+      }
+    ],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-23T01:31:21+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "033a0e6a",
+        "run_name": "20260720_124346_thoughtstream",
+        "report_path": "z/20260720_124346_thoughtstream/brahl_report.md",
+        "submitted_at": "2026-07-23T01:31:21+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "brahl_plan_draft": null,
+    "latest_run": "20260720_124346_thoughtstream",
+    "created_at": "2026-07-23T01:31:21+00:00",
+    "updated_at": "2026-07-23T02:17:19+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
+        "at": "2026-07-23T01:31:21+00:00"
+      }
+    ],
+    "team_messages": [],
+    "team_tasks": [],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-23T01:31:21+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "runtime_mode": "local",
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    },
+    "evidence_library": [],
+    "ai_journey_updated_at": "2026-07-23T02:17:19+00:00"
+  },
+  {
+    "id": "fb4464f0f5fd",
+    "name": "ultimate_showdown",
+    "app_url": "https://ultimate-clash-battle.base44.app/",
+    "suite_name": "ultimate_showdown",
+    "suite_config": "y/ultimate_showdown/ultimate_showdown.json",
+    "purpose": "Ultimate Showdown / Ultimate Clash Battle \u2014 who-would-win UX (base44)",
+    "prompt": "Ultimate Showdown / Ultimate Clash Battle \u2014 who-would-win UX (base44)",
+    "owner_avatar": "client",
+    "owner_user_id": null,
+    "status": "open",
+    "documents": [],
+    "context_items": [
+      {
+        "id": "3bc733a4",
+        "kind": "url",
+        "label": "App URL",
+        "value": "https://ultimate-clash-battle.base44.app/",
+        "added_at": "2026-07-23T02:40:32+00:00"
+      }
+    ],
+    "chat_messages": [
+      {
+        "id": "welcome",
+        "role": "assistant",
+        "text": "Hi \u2014 I'm your BRAHL Build assistant. What are you trying to test or improve?",
+        "at": "2026-07-23T02:40:32+00:00"
+      }
+    ],
+    "budget_usd": 0.0,
+    "budget_split": {
+      "automation_pct": 50,
+      "human_pct": 50
+    },
+    "hitl_consultants": [],
+    "reports": [
+      {
+        "id": "5a0ab954",
+        "run_name": "20260717_112515_ultimate_showdown",
+        "report_path": "z/20260717_112515_ultimate_showdown/brahl_report.md",
+        "submitted_at": "2026-07-23T02:40:32+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      },
+      {
+        "id": "c78dc760",
+        "run_name": "20260722_194326_ultimate_showdown",
+        "report_path": "z/20260722_194326_ultimate_showdown/brahl_report.md",
+        "submitted_at": "2026-07-23T02:44:28+00:00",
+        "source": "automation",
+        "batch_id": null,
+        "batch_dashboard": null,
+        "archived": false
+      }
+    ],
+    "ai_enabled": true,
+    "brahl_context_path": null,
+    "brahl_plan_draft": null,
+    "latest_run": "20260722_194326_ultimate_showdown",
+    "created_at": "2026-07-23T02:40:32+00:00",
+    "updated_at": "2026-07-23T03:43:01+00:00",
+    "brahl_chat_messages": [
+      {
+        "id": "brahl-welcome",
+        "role": "assistant",
+        "text": "I'm the BRAHL model for this project. Select a report or ask about the latest BRAHL findings.",
+        "at": "2026-07-23T02:40:32+00:00"
+      }
+    ],
+    "team_messages": [],
+    "team_tasks": [],
+    "atomic77_chat_messages": [
+      {
+        "id": "a77-welcome",
+        "role": "assistant",
+        "text": "I'm **Atomic 77** \u2014 idea to launch inside QA on Air. Ask about scope, BRAHL, launch, costs, or QA Hunter workflows. Toggle **AI on** for full assistant mode.",
+        "at": "2026-07-23T02:40:32+00:00"
+      }
+    ],
+    "atomic77_usage": {
+      "messages": 0,
+      "tokens_est": 0,
+      "user_messages": 0
+    },
+    "cycle_history": [
+      {
+        "id": "47ba5574",
+        "step": "Run",
+        "detail": "completed",
+        "at": "2026-07-23T02:44:25+00:00",
+        "run_name": "20260722_194326_ultimate_showdown",
+        "stats": {
+          "passes": 7,
+          "fails": 0,
+          "total_plans": 7,
+          "health": "green"
+        }
+      }
+    ],
+    "hitl_stories": [],
+    "hitl_invites": [],
+    "change_requests": [],
+    "runtime_mode": "local",
+    "app_version": "",
+    "baseline_version": "",
+    "baseline_run": null,
+    "ai_usage": {
+      "calls": 0,
+      "total_tokens": 0,
+      "usd_est": 0.0
+    },
+    "evidence_library": [],
+    "ai_journey_updated_at": "2026-07-23T03:43:01+00:00",
+    "current_phase": "Run"
   }
 ]
